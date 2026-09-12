@@ -87,7 +87,11 @@ try:
     if args.browser:launch['executable_path']=args.browser
     browser=getattr(pw,args.engine).launch(**launch)
     def open_page(width=1440,seed=None,file='index.html',lang='ko'):
-        ctx=browser.new_context(viewport={'width':width,'height':1000},device_scale_factor=1,accept_downloads=True)
+        # Reduced motion, as the other two runs already use. The primary button
+        # lifts 1px on hover over a .15s transition and the hall ticker scrolls
+        # forever; while those run, an element can keep failing Playwright's
+        # "stable" check and a plain click waits out its timeout.
+        ctx=browser.new_context(viewport={'width':width,'height':1000},device_scale_factor=1,accept_downloads=True,reduced_motion='reduce')
         page=ctx.new_page();page.set_default_timeout(8000);page.on('pageerror',lambda e:errors.append(str(e)))
         # Only optional fonts are blocked for deterministic screenshots.
         ctx.add_init_script(INTRO_WATCH)
