@@ -10,7 +10,7 @@ const en={
  myDokdo:'My Dokdo',map:'Explore the map',learn:'Learn',journal:'Life journal',myRecords:'My records',
  oldFound:'A previous learning record exists in this browser.',oldCopy:'Keep the original and copy it into this new view.',checkRecords:'Check the record',
  landscape:'My island landscape',soundOff:'♫ Sound off',zoom:'Zoom',saveImage:'Save image',firstLight:'Your first lesson becomes your first light.',
- birdsHere:'Birds are visiting Dokdo',birdsHereSub:'A brief visit celebrating a new step',
+ birdsHere:'Birds are visiting Dokdo',birdsHereSub:'Congratulations on new learning',
  artNote:'An imagined landscape based on the approved artwork · not a survey map',sources:'Artwork & sources',
  todayStep:'TODAY’S SMALL STEP',fiveQuestions:'5 questions',gentleLearning:'Learn with explanations',startLesson:'Start a little learning',
  review:'Recall · review',placement:'Choose age · find a starting point',pilotNote:'12 Dokdo units · 60 concepts · 240 rewritten question pairs. Cognitive demand and difficulty are separately reviewed.',
@@ -215,7 +215,7 @@ function renderHome(){
  const a=M.summary(s),p=s.learningProfile;
  const shownName=Array.from(a.name).length>25?Array.from(a.name).slice(0,25).join('')+'…':a.name;
  txt('greeting',a.name?tr(`${shownName}님, 오늘도 독도를 밝혀볼까요?`,`${shownName}, shall we brighten Dokdo today?`):tr('오늘도, 독도를 밝혀볼까요?','Shall we brighten Dokdo today?'));
- renderGradeLine(s,a);
+ renderGradeLine('grade',s,a);
  txt('lights-count',num(a.lights));txt('beacon-count',tr('봉화 ','Beacons ')+num(a.beacons));
  txt('correct-count',num(a.correct));Core.rollover(s);
  txt('weekly-count',tr('이번 주 ','This week ')+num(s.weekly.correct)+(s.weekly.partial?tr(' · 전환 후',' · since update'):''));
@@ -235,14 +235,15 @@ function renderHome(){
  $('start-review').disabled=!Object.entries(s.m).some(([id,r])=>C.isActive(id)&&(r.cor>0||r.courseLearned));
  updateStorageStatus();
 }
-function renderGradeLine(s,a){
- const el=$('grade-line');if(!el)return;
+function renderGradeLine(idPrefix,s,a){
+ const el=$(idPrefix+'-line');if(!el)return;
  el.hidden=!a.name;if(!a.name)return;
  const gp=Core.gradeProgress(a.correct);
- txt('grade-badge',gradeLabel(gp.grade));
- txt('grade-stats',tr(`정답 ${num(a.correct)} · XP ${num(a.xp)}`,`Correct ${num(a.correct)} · XP ${num(a.xp)}`));
- $('grade-gauge').max=gp.need;$('grade-gauge').value=gp.have;
- txt('grade-gauge-label',gp.graduated?tr('최고 학년 달성','Top grade reached'):tr(`${gp.have}/${gp.need} · 다음 학년(${gradeLabel(Core.GRADES[gp.rank+1])})까지`,`${gp.have}/${gp.need} to ${gradeLabel(Core.GRADES[gp.rank+1])}`));
+ if($(idPrefix+'-name'))txt(idPrefix+'-name',a.name);
+ txt(idPrefix+'-badge',gradeLabel(gp.grade));
+ txt(idPrefix+'-stats',tr(`정답 ${num(a.correct)} · XP ${num(a.xp)}`,`Correct ${num(a.correct)} · XP ${num(a.xp)}`));
+ $(idPrefix+'-gauge').max=gp.need;$(idPrefix+'-gauge').value=gp.have;
+ txt(idPrefix+'-gauge-label',gp.graduated?tr('최고 학년 달성','Top grade reached'):tr(`${gp.have}/${gp.need} · 다음 학년(${gradeLabel(Core.GRADES[gp.rank+1])})까지`,`${gp.have}/${gp.need} to ${gradeLabel(Core.GRADES[gp.rank+1])}`));
 }
 function renderGrade(){
  const s=getS();if(!s)return;
@@ -444,6 +445,7 @@ function nextItem(){
 }
 function renderQuestion(teach=false){
  const q=lesson;if(!q)return;
+ const s0=getS();if(s0)renderGradeLine('lesson-grade',s0,M.summary(s0));
  txt('lesson-position',`${q.index+1} / ${q.total}`);$('lesson-progress').max=q.total;$('lesson-progress').value=q.index;
  txt('lesson-mode',q.mode==='placement'?tr('시작점 찾기','Starting check'):q.mode==='review'?tr('기억 꺼내기','Recall'):tr('함께 익히기','Learn together'));
  txt('lesson-stage',C.unitInfo(q.item.unit)[language]+' · '+C.COG[language][q.item.cognitive]);
@@ -504,6 +506,7 @@ async function choose(pick,skip=false){
   }).catch(()=>{});}
   if(window.DokdoAnalytics)DokdoAnalytics.track('question_answered',{qid:q.item.id,correct:ok?1:0,qtype:q.item.atype||q.mode,grade:getS().grade||'K',retry:retry?1:0});
   q.answered=true;q.needsRetry=q.mode!=='placement'&&!ok;
+  {const s2=getS();if(s2)renderGradeLine('lesson-grade',s2,M.summary(s2));}
   if(q.mode==='placement'){C.recordPlacement(q.diagnostic,q.item,ok,skip);if(ok)q.first++;}
   else if(!retry){if(ok)q.first++;q.xp+=awarded.xp;}
   else if(ok)q.corrected++;
@@ -580,7 +583,11 @@ function renderShareRow(){
   toast(res.state==='copied'?tr('링크를 복사했습니다.','Link copied.'):tr('복사하지 못했습니다.','Could not copy the link.'));
  }));
  row.append(shareButton(tr('결과 이미지 저장','Save an image'),()=>{shareTrack('card');saveImage();}));
- if(window.DokdoShare&&DokdoShare.isKakaoConfigured()){
+ // The Kakao popup share flow only works reliably on mobile (where it
+ // hands off to the KakaoTalk app); on desktop it opens an unauthenticated
+ // blank popup, so the button is hidden there rather than shown broken.
+ const isMobileDevice=navigator.userAgentData?navigator.userAgentData.mobile:/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+ if(isMobileDevice&&window.DokdoShare&&DokdoShare.isKakaoConfigured()){
   row.append(shareButton(tr('카카오톡으로 보내기','Send via KakaoTalk'),async()=>{
    shareTrack('kakaotalk');const res=await DokdoShare.kakaoShare();
    if(res.state==='error')toast(tr('카카오톡 공유를 열지 못했습니다.','Could not open KakaoTalk sharing.'));
@@ -1015,12 +1022,21 @@ async function saveImage(){
  x.fillStyle='#f0e7cf';x.font='500 34px GmarketSans, sans-serif';x.fillText(tr('독도 코리아 스쿨','Dokdo Korea School'),48,62);
  x.fillStyle='#a9c5ca';x.font='20px SCoreDream, sans-serif';x.fillText(tr('배우는 만큼, 더 빛나는 독도','A little learning. A brighter Dokdo.'),48,96);
  x.save();x.translate(0,123);if(mapOpen)drawMapReference(x);else V.render(x,s,when,{islands,texture,reduced:reduced(),labels:true,...environmentOptions()});x.restore();
- const a=M.summary(s);x.fillStyle='#081f2e';x.fillRect(0,810,1536,120);
+ const a=M.summary(s);x.fillStyle='#081f2e';x.fillRect(0,770,1536,160);
+ const now=new Date();
  x.fillStyle='#e8efeb';x.font='500 25px GmarketSans, sans-serif';
- let name=a.name||tr('나의 독도','My Dokdo');while(x.measureText(name).width>420)name=name.slice(0,-2)+'…';
- x.fillText(name,48,857);
- x.fillStyle='#f0ce7a';x.font='500 26px GmarketSans, sans-serif';const jp=M.Journey.progress(s);x.fillText(tr(`빛의 길 ${jp.filled}/1,025 · ${jp.shownLap}바퀴 · 봉화 ${a.beacons}`,`Path ${jp.filled}/1,025 / circuit ${jp.shownLap} / beacons ${a.beacons}`),520,857);
- x.font='15px SCoreDream, sans-serif';x.fillStyle='#9bb9c4';x.fillText(tr('학습 기록 기념사진 · 상상 풍경이며 실제 측량지도가 아닙니다.','A learning keepsake · imagined landscape, not a survey map.'),48,898);
+ let name=a.name||tr('나의 독도','My Dokdo');while(x.measureText(name).width>1000)name=name.slice(0,-2)+'…';
+ x.fillText(name,48,805);
+ x.font='16px SCoreDream, sans-serif';x.fillStyle='#8fa7b2';x.textAlign='right';
+ x.fillText(Core.dayKey(now.getTime())+' '+DokdoSolar.clock(now.getTime()),1488,805);x.textAlign='left';
+ // What actually matters -- grade, XP, lifetime correct -- gets top billing;
+ // the light-path/lap/beacon flavor text is real but secondary.
+ x.fillStyle='#f5cd77';x.font='700 32px GmarketSans, sans-serif';
+ const gp=Core.gradeProgress(a.correct);
+ x.fillText(`${gradeLabel(gp.grade)} · ${tr('정답','Correct')} ${num(a.correct)} · XP ${num(a.xp)}`,48,847);
+ x.fillStyle='#8fa7b2';x.font='16px SCoreDream, sans-serif';const jp=M.Journey.progress(s);
+ x.fillText(tr(`빛의 길 ${jp.filled}/1,025 · ${jp.shownLap}바퀴 · 봉화 ${a.beacons}`,`Path ${jp.filled}/1,025 / circuit ${jp.shownLap} / beacons ${a.beacons}`),48,878);
+ x.font='14px SCoreDream, sans-serif';x.fillStyle='#75909c';x.fillText(tr('학습 기록 기념사진 · 상상 풍경이며 실제 측량지도가 아닙니다.','A learning keepsake · imagined landscape, not a survey map.'),48,916);
  try{
   await new Promise((resolve,reject)=>c.toBlob(blob=>{if(!blob){reject(Error('Canvas export failed.'));return;}download(blob,'my-dokdo-'+Core.dayKey()+'.png','image/png');resolve();},'image/png'));
   toast(tr('현재 풍경을 이미지로 저장했습니다. 학습 기록 백업은 별도로 보관해 주세요.','Saved the current landscape. Keep a separate learning backup, too.'));

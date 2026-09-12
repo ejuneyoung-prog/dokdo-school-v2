@@ -92,7 +92,7 @@ Dokdo Korea</a><a id="header-collab-link" class="button primary small-button hea
    </div>
    <div class="canvas-shell" id="canvas-shell"><canvas id="island-canvas" width="1536" height="704" role="img" aria-label="독도를 표현한 학습 풍경. 불빛과 동물은 나의 학습 보상입니다."></canvas></div>
    <div class="scene-empty" id="first-light"><span>✧</span><span data-i18n="firstLight">첫 배움이 첫 불빛이 됩니다.</span></div>
-   <div id="bird-toast" class="bird-toast" hidden><span>♧</span><div><b data-i18n="birdsHere">독도에 새가 찾아왔어요</b><small data-i18n="birdsHereSub">새로운 배움을 기념하는 짧은 방문</small></div></div>
+   <div id="bird-toast" class="bird-toast" hidden><span>♧</span><div><b data-i18n="birdsHere">독도에 새가 찾아왔어요</b><small data-i18n="birdsHereSub">새로운 배움을 축하합니다</small></div></div>
    <div class="scene-bottom"><span id="art-note" data-i18n="artNote">승인한 그림을 바탕으로 한 상상 풍경 · 실측지도 아님</span><button class="text-button" id="open-sources" data-i18n="sources">그림과 자료 출처</button></div>
    <section class="environment-panel" aria-label="Dokdo time and weather">
    <div><strong id="dokdo-clock"></strong><small id="dokdo-sun"></small></div>
@@ -121,8 +121,8 @@ Dokdo Korea</a><a id="header-collab-link" class="button primary small-button hea
      <text x="160" y="30" text-anchor="middle" fill="#8fb4c4" font-size="12">동해 · East Sea</text>
      <line x1="118" y1="98" x2="152" y2="90" stroke="#f5cd77" stroke-width="1.4" stroke-dasharray="3 3"/>
      <line x1="168" y1="90" x2="240" y2="120" stroke="#8aa6b3" stroke-width="1.4" stroke-dasharray="3 3"/>
-     <text x="132" y="86" text-anchor="middle" fill="#f5cd77" font-size="11">87.4km</text>
-     <text x="206" y="98" text-anchor="middle" fill="#9fb9c4" font-size="11">157.5km</text>
+     <text x="132" y="86" text-anchor="middle" fill="#f5cd77" font-size="7" font-weight="700" letter-spacing="-.3">87.4km</text>
+     <text x="206" y="98" text-anchor="middle" fill="#9fb9c4" font-size="7" font-weight="700" letter-spacing="-.3">157.5km</text>
      <circle cx="112" cy="100" r="4" fill="#8fd9c3"/>
      <text x="112" y="118" text-anchor="middle" fill="#cfe3e8" font-size="11">울릉도 · Ulleungdo</text>
      <circle cx="160" cy="88" r="6" fill="#f5cd77"/>
@@ -206,6 +206,7 @@ Dokdo Korea</a><a id="header-collab-link" class="button primary small-button hea
  <section id="course-catalog" class="course-catalog"><div class="card-heading"><div><p class="eyebrow">DOKDO CORE COURSE</p><h2 id="path-name">나에게 맞는 독도 과정</h2></div><button class="text-button" id="catalog-age">시작 수준 바꾸기</button></div><p id="path-explanation" class="fine"></p><div id="course-unit-list" class="course-unit-list"></div><button id="deeper-course" class="button secondary" hidden>다음 깊이의 과정 열기</button></section>
  <article id="lesson" class="lesson" hidden>
   <div class="lesson-top"><button id="leave-lesson" class="text-button" data-i18n="leave">학습 나가기</button><progress id="lesson-progress" max="5" value="0" aria-label="학습 진행"></progress><span id="lesson-position">1 / 5</span></div>
+  <div id="lesson-grade-line" class="grade-line lesson-grade-line" hidden><b id="lesson-grade-name"></b><span id="lesson-grade-badge" class="grade-badge"></span><span id="lesson-grade-stats" class="fine"></span><progress id="lesson-grade-gauge" value="0" max="5"></progress><small id="lesson-grade-gauge-label" class="fine"></small></div>
   <div class="lesson-context"><span id="lesson-mode" class="pill"></span><span id="lesson-stage"></span></div>
   <div id="teaching"><p class="eyebrow" data-i18n="beforeQuestion">문제를 풀기 전에</p><h2 data-i18n="learnTogether">먼저 함께 알아봐요</h2><p id="teaching-text"></p><details id="teaching-help" class="word-help"><summary>낯선 말 함께 읽기 · Word help</summary><dl id="teaching-help-list"></dl></details><button id="read-done" class="button primary" data-i18n="readDone">읽었어요 · 문제 풀기</button></div>
   <div id="question-area" hidden><h2 id="question-title" tabindex="-1"></h2><div id="question-context" class="question-context" hidden></div><div id="question-material" class="question-material" hidden></div><details id="word-help" class="word-help"><summary>낯선 말 풀이 / Word help</summary><dl id="word-help-list"></dl></details>
