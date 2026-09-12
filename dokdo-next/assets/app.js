@@ -79,13 +79,13 @@ const en={
  youtubeNote:'Shows 3 of the Dokdo Korea channel’s videos at random. Tap to play — nothing plays automatically.',
  channelInfoOpen:'About Dokdo Korea',channelInfoTitle:'About Dokdo Korea',
  channelContactTitle:'Contact',channelMusicTitle:'Music & Channel Links',channelCollabLink:'Collaboration & lecture inquiries (Linktree) ↗',
- support:'♥ Support Dokdo Korea Membership',headerLive:'🔴 Watch Dokdo Live Now',headerChannel:'▶ Dokdo Korea Channel',
+ support:'♥ Support Dokdo Korea Membership',headerLive:'🔴 Watch Dokdo Live Now',headerChannel:'▶ YouTube\nDokdo Korea',headerCollab:'🤝 Collaborate',
  youtubeChannel:'Dokdo Korea Instagram ↗',
  tourismInfoTitle:'Ulleungdo–Dokdo travel information',
  tourismInfoBody:'Basic visitor information about Dokdo (ferry access via Ulleungdo, weather-dependent sailings, and what to know before visiting).',
  tourismInfoLink:'Book / continue ↗',
  tourismComingSoon:'This is being prepared right now.',
- contactCollab:'Contact / collaborate',
+ contactCollab:'Contact / Collaborate ↗',
  tourismInfoBtn:'Ulleungdo·Dokdo travel info',
  promoTitle:'Dokdo Korea · Music & Social',
  visitCollabTitle:'Visit · Contact',
@@ -225,8 +225,11 @@ function renderVisitors(){
  const vis=s.gangchiVisits,ready=Math.floor((s.gcHit||0)/5),remain=vis.length?Math.ceil(Math.max(...vis.map(x=>x.remainingMs))/1000):0;
  txt('visitor-status',vis.length?`${vis.length} / 10 · ${Math.floor(remain/60)}:${String(remain%60).padStart(2,'0')}`:'0 / 10');
  txt('invite-credit',tr(`부르기 ${ready}회 보관`,`Invitations: ${ready}`));
- const toward=(s.gcHit||0)%5;$('gangchi-progress').value=toward;
- txt('gangchi-progress-label',tr(`정답 ${toward}/5 · 다음 강치까지`,`${toward}/5 correct · until the next gangchi`));
+ // gcHit only ever changes in +5 jumps (every 10 correct answers), so
+ // gcHit%5 was always 0 and this gauge never visibly moved. The per-answer
+ // counter is s.visual.journey.inviteRemainder (0..9, resets on the 10th).
+ const toward=(s.visual&&s.visual.journey&&s.visual.journey.inviteRemainder)||0;$('gangchi-progress').value=toward;
+ txt('gangchi-progress-label',tr(`정답 ${toward}/10 · 다음 강치까지`,`${toward}/10 correct · until the next gangchi`));
  const requested=+$('invite-count').value;
  $('invite').disabled=ready<1||vis.length>=10||store.blocked;
  txt('invite',vis.length>=10?tr('10마리와 함께하는 중','10 visitors here'):ready?tr(`강치 ${Math.min(requested,ready,10-vis.length)}마리 부르기`,`Invite ${Math.min(requested,ready,10-vis.length)} gangchi`):tr('인정 정답 10개로 첫 만남','First visit after 10 credits'));

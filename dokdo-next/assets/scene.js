@@ -117,6 +117,9 @@ function seal(x,g,t){
  const grad=x.createLinearGradient(0,-13,0,13);grad.addColorStop(0,'#B2A88C');grad.addColorStop(.6,'#766F5F');grad.addColorStop(1,'#454F51');
  x.fillStyle='#59605C';x.beginPath();x.moveTo(3,1);x.quadraticCurveTo(-10-beat*6,22,7-beat*5,18);x.lineTo(14,2);x.fill();
  x.fillStyle=grad;x.beginPath();x.moveTo(-31,0);x.bezierCurveTo(-14,-12,12,-11,23,-7);x.quadraticCurveTo(35,-13,40,-4);x.lineTo(46,-1);x.quadraticCurveTo(44,4,29,4);x.bezierCurveTo(10,14,-16,12,-31,0);x.fill();
+ // Gangchi are easy to lose against the water -- a gold rim (matching the
+ // light path's gold) around the main silhouette keeps them readable.
+ x.strokeStyle='#F4C85F';x.lineWidth=1.8;x.shadowColor='#F4C85F';x.shadowBlur=7;x.stroke();x.shadowBlur=0;
  x.beginPath();x.moveTo(-26,0);x.quadraticCurveTo(-45,-5-beat*4,-48,-9);x.lineTo(-38,1);x.lineTo(-45,8+beat*4);x.quadraticCurveTo(-28,11,-26,0);x.fill();
  x.fillStyle='#8D8975';x.beginPath();x.moveTo(11,4);x.quadraticCurveTo(15+beat*5,23,23+beat*3,17);x.lineTo(20,3);x.fill();
  x.fillStyle='#202E32';x.beginPath();x.arc(36,-4,1.3,0,Math.PI*2);x.fill();x.restore();
@@ -140,14 +143,16 @@ function lighthouse(x,px,py,darkness,t){
  if(darkness<=.1)return;
  x.save();x.translate(px,py);
  const pulse=.6+.4*Math.sin(t*2.2),glow=darkness*pulse;
- // Two circles only -- a bright core and one large soft halo. A fanned-out
+ // Two circles only -- a bright core and one soft halo. A fanned-out
  // beam read as unrealistic (reported as not convincing) and is gone.
- x.globalAlpha=.22*glow;x.fillStyle='#ffe9ab';
- x.beginPath();x.arc(0,0,150,0,Math.PI*2);x.fill();
+ // The halo used to reach 150px and washed out the whole island, so it's
+ // kept small here and the core itself doubled to stay the visible source.
+ x.globalAlpha=.18*glow;x.fillStyle='#ffe9ab';
+ x.beginPath();x.arc(0,0,70,0,Math.PI*2);x.fill();
  x.globalAlpha=1;
  x.fillStyle='#fff8e0';x.shadowColor='#ffe9ab';x.shadowBlur=90*glow;
- x.beginPath();x.arc(0,0,4+3*pulse,0,Math.PI*2);x.fill();
- x.shadowBlur=55*glow;x.beginPath();x.arc(0,0,4+3*pulse,0,Math.PI*2);x.fill();
+ x.beginPath();x.arc(0,0,8+6*pulse,0,Math.PI*2);x.fill();
+ x.shadowBlur=55*glow;x.beginPath();x.arc(0,0,8+6*pulse,0,Math.PI*2);x.fill();
  x.shadowBlur=0;
  x.restore();
 }
@@ -237,6 +242,10 @@ function taegeukgi(x,px,py,size){
 function drawJourneyRaw(x,s,{darkness=0,width=W}={}){
  const p=Journey.progress(s),completed=p.shownLap>1,ink=p.color;
  const ui=Math.min(1.9,Math.max(1,W/Math.max(320,width)*.6));
+ // The path's glow used to fade to nothing in daytime (darkness=0), so the
+ // light path itself became invisible. A floor keeps a soft glow visible
+ // day and night; night still burns brighter on top of it.
+ const glowD=Math.max(darkness,.35);
  for(let island=0;island<2;island++){
   const path=ROUTES[island];
   for(let i=0;i<500;i++){
@@ -244,21 +253,23 @@ function drawJourneyRaw(x,s,{darkness=0,width=W}={}){
    const color=lit?ink:completed?p.previousColor:'rgba(160,194,194,.16)';
    const a=path[i],b=path[Math.min(i+1,499)];
    if(i%100===99)continue;
-   x.globalAlpha=(lit||completed)?(.30+.70*darkness):1;
+   x.globalAlpha=(lit||completed)?(.30+.70*glowD):1;
    x.strokeStyle=color;x.lineCap='round';x.lineWidth=(lit||completed?2.5:1)*ui;
-   x.shadowColor=color;x.shadowBlur=lit||completed?darkness*15:0;
+   x.shadowColor=color;x.shadowBlur=lit||completed?glowD*15:0;
    x.beginPath();x.moveTo(...a);x.lineTo(...b);x.stroke();
   }
   x.shadowBlur=0;x.globalAlpha=1;
-  const flags=completed?50:Math.floor((island===1?p.east:p.west)/10),stride=width<520?5:width<900?2:1;
-  for(let k=0;k<flags;k++)if(k%stride===0||k===flags-1){const a=path[k*10+9];taegeukgi(x,a[0],a[1],.66*ui);}
+  // One flag per 5 correct answers (a filled line-segment is 10), so flags
+  // are the marker that stays legible even when the glow above is subtle.
+  const flags=completed?100:Math.floor((island===1?p.east:p.west)/5),stride=width<520?5:width<900?2:1;
+  for(let k=0;k<flags;k++)if(k%stride===0||k===flags-1){const a=path[Math.min(k*5+4,499)];taegeukgi(x,a[0],a[1],.66*ui);}
  }
  x.shadowBlur=0;
  for(let i=0;i<25;i++){
   const rock=ART.rocks[i%ART.rocks.length],sum=rock.reduce((a,b)=>[a[0]+b[0],a[1]+b[1]],[0,0]),a=[sum[0]/rock.length,sum[1]/rock.length];
   const off=Math.floor(i/ART.rocks.length);a[0]+=(off-1)*5;a[1]+=off*3;
   const on=p.filled>1000+i,color=on?ink:completed?p.previousColor:'rgba(149,190,195,.25)';
-  x.fillStyle=color;x.shadowColor=color;x.shadowBlur=(on||completed)?12*darkness:0;x.beginPath();x.arc(...a,(on||completed?2.9:1.4)*ui,0,Math.PI*2);x.fill();
+  x.fillStyle=color;x.shadowColor=color;x.shadowBlur=(on||completed)?12*glowD:0;x.beginPath();x.arc(...a,(on||completed?2.9:1.4)*ui,0,Math.PI*2);x.fill();
  }
  x.shadowBlur=0;
 }
