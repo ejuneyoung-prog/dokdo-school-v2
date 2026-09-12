@@ -114,10 +114,13 @@ function seal(x,g,t){
  x.save();x.translate(g.x,g.y);x.rotate(g.angle);x.scale(.47,.47);const beat=Math.sin(g.stroke);
  // A thin rim on the body alone was too subtle to notice against the water,
  // so gangchi now carry a soft gold halo (matching the light path's gold)
- // behind the whole silhouette instead.
- x.save();x.fillStyle='#F4C85F';x.shadowColor='#F4C85F';x.shadowBlur=32;x.globalAlpha=.55;
- x.beginPath();x.ellipse(0,2,44,25,0,0,Math.PI*2);x.fill();
- x.beginPath();x.ellipse(0,2,44,25,0,0,Math.PI*2);x.fill();
+ // behind the whole silhouette instead. A radial gradient (not a flat
+ // fill) keeps this a soft glow rather than a visible hard-edged oval,
+ // capped at 50% opacity at its brightest point.
+ x.save();
+ const glow=x.createRadialGradient(0,2,2,0,2,42);
+ glow.addColorStop(0,'rgba(244,200,95,.5)');glow.addColorStop(.6,'rgba(244,200,95,.22)');glow.addColorStop(1,'rgba(244,200,95,0)');
+ x.fillStyle=glow;x.beginPath();x.ellipse(0,2,42,42,0,0,Math.PI*2);x.fill();
  x.restore();
  x.strokeStyle='rgba(182,215,221,.36)';x.lineWidth=1.5;
  for(let i=0;i<2;i++){x.beginPath();x.ellipse(-35-i*14,0,15+i*2,6+i*2,0,-1.1,1.1);x.stroke();}
