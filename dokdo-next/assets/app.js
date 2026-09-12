@@ -75,8 +75,8 @@ const en={
  youtubeTitle:'Dokdo Korea videos',
  youtubeLive:'Watch the live stream ↗',
  youtubeWatchOn:'Open on YouTube ↗',
- youtubeNote:'Shows one of the Dokdo Korea channel’s videos at random. Tap to play — nothing plays automatically.',
- support:'♥ Support Dokdo Korea Membership',headerLive:'🔴 Dokdo Live Now',headerChannel:'▶ Dokdo Korea Channel',
+ youtubeNote:'Shows 3 of the Dokdo Korea channel’s videos at random. Tap to play — nothing plays automatically.',
+ support:'♥ Support Dokdo Korea Membership',headerLive:'🔴 Watch Dokdo Live Now',headerChannel:'▶ Dokdo Korea Channel',
  youtubeChannel:'Dokdo Korea channel ↗',
  tourismInfoTitle:'Ulleungdo–Dokdo travel information',
  tourismInfoBody:'Basic visitor information about Dokdo (ferry access via Ulleungdo, weather-dependent sailings, and what to know before visiting).',
@@ -95,7 +95,7 @@ let storage;
 try{storage=isolated?new M.MemoryStorage():window.localStorage;}catch(e){storage={getItem(){throw e;},setItem(){throw e;}};}
 const store=new M.Store(storage);
 let state=store.load(),language=state?.visual?.language||'ko',currentView='home',mapOpen=false,lesson=null,ageNext=null;
-let busy=false,sceneTime=state?.scene?.timeSec||0,frameLast=0,drawAt=0,saveAt=0,sceneVisible=true,lightDirty=true,lightLayer=null,dirty=false,homeVideoId=null;
+let busy=false,sceneTime=state?.scene?.timeSec||0,frameLast=0,drawAt=0,saveAt=0,sceneVisible=true,lightDirty=true,lightLayer=null,dirty=false,homeVideoIds=null;
 let soundOn=false,audioToken=0,audio=null,importCandidate=null,importOriginal=null,assetError=false;
 let writeQueue=Promise.resolve();
 const tr=(a,b)=>language==='en'?b:a;
@@ -153,7 +153,7 @@ function view(id,force=false){
   if(!confirm(tr('이번 수업을 나갈까요? 이미 저장한 기록은 남습니다.','Leave this lesson? Recorded answers will remain.')))return false;
   lesson=null;
  }
- if(id!==currentView&&activeYoutube&&activeYoutube.containerId==='youtube-card-player')stopAllYoutubeEmbeds();
+ if(id!==currentView&&activeYoutube&&activeYoutube.containerId.startsWith('youtube-card-player'))stopAllYoutubeEmbeds();
  currentView=id;
  document.querySelectorAll('.view').forEach(el=>el.hidden=el.id!=='view-'+id);
  document.querySelectorAll('.nav-item').forEach(el=>{
@@ -199,6 +199,8 @@ function renderVisitors(){
  const vis=s.gangchiVisits,ready=Math.floor((s.gcHit||0)/5),remain=vis.length?Math.ceil(Math.max(...vis.map(x=>x.remainingMs))/1000):0;
  txt('visitor-status',vis.length?`${vis.length} / 10 · ${Math.floor(remain/60)}:${String(remain%60).padStart(2,'0')}`:'0 / 10');
  txt('invite-credit',tr(`부르기 ${ready}회 보관`,`Invitations: ${ready}`));
+ const toward=(s.gcHit||0)%5;$('gangchi-progress').value=toward;
+ txt('gangchi-progress-label',tr(`정답 ${toward}/5 · 다음 강치까지`,`${toward}/5 correct · until the next gangchi`));
  const requested=+$('invite-count').value;
  $('invite').disabled=ready<1||vis.length>=10||store.blocked;
  txt('invite',vis.length>=10?tr('10마리와 함께하는 중','10 visitors here'):ready?tr(`강치 ${Math.min(requested,ready,10-vis.length)}마리 부르기`,`Invite ${Math.min(requested,ready,10-vis.length)} gangchi`):tr('인정 정답 10개로 첫 만남','First visit after 10 credits'));
@@ -248,14 +250,21 @@ function renderMotivationBanner(s,a,unit){
  txt('motivation-name',shownName);
  txt('motivation-question',tr(`오늘의 문제 · ${unit[language]} · 매일 들르면 더 빨리 밝아져요`,`Today's question · ${unit['en']} · visit daily to light up faster`));
 }
+function pickRandomDistinct(arr,n){
+ const pool=arr.slice();const out=[];
+ while(out.length<n&&pool.length)out.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]);
+ return out;
+}
 function renderYoutubeCard(){
  const yt=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.youtube)||{};
  const ids=Array.isArray(yt.videoIds)?yt.videoIds:[];
  $('youtube-card').hidden=!ids.length;
  if(!ids.length)return;
- if(!homeVideoId)homeVideoId=ids[Math.floor(Math.random()*ids.length)];
- if(!activeYoutube||activeYoutube.containerId!=='youtube-card-player')resetYoutubePlayer('youtube-card-player',homeVideoId);
- $('youtube-video-link').href='https://www.youtube.com/watch?v='+encodeURIComponent(homeVideoId);
+ if(!homeVideoIds)homeVideoIds=pickRandomDistinct(ids,3);
+ homeVideoIds.forEach((id,i)=>{
+  const containerId='youtube-card-player-'+i;
+  if(!activeYoutube||activeYoutube.containerId!==containerId)resetYoutubePlayer(containerId,id);
+ });
  $('youtube-live-link').href=yt.liveUrl||yt.channelUrl||'#';
  $('youtube-channel-link').href=yt.channelUrl||'#';
 }
@@ -708,7 +717,7 @@ $('reset-record').onclick=async()=>{
  busy=true;
  try{
   await scheduleWrite(()=>store.importState(M.fresh()));
-  state=getS();language=state.visual.language;translate();lesson=null;lightDirty=true;homeVideoId=null;view('home',true);paint();
+  state=getS();language=state.visual.language;translate();lesson=null;lightDirty=true;homeVideoIds=null;view('home',true);paint();
   toast(tr('기록을 초기화했습니다. 필요하면 내 기록에서 다른 기기 기록 불러오기로 되돌릴 수 있습니다.','Record reset. If needed, use "Load a record from another device" in My records to bring it back.'));
  }catch(e){toast(tr('초기화하지 못했습니다.','Could not reset the record.'));updateStorageStatus();}
  finally{busy=false;}

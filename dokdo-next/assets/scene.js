@@ -18,19 +18,18 @@ function arc(poly,f){let total=0;const l=poly.map((p,i)=>{const q=poly[(i+1)%pol
  for(let i=0;i<l.length;i++){if(r<=l[i]){const a=poly[i],b=poly[(i+1)%l.length],u=r/l[i];return [a[0]+u*(b[0]-a[0]),a[1]+u*(b[1]-a[1])];}r-=l[i];}return poly[0];}
 function vdc(n){let f=.5,r=0;while(n>0){r+=f*(n%2);n=Math.floor(n/2);f/=2;}return r;}
 const centers=[[413,219],[1167,408]];
-// Approximate, illustration-only anchors derived from the existing outline data
-// (no separate lighthouse/pier coordinates were ever supplied): the topmost
-// point of Dongdo for the lighthouse, nudged inland so the tower sits on solid
-// ground; the westmost (strait-facing) point of Dongdo for the pier, since
-// that is the shore facing the open water gangchi/boats travel through.
 function shoreAnchor(poly,pick,island,nudge){
  let v=poly[0];for(const q of poly)if(pick(q,v))v=q;
  const c=centers[island];return [v[0]+(c[0]-v[0])*nudge,v[1]+(c[1]-v[1])*nudge];
 }
-// The lighthouse tower needs solid ground under it, so it is nudged inland
-// from the outline. The pier is where the boat docks -- it stays right on
-// the coastline (nudge 0) so it is never drawn over by the island art.
-const LIGHTHOUSE=shoreAnchor(ART.east,(a,b)=>a[1]<b[1],1,.2);
+// The real dokdo-islands.webp art (1536x704, same pixel space as this canvas)
+// already draws an actual lighthouse building partway down Dongdo's eastern
+// shoulder -- measured directly from the image (bright-pixel crop inspection),
+// not guessed. Only its lamp position matters here; the tower itself is the
+// artwork's, not ours to redraw.
+const LIGHTHOUSE=[1300,197];
+// The pier is where the boat docks -- it stays right on the coastline
+// (nudge 0, then slightly out) so it is never drawn over by the island art.
 const PIER=shoreAnchor(ART.east,(a,b)=>a[0]<b[0],1,-.04);
 // These are light-placement paths on the illustration, NOT elevation contours.
 const rings=[ART.west,ART.east].map((p,island)=>Array.from({length:12},(_,i)=>p.map(a=>{
@@ -132,20 +131,24 @@ function bird(x,p,t){
  x.fillStyle='#2B4652';x.beginPath();x.moveTo(-9,0);x.lineTo(-16,-3);x.lineTo(-14,3);x.fill();x.restore();
 }
 function lighthouse(x,px,py,darkness,t){
+ // The lighthouse tower itself is already part of the real island photo
+ // (dokdo-islands.webp) -- drawing another one on top duplicated it in the
+ // wrong place (a summit, not the real lamp position). Only the light it
+ // casts at night is ours to add, anchored on the real lamp, and it should
+ // read as an actual lighthouse beam, not a candle: strong bloom, long reach.
+ if(darkness<=.1)return;
  x.save();x.translate(px,py);
- x.fillStyle='#e7e3d3';x.strokeStyle='#3a3a34';x.lineWidth=.6;
- x.beginPath();x.moveTo(-3,0);x.lineTo(-1.6,-17);x.lineTo(1.6,-17);x.lineTo(3,0);x.closePath();x.fill();x.stroke();
- x.fillStyle='#c0392b';x.fillRect(-2.6,-9,5.2,2.4);
- x.fillStyle='#2c2c28';x.fillRect(-2.2,-21,4.4,4);
- if(darkness>.12){
-  const pulse=.55+.45*Math.sin(t*2.6);
-  x.fillStyle='#fff3c4';x.shadowColor='#ffe28a';x.shadowBlur=(10+14*pulse)*darkness;
-  x.beginPath();x.arc(0,-19,1.6+pulse*.6,0,Math.PI*2);x.fill();x.shadowBlur=0;
-  x.globalAlpha=.15*darkness*pulse;x.fillStyle='#ffe9ab';
-  x.beginPath();x.moveTo(0,-19);x.lineTo(-72,-58);x.lineTo(-72,-4);x.closePath();x.fill();
-  x.beginPath();x.moveTo(0,-19);x.lineTo(72,-58);x.lineTo(72,-4);x.closePath();x.fill();
-  x.globalAlpha=1;
- }
+ const pulse=.6+.4*Math.sin(t*2.2),glow=darkness*pulse;
+ x.fillStyle='#fff8e0';x.shadowColor='#ffe9ab';x.shadowBlur=90*glow;
+ x.beginPath();x.arc(0,0,4+3*pulse,0,Math.PI*2);x.fill();
+ x.shadowBlur=55*glow;x.beginPath();x.arc(0,0,4+3*pulse,0,Math.PI*2);x.fill();
+ x.shadowBlur=0;
+ x.globalAlpha=.4*glow;x.fillStyle='#ffe9ab';
+ x.beginPath();x.moveTo(0,0);x.lineTo(-330,-190);x.lineTo(-330,60);x.closePath();x.fill();
+ x.beginPath();x.moveTo(0,0);x.lineTo(330,-190);x.lineTo(330,60);x.closePath();x.fill();
+ x.globalAlpha=.18*glow;
+ x.beginPath();x.arc(0,0,150,0,Math.PI*2);x.fill();
+ x.globalAlpha=1;
  x.restore();
 }
 function boat(x,px,py,angle,alpha){
@@ -292,7 +295,7 @@ function render(ctx,s,t,options={}){
  if(islands?.complete&&islands.naturalWidth)ctx.drawImage(islands,0,0,W,H);
  else{ctx.fillStyle='#466569';for(const p of [ART.west,ART.east]){ctx.beginPath();p.forEach((v,i)=>i?ctx.lineTo(...v):ctx.moveTo(...v));ctx.closePath();ctx.fill();}}
  // Subtle twilight glaze on the original approved illustration.
- ctx.fillStyle='rgba(2,10,25,'+(.06+phase.darkness*.55)+')';ctx.fillRect(0,0,W,H);
+ ctx.fillStyle='rgba(2,10,25,'+(.06+phase.darkness*.68)+')';ctx.fillRect(0,0,W,H);
  if(phase.darkness>.12&&phase.darkness<.85){const glaze=ctx.createLinearGradient(0,0,W,H);glaze.addColorStop(0,'rgba(236,145,83,.13)');glaze.addColorStop(1,'rgba(85,76,136,.10)');ctx.fillStyle=glaze;ctx.fillRect(0,0,W,H);}
  weatherOverlay(ctx,options.weather,clock,reduced);
  drawJourney(ctx,s,{darkness:phase.darkness,width:options.width||W});
