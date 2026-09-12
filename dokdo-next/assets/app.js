@@ -64,8 +64,9 @@ const en={
  schoolCatE:'Elementary school',schoolCatM:'Middle school',schoolCatH:'High school',schoolCatW:'Korean school abroad',
  schoolField:'School / organisation name (optional, free text)',
  cloudBackupTitle:'Server backup · continue on another device',
- cloudBackupWarning:'This screen cannot immediately confirm the server actually received the data (the legacy server’s response cannot be read from the browser). “Sent” does not guarantee it was saved.',
+ cloudBackupWarning:'Sending alone does not guarantee storage on this legacy server, so it is automatically double-checked for a few seconds after sending. You will be told if it could not be confirmed.',
  cloudSaveBtn:'Send a backup to the server',
+ cloudKeyCopy:'Copy recovery key',
  cloudLoadNick:'Nickname to load',cloudLoadCode:'4-digit code',
  cloudLoadBtn:'Load a record from another device',
  introTitle:'Today’s Dokdo Korea video',
@@ -640,15 +641,42 @@ function renderCloudPanel(s){
  const nick=(s?.name||'').trim(),code=s?.recoveryCode||'';
  $('cloud-key-display').textContent=nick&&code?tr(`내 복구 키: ${nick}#${code} (다른 기기에서 이 별명과 코드로 불러올 수 있어요)`,`Your recovery key: ${nick}#${code} (use this nickname and code to load your record on another device)`):tr('별명을 먼저 설정하면 복구 키가 생성됩니다.','Set a nickname first to get a recovery key.');
  $('cloud-save').disabled=!nick||!code;
+ $('cloud-key-copy').hidden=!nick||!code;
 }
+async function copyPlainText(text){
+ try{
+  if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);return true;}
+  const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.append(ta);ta.focus();ta.select();document.execCommand('copy');ta.remove();return true;
+ }catch(e){return false;}
+}
+$('cloud-key-copy').onclick=async()=>{
+ const s=getS();if(!s)return;
+ const nick=(s.name||'').trim(),code=s.recoveryCode||'';if(!nick||!code)return;
+ const ok=await copyPlainText(nick+'#'+code);
+ toast(ok?tr('복구 키를 복사했습니다. 다른 기기의 입력칸에 그대로 붙여넣으세요.','Recovery key copied. Paste it exactly into the fields on the other device.'):tr('복사하지 못했습니다.','Could not copy.'));
+};
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 $('cloud-save').onclick=async()=>{
  const s=getS();if(!s)return;
  const nick=(s.name||'').trim(),code=s.recoveryCode||'';
  if(!nick||!code){txt('cloud-save-status',tr('별명을 먼저 설정해 주세요.','Set a nickname first.'));return;}
  $('cloud-save').disabled=true;txt('cloud-save-status',tr('전송 중…','Sending…'));
- const payload=store.blocked?store.recovery():M.backupText(s);
- const res=await DokdoLeaderboard.saveProgress(nick+'#'+code,nick,s.grade||'K',payload);
- if(res.state==='sent_unconfirmed')txt('cloud-save-status',tr('서버로 전송했습니다. 서버가 실제로 저장했는지는 이 화면에서 확인되지 않습니다.','Sent to the server. Whether it was actually stored cannot be confirmed from this screen.'));
+ const key=nick+'#'+code,payload=store.blocked?store.recovery():M.backupText(s);
+ const res=await DokdoLeaderboard.saveProgress(key,nick,s.grade||'K',payload);
+ if(res.state==='sent_unconfirmed'){
+  // The save POST is a fire-and-forget no-cors request -- it cannot tell us
+  // whether the server actually stored it. The load endpoint IS a readable
+  // GET, so use it to confirm the save really landed instead of reporting
+  // a blind "sent" that has caused real users to lose records silently.
+  txt('cloud-save-status',tr('서버로 전송했습니다. 저장 확인 중…','Sent to the server. Confirming it was stored…'));
+  let confirmed=false;
+  for(const delayMs of [1500,3000]){
+   await sleep(delayMs);
+   const check=await DokdoLeaderboard.loadProgress(key);
+   if(check.state==='ok'){confirmed=true;break;}
+  }
+  txt('cloud-save-status',confirmed?tr('서버에 저장이 확인되었습니다.','Confirmed: it was stored on the server.'):tr('서버에 전송은 했지만 저장이 아직 확인되지 않았습니다. 잠시 후 다시 시도해 주세요.','Sent, but storage could not be confirmed yet. Please try again in a moment.'));
+ }
  else if(res.state==='too_large')txt('cloud-save-status',tr(`기록이 너무 커서(${res.length}자) 보내지 않았습니다.`,`Not sent — the record is too large (${res.length} chars).`));
  else if(res.state==='not_configured')txt('cloud-save-status',tr('서버가 연결되지 않았습니다.','No server is configured.'));
  else txt('cloud-save-status',tr('전송하지 못했습니다: ','Could not send: ')+(res.error||''));

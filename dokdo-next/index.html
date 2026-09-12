@@ -223,9 +223,9 @@
  </section>
  <section class="record-panel" id="cloud-panel" hidden>
   <h2 data-i18n="cloudBackupTitle">서버 백업 · 다른 기기에서 이어하기</h2>
-  <p class="fine" data-i18n="cloudBackupWarning">전송 후에도 서버가 실제로 받았는지는 이 화면에서 바로 확인할 수 없습니다(구형 서버 응답 방식). "전송함"은 저장 완료를 보장하지 않습니다.</p>
+  <p class="fine" data-i18n="cloudBackupWarning">전송 자체는 저장을 보장하지 않는 구형 서버 방식이라, 전송 후 몇 초간 자동으로 실제 저장 여부를 다시 확인합니다. 확인되지 않으면 그렇게 알려드립니다.</p>
   <p id="cloud-key-display" class="fine"></p>
-  <div class="button-row"><button id="cloud-save" class="button secondary" data-i18n="cloudSaveBtn">서버로 백업 전송</button></div>
+  <div class="button-row"><button id="cloud-save" class="button secondary" data-i18n="cloudSaveBtn">서버로 백업 전송</button><button id="cloud-key-copy" type="button" class="text-button" hidden data-i18n="cloudKeyCopy">복구 키 복사</button></div>
   <p id="cloud-save-status" class="fine" role="status"></p>
   <div class="button-row">
    <label class="field"><span data-i18n="cloudLoadNick">불러올 별명</span><input id="cloud-load-nick" maxlength="40"></label>
