@@ -107,48 +107,33 @@ request that this session actually made and observed.
   correctly (screenshot: `age-dialog-filled.png`, `records-cloud.png`), and `npm test` still
   passes (state-shape validation exercised indirectly by the full suite).
 
-## 2c. YouTube (operator items 7 & 9) — blocked, needs a different source
+## 2c. YouTube (operator items 7 & 9) — resolved, see section 7
 
-- Not built. The operator's `dokdo-korea-school-final-v1.zip` (sent as the reference for this)
-  turned out to be an **older dokdo-next snapshot (package.json version 1.1.0)** that predates
-  weather/solar/journey/site-config/hall-of-fame — it contains no `youtube`/`유튜브`/livestream
-  reference anywhere (checked by grep across the whole archive). It looks like the wrong file
-  for this purpose, not a partial spec.
-- This feature was never in `dokdo-claude-handoff`'s docs either, so it was correctly out of
-  scope for the original task, not an oversight.
-- **Needed from the operator to proceed:** either (a) the actual source of the live
-  `dokdo-school.vercel.app` root site (outside this repo's scope) where this feature currently
-  lives, or (b) simpler — just the "독도코리아" channel handle/ID and, for the "random video"
-  behaviour, either permission to call the YouTube Data API (needs a Google Cloud API key with
-  its own quota/exposure considerations) or a hand-picked list of video IDs to randomize
-  client-side with no key at all (cheaper, recommended). For "실시간 보러가기", a single link
-  (channel's live tab, or a specific stream URL) is enough.
+- Originally blocked: the operator's `dokdo-korea-school-final-v1.zip` turned out to be an
+  older dokdo-next snapshot (package.json 1.1.0, predating weather/solar/journey/hall-of-fame)
+  with no YouTube code in it at all — the wrong reference file, not a partial spec.
+- Resolved once the operator's proper V1 handoff document supplied the real channel handle,
+  live URL, and video ids directly. **See section 7 below for what was actually built.**
 
 ## 3. Weather
 
 - Code unchanged this pass. Still Open-Meteo, gated by `nonCommercialConfirmed:false`, still
   fails closed (shows connection status, never fabricates "clear weather").
-- **Operator clarification (2026-09-12):** they obtained a real 기상청 (KMA) service key, but a
-  previous developer could not get it integrated and fell back to Open-Meteo instead — which is
-  the Open-Meteo code currently in this repo. Two things need the operator's input before this
-  can move:
-  1. **Which exact 기상청 service?** KMA publishes many different data.go.kr endpoints (short-
-     term forecast, ultra-short-term nowcast, weather warnings, etc.) — this is also a different
-     agency from the KHOA (국립해양조사원) Ulleungdo observation endpoint that
-     `docs/02-LEGACY-API-CONTRACT.ko.md` documents as the *original* legacy provider. These are
-     three different things (KMA / KHOA / Open-Meteo) and this session should not guess which
-     one the operator means.
-  2. **Where the key can safely live.** data.go.kr-style service keys are generally meant to be
-     called server-side; putting one directly into this repo's public client-side JS would
-     expose it to anyone viewing the page source (and to quota theft / abuse), the same class of
-     problem `docs/05-ACCEPTANCE.ko.md` (API06) flags for secrets in a JS bundle. This static
-     site has no server component today. Options, once the operator confirms which service:
-     a small Vercel serverless function (or the existing Apps Script) proxying the call so the
-     key never reaches the browser, or accepting the exposure if the operator's KMA service
-     permits public client-side keys (worth confirming with data.go.kr's own terms, not assumed
-     here).
-  Waiting on the operator's answer to both before writing any weather integration code, rather
-  than guessing an endpoint or pasting a key into a public file.
+- **Resolved which service (2026-09-12):** the operator's own V1 handoff document (section 9)
+  confirms the real provider is KHOA (국립해양조사원), the same one `docs/02-LEGACY-API-CONTRACT.ko.md`
+  already documented — `apis.data.go.kr/1192136/surveyAirTemp/GetSurveyAirTempApiService`,
+  `obsCode=DT_0013` (Ulleungdo), not a separate KMA(기상청) service. The "기상청" mention was
+  evidently a loose/colloquial label for the same data.go.kr-hosted service.
+- **Key handling — operator delegated this decision ("나머진 알아서 해줘"):** proposed approach
+  is to add a `weather=1` action to the **existing** Apps Script backend already connected for
+  the hall of fame (section 2) — it already runs server-side with `UrlFetchApp`, so the KHOA
+  service key would live only in `Code.gs`, never in this repo's public JS, and no new
+  infrastructure (e.g. a Vercel serverless function) is needed. The client would call
+  `<SHEET_API>?weather=1` the same way it already calls `?ts=` / `?live=1`. This is a proposal,
+  not yet implemented — it needs a `Code.gs` snippet added on the operator's side (this session
+  has no access to edit that script) and the **re-issued** key (the operator is holding it for
+  now — the current one is treated as already-exposed, matching their own V1 doc's warning).
+  Once both exist, the client-side call is a small, low-risk addition to `assets/weather.js`.
 
 ## 4. Fonts (VIS02)
 
@@ -166,7 +151,91 @@ request that this session actually made and observed.
   ever unreliable for real users too, self-hosting the two woff files under `assets/` would
   remove the external dependency entirely — a possible future improvement, not done here.
 
-## 5. Everything else in `docs/05-ACCEPTANCE.ko.md`
+## 6. GA4 (operator item 7, 2026-09-12)
+
+- Configured: `analytics.gaId = 'G-WJM7KL33ST'` in `assets/site-config.js`. New `assets/analytics.js`
+  loads `gtag.js` lazily (only if a `gaId` is set) with `allow_google_signals:false`,
+  `allow_ad_personalization_signals:false`, `anonymize_ip:true`, matching the V1 handoff's config.
+  CSP `script-src` now also allows `https://www.googletagmanager.com` and `connect-src` allows
+  `https://www.google-analytics.com` / `https://www.googletagmanager.com`.
+- Wired so far: `question_answered` (every answer, in `choose()`), `lesson_complete` and
+  `grade_up` (at lesson finish, `grade_up` only when `M.finish()` reports `advanced:true`),
+  `placement_done` (placement mode finish). **`share_click` is not wired** — no share button
+  exists in this app yet (see section 1), so there is no call site for it.
+- **No name/nickname/school/flag/nationality is attached to any event** — only `qid`, `correct`,
+  `qtype`/`mode`, and the legacy `grade` string, per the operator's V1 handoff document.
+- `grade_up`'s `by` field is `'lesson'`, not V1's `'exam'|'career'` — dokdo-next's progression
+  model (continuous unit/stage completion) doesn't map onto V1's discrete exam/career promotion
+  concept, so this is a deliberate approximation, not a like-for-like port. Worth knowing before
+  comparing GA4 numbers across the two apps.
+- **Not done, and outside what code can do:** the GA4 admin-console steps from the operator's
+  handoff (marking these as Key events, registering `qid`/`correct`/`grade`/`qtype`/`mode` as
+  custom dimensions) — those are clicks in the GA4 UI, not something this session can perform.
+- Not verified end-to-end here: `www.googletagmanager.com` is also blocked by this sandbox's
+  network egress (consistent with every other external host tested this session). Code loads
+  without throwing when the domain is unreachable (`gtag.js`'s own script tag just fails to
+  load; the `dataLayer.push` calls queue harmlessly). Real delivery needs checking in GA4's
+  Realtime report after deploy.
+
+## 7. YouTube (operator items 2 & 9, 2026-09-12)
+
+- Added: `youtube.channelUrl`, `youtube.liveUrl`, `youtube.videoIds` (13 unique ids — the
+  operator's 12 new links plus the one pre-existing id that overlapped) in `site-config.js`.
+- **Daily intro dialog:** on load, if `state.introDay` isn't today's `Core.dayKey()`, shows one
+  random video as a thumbnail + link in a new `<dialog>` (existing dialog pattern, reused
+  as-is), then records today's date so it won't reappear until tomorrow. Verified: shows on
+  first load, does not reappear on reload the same day (screenshots `intro-dialog.png`).
+- **Home page card:** a new "독도코리아 영상" section below the existing cards shows one random
+  video thumbnail (stable for the session, doesn't reshuffle on every re-render) plus a
+  "실시간 라이브 보러가기" link to the channel's `/live` URL. Both open YouTube in a new tab —
+  this session chose a plain link-out over an embedded player, to avoid CSP `frame-src` changes
+  and autoplay/consent complexity, and to stay consistent with the app's existing "nothing plays
+  without an explicit click" pattern. **If an actual embedded/inline player is wanted instead,
+  that's a different, larger change (iframe + CSP `frame-src` for `www.youtube-nocookie.com` or
+  similar) — flagging the choice rather than assuming it.**
+- Thumbnails load from `https://i.ytimg.com/vi/<id>/hqdefault.jpg` (CSP `img-src` extended for
+  this host). Not verified visually in this session — `i.ytimg.com` is also blocked by this
+  sandbox's egress policy; the `<img>` element and its `alt` text render correctly, the image
+  itself just can't load here. Should display normally on a real network.
+- Channel footer links (YouTube/label/Spotify/YT Music/Melon/Genie/FLO/Apple Music/
+  Instagram/TikTok/open-chat/Linktree) from the operator's doc section 4-3 were **not** added —
+  wasn't explicitly asked for again this round; can add if wanted.
+- The V1 handoff also mentions a separate "one more song from this channel" **audio** widget at
+  the bottom of the home page (distinct from BGM and from this video card) — not built, would
+  need clarification on which track(s) and whether it's audio or video.
+
+## 8. BGM (operator item 3, in progress)
+
+- One file was sent (`...Vol.7...Master.wav`): 48kHz/16-bit stereo, ~2:17, **26 MB**. The V1
+  handoff describes three ~3 MB `bgm{1,2,3}.mp3` files (compressed, `preload="none"`, played only
+  after the user clicks the speaker). This WAV is a mastering-stage file, not a web-ready asset —
+  at 26 MB it would make the "click to play" experience slow and bloat the repository. This
+  session has no audio encoder available (no `ffmpeg`/`lame` in this sandbox) to convert it.
+  **Needs from the operator:** an MP3 export (128–192 kbps is plenty for background music) for
+  each of the three tracks, plus each track's display title (the filename's Korean title was
+  lost to upload sanitization — only "Vol.7" and "Master" survived). Not integrated yet.
+
+## 9. Schools dataset (operator item 8, in progress)
+
+- The operator provided a self-contained Apps Script (`fetchSchools`) that pages through NEIS's
+  `open.neis.go.kr/hub/schoolInfo` and saves the full list to their own Google Drive as
+  `schools_raw.json` — never touching this repo or any client code. This is exactly right:
+  the NEIS key stays in a script only the operator runs, never in a public bundle. Nothing to
+  do here until `schools_raw.json` is shared; the free-text school field added this session
+  (section 2b of this doc) stays as the fallback until then.
+
+## 10. Something worth flagging back: the screenshot with 1,513 lights / 4,539 lifetime-correct
+
+- The operator sent a screenshot showing far more progress than expected ("내가 이렇게 많이
+  맞추진 않았네"). Those exact numbers (`xp:18750`, `grade:'PHD2'`, `streak:7`) match this
+  codebase's own hardcoded **demo seed** almost exactly (`assets/app.js`, the `startDemo`-style
+  function that seeds `demo.html`'s "가상 탐험가" heavy-user preview). The strong suspicion is
+  the screenshot was taken on `/dokdo-next/demo.html` rather than `/dokdo-next/`, not a real bug
+  in the real account — `demo.html` is explicitly a separate, intentionally-seeded preview that
+  resets on reload and is isolated from real records. **Worth the operator double-checking the
+  exact URL in that screenshot's address bar before this is treated as a data bug.**
+
+## 11. Everything else in `docs/05-ACCEPTANCE.ko.md`
 
 API02–API07 (CORS/idempotency/auth/input-safety/secrets/backup-integrity), HALL04–HALL06
 (scale, failure states, live-feed correctness), WX02, VIS03/05/06, EDU01–03, OPS01/02: **NOT_RUN**.

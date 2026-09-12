@@ -98,6 +98,7 @@
     }
     if (s.schoolCat != null && !['', 'E', 'M', 'H', 'W'].includes(s.schoolCat)) throw new Error('Invalid school category.');
     if (s.recoveryCode != null && (typeof s.recoveryCode !== 'string' || !/^\d{4}$|^$/.test(s.recoveryCode))) throw new Error('Invalid recovery code.');
+    if (s.introDay != null && (typeof s.introDay !== 'string' || s.introDay.length > 10)) throw new Error('Invalid intro day.');
     return true;
   }
   function ensure(s, now = Date.now()) {
