@@ -87,15 +87,15 @@
     },
     "adult": {
       "cognitiveCounts": [
-        7,
-        12,
-        36,
+        0,
+        1,
+        54,
         5
       ],
       "difficultyCounts": [
-        6,
-        12,
-        18,
+        0,
+        0,
+        36,
         24
       ]
     }

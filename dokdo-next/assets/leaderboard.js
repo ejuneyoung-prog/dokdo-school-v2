@@ -97,5 +97,36 @@ async function fetchKhoaWeather(){
  }catch(e){return{state:'error',error:String(e&&e.message||e)};}
 }
 
-return{isConfigured,fetchWeekly,fetchLive,postEvent,loadProgress,saveProgress,fetchKhoaWeather};
+/* POST {t:'top'} — records that a learner reached the top level, for the
+ * operator to check before anyone else sees it. Recording is not
+ * announcing: nothing is shown to other visitors until the operator marks
+ * the row approved in their sheet. Same no-cors shape as the other writes,
+ * so a resolved promise means sent, not stored. */
+async function reportTopLevel(nick,level,correct){
+ if(!isConfigured())return{state:'not_configured'};
+ const body=JSON.stringify({t:'top',nick:String(nick||''),level:String(level||''),correct:Number(correct)||0});
+ try{
+  await fetch(apiUrl(),{method:'POST',mode:'no-cors',credentials:'omit',body});
+  return{state:'sent_unconfirmed'};
+ }catch(e){return{state:'error',error:String(e&&e.message||e)};}
+}
+
+/* GET <SHEET_API>?tops=1 — the top-level reachers the operator has approved.
+ * A server without this branch answers with no `tops` field at all, which is
+ * not the same as "nobody has been approved"; reporting both as an empty
+ * list would make the real cause undiagnosable, so they stay separate. */
+async function fetchTops(){
+ if(!isConfigured())return{state:'not_configured'};
+ try{
+  const data=await getJSON(apiUrl()+'?tops=1&ts='+Date.now());
+  if(!data||!Array.isArray(data.tops))return{state:'unsupported'};
+  const tops=data.tops
+   .filter(r=>r&&typeof r.nick==='string'&&r.nick.trim())
+   .map(r=>({nick:String(r.nick).slice(0,60),level:String(r.level||'').slice(0,40),at:String(r.at||'').slice(0,25)}))
+   .slice(0,20);
+  return{state:'ok',tops};
+ }catch(e){return{state:'error',error:String(e&&e.message||e)};}
+}
+
+return{isConfigured,fetchWeekly,fetchLive,postEvent,loadProgress,saveProgress,fetchKhoaWeather,reportTopLevel,fetchTops};
 })();

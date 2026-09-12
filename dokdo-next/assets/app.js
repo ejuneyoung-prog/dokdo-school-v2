@@ -244,7 +244,25 @@ function renderLevelBanner(s,a){
  for(let i=0;i<2;i++){const el=document.createElement('span');el.textContent=line;track.append(el);}
  box.classList.toggle('top-level',top);
  box.hidden=false;
- mutate(x=>{x.seenLevel=reached;}).catch(()=>{});
+ mutate(x=>{x.seenLevel=reached;if(top)x.topReported=true;}).catch(()=>{});
+ // Reaching the top level is recorded for the operator to check; it is not
+ // announced to anyone else until they approve the row in their sheet.
+ if(top&&!s.topReported&&window.DokdoLeaderboard)DokdoLeaderboard.reportTopLevel(a.name,name,a.correct).catch(()=>{});
+}
+/* Top-level reachers the operator has approved, scrolled on the home view
+ * under the learner's own promotion strip. Nothing appears until a row is
+ * approved, so an unreviewed arrival is never broadcast. */
+let topsShown=false;
+async function renderApprovedTops(){
+ const box=$('tops-banner'),track=$('tops-banner-track');
+ if(!box||!track||topsShown||!window.DokdoLeaderboard||!DokdoLeaderboard.isConfigured())return;
+ topsShown=true;
+ let res;try{res=await DokdoLeaderboard.fetchTops();}catch(e){return;}
+ if(!res||res.state!=='ok'||!res.tops.length)return;
+ track.replaceChildren();
+ const line=r=>tr(`🏆 ${r.nick}님 · 최고 단계 ${r.level} 달성`,`🏆 ${r.nick} reached the top level, ${r.level}`);
+ for(let i=0;i<2;i++)for(const r of res.tops){const el=document.createElement('span');el.textContent=line(r);track.append(el);}
+ box.hidden=false;
 }
 function renderHome(){
  const s=getS();
@@ -254,6 +272,7 @@ function renderHome(){
  txt('greeting',a.name?tr(`${shownName}님, 오늘도 독도를 밝혀볼까요?`,`${shownName}, shall we brighten Dokdo today?`):tr('오늘도, 독도를 밝혀볼까요?','Shall we brighten Dokdo today?'));
  renderGradeLine('grade',s,a);
  renderLevelBanner(s,a);
+ renderApprovedTops();
  txt('lights-count',num(a.lights));txt('beacon-count',tr('봉화 ','Beacons ')+num(a.beacons));
  txt('correct-count',num(a.correct));Core.rollover(s);
  txt('weekly-count',tr('이번 주 ','This week ')+num(s.weekly.correct)+(s.weekly.partial?tr(' · 전환 후',' · since update'):''));

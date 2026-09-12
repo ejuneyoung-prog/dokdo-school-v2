@@ -24,6 +24,7 @@ function ensure(s,now=Date.now()){
   * is already on, so nobody is congratulated on a promotion they earned long
   * ago the first time they open the new build. */
  if(!Number.isSafeInteger(s.seenLevel)||s.seenLevel<0)s.seenLevel=Core.gradeProgress(Core.correctCount(s)).rank+1;
+ if(typeof s.topReported!=='boolean')s.topReported=false;
  if(s.learningProfile && s.learningProfile.completed==null)s.learningProfile.completed={};
  if(s.learningProfile)Course.ensureProfile(s.learningProfile);
  if(!s.visual)s.visual={version:1,unlocks:{},birdVisit:null,birdsEnabled:true,reduceMotion:false,language:'ko',geometry:'art-v1'};
