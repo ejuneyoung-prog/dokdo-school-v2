@@ -146,10 +146,25 @@ function scheduleWrite(fn){
  };
  const result=writeQueue.then(run);writeQueue=result.catch(()=>{});return result;
 }
+let lastAutoSaveAttempt=0;
+// BETA: real users never found the manual "서버로 백업 전송" button, so their
+// server save record never existed even though their answer events were
+// reaching the server fine (visible in the activity log). Auto-saving here,
+// throttled, means a nickname is loadable elsewhere without anyone having to
+// remember to press anything.
+function scheduleAutoSave(){
+ const s=getS();if(!s)return;
+ const nick=(s.name||'').trim();if(!nick)return;
+ if(!window.DokdoLeaderboard||!DokdoLeaderboard.isConfigured())return;
+ const now=Date.now();if(now-lastAutoSaveAttempt<60000)return;
+ lastAutoSaveAttempt=now;
+ const payload=store.blocked?store.recovery():M.backupText(s);
+ DokdoLeaderboard.saveProgress(nick,nick,s.grade||'K',payload).catch(()=>{});
+}
 async function mutate(fn){
  if(!guarded())throw Error('Record protection is active.');
  try{
-  const result=await scheduleWrite(()=>store.transaction(fn));state=getS();dirty=false;lightDirty=true;updateStorageStatus();return result;
+  const result=await scheduleWrite(()=>store.transaction(fn));state=getS();dirty=false;lightDirty=true;updateStorageStatus();scheduleAutoSave();return result;
  }catch(e){updateStorageStatus();toast(tr('변경을 저장하지 못했습니다. 내 기록에서 백업을 보관해 주세요.','The change could not be saved. Keep a backup in My records.'));throw e;}
 }
 function download(content,name,mime){
