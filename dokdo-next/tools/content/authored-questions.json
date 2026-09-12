@@ -23588,42 +23588,42 @@
       "en": "Winter and climate around Dokdo"
     },
     "stem": {
-      "ko": "독도 여행 안내에 ‘겨울에는 눈이 주로 내리니 오늘도 반드시 눈이 온다’고 쓰면 무엇을 고쳐야 하나요?",
-      "en": "What must be corrected in “snow predominates in winter, so it must snow on Dokdo today”?"
+      "ko": "‘독도 부근은 겨울에 눈이 주로 내린다’는 기후 설명으로 알 수 있는 것은 무엇인가요?",
+      "en": "What can you tell from the climate note “winter precipitation near Dokdo is mainly snow”?"
     },
     "options": [
       {
+        "id": "a",
         "text": {
-          "ko": "주된 기후 특징을 오늘의 확정 예보로 바꾼 부분",
-          "en": "Turning a typical climate feature into a definite forecast for today"
+          "ko": "겨울에 눈이 내리는 날이 많다는 것",
+          "en": "That snowy days are common in winter"
         },
         "feedback": {
-          "ko": "겨울의 주된 형태와 특정 날짜의 날씨는 달라요. 오늘 날씨는 별도 관측·예보로 확인해요.",
-          "en": "A seasonal tendency does not determine one day’s weather; current data are needed."
-        },
-        "id": "a"
+          "ko": "기후는 오랜 기간의 경향이라, 겨울에 눈 오는 날이 많다는 것까지 말해 줘요.",
+          "en": "Climate is a long-term tendency, so it does tell you snowy days are common in winter."
+        }
       },
       {
+        "id": "b",
         "text": {
-          "ko": "겨울에 눈이 올 수 있다는 부분 자체",
-          "en": "The possibility of winter snow itself"
+          "ko": "오늘 독도에 눈이 오고 있다는 것",
+          "en": "That it is snowing on Dokdo today"
         },
         "feedback": {
-          "ko": "자료는 겨울 강수가 주로 눈이라고 설명하므로 그 사실을 지울 필요는 없어요.",
-          "en": "The account supports winter snow; that fact is not the error."
-        },
-        "id": "b"
+          "ko": "특정한 날의 날씨는 그날의 관측이나 예보로 확인해요. 기후 설명만으로는 알 수 없어요.",
+          "en": "One day’s weather comes from that day’s observation or forecast, not from a climate note."
+        }
       },
       {
+        "id": "c",
         "text": {
-          "ko": "독도가 바다의 영향을 받는다는 부분",
-          "en": "The statement that the sea influences Dokdo"
+          "ko": "올겨울에는 눈이 하루도 빠짐없이 내린다는 것",
+          "en": "That it will snow every single day this winter"
         },
         "feedback": {
-          "ko": "해양성 기후라는 설명은 자료와 맞아요.",
-          "en": "Maritime influence is supported by the account."
-        },
-        "id": "c"
+          "ko": "‘주로 눈이 내린다’는 말은 매일 내린다는 뜻이 아니에요.",
+          "en": "“Mainly snow” is not the same as snow on every single day."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -23645,15 +23645,15 @@
       "en": "The climate account covers the Ulleungdo region including Dokdo, not live observations from Dokdo alone."
     },
     "goal": {
-      "ko": "독도 여행 안내에 ‘겨울에는 눈이 주로 내리니 오늘도 반드시 눈이 온다’고 쓰면 무엇을 고쳐야 하나요? 정답 대상: 주된 기후 특징을 오늘의 확정 예보로 바꾼 부분",
-      "en": "What must be corrected in “snow predominates in winter, so it must snow on Dokdo today”? Answer target: Turning a typical climate feature into a definite forecast for today"
+      "ko": "‘독도 부근은 겨울에 눈이 주로 내린다’는 기후 설명으로 알 수 있는 것은 무엇인가요? 정답 대상: 겨울에 눈이 내리는 날이 많다는 것",
+      "en": "What can you tell from the climate note “winter precipitation near Dokdo is mainly snow”? Answer target: That snowy days are common in winter"
     },
     "review": {
       "definition": "one-clear-target-v1",
       "authorReview": "self-reviewed",
       "independentReview": "pending",
       "learnerTest": "pending",
-      "gradeNote": "",
+      "gradeNote": "학습자 제보로 발문을 고쳐 씀: 가상의 안내문을 고치게 하던 이중 가정과, 인용문에 없는 내용을 가리키던 오답을 없앰",
       "wordingReview": "author-reviewed; not independent",
       "countryAndScopeReview": "author-reviewed against cited sources",
       "answerabilityReview": "requires displayed evidence where marked",

@@ -21639,7 +21639,7 @@
         "authorReview": "self-reviewed",
         "independentReview": "pending",
         "learnerTest": "pending",
-        "gradeNote": "",
+        "gradeNote": "학습자 제보로 발문을 고쳐 씀: 가상의 안내문을 고치게 하던 이중 가정과, 인용문에 없는 내용을 가리키던 오답을 없앰",
         "wordingReview": "author-reviewed; not independent",
         "countryAndScopeReview": "author-reviewed against cited sources",
         "answerabilityReview": "requires displayed evidence where marked",
@@ -21657,43 +21657,43 @@
       "answer": 0,
       "correctOptionId": "a",
       "ko": {
-        "q": "독도 여행 안내에 ‘겨울에는 눈이 주로 내리니 오늘도 반드시 눈이 온다’고 쓰면 무엇을 고쳐야 하나요?",
+        "q": "‘독도 부근은 겨울에 눈이 주로 내린다’는 기후 설명으로 알 수 있는 것은 무엇인가요?",
         "choices": [
-          "주된 기후 특징을 오늘의 확정 예보로 바꾼 부분",
-          "겨울에 눈이 올 수 있다는 부분 자체",
-          "독도가 바다의 영향을 받는다는 부분"
+          "겨울에 눈이 내리는 날이 많다는 것",
+          "오늘 독도에 눈이 오고 있다는 것",
+          "올겨울에는 눈이 하루도 빠짐없이 내린다는 것"
         ],
-        "explain": "겨울의 주된 형태와 특정 날짜의 날씨는 달라요. 오늘 날씨는 별도 관측·예보로 확인해요.",
+        "explain": "기후는 오랜 기간의 경향이라, 겨울에 눈 오는 날이 많다는 것까지 말해 줘요.",
         "wrong": [
-          "겨울의 주된 형태와 특정 날짜의 날씨는 달라요. 오늘 날씨는 별도 관측·예보로 확인해요.",
-          "자료는 겨울 강수가 주로 눈이라고 설명하므로 그 사실을 지울 필요는 없어요.",
-          "해양성 기후라는 설명은 자료와 맞아요."
+          "기후는 오랜 기간의 경향이라, 겨울에 눈 오는 날이 많다는 것까지 말해 줘요.",
+          "특정한 날의 날씨는 그날의 관측이나 예보로 확인해요. 기후 설명만으로는 알 수 없어요.",
+          "‘주로 눈이 내린다’는 말은 매일 내린다는 뜻이 아니에요."
         ],
         "fact": "독도를 포함한 울릉도 부근 지역은 바다의 영향을 받으며 겨울철 강수가 주로 눈의 형태예요.",
         "material": "기후: 오랜 기간에 걸친 날씨의 특징. 날씨: 특정 시각이나 날짜의 대기 상태. 독도 포함 울릉도 부근의 겨울 강수는 주로 눈이지만, 매일 눈이 온다는 뜻은 아니에요.",
         "context": "",
         "scope": "기후 설명의 적용 범위는 독도를 포함한 울릉도 부근 지역이에요. 독도 단독의 실시간 관측값이 아니에요.",
-        "goal": "독도 여행 안내에 ‘겨울에는 눈이 주로 내리니 오늘도 반드시 눈이 온다’고 쓰면 무엇을 고쳐야 하나요? 정답 대상: 주된 기후 특징을 오늘의 확정 예보로 바꾼 부분",
+        "goal": "‘독도 부근은 겨울에 눈이 주로 내린다’는 기후 설명으로 알 수 있는 것은 무엇인가요? 정답 대상: 겨울에 눈이 내리는 날이 많다는 것",
         "topic": "독도 부근의 겨울과 기후"
       },
       "en": {
-        "q": "What must be corrected in “snow predominates in winter, so it must snow on Dokdo today”?",
+        "q": "What can you tell from the climate note “winter precipitation near Dokdo is mainly snow”?",
         "choices": [
-          "Turning a typical climate feature into a definite forecast for today",
-          "The possibility of winter snow itself",
-          "The statement that the sea influences Dokdo"
+          "That snowy days are common in winter",
+          "That it is snowing on Dokdo today",
+          "That it will snow every single day this winter"
         ],
-        "explain": "A seasonal tendency does not determine one day’s weather; current data are needed.",
+        "explain": "Climate is a long-term tendency, so it does tell you snowy days are common in winter.",
         "wrong": [
-          "A seasonal tendency does not determine one day’s weather; current data are needed.",
-          "The account supports winter snow; that fact is not the error.",
-          "Maritime influence is supported by the account."
+          "Climate is a long-term tendency, so it does tell you snowy days are common in winter.",
+          "One day’s weather comes from that day’s observation or forecast, not from a climate note.",
+          "“Mainly snow” is not the same as snow on every single day."
         ],
         "fact": "The region around Ulleungdo, including Dokdo, has a maritime climate with winter precipitation mainly as snow.",
         "material": "Climate describes long-term patterns; weather concerns a particular time. Winter precipitation in this region is mainly snow, not a guarantee of snow every day.",
         "context": "",
         "scope": "The climate account covers the Ulleungdo region including Dokdo, not live observations from Dokdo alone.",
-        "goal": "What must be corrected in “snow predominates in winter, so it must snow on Dokdo today”? Answer target: Turning a typical climate feature into a definite forecast for today",
+        "goal": "What can you tell from the climate note “winter precipitation near Dokdo is mainly snow”? Answer target: That snowy days are common in winter",
         "topic": "Winter and climate around Dokdo"
       }
     },
