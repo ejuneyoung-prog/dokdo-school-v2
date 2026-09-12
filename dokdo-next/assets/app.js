@@ -40,7 +40,7 @@ const en={
  weeklyHistory:'Weekly learning history',weeklyRule:'Only the weekly tally restarts each Monday in Korea time. Your lifetime learning, lights and beacons stay.',
  footer:'Small moments of learning make Dokdo shine.',demoLink:'Separate demo',ageTitle:'Where shall we begin together?',
  ageDesc:'Your age band helps us choose explanations. We do not ask for a birth date.',
- ageRecoverLink:'Already have a nickname#code? Load your record here ↗',
+ ageRecoverLink:'Already have a nickname? Load your record here ↗',
  nickname:'Nickname (optional)',ageBand:'Age band',
  selectAge:'Select your age band',easyStart:'Start with very simple language, regardless of age.',continue:'Continue',
  agePreserve:'Existing game grades and records are not reduced.',settings:'Settings',reduceMotion:'Reduce motion',
@@ -66,8 +66,8 @@ const en={
  cloudBackupTitle:'Server backup · continue on another device',
  cloudBackupWarning:'Sending alone does not guarantee storage on this legacy server, so it is automatically double-checked for a few seconds after sending. You will be told if it could not be confirmed.',
  cloudSaveBtn:'Send a backup to the server',
- cloudKeyCopy:'Copy recovery key',
- cloudLoadNick:'Nickname to load',cloudLoadCode:'4-digit code',
+ cloudKeyCopy:'Copy nickname',
+ cloudLoadNick:'Nickname to load',
  cloudLoadBtn:'Load a record from another device',
  introTitle:'Today’s Dokdo Korea video',
  introNote:'One of the Dokdo Korea channel’s videos. Tap to play — nothing plays automatically.',
@@ -88,7 +88,7 @@ const en={
  contactCollab:'Contact / collaborate',
  tourismInfoBtn:'Ulleungdo·Dokdo travel info',
  resetRecord:'Reset this record',
- resetWarning:'Clears this device’s record and starts empty. Save a backup file above first, or remember your nickname#code so “Load a record from another device” can bring it back after resetting.',
+ resetWarning:'Clears this device’s record and starts empty. Save a backup file above first, or remember your nickname so “Load a record from another device” can bring it back after resetting.',
  resetConfirm:'This clears every record on this device and cannot be undone here. Have you saved a backup, or do you have your nickname#code? Continue?',
  disputeButton:'Something wrong with this question?',
  disputeTitle:'Report a question',
@@ -638,10 +638,13 @@ function renderBadges(s){
 function renderCloudPanel(s){
  const configured=!!(window.DokdoLeaderboard&&DokdoLeaderboard.isConfigured());
  $('cloud-panel').hidden=!configured;if(!configured)return;
- const nick=(s?.name||'').trim(),code=s?.recoveryCode||'';
- $('cloud-key-display').textContent=nick&&code?tr(`내 복구 키: ${nick}#${code} (다른 기기에서 이 별명과 코드로 불러올 수 있어요)`,`Your recovery key: ${nick}#${code} (use this nickname and code to load your record on another device)`):tr('별명을 먼저 설정하면 복구 키가 생성됩니다.','Set a nickname first to get a recovery key.');
- $('cloud-save').disabled=!nick||!code;
- $('cloud-key-copy').hidden=!nick||!code;
+ const nick=(s?.name||'').trim();
+ // BETA: matching by nickname alone, not nickname+code -- see mergeStates()
+ // in app-model.js. Anyone using the same nickname shares one server slot;
+ // that tradeoff is intentional for now and expected to be revisited.
+ $('cloud-key-display').textContent=nick?tr(`내 별명: ${nick} (다른 기기에서 같은 별명으로 불러오면 기록이 합쳐져요)`,`Your nickname: ${nick} (loading with the same nickname on another device merges the records)`):tr('별명을 먼저 설정해 주세요.','Set a nickname first.');
+ $('cloud-save').disabled=!nick;
+ $('cloud-key-copy').hidden=!nick;
 }
 async function copyPlainText(text){
  try{
@@ -651,17 +654,17 @@ async function copyPlainText(text){
 }
 $('cloud-key-copy').onclick=async()=>{
  const s=getS();if(!s)return;
- const nick=(s.name||'').trim(),code=s.recoveryCode||'';if(!nick||!code)return;
- const ok=await copyPlainText(nick+'#'+code);
- toast(ok?tr('복구 키를 복사했습니다. 다른 기기의 입력칸에 그대로 붙여넣으세요.','Recovery key copied. Paste it exactly into the fields on the other device.'):tr('복사하지 못했습니다.','Could not copy.'));
+ const nick=(s.name||'').trim();if(!nick)return;
+ const ok=await copyPlainText(nick);
+ toast(ok?tr('별명을 복사했습니다. 다른 기기의 입력칸에 그대로 붙여넣으세요.','Nickname copied. Paste it exactly into the field on the other device.'):tr('복사하지 못했습니다.','Could not copy.'));
 };
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 $('cloud-save').onclick=async()=>{
  const s=getS();if(!s)return;
- const nick=(s.name||'').trim(),code=s.recoveryCode||'';
- if(!nick||!code){txt('cloud-save-status',tr('별명을 먼저 설정해 주세요.','Set a nickname first.'));return;}
+ const nick=(s.name||'').trim();
+ if(!nick){txt('cloud-save-status',tr('별명을 먼저 설정해 주세요.','Set a nickname first.'));return;}
  $('cloud-save').disabled=true;txt('cloud-save-status',tr('전송 중…','Sending…'));
- const key=nick+'#'+code,payload=store.blocked?store.recovery():M.backupText(s);
+ const key=nick,payload=store.blocked?store.recovery():M.backupText(s);
  const res=await DokdoLeaderboard.saveProgress(key,nick,s.grade||'K',payload);
  if(res.state==='sent_unconfirmed'){
   // The save POST is a fire-and-forget no-cors request -- it cannot tell us
@@ -683,17 +686,21 @@ $('cloud-save').onclick=async()=>{
  $('cloud-save').disabled=false;
 };
 $('cloud-load').onclick=async()=>{
- const nick=$('cloud-load-nick').value.trim(),code=$('cloud-load-code').value.trim();
- if(!nick||!/^\d{4}$/.test(code)){txt('cloud-load-status',tr('별명과 4자리 코드를 모두 입력해 주세요.','Enter both the nickname and the 4-digit code.'));return;}
+ const nick=$('cloud-load-nick').value.trim();
+ if(!nick){txt('cloud-load-status',tr('불러올 별명을 입력해 주세요.','Enter the nickname to load.'));return;}
  if(store.blocked&&getS()!==null){guarded();return;}
  $('cloud-load').disabled=true;txt('cloud-load-status',tr('불러오는 중…','Loading…'));
- const res=await DokdoLeaderboard.loadProgress(nick+'#'+code);
+ const res=await DokdoLeaderboard.loadProgress(nick);
  if(res.state==='ok'){
   try{
-   importCandidate=M.parseImport(res.data.payload,getS());importOriginal=res.data.payload;
+   const current=getS();
+   // BETA: same-nickname records are combined (mergeStates), not replaced,
+   // so loading on a device that already has progress cannot erase it.
+   importCandidate=current?M.mergeStates(current,res.data.payload):M.parseImport(res.data.payload,null);
+   importOriginal=res.data.payload;
    txt('cloud-load-status','');showImport();
   }catch(e){txt('cloud-load-status',tr('서버 기록의 구조를 확인할 수 없어 불러오지 않았습니다.','The server record could not be validated, so nothing was loaded.'));}
- }else if(res.state==='not_found')txt('cloud-load-status',tr('해당 별명과 코드로 저장된 기록이 없습니다.','No record found for that nickname and code.'));
+ }else if(res.state==='not_found')txt('cloud-load-status',tr('해당 별명으로 저장된 기록이 없습니다.','No record found for that nickname.'));
  else if(res.state==='not_configured')txt('cloud-load-status',tr('서버가 연결되지 않았습니다.','No server is configured.'));
  else txt('cloud-load-status',tr('불러오지 못했습니다: ','Could not load: ')+(res.error||''));
  $('cloud-load').disabled=false;
@@ -757,7 +764,7 @@ $('import-file').onchange=async event=>{
 };
 $('reset-record').onclick=async()=>{
  if(!getS()||busy)return;
- if(!confirm(tr('이 기기의 모든 기록을 지우고 빈 상태로 시작합니다. 직전 기록은 이 브라우저에 한 번 더 보관되지만, 화면에서는 되돌릴 수 없습니다. 백업 파일을 저장했거나 별명#코드를 알고 계신가요? 계속할까요?','This clears every record on this device and starts empty. The previous record is kept once more in this browser, but there is no undo button here. Have you saved a backup, or do you have your nickname#code? Continue?')))return;
+ if(!confirm(tr('이 기기의 모든 기록을 지우고 빈 상태로 시작합니다. 직전 기록은 이 브라우저에 한 번 더 보관되지만, 화면에서는 되돌릴 수 없습니다. 백업 파일을 저장했거나 별명을 알고 계신가요? 계속할까요?','This clears every record on this device and starts empty. The previous record is kept once more in this browser, but there is no undo button here. Have you saved a backup, or do you know your nickname? Continue?')))return;
  busy=true;
  try{
   await scheduleWrite(()=>store.importState(M.fresh()));

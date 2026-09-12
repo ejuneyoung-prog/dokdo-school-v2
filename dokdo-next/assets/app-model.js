@@ -161,6 +161,69 @@ function parseImport(text,current,now=Date.now(),allowRaw=false){
  }
  return incoming;
 }
+function num(x){return Number.isFinite(x)&&x>=0?x:0;}
+function unionArr(a,b){return Array.from(new Set([...(a||[]),...(b||[])]));}
+/* BETA: matches by nickname alone (no 4-digit code) and combines two
+ * devices' progress instead of one replacing the other, since the same
+ * learner's name recurring across devices/browsers turned out to be the
+ * common case, not an impostor. Per-question fields take the higher side
+ * (never summed, so answering the same question on both devices cannot
+ * double the reward); xp is then recomputed from the merged per-question
+ * totals rather than adding the two xp totals directly, for the same
+ * reason. Anything not explicitly merged below (scene layout, active
+ * gangchi visits, this week's tally) is left as the current device's own,
+ * unaffected by the incoming record.
+ */
+function mergeStates(current,incomingText,now=Date.now()){
+ const data=JSON.parse(incomingText);
+ if(data.format!=='dokdo-school-backup'||data.version!==1)throw Error('Unknown backup format.');
+ if(!['ko','en'].includes(data.language))throw Error('Invalid backup language.');
+ Core.validateState(data.state);
+ const incoming=ensure(clone(data.state),now);
+ validate(incoming);
+ const merged=clone(current);
+ const ids=new Set([...Object.keys(current.m||{}),...Object.keys(incoming.m||{})]);
+ merged.m={};
+ for(const id of ids){
+  const a=current.m?.[id],b=incoming.m?.[id];
+  if(a&&!b){merged.m[id]=clone(a);continue;}
+  if(b&&!a){merged.m[id]=clone(b);continue;}
+  const r={};
+  for(const k of ['lv','att','cor','seen','earned','lightBest'])r[k]=Math.max(num(a[k]),num(b[k]));
+  r.courseLearned=!!(a.courseLearned||b.courseLearned);
+  if(a.courseRewardDay||b.courseRewardDay)r.courseRewardDay=[a.courseRewardDay,b.courseRewardDay].filter(Boolean).sort().pop();
+  if(a.courseFirstDay||b.courseFirstDay)r.courseFirstDay=[a.courseFirstDay,b.courseFirstDay].filter(Boolean).sort()[0];
+  r.courseIndependentDays=unionArr(a.courseIndependentDays,b.courseIndependentDays);
+  r.pilotIndependentDays=unionArr(a.pilotIndependentDays,b.pilotIndependentDays);
+  const winner=(num(a.lv)+num(a.cor))>=(num(b.lv)+num(b.cor))?a:b;
+  if(winner.due!=null)r.due=winner.due;
+  if(winner.lastAdvancedDay!=null)r.lastAdvancedDay=winner.lastAdvancedDay;
+  if(winner.lastAnsweredAt!=null)r.lastAnsweredAt=winner.lastAnsweredAt;
+  merged.m[id]=r;
+ }
+ merged.xp=Object.values(merged.m).reduce((sum,r)=>sum+num(r.earned),0);
+ for(const k of ['gcHit','gcSummons','streak','best'])merged[k]=Math.max(num(current[k]),num(incoming[k]));
+ merged.passed=unionArr(current.passed,incoming.passed);
+ merged.badgesEver=unionArr(current.badgesEver,incoming.badgesEver);
+ merged.visual=merged.visual||{};
+ merged.visual.unlocks=Object.assign({},incoming.visual?.unlocks,current.visual?.unlocks);
+ merged.visual.journey={version:1,
+  legacy:Math.max(num(current.visual?.journey?.legacy),num(incoming.visual?.journey?.legacy)),
+  earned:Math.max(num(current.visual?.journey?.earned),num(incoming.visual?.journey?.earned)),
+  inviteRemainder:num(current.visual?.journey?.inviteRemainder)};
+ if(incoming.learningProfile){
+  if(!current.learningProfile||incoming.learningProfile.stage>current.learningProfile.stage){
+   const keepCompleted=current.learningProfile?current.learningProfile.completed:{};
+   merged.learningProfile=clone(incoming.learningProfile);
+   merged.learningProfile.completed=Object.assign({},keepCompleted,incoming.learningProfile.completed);
+  }else{
+   merged.learningProfile.completed=Object.assign({},incoming.learningProfile.completed,current.learningProfile.completed);
+  }
+ }
+ merged.scene=merged.scene||{version:1,order:[],beaconSlots:{}};
+ merged.scene.beaconSlots=Object.assign({},incoming.scene?.beaconSlots,current.scene?.beaconSlots);
+ return ensure(merged,now);
+}
 function legacyCandidates(storage){
  const found=[];
  for(const key of OLD_KEYS){
@@ -285,5 +348,5 @@ function computeBadges(s){
  return BADGES.map(b=>({id:b.id,icon:b.icon,ko:b.ko,en:b.en,earned:!!b.need(a)}));
 }
 return {VERSION,KEY,OLD_KEYS,Core,Course,Journey,fresh,ensure,validate,summary,selectProfile,answer,finish,unlock,
-        tick,replayBirds,backupText,parseImport,legacyCandidates,Store,MemoryStorage,clone,BADGES,computeBadges};
+        tick,replayBirds,backupText,parseImport,mergeStates,legacyCandidates,Store,MemoryStorage,clone,BADGES,computeBadges};
 });
