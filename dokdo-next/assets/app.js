@@ -76,6 +76,8 @@ const en={
  youtubeLive:'Watch the live stream ↗',
  youtubeWatchOn:'Open on YouTube ↗',
  youtubeNote:'Shows 3 of the Dokdo Korea channel’s videos at random. Tap to play — nothing plays automatically.',
+ channelInfoOpen:'About Dokdo Korea',channelInfoTitle:'About Dokdo Korea',
+ channelContactTitle:'Contact',channelMusicTitle:'Music & Channel Links',channelCollabLink:'Collaboration & lecture inquiries (Linktree) ↗',
  support:'♥ Support Dokdo Korea Membership',headerLive:'🔴 Watch Dokdo Live Now',headerChannel:'▶ Dokdo Korea Channel',
  youtubeChannel:'Dokdo Korea channel ↗',
  tourismInfoTitle:'Ulleungdo–Dokdo travel information',
@@ -918,6 +920,7 @@ $('open-sources').onclick=sources;$('footer-sources').onclick=sources;$('arrange
  if(!yt.channelUrl)$('header-channel-link').hidden=true;
 })();
 $('open-tourism-info').onclick=()=>showDialog('tourism-dialog');
+$('open-channel-info').onclick=()=>showDialog('channel-info-dialog');
 $('tourism-go').onclick=()=>toast(tr('현재 준비 중입니다.','This is being prepared right now.'));
 $('sound').onclick=toggleSound;$('save-image').onclick=saveImage;
 $('zoom').onclick=()=>{const on=$('canvas-shell').classList.toggle('zoomed');$('zoom').setAttribute('aria-pressed',String(on));txt('zoom',on?tr('전체 보기','Fit'):tr('확대','Zoom'));if(on)$('canvas-shell').scrollLeft=$('canvas-shell').scrollWidth*.22;};
