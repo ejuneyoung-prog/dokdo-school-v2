@@ -36,12 +36,19 @@ try:
    page.set_content(inline(),wait_until='domcontentloaded')
   else:page.goto('http://127.0.0.1:'+str(server.server_port)+'/',wait_until='domcontentloaded')
   page.wait_for_function('!!window.DokdoApp');page.evaluate('DokdoApp.assetsReady')
+  # The channel intro opens once a day over the home view. A visitor dismisses
+  # it before doing anything else, and so must this run -- otherwise every
+  # click below lands on the dialog backdrop instead of the page.
+  page.evaluate("()=>{const d=document.getElementById('youtube-intro-dialog');if(d&&d.open)d.close();}")
   check('Version 1.3 is running',page.evaluate('DokdoApp.version')=='1.3.0')
   check('Fresh profile has no flags, credits, or visitors',page.evaluate('DokdoJourney.progress(DokdoApp.state).total===0 && DokdoApp.state.gangchiVisits.length===0 && DokdoApp.state.gcHit===0'))
   check('Weather terms are not silently accepted',page.evaluate('!DokdoApp.weatherClient.enabled'))
   check('No automatic translation is requested',page.get_attribute('html','translate')=='no')
   check('Header uses Gmarket Sans token',page.eval_on_selector('h1','e=>getComputedStyle(e).fontFamily').startswith('GmarketSans'))
   page.click('#start-lesson');page.select_option('#age-band','14-16');page.click('#age-form button[type=submit]')
+  # Submitting the age form saves before it starts the lesson, so the lesson
+  # appears a tick later; reading it straight away raced and failed at random.
+  page.wait_for_function('!!(window.DokdoApp&&DokdoApp.lesson&&DokdoApp.lesson.item)')
   check('Middle-school track begins at its real starting unit (no placement test)',page.evaluate('DokdoApp.lesson.item.unit===8'))
   check('Question uses S-Core Dream token',page.eval_on_selector('#question-title','e=>getComputedStyle(e).fontFamily').startswith('SCoreDream'))
   page.evaluate("DokdoApp.view('home')");page.click('#start-lesson');page.click('#read-done')
