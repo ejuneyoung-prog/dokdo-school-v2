@@ -87,6 +87,8 @@ const en={
  tourismComingSoon:'This is being prepared right now.',
  contactCollab:'Contact / collaborate',
  tourismInfoBtn:'Ulleungdo·Dokdo travel info',
+ promoTitle:'Dokdo Korea · Music & Social',
+ visitCollabTitle:'Visit · Contact',
  resetRecord:'Reset this record',
  resetWarning:'Clears this device’s record and starts empty. Save a backup file above first, or remember your nickname so “Load a record from another device” can bring it back after resetting.',
  resetConfirm:'This clears every record on this device and cannot be undone here. Have you saved a backup, or do you have your nickname#code? Continue?',
@@ -984,6 +986,7 @@ $('open-sources').onclick=sources;$('footer-sources').onclick=sources;$('arrange
  if(!yt.channelUrl)$('header-channel-link').hidden=true;
 })();
 $('open-tourism-info').onclick=()=>showDialog('tourism-dialog');
+$('open-tourism-info-home').onclick=()=>showDialog('tourism-dialog');
 $('open-channel-info').onclick=()=>showDialog('channel-info-dialog');
 let disputeItem=null;
 function openDispute(item){disputeItem=item;$('dispute-reason').value='';showDialog('dispute-dialog');}
