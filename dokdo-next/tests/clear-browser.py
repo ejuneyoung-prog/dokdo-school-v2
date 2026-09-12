@@ -9,6 +9,25 @@ from playwright.sync_api import sync_playwright
 A=Path(__file__).resolve().parents[1]
 ap=argparse.ArgumentParser();ap.add_argument('--mode',choices=['inline','http'],default='http');ap.add_argument('--browser',default=os.environ.get('CHROMIUM_EXECUTABLE'));ap.add_argument('--engine',choices=['chromium','webkit'],default='chromium');ap.add_argument('--output',default=str(A/'test-results/clear-browser'));ap.add_argument('--phase',choices=['flow','matrix','screens','all'],default='all');args=ap.parse_args();OUT=Path(args.output);OUT.mkdir(parents=True,exist_ok=True)
 checks=[];errors=[];requests=[];rows=[]
+def unconfigured(src=None):
+ """site-config.js with no backend or analytics id, so nothing is called out to.
+
+ A run that answers a question auto-saves, and CI was appending rows to the
+ operator's real activity log. Aborting the request is not enough: an aborted
+ request still fires, so the attempt happens and is still recorded. Removing
+ the ids means isConfigured() is false, gtag.js is never loaded, and
+ nothing is ever sent.
+ """
+ return re.sub(r"(apiUrl|gaId):'[^']*'",lambda m:m.group(1)+":''",src if src is not None else (A/'assets/site-config.js').read_text(encoding='utf-8'))
+def wait_until(page,expression,timeout_ms=8000,step_ms=100):
+ # Polled here rather than with wait_for_function: that installs a page-side
+ # predicate, which this site's CSP blocks for lacking unsafe-eval.
+ for _ in range(max(1,timeout_ms//step_ms)):
+  try:
+   if page.evaluate(expression):return True
+  except Exception:pass  # mid-navigation; keep polling
+  page.wait_for_timeout(step_ms)
+ raise AssertionError('Timed out waiting for: '+expression)
 def ck(name,ok,detail=None):
  r={'name':name,'pass':bool(ok)}
  if detail is not None:r['detail']=detail
@@ -22,6 +41,7 @@ def inline(file='index.html'):
  paths=re.findall(r'<script defer src="./([^"]+)"></script>',h);h=re.sub(r'<script defer src="./[^"]+"></script>','',h)
  for path in paths:
   s=(A/path).read_text()
+  if path.endswith('site-config.js'):s=unconfigured(s)
   for a in ['assets/dongdo-facilities.png','assets/dokdo-islands.webp','assets/dokdo-terrain.webp','assets/sea-texture.webp','assets/ambient.wav']:s=s.replace('./'+a,asset(a))
   h=h.replace('</body>','<script>'+s.replace('</script','<\\/script')+'</script></body>')
  return h.replace('./assets/icon.svg',asset('assets/icon.svg'))
@@ -35,7 +55,7 @@ try:
   launch={'headless':True}
   if args.engine=='chromium':launch['args']=['--no-sandbox']
   if args.browser:launch['executable_path']=args.browser
-  browser=getattr(pw,args.engine).launch(**launch);ctx=browser.new_context(viewport={'width':1440,'height':1100},reduced_motion='reduce',accept_downloads=True);ctx.route('https://cdn.jsdelivr.net/**',lambda r:r.abort());ctx.route('https://script.google.com/**',lambda r:r.abort());p=ctx.new_page();p.set_default_timeout(6000);p.on('dialog',lambda d:d.accept());p.on('pageerror',lambda e:errors.append(str(e)));p.on('request',lambda r:requests.append(r.url) if r.url.startswith('http') and not any(x in r.url for x in ['127.0.0.1','cdn.jsdelivr.net','i.ytimg.com']) else None)
+  browser=getattr(pw,args.engine).launch(**launch);ctx=browser.new_context(viewport={'width':1440,'height':1100},reduced_motion='reduce',accept_downloads=True);ctx.route('https://cdn.jsdelivr.net/**',lambda r:r.abort());ctx.route('**/assets/site-config.js',lambda r:r.fulfill(status=200,content_type='application/javascript',body=unconfigured()));p=ctx.new_page();p.set_default_timeout(6000);p.on('dialog',lambda d:d.accept());p.on('pageerror',lambda e:errors.append(str(e)));p.on('request',lambda r:requests.append(r.url) if r.url.startswith('http') and not any(x in r.url for x in ['127.0.0.1','cdn.jsdelivr.net','i.ytimg.com']) else None)
   if args.mode=='inline':
    p.evaluate("()=>{const m=new Map();Object.defineProperty(window,'localStorage',{value:{getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k)}});}")
    p.set_content(inline(),wait_until='domcontentloaded')
@@ -49,7 +69,11 @@ try:
    p.eval_on_selector('#start-lesson','e=>e.click()');p.eval_on_selector('#age-form button[type=submit]','e=>e.click()');ck('age gate remains mandatory',p.evaluate('DokdoApp.lesson===null'))
    expected={'u7':1,'8-9':1,'10-11':2,'12-13':3,'14-16':8,'17-19':9,'20+':11}
    for band,unit in expected.items():
-    p.evaluate("DokdoApp.start('daily',true)");p.select_option('#age-band',band);p.eval_on_selector('#age-form button[type=submit]','e=>e.click()');ck(band+' routes to intended unit',p.evaluate('DokdoApp.lesson.item.unit')==unit);ck(band+' has five distinct concepts',p.evaluate('new Set(DokdoApp.lesson.items.map(q=>q.familyId)).size===5'));p.eval_on_selector('#read-done','e=>e.click()');ck(band+' source shown before answering',p.locator('#question-citations a').count()>0)
+    p.evaluate("DokdoApp.start('daily',true)");p.select_option('#age-band',band);p.eval_on_selector('#age-form button[type=submit]','e=>e.click()')
+    # Submitting the age form saves before it starts the lesson, so the lesson
+    # lands a tick later; reading it straight away raced and failed at random.
+    wait_until(p,'!!(window.DokdoApp&&DokdoApp.lesson&&DokdoApp.lesson.item)')
+    ck(band+' routes to intended unit',p.evaluate('DokdoApp.lesson.item.unit')==unit);ck(band+' has five distinct concepts',p.evaluate('new Set(DokdoApp.lesson.items.map(q=>q.familyId)).size===5'));p.eval_on_selector('#read-done','e=>e.click()');ck(band+' source shown before answering',p.locator('#question-citations a').count()>0)
     old=p.evaluate('DokdoApp.lesson.index');wrong=p.evaluate('(DokdoApp.lesson.answer+1)%DokdoApp.lesson.order.length');p.eval_on_selector(f'.answer-option[data-index="{wrong}"]','e=>e.click()');p.wait_for_selector('#retry-question',state='visible');p.evaluate('DokdoApp.next()');ck(band+' wrong answer cannot advance',p.evaluate('DokdoApp.lesson.index')==old and p.locator('#next-question').is_hidden());p.eval_on_selector('#retry-question','e=>e.click()');ans=p.evaluate('DokdoApp.lesson.answer');p.eval_on_selector(f'.answer-option[data-index="{ans}"]','e=>e.click()');p.wait_for_selector('#next-question',state='visible');ck(band+' correction permits next with specific reason',p.locator('#question-feedback .feedback-answer').is_visible());p.evaluate("DokdoApp.view('home')")
   # All 240 questions are placed into the ordinary lesson renderer, without changing their text or handlers.
   if args.phase in ['matrix','all']:

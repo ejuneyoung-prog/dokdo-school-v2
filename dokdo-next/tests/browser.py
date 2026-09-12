@@ -14,6 +14,15 @@ p.add_argument('--output',default=str(ROOT/'test-results/browser'));p.add_argume
 args=p.parse_args();OUT=Path(args.output);OUT.mkdir(parents=True,exist_ok=True)
 KEY='dokdo-korea-school-cinematic-v1';OLD='dokdo-korea-school-v2'
 checks=[];errors=[];requests=[]
+def unconfigured(src=None):
+    """site-config.js with no backend or analytics id, so nothing is called out to.
+
+    A run that answers a question auto-saves, and CI was appending rows to the
+    operator's real activity log. Aborting the request is not enough: an
+    aborted request still fires, so the attempt happens and is still recorded.
+    Removing the URL means isConfigured() is false and nothing is ever sent.
+    """
+    return re.sub(r"(apiUrl|gaId):'[^']*'",lambda m:m.group(1)+":''",src if src is not None else (ROOT/'assets/site-config.js').read_text(encoding='utf-8'))
 def wait_until(page,expression,timeout_ms=12000,step_ms=100):
  # Polled here rather than with wait_for_function: that installs a page-side
  # predicate, which this site's CSP blocks for lacking unsafe-eval.
@@ -42,6 +51,7 @@ def inline_html(file):
     scripts=[]
     for path in paths:
         src=(ROOT/path).read_text()
+        if path.endswith('site-config.js'):src=unconfigured(src)
         for a in ['assets/dongdo-facilities.png','assets/dokdo-islands.webp','assets/sea-texture.webp','assets/dokdo-terrain.webp','assets/ambient.wav']:
             src=src.replace('./'+a,data(a))
         scripts.append('<script>'+src.replace('</script','<\\/script')+'</script>')
@@ -78,7 +88,7 @@ try:
         ctx.route('https://cdn.jsdelivr.net/**',lambda r:r.abort())
         # A test must never reach the operator's live sheet: CI runs were
         # appending rows to the real activity log.
-        ctx.route('https://script.google.com/**',lambda r:r.abort())
+        ctx.route('**/assets/site-config.js',lambda r:r.fulfill(status=200,content_type='application/javascript',body=unconfigured()))
         ctx.on('request',lambda r: requests.append(r.url) if r.url.startswith('http') and '127.0.0.1' not in r.url and 'cdn.jsdelivr.net' not in r.url else None)
         entries=list((seed or {}).items())
         if args.mode=='inline':
