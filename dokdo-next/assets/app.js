@@ -398,7 +398,19 @@ $('flag-select').onchange=()=>{$('flag-other-row').hidden=$('flag-select').value
  * already returns -- so nothing here invents an institution that doesn't exist. */
 const schoolNames=new Set();
 function addSchoolNames(list){for(const v of list||[]){const t=String(v||'').trim();if(t)schoolNames.add(t);}}
-fetch('./data/schools.json').then(r=>r.ok?r.json():null).then(d=>{if(Array.isArray(d))addSchoolNames(d.map(x=>typeof x==='string'?x:x&&x.name));}).catch(()=>{});
+// The national list is a large file, so it is fetched the first time someone
+// actually uses the school field -- never on page load, and never for a
+// visitor who only plays.
+let schoolListLoad=null;
+function loadSchoolList(){
+ if(schoolListLoad)return schoolListLoad;
+ schoolListLoad=fetch('./data/schools.json').then(r=>r.ok?r.json():null).then(d=>{
+  const rows=Array.isArray(d)?d:(d&&Array.isArray(d.schools)?d.schools:[]);
+  addSchoolNames(rows.map(x=>typeof x==='string'?x:x&&(x.name||x.n)));
+  if(document.activeElement===$('school-name'))renderSchoolSuggest();
+ }).catch(()=>{});
+ return schoolListLoad;
+}
 let schoolPick=-1;
 function schoolMatches(query){
  const q=query.trim().toLowerCase();if(q.length<2)return [];
@@ -425,7 +437,8 @@ function moveSchoolPick(step){
  options.forEach((el,i)=>el.classList.toggle('active',i===schoolPick));
  options[schoolPick].scrollIntoView({block:'nearest'});
 }
-$('school-name').addEventListener('input',renderSchoolSuggest);
+$('school-name').addEventListener('focus',loadSchoolList,{once:true});
+$('school-name').addEventListener('input',()=>{loadSchoolList();renderSchoolSuggest();});
 $('school-name').addEventListener('blur',()=>setTimeout(closeSchoolSuggest,120));
 $('school-name').addEventListener('keydown',event=>{
  if($('school-suggest').hidden)return;
