@@ -63,7 +63,7 @@
   <button class="nav-item" data-view="journal"><span aria-hidden="true">♧</span><span data-i18n="journal">생명 도감</span></button>
   <button class="nav-item" data-view="hall"><span aria-hidden="true">★</span><span data-i18n="hallOfFame">명예의 전당</span></button>
  </nav>
- <div class="header-actions"><a id="support-link" class="button primary small-button support-button" href="#" target="_blank" rel="noopener noreferrer" data-i18n="support">♥ 후원하기</a><button id="language" class="icon-button" aria-label="Switch to English">EN</button><button id="open-settings" class="icon-button" aria-label="설정">⚙</button><button class="profile-button" data-view="records"><span class="profile-dot">✦</span><span data-i18n="myRecords">내 기록</span></button></div>
+ <div class="header-actions"><a id="support-link" class="button primary small-button support-button" href="#" target="_blank" rel="noopener noreferrer" data-i18n="support">♥ 후원하기</a><a id="header-live-link" class="button secondary small-button" href="#" target="_blank" rel="noopener noreferrer" data-i18n="headerLive">🔴 라이브</a><a id="header-channel-link" class="button secondary small-button" href="#" target="_blank" rel="noopener noreferrer" data-i18n="headerChannel">▶ 내 유튜브</a><button id="language" class="icon-button" aria-label="Switch to English">EN</button><button id="open-settings" class="icon-button" aria-label="설정">⚙</button><button class="profile-button" data-view="records"><span class="profile-dot">✦</span><span data-i18n="myRecords">내 기록</span></button></div>
 </header>
 
 <main id="main" tabindex="-1">
@@ -208,6 +208,7 @@
 
 <dialog id="age-dialog" class="dialog">
  <form id="age-form"><div class="dialog-top"><span class="eyebrow">YOUR STARTING POINT</span><button type="button" class="icon-button" data-close="age-dialog" aria-label="닫기">×</button></div><h2 data-i18n="ageTitle">어디서부터 함께 배울까요?</h2><p data-i18n="ageDesc">나이대는 설명을 고르는 참고값이에요. 생년월일은 받지 않아요.</p>
+ <button type="button" class="text-button" id="age-recover-link" data-i18n="ageRecoverLink">이미 별명#코드가 있나요? 여기서 기록 불러오기 ↗</button>
  <label class="field"><span data-i18n="nickname">별명 (선택)</span><input id="nickname" maxlength="40" autocomplete="nickname" placeholder="독도 탐험가"></label>
  <label class="field"><span data-i18n="flagField">국가 (명예의 전당 표시용, 선택)</span><select id="flag-select">
   <option value="KR">🇰🇷 대한민국</option><option value="US">🇺🇸 미국</option><option value="JP">🇯🇵 일본</option>

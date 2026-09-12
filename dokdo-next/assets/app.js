@@ -36,7 +36,9 @@ const en={
  oldRecords:'Previous Dokdo School records',oldRecordWarning:'Only records under the same site and browser can be read. Original records and the old cloud are not modified. The two versions do not sync automatically.',
  weeklyHistory:'Weekly learning history',weeklyRule:'Only the weekly tally restarts each Monday in Korea time. Your lifetime learning, lights and beacons stay.',
  footer:'Small moments of learning make Dokdo shine.',demoLink:'Separate demo',ageTitle:'Where shall we begin together?',
- ageDesc:'Your age band helps us choose explanations. We do not ask for a birth date.',nickname:'Nickname (optional)',ageBand:'Age band',
+ ageDesc:'Your age band helps us choose explanations. We do not ask for a birth date.',
+ ageRecoverLink:'Already have a nickname#code? Load your record here ↗',
+ nickname:'Nickname (optional)',ageBand:'Age band',
  selectAge:'Select your age band',easyStart:'Start with very simple language, regardless of age.',continue:'Continue',
  agePreserve:'Existing game grades and records are not reduced.',settings:'Settings',reduceMotion:'Reduce motion',
  enableBirds:'Show birds after achievements',seaDensity:'Life in the sea',calm:'Calm',rich:'Lively',full:'More lively',
@@ -71,7 +73,7 @@ const en={
  youtubeLive:'Watch the live stream ↗',
  youtubeWatchOn:'Open on YouTube ↗',
  youtubeNote:'Shows one of the Dokdo Korea channel’s videos at random. Tap to play — nothing plays automatically.',
- support:'♥ Support',
+ support:'♥ Support',headerLive:'🔴 Live',headerChannel:'▶ My channel',
  youtubeChannel:'Dokdo Korea channel ↗',
  tourismInfoTitle:'Ulleungdo–Dokdo travel information',
  tourismInfoBody:'Basic visitor information about Dokdo (ferry access via Ulleungdo, weather-dependent sailings, and what to know before visiting).',
@@ -419,7 +421,7 @@ async function choose(pick,skip=false){
   // Persistent commit succeeded before moving the question forward.
   if(window.DokdoLeaderboard){const cur=getS();DokdoLeaderboard.postEvent({
    nick:cur.name||'',flag:cur.flag||'KR',grade:cur.grade||'K',qid:q.item.id,ok:ok?1:0,
-   run:cur.run||0,best:cur.best||0,mode:q.mode,school:cur.school||'',schoolCode:cur.school||'',schoolCat:cur.schoolCat||''
+   run:cur.run||0,best:cur.best||0,mode:q.mode,school:cur.school||'',schoolCode:'',schoolCat:cur.schoolCat||''
   }).catch(()=>{});}
   if(window.DokdoAnalytics)DokdoAnalytics.track('question_answered',{qid:q.item.id,correct:ok?1:0,qtype:q.item.atype||q.mode,grade:getS().grade||'K',retry:retry?1:0});
   q.answered=true;q.needsRetry=q.mode!=='placement'&&!ok;
@@ -516,9 +518,13 @@ function renderShareRow(){
  const yt=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.youtube)||{};
  if(yt.liveUrl||yt.channelUrl){
   row.append(shareButton(tr('독도 코리아 라이브에 공유하기','Share to the Dokdo Korea live chat'),async()=>{
-   shareTrack('live');const res=await DokdoShare.copyForChat();
-   if(res.state==='copied'){toast(tr('채팅용 한 줄을 복사했습니다. 라이브를 열어 붙여넣어 주세요.','Copied a one-line message for chat. Open the live stream and paste it there.'));window.open(yt.liveUrl||yt.channelUrl,'_blank','noopener');}
-   else toast(tr('복사하지 못했습니다.','Could not copy the text.'));
+   shareTrack('live');
+   // window.open must run synchronously in the click handler, before any
+   // await -- Safari (and most browsers) silently block a popup opened
+   // after an awaited promise, leaving a blank "about:blank" tab.
+   window.open(yt.liveUrl||yt.channelUrl,'_blank','noopener');
+   const res=await DokdoShare.copyForChat();
+   toast(res.state==='copied'?tr('채팅용 한 줄을 복사했습니다. 라이브를 열어 붙여넣어 주세요.','Copied a one-line message for chat. Open the live stream and paste it there.'):tr('복사하지 못했습니다.','Could not copy the text.'));
   }));
  }
  wrap.append(label,row);return wrap;
@@ -877,10 +883,15 @@ document.querySelectorAll('[data-island]').forEach(b=>b.onclick=()=>mapFacts(b.d
 $('brand-home').onclick=()=>toggleMap(false);$('nav-map').onclick=()=>toggleMap(!mapOpen);$('close-map').onclick=()=>toggleMap(false);
 $('start-lesson').onclick=()=>start('daily');$('start-review').onclick=()=>start('review');$('start-placement').onclick=()=>start('placement',true);
 $('leave-lesson').onclick=()=>view('home');$('open-settings').onclick=settings;$('change-age').onclick=()=>{closeDialog('settings-dialog');setupAge(renderHome,true);};
+$('age-recover-link').onclick=()=>{closeDialog('age-dialog');ageNext=null;view('records');$('cloud-load-nick')?.focus();};
 $('open-sources').onclick=sources;$('footer-sources').onclick=sources;$('arrange-beacon').onclick=beaconDialog;
 (function(){
  const yt=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.youtube)||{};
  $('support-link').href=yt.membershipUrl||yt.channelUrl||'#';
+ $('header-live-link').href=yt.liveUrl||yt.channelUrl||'#';
+ $('header-channel-link').href=yt.channelUrl||'#';
+ if(!yt.liveUrl&&!yt.channelUrl)$('header-live-link').hidden=true;
+ if(!yt.channelUrl)$('header-channel-link').hidden=true;
 })();
 $('open-tourism-info').onclick=()=>showDialog('tourism-dialog');
 $('tourism-go').onclick=()=>toast(tr('현재 준비 중입니다.','This is being prepared right now.'));
