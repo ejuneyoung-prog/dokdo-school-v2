@@ -149,9 +149,16 @@ function lighthouse(x,px,py,darkness,t){
  x.restore();
 }
 function boat(x,px,py,angle,alpha){
- x.save();x.translate(px,py);x.rotate(angle);x.globalAlpha=alpha;x.fillStyle='rgba(9,13,19,.55)';
+ // A flat, hard-edged silhouette read as a foreign object pasted onto the
+ // photoreal island art (reported as looking like ice stuck to the rock).
+ // An actual blur filter on the fill -- not just a shadow behind it --
+ // softens the silhouette's own edge into a gradient instead of a cutout.
+ x.save();x.translate(px,py);x.rotate(angle);x.globalAlpha=alpha;
+ x.filter='blur(2.2px)';
+ x.fillStyle='rgba(11,16,23,.4)';
  x.beginPath();x.moveTo(-15,4);x.quadraticCurveTo(-17,9,-9,9);x.lineTo(9,9);x.quadraticCurveTo(16,9,14,3);x.closePath();x.fill();
  x.fillRect(-4,-6,9,7);
+ x.filter='none';
  x.restore();
 }
 // A single ferry-style silhouette makes one slow round trip to the pier per
