@@ -169,7 +169,7 @@ let lastAutoSaveAttempt=0;
 // remember to press anything.
 function scheduleAutoSave(){
  const s=getS();if(!s)return;
- const nick=(s.name||'').trim();if(!nick)return;
+ const nick=(s.name||'').trim().normalize('NFC');if(!nick)return;
  if(!window.DokdoLeaderboard||!DokdoLeaderboard.isConfigured())return;
  const now=Date.now();if(now-lastAutoSaveAttempt<60000)return;
  lastAutoSaveAttempt=now;
@@ -986,16 +986,20 @@ let trackIndex=0;
 // .5 for 50%); the remaining probability mass is split evenly across
 // tracks that don't specify one, so adding an unweighted track never
 // needs the others' numbers rebalanced by hand.
-function pickWeightedTrack(){
+function pickWeightedTrack(excludeIndex){
  if(!musicList.length)return 0;
- const explicitSum=musicList.reduce((s,m)=>s+(typeof m.weight==='number'?m.weight:0),0);
- const unweighted=musicList.filter(m=>typeof m.weight!=='number').length;
+ // Never immediately repeat the track that just finished, even one with a
+ // high weight -- excluded from this pick's pool only, so it can still come
+ // back up right after any other track.
+ const pool=musicList.map((m,i)=>({m,i})).filter(x=>musicList.length<2||x.i!==excludeIndex);
+ const explicitSum=pool.reduce((s,x)=>s+(typeof x.m.weight==='number'?x.m.weight:0),0);
+ const unweighted=pool.filter(x=>typeof x.m.weight!=='number').length;
  const share=unweighted?Math.max(0,1-explicitSum)/unweighted:0;
- const probs=musicList.map(m=>typeof m.weight==='number'?m.weight:share);
+ const probs=pool.map(x=>typeof x.m.weight==='number'?x.m.weight:share);
  const total=probs.reduce((a,b)=>a+b,0)||1;
  let r=Math.random()*total;
- for(let i=0;i<probs.length;i++){r-=probs[i];if(r<=0)return i;}
- return musicList.length-1;
+ for(let k=0;k<probs.length;k++){r-=probs[k];if(r<=0)return pool[k].i;}
+ return pool[pool.length-1].i;
 }
 function stopSound(){
  soundOn=false;audioToken++;if(audio){audio.muted=true;audio.pause();}
@@ -1010,7 +1014,7 @@ function ensureAudio(){
  // stop (see the visibilitychange listener below, which no longer stops it).
  audio.addEventListener('play',()=>{if(!soundOn){audio.muted=true;audio.pause();}});
  audio.addEventListener('error',()=>{stopSound();toast(tr('음악 파일을 재생하지 못했습니다.','The music file could not be played.'));});
- audio.addEventListener('ended',()=>{if(!musicList.length)return;trackIndex=pickWeightedTrack();playCurrentTrack();});
+ audio.addEventListener('ended',()=>{if(!musicList.length)return;trackIndex=pickWeightedTrack(trackIndex);playCurrentTrack();});
 }
 async function playCurrentTrack(){
  if(!musicList.length)return;
@@ -1029,7 +1033,7 @@ async function toggleSound(){
 async function musicSkip(dir){
  if(!musicList.length)return;
  if(dir<0&&soundOn&&audio&&audio.currentTime>3){audio.currentTime=0;return;}
- trackIndex=dir<0?(trackIndex-1+musicList.length)%musicList.length:pickWeightedTrack();
+ trackIndex=dir<0?(trackIndex-1+musicList.length)%musicList.length:pickWeightedTrack(trackIndex);
  if(!soundOn){toast(tr('먼저 소리를 켜 주세요.','Turn sound on first.'));return;}
  ensureAudio();await playCurrentTrack();
 }

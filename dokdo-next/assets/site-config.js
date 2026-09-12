@@ -38,8 +38,7 @@ window.DOKDO_SITE_CONFIG=Object.freeze({
   Object.freeze({f:'./assets/music/bgm5.mp3',t:"Let's Move (가야금)",tEn:"Let's Move (Gayageum)"}),
   Object.freeze({f:'./assets/music/bgm6.mp3',t:'독도의 역사 (가야금)',tEn:'Dokdo History (Gayageum)'}),
   Object.freeze({f:'./assets/music/bgm7.mp3',t:'아리랑 (가야금)',tEn:'Arirang (Gayageum)'}),
-  // TODO: real title pending from the operator -- placeholder only.
-  Object.freeze({f:'./assets/music/bgm8.mp3',t:'새 음원',tEn:'New Track',weight:.5})
+  Object.freeze({f:'./assets/music/bgm8.mp3',t:'독도는 대한민국',tEn:'Dokdo Is Korea',weight:.5})
  ]),
  youtube:Object.freeze({
   channelUrl:'https://www.youtube.com/@독도코리아',
