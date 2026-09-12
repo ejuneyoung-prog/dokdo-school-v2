@@ -646,6 +646,14 @@ async function renderHall(){
   const div=document.createElement('div'),v=document.createElement('strong'),t=document.createElement('small');
   v.textContent=n==null?'—':num(n);t.textContent=label;div.append(v,t);$('hall-summary').append(div);
  }
+ const ticker=$('hall-ticker-track'),weekEntries=d.week||[];
+ if(ticker){
+  ticker.replaceChildren();
+  if(weekEntries.length){
+   for(let rep=0;rep<2;rep++)for(const r of weekEntries){const span=document.createElement('span');span.textContent=`${r.nick} · ${tr('정답','Correct')} ${num(r.correct)}`;ticker.append(span);}
+   $('hall-ticker').hidden=false;
+  }else $('hall-ticker').hidden=true;
+ }
  hallRenderList($('hall-week-list'),d.week,[
   {key:'nick',label:tr('별명','Nickname')},{key:'school',label:tr('학교','School')},
   {key:'correct',label:tr('정답','Correct')},{key:'days',label:tr('참여일','Days')}
@@ -672,7 +680,7 @@ function renderRecords(){
   }
   renderWeeks(s);
   const legacy=document.createElement('p');legacy.className='fine';legacy.style.gridColumn='1 / -1';
-  legacy.textContent=tr(`이전 게임 성장 등급: ${s.grade||'K'} · 연속 출석 ${s.streak||0}일 (주간 집계와 별도)`,`Previous game rank: ${s.grade||'K'} · Attendance streak: ${s.streak||0} (separate from weekly totals)`);
+  legacy.textContent=tr(`학년: ${gradeLabel(Core.gradeProgress(a.correct).grade)} · 연속 출석 ${s.streak||0}일 (주간 집계와 별도)`,`Grade: ${gradeLabel(Core.gradeProgress(a.correct).grade)} · Attendance streak: ${s.streak||0} (separate from weekly totals)`);
   $('record-summary').append(legacy);
  }
  renderLegacy();updateStorageStatus();renderCloudPanel(s);renderBadges(s);
@@ -684,7 +692,7 @@ function renderBadgesInto(s,gridId,countId){
  const badges=M.computeBadges(s),earned=badges.filter(b=>b.earned).length;
  if($(countId))txt(countId,earned+' / '+badges.length);
  for(const b of badges){
-  const tile=document.createElement('div');tile.className='badge-tile'+(b.earned?' earned':'');
+  const tile=document.createElement('div');tile.className='badge-tile'+(b.earned?' earned':'');tile.dataset.group=b.group;
   const icon=document.createElement('span');icon.className='badge-icon';icon.setAttribute('aria-hidden','true');icon.textContent=b.icon;
   const name=document.createElement('b');name.textContent=tr(b.ko,b.en);
   tile.append(icon,name);grid.append(tile);

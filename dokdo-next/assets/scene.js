@@ -326,7 +326,10 @@ function render(ctx,s,t,options={}){
  lighthouse(ctx,LIGHTHOUSE[0],LIGHTHOUSE[1],phase.darkness,clock);
  if(labels){
   ctx.font='500 27px GmarketSans, sans-serif';ctx.fillStyle='#F5F4E9';ctx.shadowColor='#001322';ctx.shadowBlur=10;
-  ctx.fillText('서도 · Seodo',300,535);ctx.fillText('동도 · Dongdo',1160,674);ctx.shadowBlur=0;
+  ctx.fillText('서도 · Seodo',300,535);ctx.fillText('동도 · Dongdo',1160,674);
+  // Same coordinate pair already used for real sunrise/sunset math (see solar.js), just displayed here.
+  ctx.textAlign='center';ctx.font='500 15px SCoreDream, sans-serif';ctx.fillStyle='rgba(245,244,233,.6)';ctx.shadowBlur=6;
+  ctx.fillText('37°14′N 131°52′E',W/2,H-16);ctx.textAlign='left';ctx.shadowBlur=0;
  }
  ctx.restore();
 }

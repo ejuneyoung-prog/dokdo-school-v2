@@ -345,7 +345,7 @@ const BADGES=[
 ];
 function computeBadges(s){
  const a=summary(s);
- return BADGES.map(b=>({id:b.id,icon:b.icon,ko:b.ko,en:b.en,earned:!!b.need(a)}));
+ return BADGES.map(b=>({id:b.id,icon:b.icon,ko:b.ko,en:b.en,earned:!!b.need(a),group:b.id.replace(/\d+$/,'')}));
 }
 return {VERSION,KEY,OLD_KEYS,Core,Course,Journey,fresh,ensure,validate,summary,selectProfile,answer,finish,unlock,
         tick,replayBirds,backupText,parseImport,mergeStates,legacyCandidates,Store,MemoryStorage,clone,BADGES,computeBadges};
