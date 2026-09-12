@@ -29,51 +29,126 @@ request that this session actually made and observed.
 
 ## 2. Hall of fame / weekly leaderboard / school rankings
 
-- **Not configured, by design.** `assets/site-config.js` → `leaderboard.apiUrl = ''`. This repo
-  never had a Sheet/Apps Script URL in it (confirmed by the audit tool, see FEATURE-PARITY.md),
-  and one was not supplied for this task. Inventing a URL here would violate the explicit
-  instruction not to guess domains/keys.
+- **Configured with a real, operator-supplied URL** (2026-09-12): `assets/site-config.js` →
+  `leaderboard.apiUrl` is now the operator's actual deployed Apps Script web app
+  (`.../macros/s/AKfycbxh.../exec`, not the private script-editor URL first shared — that
+  distinction was clarified with the operator before this was wired in). `connect-src` in the
+  CSP now includes `https://script.google.com`, `https://script.googleusercontent.com` and
+  `https://*.googleusercontent.com` (the last two because Apps Script's `ContentService`
+  redirects responses to a one-time googleusercontent.com URL — `docs/SOURCES.md` S4).
 - `assets/leaderboard.js` implements `fetchWeekly` (`GET ?ts=`), `fetchLive` (`GET ?live=1&ts=`),
-  and `postEvent` (`POST {t:'a',...}`, `no-cors`, response intentionally never read) matching
+  `postEvent` (`POST {t:'a',...}`, `no-cors`), and now also `loadProgress`/`saveProgress`
+  (`GET ?load=<key>` / `POST {t:'save',key,nick,grade,payload}`), all matching
   `docs/02-LEGACY-API-CONTRACT.ko.md` exactly, including its documented rough edges (the
-  20,000-row read window, `people_week` being a truncated count and not a real total, the
-  `no-cors` opaque-response problem). None of that is exercised against a real server.
-- **What was actually tested:** a client-side smoke test where `fetchWeekly` was stubbed to
-  return the handoff package's synthetic fixture (`fixtures/feed.valid.json`) — confirms the
-  render path doesn't crash and produces sane HTML for that shape. **This is not HALL01.** It
-  proves nothing about a real server, real deduplication, real weekly rollover, or real load.
-- **Operator action required, all of it, before HALL01–HALL06 / API01–API07 in
-  `docs/05-ACCEPTANCE.ko.md` can even start:**
-  1. Supply a real, currently-deployed Apps Script (or replacement) URL and confirm what it
-     actually is today — this session cannot discover or guess it.
-  2. Decide whether to reuse the legacy sheet/script as-is (inheriting its documented
-     weaknesses — 20k-row window, nickname-only keys, `payload.slice(0,45000)` truncation,
-     `live.html`'s `data-k` attribute-injection risk) or stand up a small versioned adapter in
-     front of it. `docs/02` recommends the latter for anything new; this session did not build
-     that adapter because it has no server environment to deploy it to.
-  3. Once a URL exists: set `leaderboard.apiUrl` in `assets/site-config.js`, and add that
-     origin to `connect-src` in the CSP `<meta>` tag in `index.html` (currently
-     `connect-src 'self' https://api.open-meteo.com` — a configured-but-CSP-blocked URL is a
-     realistic failure mode worth testing for, not just a checkbox).
-  4. Re-run `renderHall()` against that real URL, then do the HALL01 test explicitly: one test
-     account, one real answer, confirm it appears exactly once, survives reload, survives a
-     week boundary.
+  20,000-row read window, `people_week` being a truncated count, the `no-cors` opaque-response
+  problem — UI text explicitly says "sent" never "saved").
+- **`postEvent` is now actually called** from the answer flow (`choose()` in `app.js`), sending
+  `{nick,flag,grade,qid,ok,run,best,mode,school,schoolCode,schoolCat}` on every answered
+  question, fire-and-forget (never blocks the lesson UI, never marked as confirmed-saved).
+- **Still NOT_RUN in this session, and can't be:** an actual round-trip against that URL. This
+  sandbox's network egress policy blocks `script.google.com` outright (`curl` → `403 CONNECT
+  tunnel failed`, confirmed directly, independent of the app). **This is a constraint of this
+  coding session only** — a real visitor's own browser, hitting the deployed Vercel site, is not
+  behind this proxy and should reach the URL normally. What this session verified instead:
+  1. The client fails **gracefully** when the network is unreachable: manually exercising
+     `renderHall()` in this sandbox against the real URL produced the intended `hall-error`
+     state with a readable message, not a crash or fake empty board (screenshot:
+     `hall-real-attempt.png`).
+  2. A render-path smoke test against the handoff's synthetic `fixtures/feed.valid.json` (stubbing
+     `fetchWeekly`) still renders correctly end to end.
+  3. `npm test` (156/156) and `tools/check_site.py` (80/80, both updated for this integration —
+     see below) still pass.
+  None of that is HALL01. **The operator (or anyone on a normal network) still needs to open the
+  deployed site and confirm real data actually appears and updates**, ideally right after
+  deploying this branch.
+- `tools/check_site.py` had two static guards that predate this feature and would now always
+  fail it by design (`allows only fixed weather endpoint`, `no hardcoded legacy Apps Script
+  endpoints`). Both were rewritten rather than deleted or ignored: the CSP check now verifies
+  every `connect-src` token is on an explicit allowlist (still fails on anything unexpected, e.g.
+  a wildcard `*` or a new random domain), and the endpoint check now verifies the Apps Script
+  URL pattern appears **only** in `assets/site-config.js` (the designated config file) and
+  nowhere else in the JS bundle — same guarantee (no accidental hardcoding elsewhere), updated
+  scope.
 - Broadcast pages (`hall.html`/`live.html` equivalents, OBS `bg/scale/rows/only` params) were not
   built this pass — see FEATURE-PARITY.md for that scope decision.
-- The answer/lesson flow does not currently call `postEvent` at all. Wiring that in before a
-  real endpoint exists would just add a silent, permanently-failing network call; left
-  disconnected on purpose until a real URL is set.
+- **Security note passed on to the operator, not resolved by this session:** this Apps Script
+  URL, once public, can be called by anyone who has it (including your own crawlable JS bundle).
+  Whether it can be abused (spamming `t:'a'` events, or the `load`/`save` endpoints) is fully
+  governed by whatever validation exists in `Code.gs` on your side, which this session has not
+  seen the current source of and cannot audit. `docs/02` section 4 lists the specific risks
+  (unbounded event volume, `payload.slice(0,45000)` truncation, nickname-only ownership) worth
+  checking in your own script before wide release.
+
+## 2b. Country flag, school affiliation, nickname+code recovery (approved by operator 2026-09-12)
+
+- Added to the age/profile dialog: a country select (with a manual ISO-2 code fallback for
+  "기타"), a school-category select (E/M/H/W matching the legacy hall-of-fame sections), and a
+  free-text school/organisation name field. These map onto `flag`/`school`/`schoolCat` fields
+  that already existed as dead, unused defaults in `app-model.js`'s state shape (`flag:'KR'`,
+  `school:''`) — this reused rather than reinvented that part of the schema. `schoolCat` and a
+  new `recoveryCode` field were added to the validated state shape in `dokdo-core.js` and to
+  `fresh()`/`ensure()` in `app-model.js`, with a backfill path for existing saved states that
+  predate these fields.
+- **Recovery code:** a random 4-digit code is generated once, the first time a profile is saved,
+  and never regenerated after that. The records screen shows it as `별명#코드` and a "서버로 백업
+  전송" button sends the current backup text to `saveProgress(key, ...)` where `key =
+  nickname#code`; a matching "다른 기기 기록 불러오기" form calls `loadProgress(key)` and — on a
+  hit — routes the result through the **existing** file-import preview/confirm flow
+  (`M.parseImport` + `showImport()`), so a server-sourced record is previewed and requires
+  explicit confirmation before it can overwrite anything on this device, exactly like a JSON
+  file import already did. Nothing auto-overwrites.
+- This is intentionally the *loose* version of "same nickname pulls in your record" the operator
+  originally asked for (item 3 in their list): a nickname alone is not the key, the 4-digit code
+  is required too, matching the legacy "별명#4자리" pattern the operator explicitly approved.
+  It is still not a real authentication system — doc02's warning stands: this only stops casual
+  collisions, not a determined person guessing a 4-digit code for a known nickname.
+- Not tested against the real server for the same sandbox-network reason as section 2. Locally
+  verified: profile save round-trips flag/school/schoolCat/recoveryCode through `localStorage`
+  correctly (screenshot: `age-dialog-filled.png`, `records-cloud.png`), and `npm test` still
+  passes (state-shape validation exercised indirectly by the full suite).
+
+## 2c. YouTube (operator items 7 & 9) — blocked, needs a different source
+
+- Not built. The operator's `dokdo-korea-school-final-v1.zip` (sent as the reference for this)
+  turned out to be an **older dokdo-next snapshot (package.json version 1.1.0)** that predates
+  weather/solar/journey/site-config/hall-of-fame — it contains no `youtube`/`유튜브`/livestream
+  reference anywhere (checked by grep across the whole archive). It looks like the wrong file
+  for this purpose, not a partial spec.
+- This feature was never in `dokdo-claude-handoff`'s docs either, so it was correctly out of
+  scope for the original task, not an oversight.
+- **Needed from the operator to proceed:** either (a) the actual source of the live
+  `dokdo-school.vercel.app` root site (outside this repo's scope) where this feature currently
+  lives, or (b) simpler — just the "독도코리아" channel handle/ID and, for the "random video"
+  behaviour, either permission to call the YouTube Data API (needs a Google Cloud API key with
+  its own quota/exposure considerations) or a hand-picked list of video IDs to randomize
+  client-side with no key at all (cheaper, recommended). For "실시간 보러가기", a single link
+  (channel's live tab, or a specific stream URL) is enough.
 
 ## 3. Weather
 
-- Unchanged this pass. Already Open-Meteo, gated by `nonCommercialConfirmed:false` (operator
-  must confirm non-commercial terms before flipping it), already fails closed (shows connection
-  status, never fabricates "clear weather").
-- `docs/02-LEGACY-API-CONTRACT.ko.md` documents a *different* legacy provider (KHOA Ulleungdo
-  station, `obsCode=DT_0013`, needs a `serviceKey`). Swapping to it was out of scope for this
-  pass (WX01 in the acceptance doc) and would need that service key from the operator, plus a
-  decision on whether to keep Open-Meteo as a secondary/fallback or replace it outright — the
-  handoff doc explicitly warns against silently replacing one with the other.
+- Code unchanged this pass. Still Open-Meteo, gated by `nonCommercialConfirmed:false`, still
+  fails closed (shows connection status, never fabricates "clear weather").
+- **Operator clarification (2026-09-12):** they obtained a real 기상청 (KMA) service key, but a
+  previous developer could not get it integrated and fell back to Open-Meteo instead — which is
+  the Open-Meteo code currently in this repo. Two things need the operator's input before this
+  can move:
+  1. **Which exact 기상청 service?** KMA publishes many different data.go.kr endpoints (short-
+     term forecast, ultra-short-term nowcast, weather warnings, etc.) — this is also a different
+     agency from the KHOA (국립해양조사원) Ulleungdo observation endpoint that
+     `docs/02-LEGACY-API-CONTRACT.ko.md` documents as the *original* legacy provider. These are
+     three different things (KMA / KHOA / Open-Meteo) and this session should not guess which
+     one the operator means.
+  2. **Where the key can safely live.** data.go.kr-style service keys are generally meant to be
+     called server-side; putting one directly into this repo's public client-side JS would
+     expose it to anyone viewing the page source (and to quota theft / abuse), the same class of
+     problem `docs/05-ACCEPTANCE.ko.md` (API06) flags for secrets in a JS bundle. This static
+     site has no server component today. Options, once the operator confirms which service:
+     a small Vercel serverless function (or the existing Apps Script) proxying the call so the
+     key never reaches the browser, or accepting the exposure if the operator's KMA service
+     permits public client-side keys (worth confirming with data.go.kr's own terms, not assumed
+     here).
+  Waiting on the operator's answer to both before writing any weather integration code, rather
+  than guessing an endpoint or pasting a key into a public file.
 
 ## 4. Fonts (VIS02)
 

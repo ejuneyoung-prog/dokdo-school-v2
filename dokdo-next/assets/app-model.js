@@ -13,12 +13,13 @@ const VERSION='1.3.0';
 const Journey=typeof module==='object'&&module.exports?require('./journey.js'):globalThis.DokdoJourney;
 const clone=Core.clone;
 function fresh(now=Date.now()){
- return ensure(Core.ensure({name:'',nick:'',flag:'KR',school:'',grade:'K',xp:0,streak:0,
+ return ensure(Core.ensure({name:'',nick:'',flag:'KR',school:'',schoolCat:'',recoveryCode:'',grade:'K',xp:0,streak:0,
   gcHit:0,run:0,best:0,started:false,passed:[],badgesEver:[],recent:[],recentG:[],
   lastDay:'',m:{}},now),now);
 }
 function ensure(s,now=Date.now()){
  Core.ensure(s,now);
+ if(s.flag==null)s.flag='KR';if(s.school==null)s.school='';if(s.schoolCat==null)s.schoolCat='';if(s.recoveryCode==null)s.recoveryCode='';
  if(s.learningProfile && s.learningProfile.completed==null)s.learningProfile.completed={};
  if(s.learningProfile)Course.ensureProfile(s.learningProfile);
  if(!s.visual)s.visual={version:1,unlocks:{},birdVisit:null,birdsEnabled:true,reduceMotion:false,language:'ko',geometry:'art-v1'};

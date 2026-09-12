@@ -24,7 +24,7 @@
 <meta name="twitter:description" content="독도의 지리·역사·생태를 배우고, 나의 학습으로 독도를 밝혀보세요.">
 <meta name="twitter:image" content="https://dokdo-school-v2.vercel.app/dokdo-next/assets/share/dokdo-main-96151b75db9b.jpg">
 <meta name="twitter:image:alt" content="독도 코리아 스쿨의 두 섬과 바다 생명을 표현한 서비스 대표 일러스트">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'none'; worker-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://api.open-meteo.com https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; object-src 'none'; base-uri 'self'; form-action 'none'; worker-src 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="dokdo-mode" content="live">
 <title>독도 코리아 스쿨 · 나의 독도</title>
@@ -169,6 +169,19 @@
  <div class="section-heading"><div><p class="eyebrow">YOUR LEARNING STAYS WITH YOU</p><h1 data-i18n="myRecords">내 기록</h1></div><button class="text-button" data-view="home" data-i18n="backHome">내 독도로</button></div>
  <div class="record-summary" id="record-summary"></div>
  <section class="record-panel"><h2 data-i18n="backupTitle">기록 보관과 복원</h2><p data-i18n="localOnly">새 화면은 이 브라우저에 저장됩니다. 클라우드 계정과 자동 동기화되지 않으니 백업 파일도 보관해 주세요.</p><div class="button-row"><button id="export-records" class="button primary" data-i18n="backupFile">학습 기록 파일 저장</button><label class="button secondary file-label"><span data-i18n="importFile">백업 파일 불러오기</span><input id="import-file" type="file" accept=".json,application/json"></label></div><p class="fine" data-i18n="backupWarning">이미지 저장은 기록 백업이 아닙니다. 백업 파일에는 이름·학교·구형 복원 코드·학습 내역이 들어갈 수 있으니 비공개로 보관하세요.</p><div id="import-preview" class="import-preview" hidden></div></section>
+ <section class="record-panel" id="cloud-panel" hidden>
+  <h2 data-i18n="cloudBackupTitle">서버 백업 · 다른 기기에서 이어하기</h2>
+  <p class="fine" data-i18n="cloudBackupWarning">전송 후에도 서버가 실제로 받았는지는 이 화면에서 바로 확인할 수 없습니다(구형 서버 응답 방식). "전송함"은 저장 완료를 보장하지 않습니다.</p>
+  <p id="cloud-key-display" class="fine"></p>
+  <div class="button-row"><button id="cloud-save" class="button secondary" data-i18n="cloudSaveBtn">서버로 백업 전송</button></div>
+  <p id="cloud-save-status" class="fine" role="status"></p>
+  <div class="button-row">
+   <label class="field"><span data-i18n="cloudLoadNick">불러올 별명</span><input id="cloud-load-nick" maxlength="40"></label>
+   <label class="field"><span data-i18n="cloudLoadCode">4자리 코드</span><input id="cloud-load-code" maxlength="4" inputmode="numeric"></label>
+  </div>
+  <button id="cloud-load" class="button secondary" data-i18n="cloudLoadBtn">다른 기기 기록 불러오기</button>
+  <p id="cloud-load-status" class="fine" role="status"></p>
+ </section>
  <section class="record-panel" id="legacy-panel"><h2 data-i18n="oldRecords">기존 독도학교 기록</h2><div id="legacy-records"></div><p class="fine" data-i18n="oldRecordWarning">같은 주소·같은 브라우저의 기록만 확인할 수 있습니다. 원본과 구형 클라우드는 수정하지 않습니다. 두 버전은 자동 동기화되지 않습니다.</p></section>
  <section class="record-panel"><h2 data-i18n="weeklyHistory">주간 배움 기록</h2><p class="fine" data-i18n="weeklyRule">한국 시간 월요일마다 이번 주 집계만 바뀝니다. 누적 정답·불빛·봉화는 남습니다.</p><div id="weekly-history"></div></section>
 </section>
@@ -180,6 +193,21 @@
 <dialog id="age-dialog" class="dialog">
  <form id="age-form"><div class="dialog-top"><span class="eyebrow">YOUR STARTING POINT</span><button type="button" class="icon-button" data-close="age-dialog" aria-label="닫기">×</button></div><h2 data-i18n="ageTitle">어디서부터 함께 배울까요?</h2><p data-i18n="ageDesc">나이대는 설명을 고르는 참고값이에요. 생년월일은 받지 않아요.</p>
  <label class="field"><span data-i18n="nickname">별명 (선택)</span><input id="nickname" maxlength="40" autocomplete="nickname" placeholder="독도 탐험가"></label>
+ <label class="field"><span data-i18n="flagField">국가 (명예의 전당 표시용, 선택)</span><select id="flag-select">
+  <option value="KR">🇰🇷 대한민국</option><option value="US">🇺🇸 미국</option><option value="JP">🇯🇵 일본</option>
+  <option value="CN">🇨🇳 중국</option><option value="GB">🇬🇧 영국</option><option value="CA">🇨🇦 캐나다</option>
+  <option value="AU">🇦🇺 호주</option><option value="DE">🇩🇪 독일</option><option value="FR">🇫🇷 프랑스</option>
+  <option value="VN">🇻🇳 베트남</option><option value="PH">🇵🇭 필리핀</option><option value="TH">🇹🇭 태국</option>
+  <option value="ID">🇮🇩 인도네시아</option><option value="IN">🇮🇳 인도</option><option value="BR">🇧🇷 브라질</option>
+  <option value="OTHER">🌐 기타</option>
+ </select></label>
+ <label class="field" id="flag-other-row" hidden><span data-i18n="flagOtherField">국가 코드 (ISO 2자리, 예: NZ)</span><input id="flag-other" maxlength="2" placeholder="NZ" style="text-transform:uppercase"></label>
+ <label class="field"><span data-i18n="schoolCatField">학교급 (명예의 전당 부문, 선택)</span><select id="school-cat">
+  <option value="">—</option>
+  <option value="E" data-i18n="schoolCatE">초등학교</option><option value="M" data-i18n="schoolCatM">중학교</option>
+  <option value="H" data-i18n="schoolCatH">고등학교</option><option value="W" data-i18n="schoolCatW">해외 한국학교</option>
+ </select></label>
+ <label class="field"><span data-i18n="schoolField">학교·소속 이름 (선택, 없으면 자유롭게)</span><input id="school-name" maxlength="60" placeholder="독도초등학교"></label>
  <label class="field"><span data-i18n="ageBand">나이대</span><select id="age-band" required><option value="" data-i18n="selectAge">나이대를 골라 주세요</option></select></label>
  <label class="check-row"><input type="checkbox" id="age-easy"><span data-i18n="easyStart">나이에 관계없이 아주 쉬운 말부터 시작할게요.</span></label>
  <p id="age-error" class="error" role="alert"></p><button class="button primary" type="submit" data-i18n="continue">계속하기</button><p class="fine" data-i18n="agePreserve">기존 성장 등급과 기록을 낮추지 않습니다.</p></form>

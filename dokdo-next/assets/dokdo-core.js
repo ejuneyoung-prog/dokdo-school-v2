@@ -96,6 +96,8 @@
     for (const k of ['name', 'nick', 'school', 'grade', 'flag']) {
       if (s[k] != null && (typeof s[k] !== 'string' || s[k].length > 300)) throw new Error('Invalid profile field.');
     }
+    if (s.schoolCat != null && !['', 'E', 'M', 'H', 'W'].includes(s.schoolCat)) throw new Error('Invalid school category.');
+    if (s.recoveryCode != null && (typeof s.recoveryCode !== 'string' || !/^\d{4}$|^$/.test(s.recoveryCode))) throw new Error('Invalid recovery code.');
     return true;
   }
   function ensure(s, now = Date.now()) {

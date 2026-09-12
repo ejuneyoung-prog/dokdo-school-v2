@@ -55,5 +55,29 @@ async function postEvent(eventFields){
  }catch(e){return{state:'error',error:String(e&&e.message||e)};}
 }
 
-return{isConfigured,fetchWeekly,fetchLive,postEvent};
+/* GET <SHEET_API>?load=<key> — key is the legacy "nickname#4-digit-code" scheme. */
+async function loadProgress(key){
+ if(!isConfigured())return{state:'not_configured'};
+ try{
+  const data=await getJSON(apiUrl()+'?load='+encodeURIComponent(key));
+  if(!data||data.found!==true)return{state:'not_found'};
+  return{state:'ok',data};
+ }catch(e){return{state:'error',error:String(e&&e.message||e)};}
+}
+
+/* POST {t:'save',key,nick,grade,payload}. Same no-cors caveat as postEvent: a
+ * resolved promise means the request was sent, not that the server stored
+ * it. payloadText must already be a JSON string (the caller's backup text),
+ * matching the legacy field shape exactly. */
+async function saveProgress(key,nick,grade,payloadText){
+ if(!isConfigured())return{state:'not_configured'};
+ if(typeof payloadText==='string'&&payloadText.length>45000)return{state:'too_large',length:payloadText.length};
+ const body=JSON.stringify({t:'save',key,nick,grade,payload:payloadText});
+ try{
+  await fetch(apiUrl(),{method:'POST',mode:'no-cors',credentials:'omit',body});
+  return{state:'sent_unconfirmed'};
+ }catch(e){return{state:'error',error:String(e&&e.message||e)};}
+}
+
+return{isConfigured,fetchWeekly,fetchLive,postEvent,loadProgress,saveProgress};
 })();

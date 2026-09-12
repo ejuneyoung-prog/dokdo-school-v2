@@ -52,7 +52,17 @@ const en={
  hallWeeklyPersonal:'Weekly personal ranking',
  hallWeeklyPersonalNote:'Sorted by correct answers, then days participated, then longest streak. Shows at most 60 people — not the full participant count.',
  hallSchool:'School standings',
- hallRecent:'Recent participation'
+ hallRecent:'Recent participation',
+ flagField:'Country (shown on the hall of fame, optional)',
+ flagOtherField:'Country code (ISO 2-letter, e.g. NZ)',
+ schoolCatField:'School category (hall of fame section, optional)',
+ schoolCatE:'Elementary school',schoolCatM:'Middle school',schoolCatH:'High school',schoolCatW:'Korean school abroad',
+ schoolField:'School / organisation name (optional, free text)',
+ cloudBackupTitle:'Server backup · continue on another device',
+ cloudBackupWarning:'This screen cannot immediately confirm the server actually received the data (the legacy server’s response cannot be read from the browser). “Sent” does not guarantee it was saved.',
+ cloudSaveBtn:'Send a backup to the server',
+ cloudLoadNick:'Nickname to load',cloudLoadCode:'4-digit code',
+ cloudLoadBtn:'Load a record from another device'
 };
 en.mapShapeNote='Dongdo is lower, with a comparatively level upper area. This authored comparison is not a surveyed 3D terrain or facility-position model.';
 let mode=document.querySelector('meta[name="dokdo-mode"]').content;
@@ -198,15 +208,29 @@ function setupAge(callback,force=false){
  ageNext=callback;$('age-band').replaceChildren();const empty=document.createElement('option');empty.value='';empty.textContent=tr('나이대를 골라 주세요','Select your age band');$('age-band').append(empty);
  C.BANDS.forEach(b=>{const o=document.createElement('option');o.value=b.id;o.textContent=b[language];$('age-band').append(o);});
  $('age-band').value=getS().learningProfile?.ageBand||'';$('age-easy').checked=!!getS().learningProfile?.easy;
- $('nickname').value=(getS().name||'').slice(0,40);txt('age-error','');showDialog('age-dialog');$('age-band').focus();
+ $('nickname').value=(getS().name||'').slice(0,40);
+ const knownFlags=Array.from($('flag-select').options).map(o=>o.value).filter(v=>v!=='OTHER');
+ const curFlag=getS().flag||'KR';
+ if(knownFlags.includes(curFlag)){$('flag-select').value=curFlag;$('flag-other-row').hidden=true;$('flag-other').value='';}
+ else{$('flag-select').value='OTHER';$('flag-other-row').hidden=false;$('flag-other').value=curFlag;}
+ $('school-cat').value=getS().schoolCat||'';$('school-name').value=getS().school||'';
+ txt('age-error','');showDialog('age-dialog');$('age-band').focus();
 }
+$('flag-select').onchange=()=>{$('flag-other-row').hidden=$('flag-select').value!=='OTHER';};
 $('age-form').addEventListener('submit',async event=>{
  event.preventDefault();if(busy)return;
  if(!C.band($('age-band').value)){txt('age-error',tr('나이대를 먼저 골라 주세요.','Please select an age band.'));return;}
  busy=true;
  try{
   const band=$('age-band').value,easy=$('age-easy').checked,nick=$('nickname').value.trim();
-  await mutate(s=>{M.selectProfile(s,band,easy);if(!s.name||s.name.length<=40)s.name=nick;});
+  const flagRaw=$('flag-select').value==='OTHER'?$('flag-other').value.trim().toUpperCase():$('flag-select').value;
+  const flag=/^[A-Z]{2}$/.test(flagRaw)?flagRaw:'KR';
+  const schoolCat=$('school-cat').value,schoolName=$('school-name').value.trim().slice(0,60);
+  await mutate(s=>{
+   M.selectProfile(s,band,easy);if(!s.name||s.name.length<=40)s.name=nick;
+   s.flag=flag;s.schoolCat=schoolCat;s.school=schoolName;
+   if(!s.recoveryCode)s.recoveryCode=String(Math.floor(1000+Math.random()*9000));
+  });
   closeDialog('age-dialog');const next=ageNext;ageNext=null;renderHome();if(next)next();
  }catch(e){txt('age-error',tr('설정을 저장하지 못했습니다. 내 기록에서 먼저 백업해 주세요.','Settings could not be saved. Back up your record first.'));}
  finally{busy=false;}
@@ -299,6 +323,10 @@ async function choose(pick,skip=false){
  try{
   const awarded=await mutate(s=>M.answer(s,q.item,ok,{mode:q.mode,retry,skipped:skip,helped:!!q.usedHelp}));
   // Persistent commit succeeded before moving the question forward.
+  if(window.DokdoLeaderboard){const cur=getS();DokdoLeaderboard.postEvent({
+   nick:cur.name||'',flag:cur.flag||'KR',grade:cur.grade||'K',qid:q.item.id,ok:ok?1:0,
+   run:cur.run||0,best:cur.best||0,mode:q.mode,school:cur.school||'',schoolCode:cur.school||'',schoolCat:cur.schoolCat||''
+  }).catch(()=>{});}
   q.answered=true;q.needsRetry=q.mode!=='placement'&&!ok;
   if(q.mode==='placement'){C.recordPlacement(q.diagnostic,q.item,ok,skip);if(ok)q.first++;}
   else if(!retry){if(ok)q.first++;q.xp+=awarded.xp;}
@@ -417,8 +445,44 @@ function renderRecords(){
   legacy.textContent=tr(`이전 게임 성장 등급: ${s.grade||'K'} · 연속 출석 ${s.streak||0}일 (주간 집계와 별도)`,`Previous game rank: ${s.grade||'K'} · Attendance streak: ${s.streak||0} (separate from weekly totals)`);
   $('record-summary').append(legacy);
  }
- renderLegacy();updateStorageStatus();
+ renderLegacy();updateStorageStatus();renderCloudPanel(s);
 }
+function renderCloudPanel(s){
+ const configured=!!(window.DokdoLeaderboard&&DokdoLeaderboard.isConfigured());
+ $('cloud-panel').hidden=!configured;if(!configured)return;
+ const nick=(s?.name||'').trim(),code=s?.recoveryCode||'';
+ $('cloud-key-display').textContent=nick&&code?tr(`내 복구 키: ${nick}#${code} (다른 기기에서 이 별명과 코드로 불러올 수 있어요)`,`Your recovery key: ${nick}#${code} (use this nickname and code to load your record on another device)`):tr('별명을 먼저 설정하면 복구 키가 생성됩니다.','Set a nickname first to get a recovery key.');
+ $('cloud-save').disabled=!nick||!code;
+}
+$('cloud-save').onclick=async()=>{
+ const s=getS();if(!s)return;
+ const nick=(s.name||'').trim(),code=s.recoveryCode||'';
+ if(!nick||!code){txt('cloud-save-status',tr('별명을 먼저 설정해 주세요.','Set a nickname first.'));return;}
+ $('cloud-save').disabled=true;txt('cloud-save-status',tr('전송 중…','Sending…'));
+ const payload=store.blocked?store.recovery():M.backupText(s);
+ const res=await DokdoLeaderboard.saveProgress(nick+'#'+code,nick,s.grade||'K',payload);
+ if(res.state==='sent_unconfirmed')txt('cloud-save-status',tr('서버로 전송했습니다. 서버가 실제로 저장했는지는 이 화면에서 확인되지 않습니다.','Sent to the server. Whether it was actually stored cannot be confirmed from this screen.'));
+ else if(res.state==='too_large')txt('cloud-save-status',tr(`기록이 너무 커서(${res.length}자) 보내지 않았습니다.`,`Not sent — the record is too large (${res.length} chars).`));
+ else if(res.state==='not_configured')txt('cloud-save-status',tr('서버가 연결되지 않았습니다.','No server is configured.'));
+ else txt('cloud-save-status',tr('전송하지 못했습니다: ','Could not send: ')+(res.error||''));
+ $('cloud-save').disabled=false;
+};
+$('cloud-load').onclick=async()=>{
+ const nick=$('cloud-load-nick').value.trim(),code=$('cloud-load-code').value.trim();
+ if(!nick||!/^\d{4}$/.test(code)){txt('cloud-load-status',tr('별명과 4자리 코드를 모두 입력해 주세요.','Enter both the nickname and the 4-digit code.'));return;}
+ if(store.blocked&&getS()!==null){guarded();return;}
+ $('cloud-load').disabled=true;txt('cloud-load-status',tr('불러오는 중…','Loading…'));
+ const res=await DokdoLeaderboard.loadProgress(nick+'#'+code);
+ if(res.state==='ok'){
+  try{
+   importCandidate=M.parseImport(res.data.payload,getS());importOriginal=res.data.payload;
+   txt('cloud-load-status','');showImport();
+  }catch(e){txt('cloud-load-status',tr('서버 기록의 구조를 확인할 수 없어 불러오지 않았습니다.','The server record could not be validated, so nothing was loaded.'));}
+ }else if(res.state==='not_found')txt('cloud-load-status',tr('해당 별명과 코드로 저장된 기록이 없습니다.','No record found for that nickname and code.'));
+ else if(res.state==='not_configured')txt('cloud-load-status',tr('서버가 연결되지 않았습니다.','No server is configured.'));
+ else txt('cloud-load-status',tr('불러오지 못했습니다: ','Could not load: ')+(res.error||''));
+ $('cloud-load').disabled=false;
+};
 function renderWeeks(s){
  $('weekly-history').replaceChildren();const table=document.createElement('table'),thead=document.createElement('thead'),hr=document.createElement('tr');
  [tr('시작 날짜 (한국 시간)','Week starting (Korea)'),tr('정답','Correct'),tr('집계 기준','Scope')].forEach(t=>{const th=document.createElement('th');th.scope='col';th.textContent=t;hr.append(th);});

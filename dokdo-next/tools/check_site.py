@@ -25,13 +25,17 @@ for name in ['index.html','demo.html','question-review.html']:
     for ref in p.refs:
         if ref.startswith('./'):check(name+' local asset '+ref,(ROOT/ref).is_file())
     csp=next((a.get('content','') for a in p.meta if a.get('http-equiv')=='Content-Security-Policy'),'')
-    check(name+' allows only fixed weather endpoint or no network',"connect-src 'none'" in csp or "connect-src 'self' https://api.open-meteo.com;" in csp)
+    connect_allowlist={"'self'","'none'",'https://api.open-meteo.com','https://script.google.com','https://script.googleusercontent.com','https://*.googleusercontent.com'}
+    connect_directive=next((d for d in csp.split(';') if d.strip().startswith('connect-src')),'')
+    connect_tokens=connect_directive.strip().split()[1:]
+    check(name+' connect-src only names the approved weather/leaderboard endpoints',bool(connect_tokens) and set(connect_tokens)<=connect_allowlist,connect_tokens)
     check(name+' restricts executable scripts to local files',"script-src 'self';" in csp)
 for f in sorted((ROOT/'assets').glob('*.js')):
     r=subprocess.run(['node','--check',str(f)],capture_output=True,text=True)
     check(f.name+' JavaScript syntax',r.returncode==0,r.stderr.strip() if r.returncode else None)
 all_js='\n'.join(p.read_text() for p in (ROOT/'assets').glob('*.js'))
-check('No hardcoded legacy Apps Script endpoints',not re.search(r'AKfycb|script\.google\.com/macros',all_js))
+non_config_js='\n'.join(p.read_text() for p in (ROOT/'assets').glob('*.js') if p.name!='site-config.js')
+check('Apps Script endpoint is only configured in site-config.js, not hardcoded elsewhere',not re.search(r'AKfycb|script\.google\.com/macros',non_config_js))
 check('No common embedded credential patterns',not re.search(r'AIza[0-9A-Za-z_-]{30,}|sk-[A-Za-z0-9]{35,}',all_js))
 check('No eval or dynamic Function constructor',not re.search(r'\beval\s*\(|new\s+Function\s*\(',all_js))
 check('No font binaries distributed',not any(p.suffix.lower() in ['.woff','.woff2','.ttf','.otf','.ttc'] for p in ROOT.rglob('*')))
