@@ -73,7 +73,7 @@ const en={
  youtubeLive:'Watch the live stream ↗',
  youtubeWatchOn:'Open on YouTube ↗',
  youtubeNote:'Shows one of the Dokdo Korea channel’s videos at random. Tap to play — nothing plays automatically.',
- support:'♥ Support',headerLive:'🔴 Live',headerChannel:'▶ My channel',
+ support:'♥ Support Dokdo Korea Membership',headerLive:'🔴 Live',headerChannel:'▶ My channel',
  youtubeChannel:'Dokdo Korea channel ↗',
  tourismInfoTitle:'Ulleungdo–Dokdo travel information',
  tourismInfoBody:'Basic visitor information about Dokdo (ferry access via Ulleungdo, weather-dependent sailings, and what to know before visiting).',
