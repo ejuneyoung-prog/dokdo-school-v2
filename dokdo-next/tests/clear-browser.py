@@ -40,7 +40,11 @@ try:
    p.evaluate("()=>{const m=new Map();Object.defineProperty(window,'localStorage',{value:{getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k)}});}")
    p.set_content(inline(),wait_until='domcontentloaded')
   else:p.goto(base,wait_until='domcontentloaded')
-  p.wait_for_function('!!window.DokdoApp');p.evaluate('DokdoApp.assetsReady');ck('live starts with zero question rewards',p.evaluate('Object.keys(DokdoApp.state.m).length===0 && DokdoApp.state.xp===0'))
+  p.wait_for_function('!!window.DokdoApp');p.evaluate('DokdoApp.assetsReady')
+  # The channel intro opens once a day over the home view and swallows every
+  # click underneath it, so dismiss it as a visitor would.
+  p.evaluate("()=>{const d=document.getElementById('youtube-intro-dialog');if(d&&d.open)d.close();}")
+  ck('live starts with zero question rewards',p.evaluate('Object.keys(DokdoApp.state.m).length===0 && DokdoApp.state.xp===0'))
   if args.phase in ['flow','all']:
    p.eval_on_selector('#start-lesson','e=>e.click()');p.eval_on_selector('#age-form button[type=submit]','e=>e.click()');ck('age gate remains mandatory',p.evaluate('DokdoApp.lesson===null'))
    expected={'u7':1,'8-9':1,'10-11':2,'12-13':3,'14-16':8,'17-19':9,'20+':11}

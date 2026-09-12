@@ -76,6 +76,9 @@ try:
                 ctx.add_init_script('(()=>{const entries='+json.dumps(entries)+';try{for(const [k,v] of entries)if(!localStorage.getItem(k))localStorage.setItem(k,v);}catch(e){}})();')
             page.goto(base+file,wait_until='domcontentloaded',timeout=15000)
         page.wait_for_function('!!window.DokdoApp',timeout=10000)
+        # The channel intro opens once a day over the home view and swallows
+        # every click underneath it, so dismiss it as a visitor would.
+        page.evaluate("()=>{const d=document.getElementById('youtube-intro-dialog');if(d&&d.open)d.close();}")
         page.evaluate('DokdoApp.assetsReady')
         page.wait_for_timeout(100)
         if lang=='en':page.click('#language');page.wait_for_function('document.documentElement.lang==="en"')
