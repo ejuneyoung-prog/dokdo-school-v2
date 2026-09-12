@@ -18,7 +18,9 @@ def wait_until(page,expression,timeout_ms=12000,step_ms=100):
  # Polled here rather than with wait_for_function: that installs a page-side
  # predicate, which this site's CSP blocks for lacking unsafe-eval.
  for _ in range(max(1,timeout_ms//step_ms)):
-  if page.evaluate(expression):return True
+  try:
+   if page.evaluate(expression):return True
+  except Exception:pass  # mid-navigation; keep polling
   page.wait_for_timeout(step_ms)
  raise AssertionError('Timed out waiting for: '+expression)
 def check(name,condition,details=None):
@@ -74,6 +76,9 @@ try:
         page=ctx.new_page();page.set_default_timeout(8000);page.on('pageerror',lambda e:errors.append(str(e)))
         # Only optional fonts are blocked for deterministic screenshots.
         ctx.route('https://cdn.jsdelivr.net/**',lambda r:r.abort())
+        # A test must never reach the operator's live sheet: CI runs were
+        # appending rows to the real activity log.
+        ctx.route('https://script.google.com/**',lambda r:r.abort())
         ctx.on('request',lambda r: requests.append(r.url) if r.url.startswith('http') and '127.0.0.1' not in r.url and 'cdn.jsdelivr.net' not in r.url else None)
         entries=list((seed or {}).items())
         if args.mode=='inline':
@@ -142,6 +147,7 @@ try:
                 ans=page.evaluate('DokdoApp.lesson.answer')
                 page.locator(f'.answer-option[data-index="{ans}"]').click()
                 page.wait_for_selector('#next-question',state='visible');page.click('#next-question')
+            page.wait_for_selector('#lesson-result',state='visible')
             check(prefix+' full lesson completes',page.locator('#lesson-result').is_visible())
             page.locator('#lesson-result .button.primary').click()
             check(prefix+' learned lights are visible',int(page.locator('#lights-count').inner_text().replace(',',''))>0)

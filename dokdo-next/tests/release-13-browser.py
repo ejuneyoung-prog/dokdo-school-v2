@@ -8,7 +8,9 @@ p=argparse.ArgumentParser();p.add_argument('--mode',choices=['inline','http'],de
 checks=[];errors=[];requests=[]
 def wait_until(page,expression,timeout_ms=12000,step_ms=100):
  for _ in range(max(1,timeout_ms//step_ms)):
-  if page.evaluate(expression):return True
+  try:
+   if page.evaluate(expression):return True
+  except Exception:pass  # mid-navigation; keep polling
   page.wait_for_timeout(step_ms)
  raise AssertionError('Timed out waiting for: '+expression)
 def check(name,ok,detail=None):
@@ -35,7 +37,7 @@ try:
   launch={'headless':True}
   if a.engine=='chromium':launch['args']=['--no-sandbox']
   if a.browser:launch['executable_path']=a.browser
-  browser=getattr(pw,a.engine).launch(**launch);ctx=browser.new_context(viewport={'width':1440,'height':1100},accept_downloads=True,reduced_motion='reduce');ctx.route('https://cdn.jsdelivr.net/**',lambda r:r.abort());page=ctx.new_page();page.set_default_timeout(12000);page.on('dialog',lambda d:d.accept());page.on('pageerror',lambda e:errors.append(str(e)));page.on('request',lambda r:requests.append(r.url) if r.url.startswith('http') and not any(x in r.url for x in ['127.0.0.1','cdn.jsdelivr.net','i.ytimg.com']) else None)
+  browser=getattr(pw,a.engine).launch(**launch);ctx=browser.new_context(viewport={'width':1440,'height':1100},accept_downloads=True,reduced_motion='reduce');ctx.route('https://cdn.jsdelivr.net/**',lambda r:r.abort());ctx.route('https://script.google.com/**',lambda r:r.abort());page=ctx.new_page();page.set_default_timeout(12000);page.on('dialog',lambda d:d.accept());page.on('pageerror',lambda e:errors.append(str(e)));page.on('request',lambda r:requests.append(r.url) if r.url.startswith('http') and not any(x in r.url for x in ['127.0.0.1','cdn.jsdelivr.net','i.ytimg.com']) else None)
   if a.mode=='inline':
    page.evaluate("()=>{const m=new Map();Object.defineProperty(window,'localStorage',{value:{getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k)}});}")
    page.set_content(inline(),wait_until='domcontentloaded')
