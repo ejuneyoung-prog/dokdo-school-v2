@@ -54,6 +54,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,[t
 .hall-ticker-track span{font:600 14px var(--heading);color:var(--gold);white-space:nowrap}
 @keyframes hall-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .motion-reduced .hall-ticker-track{animation:none}
+/* Promotion celebration on the home view. The hall of fame had the only
+ * scrolling strip, so a learner never saw their own promotion where they
+ * actually play. Same marquee, own colours, and it stops under reduced
+ * motion like the other one. */
+.level-banner{overflow:hidden;white-space:nowrap;border:1px solid var(--gold);border-radius:14px;background:linear-gradient(120deg,#1c2f1e,#0d2433);padding:14px 0;margin-bottom:18px}
+.level-banner-track{display:inline-flex;gap:52px;animation:hall-scroll 26s linear infinite}
+.level-banner-track span{font:700 15px var(--heading);color:var(--gold);white-space:nowrap}
+.level-banner.top-level{border-color:#ffe7a8;background:linear-gradient(120deg,#3a2d10,#132b3a)}
+.motion-reduced .level-banner-track{animation:none}
 .icon-button{border:1px solid var(--line);border-radius:50%;width:42px;height:42px;min-width:42px;font-size:15px;display:inline-flex;align-items:center;justify-content:center}.profile-button{display:flex;align-items:center;gap:7px;white-space:nowrap;min-height:44px;padding:8px}.profile-dot{border-radius:50%;background:#173a48;color:var(--mint);height:30px;width:30px;display:grid;place-items:center}
 main{max-width:1530px;padding:30px 36px 36px;margin:auto;min-height:70vh}.section-heading{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:24px}.eyebrow{font:500 10px/1.6 var(--heading);letter-spacing:.16em;color:#8ab2bd;margin-bottom:8px}.save-indicator{font-size:11px;color:#afd9c4;display:flex;gap:8px;white-space:nowrap}.save-indicator:before{content:"";display:inline-block;width:6px;height:6px;background:#8ac7a8;border-radius:50%;margin-top:7px}.save-indicator.error{color:var(--red)}.save-indicator.error:before{background:var(--red)}
 .stage-grid{display:block;position:relative}.scene-panel{border:1px solid #355267;background:#082638;border-radius:22px;overflow:hidden;position:relative;display:flex;flex-direction:column;min-width:0;isolation:isolate;width:100%}

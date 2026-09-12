@@ -20,6 +20,10 @@ function fresh(now=Date.now()){
 function ensure(s,now=Date.now()){
  Core.ensure(s,now);
  if(s.flag==null)s.flag='KR';if(s.school==null)s.school='';if(s.schoolCat==null)s.schoolCat='';if(s.recoveryCode==null)s.recoveryCode='';if(s.introDay==null)s.introDay='';if(s.introOff==null)s.introOff=false;if(s.gcSummons==null)s.gcSummons=0;
+ /* Highest level already celebrated. An existing record starts at the level it
+  * is already on, so nobody is congratulated on a promotion they earned long
+  * ago the first time they open the new build. */
+ if(!Number.isSafeInteger(s.seenLevel)||s.seenLevel<0)s.seenLevel=Core.gradeProgress(Core.correctCount(s)).rank+1;
  if(s.learningProfile && s.learningProfile.completed==null)s.learningProfile.completed={};
  if(s.learningProfile)Course.ensureProfile(s.learningProfile);
  if(!s.visual)s.visual={version:1,unlocks:{},birdVisit:null,birdsEnabled:true,reduceMotion:false,language:'ko',geometry:'art-v1'};
@@ -341,7 +345,31 @@ const BADGES=[
  {id:'st2',icon:'📘',ko:'학습 2단계 도약',en:'Reached Stage 2',need:a=>a.stage>=2},
  {id:'st3',icon:'📗',ko:'학습 3단계 도약',en:'Reached Stage 3',need:a=>a.stage>=3},
  {id:'st4',icon:'🎓',ko:'학습 4단계 완성',en:'Reached Stage 4',need:a=>a.stage>=4},
- {id:'xp1000',icon:'💎',ko:'누적 1,000 XP',en:'1,000 XP Earned',need:a=>a.xp>=1000}
+ {id:'xp1000',icon:'💎',ko:'누적 1,000 XP',en:'1,000 XP Earned',need:a=>a.xp>=1000},
+ /* The ceilings above were all cleared by the longest-running learners, who
+  * then had nothing left to earn. These carry the same ladders far enough that
+  * the most advanced record on file still has most of them ahead of it. */
+ {id:'c1000',icon:'🌲',ko:'정답 1,000회',en:'1,000 Correct Answers',need:a=>a.correct>=1000},
+ {id:'c2500',icon:'🏔️',ko:'정답 2,500회',en:'2,500 Correct Answers',need:a=>a.correct>=2500},
+ {id:'c5000',icon:'🌋',ko:'정답 5,000회',en:'5,000 Correct Answers',need:a=>a.correct>=5000},
+ {id:'l750',icon:'☄️',ko:'불빛 750개',en:'750 Lights',need:a=>a.lights>=750},
+ {id:'l1000',icon:'🌞',ko:'불빛 1,000개',en:'1,000 Lights',need:a=>a.lights>=1000},
+ {id:'l1500',icon:'🔆',ko:'불빛 1,500개',en:'1,500 Lights',need:a=>a.lights>=1500},
+ {id:'b100',icon:'🗿',ko:'봉화 100개',en:'100 Beacons',need:a=>a.beacons>=100},
+ {id:'g50',icon:'🐋',ko:'강치 부르기 50회',en:'Called Gangchi 50 Times',need:a=>a.gcSummons>=50},
+ {id:'g100',icon:'🌅',ko:'강치 부르기 100회',en:'Called Gangchi 100 Times',need:a=>a.gcSummons>=100},
+ {id:'s200',icon:'🎏',ko:'200일 연속 출석',en:'200-Day Streak',need:a=>a.streak>=200},
+ {id:'s365',icon:'🎆',ko:'365일 연속 출석',en:'365-Day Streak',need:a=>a.streak>=365},
+ {id:'xp2500',icon:'💠',ko:'누적 2,500 XP',en:'2,500 XP Earned',need:a=>a.xp>=2500},
+ {id:'xp5000',icon:'🔱',ko:'누적 5,000 XP',en:'5,000 XP Earned',need:a=>a.xp>=5000},
+ {id:'xp10000',icon:'👑',ko:'누적 10,000 XP',en:'10,000 XP Earned',need:a=>a.xp>=10000},
+ {id:'xp25000',icon:'🏅',ko:'누적 25,000 XP',en:'25,000 XP Earned',need:a=>a.xp>=25000},
+ /* One badge per 독코민 level, generated from the same count as the ladder so
+  * raising DOKKOMIN_LEVELS adds its badge too instead of leaving a level
+  * that celebrates nothing. */
+ ...Array.from({length:Core.DOKKOMIN_LEVELS},(_,i)=>({
+  id:'dk'+(i+1),icon:'🪸',ko:'독코민 Lv.'+(i+1),en:'Dokkomin Lv.'+(i+1),
+  need:a=>Core.gradeProgress(a.correct).rank>=Core.DOKKOMIN_FROM+i}))
 ];
 function computeBadges(s){
  const a=summary(s);

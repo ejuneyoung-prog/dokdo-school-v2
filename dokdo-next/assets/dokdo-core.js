@@ -33,7 +33,13 @@
     const day = dayKey(value), dow = new Date(day + 'T12:00:00Z').getUTCDay();
     return addDays(day, -((dow + 6) % 7));
   }
-  const GRADES = ['K','E1','E2','E3','E4','E5','E6','M1','M2','M3','H1','H2','H3','U1','U2','U3','U4','MA1','MA2','PHD1','PHD2',...Array.from({length:9},(_,i)=>'DK'+(i+1))];
+  // Levels above the school ladder (독코민). Raising this number is the whole
+  // job of adding more of them: the labels, ladder, badges and promotion
+  // arithmetic all follow from it. It must never shrink -- a learner already
+  // standing on a level that disappeared would be silently demoted.
+  const DOKKOMIN_LEVELS = 12;
+  const GRADES = ['K','E1','E2','E3','E4','E5','E6','M1','M2','M3','H1','H2','H3','U1','U2','U3','U4','MA1','MA2','PHD1','PHD2',...Array.from({length:DOKKOMIN_LEVELS},(_,i)=>'DK'+(i+1))];
+  const DOKKOMIN_FROM = GRADES.indexOf('DK1');
   const GRADE_ALIASES = {CR1:'DK1',CR2:'DK2',CR3:'DK3',CR4:'DK4',CR5:'DK5',PR1:'DK6',PR2:'DK7',PR3:'DK8',HEAD:'DK9'};
   const gradeRank = g => GRADES.indexOf(GRADE_ALIASES[g] || g);
   function validDay(x) {
@@ -276,5 +282,5 @@
   }
   return {VERSION, VISIT_MS, MAX_VISITORS, dayKey, weekKey, addDays, validateState, ensure, rollover, visualLevel,
     correctCount, registerAnswer, advanceLearning, invite, tickVisits, envelope, readBackup, clone,
-    GRADES, GRADE_ALIASES, gradeRank, gradeProgress};
+    GRADES, GRADE_ALIASES, gradeRank, gradeProgress, DOKKOMIN_LEVELS, DOKKOMIN_FROM};
 });

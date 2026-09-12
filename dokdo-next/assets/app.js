@@ -122,17 +122,25 @@ const tr=(a,b)=>language==='en'?b:a;
 const txt=(id,value)=>{if($(id))$(id).textContent=String(value);};
 const num=x=>Number(x||0).toLocaleString(language==='en'?'en-US':'ko-KR');
 const getS=()=>store.state;
+/* The levels past the school ladder are 독코민 Lv.1.. -- generated from the
+ * one count in dokdo-core so adding levels stays a single-number change. */
+const dokkomin=make=>Object.fromEntries(Array.from({length:Core.DOKKOMIN_LEVELS},(_,i)=>['DK'+(i+1),make(i+1)]));
 const GRADE_LABELS={
  ko:{K:'유치원',E1:'초등 1학년',E2:'초등 2학년',E3:'초등 3학년',E4:'초등 4학년',E5:'초등 5학년',E6:'초등 6학년',
   M1:'중학 1학년',M2:'중학 2학년',M3:'중학 3학년',H1:'고등 1학년',H2:'고등 2학년',H3:'고등 3학년',
   U1:'대학 1학년',U2:'대학 2학년',U3:'대학 3학년',U4:'대학 4학년',MA1:'석사 1년차',MA2:'석사 2년차',PHD1:'박사 1년차',PHD2:'박사 2년차',
-  DK1:'독도 명예학위 1단계',DK2:'독도 명예학위 2단계',DK3:'독도 명예학위 3단계',DK4:'독도 명예학위 4단계',DK5:'독도 명예학위 5단계',DK6:'독도 명예학위 6단계',DK7:'독도 명예학위 7단계',DK8:'독도 명예학위 8단계',DK9:'독도 명예학위 9단계'},
+  ...dokkomin(n=>'독코민 Lv.'+n)},
  en:{K:'Kindergarten',E1:'Grade 1',E2:'Grade 2',E3:'Grade 3',E4:'Grade 4',E5:'Grade 5',E6:'Grade 6',
   M1:'Middle 1',M2:'Middle 2',M3:'Middle 3',H1:'High 1',H2:'High 2',H3:'High 3',
   U1:'University Y1',U2:'University Y2',U3:'University Y3',U4:'University Y4',MA1:"Master's Y1",MA2:"Master's Y2",PHD1:'PhD Y1',PHD2:'PhD Y2',
-  DK1:'Dokdo Honors I',DK2:'Dokdo Honors II',DK3:'Dokdo Honors III',DK4:'Dokdo Honors IV',DK5:'Dokdo Honors V',DK6:'Dokdo Honors VI',DK7:'Dokdo Honors VII',DK8:'Dokdo Honors VIII',DK9:'Dokdo Honors IX'}
+  ...dokkomin(n=>'Dokkomin Lv.'+n)}
 };
 const gradeLabel=code=>(GRADE_LABELS[language]&&GRADE_LABELS[language][code])||code;
+/* Past the school ladder the label already carries its own level number, so
+ * showing the ladder position too would read "Lv.22 · 독코민 Lv.1". Inside that
+ * tier the tier name is the level. */
+const levelText=gp=>gp.rank>=Core.DOKKOMIN_FROM?gradeLabel(gp.grade):'Lv.'+(gp.rank+1);
+const nextLevelText=gp=>gp.rank+1>=Core.DOKKOMIN_FROM?gradeLabel(Core.GRADES[gp.rank+1]):'Lv.'+(gp.rank+2);
 function toast(message){txt('toast',message);$('toast').hidden=false;clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('toast').hidden=true,5200);}
 function translate(){
  document.documentElement.lang=language;
@@ -216,6 +224,28 @@ function view(id,force=false){
  $('main').focus({preventScroll:true});
  return true;
 }
+/* A promotion is celebrated on the home view, where the learner actually is.
+ * s.seenLevel is the highest level already celebrated, so the strip appears
+ * once per promotion and never again on a reload -- and a restored backup
+ * from a higher level does not replay every level it passed on the way. */
+function renderLevelBanner(s,a){
+ const box=$('level-banner'),track=$('level-banner-track');
+ if(!box||!track)return;
+ const gp=Core.gradeProgress(a.correct),reached=gp.rank+1,seen=Number(s.seenLevel||0);
+ if(!a.name||reached<=seen){box.hidden=true;return;}
+ const name=levelText(gp),top=gp.graduated;
+ const line=top
+  ?tr(`🏆 ${a.name}님이 최고 단계 ${name}에 올랐습니다 · 독도를 끝까지 밝혔어요`,
+      `🏆 ${a.name} reached the top level, ${name} — Dokdo is lit all the way`)
+  :tr(`🎉 ${a.name}님이 ${name}로 올라섰어요 · 축하합니다`,
+      `🎉 ${a.name} has reached ${name} — congratulations`);
+ track.replaceChildren();
+ // Two copies so the marquee scrolls seamlessly at -50%.
+ for(let i=0;i<2;i++){const el=document.createElement('span');el.textContent=line;track.append(el);}
+ box.classList.toggle('top-level',top);
+ box.hidden=false;
+ mutate(x=>{x.seenLevel=reached;}).catch(()=>{});
+}
 function renderHome(){
  const s=getS();
  if(!s){txt('greeting',tr('기록을 먼저 확인해 주세요','Please check your record first'));updateStorageStatus();return;}
@@ -223,6 +253,7 @@ function renderHome(){
  const shownName=Array.from(a.name).length>25?Array.from(a.name).slice(0,25).join('')+'…':a.name;
  txt('greeting',a.name?tr(`${shownName}님, 오늘도 독도를 밝혀볼까요?`,`${shownName}, shall we brighten Dokdo today?`):tr('오늘도, 독도를 밝혀볼까요?','Shall we brighten Dokdo today?'));
  renderGradeLine('grade',s,a);
+ renderLevelBanner(s,a);
  txt('lights-count',num(a.lights));txt('beacon-count',tr('봉화 ','Beacons ')+num(a.beacons));
  txt('correct-count',num(a.correct));Core.rollover(s);
  txt('weekly-count',tr('이번 주 ','This week ')+num(s.weekly.correct)+(s.weekly.partial?tr(' · 전환 후',' · since update'):''));
@@ -247,18 +278,18 @@ function renderGradeLine(idPrefix,s,a){
  el.hidden=!a.name;if(!a.name)return;
  const gp=Core.gradeProgress(a.correct);
  if($(idPrefix+'-name'))txt(idPrefix+'-name',a.name);
- txt(idPrefix+'-badge','Lv.'+(gp.rank+1));
+ txt(idPrefix+'-badge',levelText(gp));
  txt(idPrefix+'-stats',tr(`정답 ${num(a.correct)} · XP ${num(a.xp)}`,`Correct ${num(a.correct)} · XP ${num(a.xp)}`));
  $(idPrefix+'-gauge').max=gp.need;$(idPrefix+'-gauge').value=gp.have;
- txt(idPrefix+'-gauge-label',gp.graduated?tr('최고 레벨 달성','Top level reached'):tr(`${gp.have}/${gp.need} · 다음 Lv.${gp.rank+2}까지`,`${gp.have}/${gp.need} to Lv.${gp.rank+2}`));
+ txt(idPrefix+'-gauge-label',gp.graduated?tr('최고 레벨 달성','Top level reached'):tr(`${gp.have}/${gp.need} · 다음 ${nextLevelText(gp)}까지`,`${gp.have}/${gp.need} to ${nextLevelText(gp)}`));
 }
 function renderGrade(){
  const s=getS();if(!s)return;
  const a=M.summary(s),gp=Core.gradeProgress(a.correct);
- txt('grade-view-current','Lv.'+(gp.rank+1)+' · '+gradeLabel(gp.grade));
+ txt('grade-view-current',gp.rank>=Core.DOKKOMIN_FROM?gradeLabel(gp.grade):'Lv.'+(gp.rank+1)+' · '+gradeLabel(gp.grade));
  txt('grade-view-stats',tr(`정답 ${num(a.correct)} · XP ${num(a.xp)}`,`Correct ${num(a.correct)} · XP ${num(a.xp)}`));
  $('grade-view-gauge').max=gp.need;$('grade-view-gauge').value=gp.have;
- txt('grade-view-gauge-label',gp.graduated?tr('최고 학년 달성','Top grade reached'):tr(`${gp.have}/${gp.need} · 다음 학년(${gradeLabel(Core.GRADES[gp.rank+1])})까지`,`${gp.have}/${gp.need} to ${gradeLabel(Core.GRADES[gp.rank+1])}`));
+ txt('grade-view-gauge-label',gp.graduated?tr('최고 단계 달성','Top level reached'):tr(`${gp.have}/${gp.need} · 다음 단계(${gradeLabel(Core.GRADES[gp.rank+1])})까지`,`${gp.have}/${gp.need} to ${gradeLabel(Core.GRADES[gp.rank+1])}`));
  const ladder=$('grade-ladder');ladder.replaceChildren();
  Core.GRADES.forEach((code,i)=>{
   const row=document.createElement('div');row.className='grade-row'+(i===gp.rank?' current':i<gp.rank?' done':'');
@@ -1187,7 +1218,7 @@ async function saveImage(){
  // the light-path/lap/beacon flavor text is real but secondary.
  x.fillStyle='#f5cd77';x.font='700 32px GmarketSans, sans-serif';
  const gp=Core.gradeProgress(a.correct);
- x.fillText(`Lv.${gp.rank+1} · ${tr('정답','Correct')} ${num(a.correct)} · XP ${num(a.xp)}`,48,847);
+ x.fillText(`${levelText(gp)} · ${tr('정답','Correct')} ${num(a.correct)} · XP ${num(a.xp)}`,48,847);
  x.fillStyle='#8fa7b2';x.font='16px SCoreDream, sans-serif';const jp=M.Journey.progress(s);
  x.fillText(tr(`빛의 길 ${jp.filled}/1,025 · ${jp.shownLap}바퀴 · 봉화 ${a.beacons}`,`Path ${jp.filled}/1,025 / circuit ${jp.shownLap} / beacons ${a.beacons}`),48,878);
  x.font='14px SCoreDream, sans-serif';x.fillStyle='#75909c';x.fillText(tr('학습 기록 기념사진 · 상상 풍경이며 실제 측량지도가 아닙니다.','A learning keepsake · imagined landscape, not a survey map.'),48,916);
