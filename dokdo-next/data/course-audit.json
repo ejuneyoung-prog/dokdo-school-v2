@@ -3,11 +3,11 @@
   "questions": 240,
   "families": 60,
   "bilingualPairs": 240,
-  "optionFeedbackPairs": 711,
+  "optionFeedbackPairs": 738,
   "questionContextCount": 82,
   "requiredMaterialCount": 121,
   "distinctStemCount": 240,
-  "distinctFeedbackCount": 710,
+  "distinctFeedbackCount": 737,
   "cognitiveCounts": {
     "1": 69,
     "2": 52,
@@ -101,19 +101,15 @@
     }
   },
   "choiceCounts": {
-    "2": 27,
-    "3": 195,
+    "3": 222,
     "4": 18
   },
   "correctPositionByChoiceCount": {
-    "2": {
-      "1": 14,
-      "2": 13
-    },
+    "2": {},
     "3": {
-      "1": 65,
-      "2": 65,
-      "3": 65
+      "1": 74,
+      "2": 74,
+      "3": 74
     },
     "4": {
       "1": 5,
@@ -140,6 +136,14 @@
   "readingReview": [
     {
       "track": "early",
+      "id": 920034,
+      "stemAndLongestChoice": 50,
+      "guideline": 48,
+      "fullTextLength": 50,
+      "status": "flagged-not-truncated; learner review required"
+    },
+    {
+      "track": "early",
       "id": 920201,
       "stemAndLongestChoice": 52,
       "guideline": 48,
@@ -149,9 +153,17 @@
     {
       "track": "early",
       "id": 920234,
-      "stemAndLongestChoice": 49,
+      "stemAndLongestChoice": 52,
       "guideline": 48,
-      "fullTextLength": 49,
+      "fullTextLength": 52,
+      "status": "flagged-not-truncated; learner review required"
+    },
+    {
+      "track": "primary",
+      "id": 920034,
+      "stemAndLongestChoice": 50,
+      "guideline": 48,
+      "fullTextLength": 50,
       "status": "flagged-not-truncated; learner review required"
     },
     {
@@ -173,9 +185,9 @@
     {
       "track": "primary",
       "id": 920234,
-      "stemAndLongestChoice": 49,
+      "stemAndLongestChoice": 52,
       "guideline": 48,
-      "fullTextLength": 49,
+      "fullTextLength": 52,
       "status": "flagged-not-truncated; learner review required"
     }
   ],

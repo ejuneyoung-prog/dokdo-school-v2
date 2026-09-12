@@ -687,6 +687,17 @@
           "en": "The Oki Islands are 157.5 km away, farther than Ulleungdo’s 87.4 km."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "두 곳까지의 거리가 같아요",
+          "en": "The two distances are the same"
+        },
+        "feedback": {
+          "ko": "표에는 87.4km와 157.5km로 서로 다르게 적혀 있어요.",
+          "en": "The table gives 87.4km and 157.5km, which are not the same."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -898,6 +909,17 @@
           "en": "“Seo” means west. The eastern island is Dongdo."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "부속 도서 중 하나",
+          "en": "One of the smaller islets"
+        },
+        "feedback": {
+          "ko": "부속 도서는 두 큰 섬보다 훨씬 작은 바위섬이에요. 동쪽의 큰 섬은 동도예요.",
+          "en": "The islets are far smaller than the two main islands; the eastern main island is Dongdo."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -987,6 +1009,17 @@
           "en": "Dongdo names the eastern island; placing it on the western one swaps the labels."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "부속 도서 중 하나",
+          "en": "One of the smaller islets"
+        },
+        "feedback": {
+          "ko": "지도에 쓰는 서쪽 큰 섬의 이름은 서도예요.",
+          "en": "The western main island is labelled Seodo on a map."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -1076,6 +1109,17 @@
           "en": "Dongdo is already shown at the eastern position. A is Seodo."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "울릉도",
+          "en": "Ulleungdo"
+        },
+        "feedback": {
+          "ko": "이 위치표는 독도의 두 큰 섬 사이 관계만 나타내요.",
+          "en": "This diagram shows only how Dokdo’s two main islands sit."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -1165,6 +1209,17 @@
           "en": "Right is west in this key. East is not always on the screen’s right."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "두 섬의 가운데",
+          "en": "Between the two islands"
+        },
+        "feedback": {
+          "ko": "표에는 놓을 자리가 둘뿐이고, 화살표를 따르면 동도는 왼쪽이에요.",
+          "en": "The diagram has only two slots, and following the arrow puts Dongdo on the left."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -1548,37 +1603,48 @@
       "en": "Seeing Dokdo from Ulleungdo"
     },
     "stem": {
-      "ko": "두 관찰일 중 울릉도에서 독도를 보기 더 좋은 날은 언제인가요?",
-      "en": "Which of the two days is more suitable for viewing Dokdo from Ulleungdo?"
+      "ko": "울릉도에서 독도를 눈으로 볼 수 있는 때는 언제라고 기록돼 있나요?",
+      "en": "When do the records say Dokdo can be seen with the eye from Ulleungdo?"
     },
     "options": [
       {
+        "id": "a",
         "text": {
-          "ko": "A일",
-          "en": "Day A"
+          "ko": "날씨가 맑아 시야가 트인 때",
+          "en": "When the weather is clear and the view is open"
         },
         "feedback": {
-          "ko": "A일은 시야가 맑아 멀리 있는 독도를 바라보기에 더 적합해요.",
-          "en": "Day A has clearer visibility for viewing the distant islands."
-        },
-        "id": "a"
+          "ko": "『세종실록』 지리지는 두 섬이 멀지 않아 날씨가 맑으면 바라볼 수 있다고 적었어요.",
+          "en": "The 1454 gazetteer records that the two islands are not far apart and can be seen when the weather is clear."
+        }
       },
       {
+        "id": "b",
         "text": {
-          "ko": "B일",
-          "en": "Day B"
+          "ko": "안개가 짙게 낀 때",
+          "en": "When the fog is thick"
         },
         "feedback": {
-          "ko": "B일의 짙은 안개는 독도를 향한 시야를 가려요.",
-          "en": "Dense fog on day B obscures the view toward Dokdo."
+          "ko": "안개가 짙으면 먼 바다가 가려져요. 기록이 말한 조건과 반대예요.",
+          "en": "Thick fog hides the far sea — the opposite of the recorded condition."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "날씨와 상관없이 언제나",
+          "en": "Always, whatever the weather"
         },
-        "id": "b"
+        "feedback": {
+          "ko": "기록은 ‘날씨가 맑으면’이라는 조건을 분명히 달았어요.",
+          "en": "The record states the condition plainly: when the weather is clear."
+        }
       }
     ],
     "correctOptionId": "a",
     "material": {
-      "ko": "관찰 계획을 위한 예시: A일은 안개 없이 시야가 맑다. B일은 짙은 안개로 먼 바다가 보이지 않는다. 같은 울릉도 관찰 지점에서 볼 예정이다.",
-      "en": "Illustrative plan: day A has clear visibility without fog; on day B dense fog obscures the distant sea. Both observations would use the same point on Ulleungdo."
+      "ko": "1454년 『세종실록』 지리지 역문 요약: 우산과 무릉 두 섬은 서로 멀리 떨어져 있지 않아 날씨가 맑으면 바라볼 수 있다. 우산·무릉을 독도·울릉도로 보는 것은 아래 출처의 해설이에요.",
+      "en": "From the 1454 Sejong gazetteer: the two islands, Usan and Mureung, are not far apart and can be seen when the weather is clear. Reading Usan and Mureung as Dokdo and Ulleungdo follows the cited commentary."
     },
     "requiresMaterial": true,
     "context": {
@@ -1594,15 +1660,15 @@
       "en": ""
     },
     "goal": {
-      "ko": "두 관찰일 중 울릉도에서 독도를 보기 더 좋은 날은 언제인가요? 정답 대상: A일",
-      "en": "Which of the two days is more suitable for viewing Dokdo from Ulleungdo? Answer target: Day A"
+      "ko": "울릉도에서 독도를 눈으로 볼 수 있는 때는 언제라고 기록돼 있나요? 정답 대상: 날씨가 맑아 시야가 트인 때",
+      "en": "When do the records say Dokdo can be seen with the eye from Ulleungdo? Answer target: When the weather is clear and the view is open"
     },
     "review": {
       "definition": "one-clear-target-v1",
       "authorReview": "self-reviewed",
       "independentReview": "pending",
       "learnerTest": "pending",
-      "gradeNote": "",
+      "gradeNote": "학습자 제보로 고쳐 씀: 문제용으로 지어낸 상황·중복 보기를 없애고 자료에 근거해 직접 묻도록 바꿈",
       "wordingReview": "author-reviewed; not independent",
       "countryAndScopeReview": "author-reviewed against cited sources",
       "answerabilityReview": "requires displayed evidence where marked",
@@ -2114,6 +2180,17 @@
           "en": "Dongdo reaches 98.6 m; Seodo is higher at 168.5 m."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "두 섬의 높이가 같아요",
+          "en": "The two are the same height"
+        },
+        "feedback": {
+          "ko": "두 섬의 높이는 서로 달라요. 더 높은 섬은 서도예요.",
+          "en": "Their heights differ; Seodo is the higher of the two."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -2209,6 +2286,17 @@
           "en": "Seodo’s maximum elevation is 168.5 m."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "부속 도서 중 하나",
+          "en": "One of the smaller islets"
+        },
+        "feedback": {
+          "ko": "98.6m는 두 큰 섬 가운데 동도의 최고 높이예요.",
+          "en": "98.6m is the highest point of Dongdo, one of the two main islands."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -2538,6 +2626,17 @@
           "en": "Dongdo has a longer coastline but a smaller area."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "두 섬의 넓이가 같아요",
+          "en": "The two are equal in area"
+        },
+        "feedback": {
+          "ko": "두 섬의 면적은 서로 달라요. 더 넓은 섬은 서도예요.",
+          "en": "Their areas differ; Seodo is the wider of the two."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -2739,6 +2838,17 @@
           "en": "Seodo has the larger area, but its listed coastline is shorter."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "두 섬의 둘레가 같아요",
+          "en": "The two perimeters are equal"
+        },
+        "feedback": {
+          "ko": "표에 동도 2.8km, 서도 2.6km로 다르게 적혀 있어요.",
+          "en": "The table gives 2.8km and 2.6km, which are not the same."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -3386,6 +3496,17 @@
           "en": "Dongdo has cliffs too, but its upper area is comparatively level."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "부속 도서 중 하나",
+          "en": "One of the smaller islets"
+        },
+        "feedback": {
+          "ko": "가파른 봉우리가 두드러지는 큰 섬은 서도예요.",
+          "en": "The main island with the prominent steep peak is Seodo."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -3481,6 +3602,17 @@
           "en": "Seodo’s steep peak is difficult to access; these facilities are on Dongdo."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "부속 도서 중 하나",
+          "en": "One of the smaller islets"
+        },
+        "feedback": {
+          "ko": "헬기장과 시설이 있는 평탄한 상부는 동도에 있어요.",
+          "en": "The flat upper area with the helipad and facilities is on Dongdo."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -3576,6 +3708,17 @@
           "en": "Seodo matches B’s steep-peak description."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "부속 도서 중 하나",
+          "en": "One of the smaller islets"
+        },
+        "feedback": {
+          "ko": "설명 A는 두 큰 섬 가운데 동도에 해당해요.",
+          "en": "Description A matches Dongdo, one of the two main islands."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -3776,6 +3919,17 @@
           "en": "The visible land is not the whole structure; it continues below the surface."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "해안 절벽까지만 이어져요",
+          "en": "It continues only as far as the shore cliffs"
+        },
+        "feedback": {
+          "ko": "해저에서 솟아오른 화산체라 지형이 바닷속으로 이어져요.",
+          "en": "It is a volcano that rose from the sea floor, so the landform continues underwater."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -4776,6 +4930,17 @@
           "en": "Emergence occurred later than the beginning of submarine activity."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "두 일이 같은 시기에 일어났어요",
+          "en": "Both happened at the same time"
+        },
+        "feedback": {
+          "ko": "약 460만 년 전과 약 250만 년 전으로 시기가 서로 달라요.",
+          "en": "About 4.6 million and 2.5 million years ago are different times."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -5801,6 +5966,17 @@
           "en": "Unlike Cheonjang Cave on Dongdo, Mulgol is on Seodo."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "부속 도서 중 하나",
+          "en": "One of the smaller islets"
+        },
+        "feedback": {
+          "ko": "물골은 두 큰 섬 가운데 서도에 있어요.",
+          "en": "Mulgol is on Seodo, one of the two main islands."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -6488,37 +6664,48 @@
       "en": "Dokdo as a migratory stopover"
     },
     "stem": {
-      "ko": "철새 관찰 기록 A와 B 가운데 ‘중간 기착’에 해당하는 것은 무엇인가요?",
-      "en": "Between migratory-bird observations A and B, which one describes a stopover?"
+      "ko": "철새가 독도를 ‘중간 기착지’로 쓴다는 것은 어떤 행동을 말하나요?",
+      "en": "What behaviour shows a migratory bird using Dokdo as a stopover?"
     },
     "options": [
       {
+        "id": "a",
         "text": {
-          "ko": "A: 이동 중 잠시 쉬고 다른 곳으로 떠남",
-          "en": "A: resting briefly and then continuing elsewhere"
+          "ko": "이동하는 길에 잠시 쉬었다가 다시 떠나는 것",
+          "en": "Resting on the way and then moving on"
         },
         "feedback": {
-          "ko": "긴 이동을 이어가기 전 쉬는 행동이 중간 기착에 해당해요.",
-          "en": "Resting before continuing a longer journey is a stopover."
-        },
-        "id": "a"
+          "ko": "중간 기착은 목적지로 가는 길에 잠시 들러 쉬는 일이에요.",
+          "en": "A stopover is a short rest on the way to somewhere else."
+        }
       },
       {
+        "id": "b",
         "text": {
-          "ko": "B: 둥지에서 알을 품고 새끼를 기름",
-          "en": "B: incubating eggs and raising chicks at a nest"
+          "ko": "둥지를 틀고 알을 품어 새끼를 기르는 것",
+          "en": "Building a nest and raising chicks"
         },
         "feedback": {
-          "ko": "B는 번식지 이용을 보여주며 잠깐 쉬어 가는 기착과 구분돼요.",
-          "en": "B describes breeding, not simply stopping during migration."
+          "ko": "그건 번식이에요. 독도는 일부 바닷새의 번식지이기도 하지만, 기착과는 다른 활동이에요.",
+          "en": "That is breeding. Dokdo is also a breeding site for some seabirds, but that is a different activity."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "한 해 내내 독도에 머무는 것",
+          "en": "Staying on Dokdo all year round"
         },
-        "id": "b"
+        "feedback": {
+          "ko": "한곳에 계속 머무르면 이동하는 철새의 기착이라고 하지 않아요.",
+          "en": "Staying put all year is not a migratory stopover."
+        }
       }
     ],
     "correctOptionId": "a",
     "material": {
-      "ko": "독도는 철새의 휴식처이면서 일부 바닷새의 번식지예요. 관찰 예시 A: 이동 중 쉬고 떠남. B: 둥지에서 새끼를 기름.",
-      "en": "Dokdo is a stopover and a breeding site for some seabirds. Illustrative observations: A rests during migration and leaves; B raises chicks at a nest."
+      "ko": "기착은 이동 중 잠시 들러 쉬는 일, 번식은 알을 낳아 새끼를 기르는 일이에요. 독도는 철새의 휴식처이면서 일부 바닷새의 번식지로 소개돼요.",
+      "en": "A stopover is a brief rest during migration; breeding is laying eggs and raising young. Dokdo is described as both a resting place for migrants and a breeding site for some seabirds."
     },
     "requiresMaterial": true,
     "context": {
@@ -6534,15 +6721,15 @@
       "en": ""
     },
     "goal": {
-      "ko": "독도의 두 새 관찰에서 ‘중간 기착’에 해당하는 것은 무엇인가요? 정답 대상: A: 이동 중 잠시 쉬고 다른 곳으로 떠남",
-      "en": "Which of the two bird observations on Dokdo describes a stopover? Answer target: A: resting briefly and then continuing elsewhere"
+      "ko": "철새가 독도를 ‘중간 기착지’로 쓴다는 것은 어떤 행동을 말하나요? 정답 대상: 이동하는 길에 잠시 쉬었다가 다시 떠나는 것",
+      "en": "What behaviour shows a migratory bird using Dokdo as a stopover? Answer target: Resting on the way and then moving on"
     },
     "review": {
       "definition": "one-clear-target-v1",
       "authorReview": "self-reviewed",
       "independentReview": "pending",
       "learnerTest": "pending",
-      "gradeNote": "",
+      "gradeNote": "학습자 제보로 고쳐 씀: 문제용으로 지어낸 상황·중복 보기를 없애고 자료에 근거해 직접 묻도록 바꿈",
       "wordingReview": "author-reviewed; not independent",
       "countryAndScopeReview": "author-reviewed against cited sources",
       "answerabilityReview": "requires displayed evidence where marked",
@@ -6896,48 +7083,48 @@
       "en": "Seabirds breeding on Dokdo"
     },
     "stem": {
-      "ko": "독도의 ‘번식지’ 기능을 보여 주는 관찰은 무엇인가요?",
-      "en": "Which observation demonstrates Dokdo’s function as a breeding site?"
+      "ko": "독도가 바닷새의 ‘번식지’라는 것은 어떤 모습으로 확인되나요?",
+      "en": "What shows that Dokdo is a breeding site for seabirds?"
     },
     "options": [
       {
+        "id": "a",
         "text": {
-          "ko": "괭이갈매기가 둥지의 새끼에게 먹이를 준다",
-          "en": "A black-tailed gull feeds chicks at its nest"
+          "ko": "둥지에서 알을 낳고 새끼를 길러 내는 모습",
+          "en": "Eggs laid in nests and chicks raised there"
         },
         "feedback": {
-          "ko": "둥지에서 새끼를 기르는 행동이므로 번식지를 이용하는 모습이에요.",
-          "en": "Raising chicks at a nest demonstrates use of a breeding site."
-        },
-        "id": "a"
+          "ko": "번식지는 알을 낳고 새끼를 길러 내는 곳이에요.",
+          "en": "A breeding site is where eggs are laid and young are raised."
+        }
       },
       {
+        "id": "b",
         "text": {
-          "ko": "철새가 바위에서 쉬고 곧 떠난다",
-          "en": "A migrant rests on a rock and soon leaves"
+          "ko": "이동하던 새가 잠시 쉬었다 떠나는 모습",
+          "en": "Migrating birds resting briefly and leaving"
         },
         "feedback": {
-          "ko": "이 행동은 중간 기착을 보여 주지만 새끼를 기르는 증거는 아니에요.",
-          "en": "This indicates a stopover but not breeding."
-        },
-        "id": "b"
+          "ko": "그건 기착이에요. 쉬어 가는 것만으로는 번식지라고 하지 않아요.",
+          "en": "That is a stopover; resting alone does not make a breeding site."
+        }
       },
       {
+        "id": "c",
         "text": {
-          "ko": "새가 섬 위를 지나가며 날아간다",
-          "en": "A bird flies past above the islands"
+          "ko": "바다 위를 지나가며 먹이를 잡는 모습",
+          "en": "Catching food while passing over the sea"
         },
         "feedback": {
-          "ko": "상공 통과만으로 그곳에서 번식한다고 확인할 수는 없어요.",
-          "en": "Flying past alone does not establish breeding on the islands."
-        },
-        "id": "c"
+          "ko": "먹이를 잡는 일은 번식 여부를 가려 주지 않아요.",
+          "en": "Feeding does not by itself show breeding."
+        }
       }
     ],
     "correctOptionId": "a",
     "material": {
-      "ko": "활동 구분: 번식은 알을 낳고 새끼를 기르는 일, 기착은 이동 중 잠시 들르는 일이에요. 아래 관찰은 구분 연습을 위한 예시예요.",
-      "en": "Breeding involves producing and raising young; a stopover is a temporary pause during migration. The observations below are illustrative examples."
+      "ko": "번식은 알을 낳고 새끼를 기르는 일, 기착은 이동 중 잠시 들르는 일이에요. 괭이갈매기·바다제비·슴새는 독도에서 번식하는 바닷새로 소개돼요.",
+      "en": "Breeding is laying eggs and raising young; a stopover is a brief visit during migration. Black-tailed gulls, storm petrels and shearwaters are described as breeding on Dokdo."
     },
     "requiresMaterial": true,
     "context": {
@@ -6953,15 +7140,15 @@
       "en": ""
     },
     "goal": {
-      "ko": "독도의 ‘번식지’ 기능을 보여 주는 관찰은 무엇인가요? 정답 대상: 괭이갈매기가 둥지의 새끼에게 먹이를 준다",
-      "en": "Which observation demonstrates Dokdo’s function as a breeding site? Answer target: A black-tailed gull feeds chicks at its nest"
+      "ko": "독도가 바닷새의 ‘번식지’라는 것은 어떤 모습으로 확인되나요? 정답 대상: 둥지에서 알을 낳고 새끼를 길러 내는 모습",
+      "en": "What shows that Dokdo is a breeding site for seabirds? Answer target: Eggs laid in nests and chicks raised there"
     },
     "review": {
       "definition": "one-clear-target-v1",
       "authorReview": "self-reviewed",
       "independentReview": "pending",
       "learnerTest": "pending",
-      "gradeNote": "",
+      "gradeNote": "학습자 제보로 고쳐 씀: 문제용으로 지어낸 상황·중복 보기를 없애고 자료에 근거해 직접 묻도록 바꿈",
       "wordingReview": "author-reviewed; not independent",
       "countryAndScopeReview": "author-reviewed against cited sources",
       "answerabilityReview": "requires displayed evidence where marked",
@@ -10322,6 +10509,17 @@
           "en": "Unlike the accommodation on Seodo, the lighthouse is on Dongdo."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "부속 도서 중 하나",
+          "en": "One of the smaller islets"
+        },
+        "feedback": {
+          "ko": "독도등대는 두 큰 섬 가운데 동도에 있어요.",
+          "en": "The Dokdo lighthouse is on Dongdo, one of the two main islands."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -10712,6 +10910,17 @@
           "en": "Seodo is not the standard landing area described for ordinary visits."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "부속 도서 중 하나",
+          "en": "One of the smaller islets"
+        },
+        "feedback": {
+          "ko": "일반 탐방객이 내리는 선착장은 동도에 있어요.",
+          "en": "The landing that ordinary visitors use is on Dongdo."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -11125,6 +11334,17 @@
           "en": "Dongdo has the lighthouse and guard facilities, while this accommodation is on Seodo."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "부속 도서 중 하나",
+          "en": "One of the smaller islets"
+        },
+        "feedback": {
+          "ko": "주민숙소는 두 큰 섬 가운데 서도에 있어요.",
+          "en": "The residence is on Seodo, one of the two main islands."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -11435,12 +11655,12 @@
       },
       {
         "text": {
-          "ko": "접안시설이 동도에 있다",
-          "en": "The dock is on Dongdo"
+          "ko": "부속 도서에는 시설이 없다",
+          "en": "The smaller islets have no facilities"
         },
         "feedback": {
-          "ko": "이 사실도 동도 시설의 사례이므로 서도의 시설을 보여주지 못해요.",
-          "en": "This is another Dongdo example and does not identify a Seodo facility."
+          "ko": "부속 도서 이야기는 ‘모두 동도’라는 설명을 고칠 근거가 되지 못해요. 근거는 서도에 있는 주민숙소예요.",
+          "en": "The islets do not refute “all on Dongdo”; the residence on Seodo does."
         },
         "id": "c"
       }
@@ -11472,7 +11692,7 @@
       "authorReview": "self-reviewed",
       "independentReview": "pending",
       "learnerTest": "pending",
-      "gradeNote": "",
+      "gradeNote": "학습자 제보로 고쳐 씀: 오답 두 개가 모두 ‘동도에 있다’여서 하나를 교체",
       "wordingReview": "author-reviewed; not independent",
       "countryAndScopeReview": "author-reviewed against cited sources",
       "answerabilityReview": "requires displayed evidence where marked",
@@ -14116,6 +14336,17 @@
           "en": "May comes after January."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "두 일이 같은 달에 있었어요",
+          "en": "Both fell in the same month"
+        },
+        "feedback": {
+          "ko": "금지령은 1월, 도해는 5월로 달의 순서가 분명해요.",
+          "en": "The prohibition was in January and the voyage in May, so the order is clear."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -17553,6 +17784,17 @@
           "en": "A expresses Shim’s own description of county affiliation."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "A와 B 모두 일본 관리의 말이에요",
+          "en": "Both A and B are the officials’ words"
+        },
+        "feedback": {
+          "ko": "A는 심흥택 자신이 쓴 표현이에요.",
+          "en": "A is Shim’s own wording, not the officials’."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -18166,6 +18408,17 @@
           "en": "The 1906 report came after the 1900 decree."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "두 문서가 같은 해에 나왔어요",
+          "en": "Both are from the same year"
+        },
+        "feedback": {
+          "ko": "칙령은 1900년, 심흥택의 보고는 1906년이에요.",
+          "en": "The decree is from 1900 and Shim’s report from 1906."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -18602,6 +18855,17 @@
           "en": "Unlike Mulgol on Seodo, Cheonjang Cave is on Dongdo."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "부속 도서 중 하나",
+          "en": "One of the smaller islets"
+        },
+        "feedback": {
+          "ko": "천장굴은 두 큰 섬 가운데 동도에 있어요.",
+          "en": "Cheonjanggul is on Dongdo, one of the two main islands."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -19128,6 +19392,17 @@
           "en": "Unlike Seodo’s peaks or Mulgol, this feature is on Dongdo."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "부속 도서 중 하나",
+          "en": "One of the smaller islets"
+        },
+        "feedback": {
+          "ko": "독립문바위는 두 큰 섬 가운데 동도 해안에 있어요.",
+          "en": "Dongnimmun Rock is on the shore of Dongdo, one of the two main islands."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -20275,6 +20550,17 @@
           "en": "It is on Seodo, distinct from Dongdo’s Usanbong."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "부속 도서 중 하나",
+          "en": "One of the smaller islets"
+        },
+        "feedback": {
+          "ko": "탕건봉은 두 큰 섬 가운데 서도에 있어요.",
+          "en": "Tanggeonbong is on Seodo, one of the two main islands."
+        }
       }
     ],
     "correctOptionId": "a",
@@ -22905,12 +23191,12 @@
       },
       {
         "text": {
-          "ko": "파도가 거의 없는 상태",
-          "en": "Almost no waves"
+          "ko": "안개가 끼어 시야가 흐린 상태",
+          "en": "Fog that dims the view"
         },
         "feedback": {
-          "ko": "파도가 거의 없다는 것 자체는 높은 파도로 인한 접안 곤란의 원인이 아니에요.",
-          "en": "Almost no wave action is not the high-wave condition described."
+          "ko": "시야가 흐리면 항해가 조심스러워지지만, 접안을 가로막는 것은 높은 파도예요.",
+          "en": "Poor visibility calls for care, but it is high waves that prevent landing."
         },
         "id": "c"
       }
@@ -22942,7 +23228,7 @@
       "authorReview": "self-reviewed",
       "independentReview": "pending",
       "learnerTest": "pending",
-      "gradeNote": "",
+      "gradeNote": "학습자 제보로 고쳐 씀: 서로 같은 뜻이던 오답 두 개 중 하나를 교체",
       "wordingReview": "author-reviewed; not independent",
       "countryAndScopeReview": "author-reviewed against cited sources",
       "answerabilityReview": "requires displayed evidence where marked",
@@ -24213,6 +24499,17 @@
           "en": "Ordinary visits have designated limits and do not allow entry everywhere."
         },
         "id": "b"
+      },
+      {
+        "id": "c",
+        "text": {
+          "ko": "네, 안내를 받으면 어디든 갈 수 있어요",
+          "en": "Yes — with a guide you may go anywhere"
+        },
+        "feedback": {
+          "ko": "안내를 받아도 출입이 허용된 구역 안에서만 다닐 수 있어요.",
+          "en": "Even with a guide you may move only within the permitted areas."
+        }
       }
     ],
     "correctOptionId": "a",

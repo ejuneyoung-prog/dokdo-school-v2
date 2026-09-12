@@ -11,7 +11,7 @@ class ContentGate(unittest.TestCase):
     def fail_build(self):
         with self.assertRaises((ValueError,KeyError,TypeError)):B.compile_data(self.q,self.s,self.m,self.r)
     def test_valid_authored_set(self):
-        d,a,_=B.compile_data(self.q,self.s,self.m,self.r);self.assertEqual(len(d['questions']),240);self.assertEqual(a['optionFeedbackPairs'],711)
+        d,a,_=B.compile_data(self.q,self.s,self.m,self.r);self.assertEqual(len(d['questions']),240);self.assertEqual(a['optionFeedbackPairs'],738)
     def test_missing_reason_does_not_fall_back_to_fact(self):
         self.q[0]['options'][0]['feedback']['ko']='';self.fail_build()
     def test_generic_family_fact_cannot_silently_replace_reason(self):
