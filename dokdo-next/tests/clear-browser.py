@@ -35,7 +35,7 @@ try:
   launch={'headless':True}
   if args.engine=='chromium':launch['args']=['--no-sandbox']
   if args.browser:launch['executable_path']=args.browser
-  browser=getattr(pw,args.engine).launch(**launch);ctx=browser.new_context(viewport={'width':1440,'height':1100},reduced_motion='reduce',accept_downloads=True);ctx.route('https://cdn.jsdelivr.net/**',lambda r:r.abort());p=ctx.new_page();p.set_default_timeout(6000);p.on('dialog',lambda d:d.accept());p.on('pageerror',lambda e:errors.append(str(e)));p.on('request',lambda r:requests.append(r.url) if r.url.startswith('http') and not any(x in r.url for x in ['127.0.0.1','cdn.jsdelivr.net']) else None)
+  browser=getattr(pw,args.engine).launch(**launch);ctx=browser.new_context(viewport={'width':1440,'height':1100},reduced_motion='reduce',accept_downloads=True);ctx.route('https://cdn.jsdelivr.net/**',lambda r:r.abort());p=ctx.new_page();p.set_default_timeout(6000);p.on('dialog',lambda d:d.accept());p.on('pageerror',lambda e:errors.append(str(e)));p.on('request',lambda r:requests.append(r.url) if r.url.startswith('http') and not any(x in r.url for x in ['127.0.0.1','cdn.jsdelivr.net','i.ytimg.com']) else None)
   if args.mode=='inline':
    p.evaluate("()=>{const m=new Map();Object.defineProperty(window,'localStorage',{value:{getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k)}});}")
    p.set_content(inline(),wait_until='domcontentloaded')

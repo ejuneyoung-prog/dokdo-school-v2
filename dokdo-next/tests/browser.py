@@ -14,6 +14,13 @@ p.add_argument('--output',default=str(ROOT/'test-results/browser'));p.add_argume
 args=p.parse_args();OUT=Path(args.output);OUT.mkdir(parents=True,exist_ok=True)
 KEY='dokdo-korea-school-cinematic-v1';OLD='dokdo-korea-school-v2'
 checks=[];errors=[];requests=[]
+def wait_until(page,expression,timeout_ms=12000,step_ms=100):
+ # Polled here rather than with wait_for_function: that installs a page-side
+ # predicate, which this site's CSP blocks for lacking unsafe-eval.
+ for _ in range(max(1,timeout_ms//step_ms)):
+  if page.evaluate(expression):return True
+  page.wait_for_timeout(step_ms)
+ raise AssertionError('Timed out waiting for: '+expression)
 def check(name,condition,details=None):
     result={'name':name,'pass':bool(condition)}
     if details is not None:result['detail']=details
@@ -75,13 +82,13 @@ try:
             if entries:
                 ctx.add_init_script('(()=>{const entries='+json.dumps(entries)+';try{for(const [k,v] of entries)if(!localStorage.getItem(k))localStorage.setItem(k,v);}catch(e){}})();')
             page.goto(base+file,wait_until='domcontentloaded',timeout=15000)
-        page.wait_for_function('!!window.DokdoApp',timeout=10000)
+        wait_until(page,'!!window.DokdoApp')
         # The channel intro opens once a day over the home view and swallows
         # every click underneath it, so dismiss it as a visitor would.
         page.evaluate("()=>{const d=document.getElementById('youtube-intro-dialog');if(d&&d.open)d.close();}")
         page.evaluate('DokdoApp.assetsReady')
         page.wait_for_timeout(100)
-        if lang=='en':page.click('#language');page.wait_for_function('document.documentElement.lang==="en"')
+        if lang=='en':page.click('#language');wait_until(page,'document.documentElement.lang==="en"')
         return ctx,page
     for width in [390,768,1440]:
       for lang in ['ko','en']:
@@ -139,7 +146,7 @@ try:
             page.locator('#lesson-result .button.primary').click()
             check(prefix+' learned lights are visible',int(page.locator('#lights-count').inner_text().replace(',',''))>0)
             page.click('#open-settings');page.check('#reduce-motion')
-            page.wait_for_function('DokdoApp.state.visual.reduceMotion===true')
+            wait_until(page,'DokdoApp.state.visual.reduceMotion===true')
             check(prefix+' reduced motion is saved',page.evaluate('DokdoApp.state.visual.reduceMotion'))
             page.click('[data-close=settings-dialog]')
             page.click('#open-sources')
@@ -157,7 +164,7 @@ try:
         page.locator('.legacy-item .button').click()
         check('migration requires explicit confirmation',page.locator('#import-preview').is_visible() and page.evaluate('Object.keys(DokdoApp.state.m).length')==0)
         page.locator('#import-preview .primary').click()
-        page.wait_for_function('Object.keys(DokdoApp.state.m).length===1513')
+        wait_until(page,'Object.keys(DokdoApp.state.m).length===1513')
         check('full history, XP and grade preserved after copy',page.evaluate('DokdoApp.state.xp===18750 && DokdoApp.state.grade==="PHD2" && Object.keys(DokdoApp.state.m).length===1513'))
         check('legacy original is byte-for-byte unchanged',page.evaluate('(key)=>localStorage.getItem(key)',OLD)==raw)
         with page.expect_download() as d:page.click('#export-records')
@@ -166,7 +173,7 @@ try:
         check('real Blob download contains all 1513 records',len(exported['state']['m'])==1513)
         page.evaluate('DokdoApp.view("home")')
         page.select_option('#invite-count','10');page.click('#invite')
-        page.wait_for_function('DokdoApp.state.gangchiVisits.length===10')
+        wait_until(page,'DokdoApp.state.gangchiVisits.length===10')
         check('ten visible visitors have one-minute budgets',page.evaluate('DokdoApp.state.gangchiVisits.every(v=>v.remainingMs<=60000&&v.remainingMs>50000)'))
         check('three beacons and 1513 lights are reflected by UI',page.locator('#beacon-count').inner_text().endswith('3') and page.locator('#lights-count').inner_text()=='1,513')
         before=page.evaluate('DokdoApp.state.gangchiVisits.map(v=>v.remainingMs)')
@@ -200,12 +207,12 @@ try:
         page.set_input_files('#import-file',str(OUT/'learning-backup.json'))
         page.wait_for_selector('#import-preview',state='visible')
         check('file picker parses and previews backup before importing',page.evaluate('Object.keys(DokdoApp.state.m).length===0'))
-        page.locator('#import-preview .primary').click();page.wait_for_function('Object.keys(DokdoApp.state.m).length===1513')
+        page.locator('#import-preview .primary').click();wait_until(page,'Object.keys(DokdoApp.state.m).length===1513')
         check('file restore in another isolated browser preserves full history',page.evaluate('DokdoApp.state.xp===18750 && Object.values(DokdoApp.state.m).filter(r=>r.lightBest===4).length===3'))
         page.evaluate('DokdoApp.view("home")')
         page.screenshot(path=str(OUT/'mobile-heavy.png'),full_page=True)
         check('heavy user mobile layout remains within viewport',page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'))
-        page.click('#language');page.wait_for_function('document.documentElement.lang==="en"')
+        page.click('#language');wait_until(page,'document.documentElement.lang==="en"')
         check('language switch preserves the shared new record',page.evaluate('Object.keys(DokdoApp.state.m).length===1513'))
     except Exception as e:check('file restore flow completed',False,str(e))
     finally:ctx.close()
@@ -217,7 +224,7 @@ try:
         page.set_input_files('#import-file',str(OUT/'learning-backup.json'))
         page.wait_for_selector('#import-preview',state='visible')
         page.locator('#import-preview .primary').click()
-        page.wait_for_function('!!DokdoApp.state && Object.keys(DokdoApp.state.m).length===1513')
+        wait_until(page,'!!DokdoApp.state && Object.keys(DokdoApp.state.m).length===1513')
         check('unreadable record has an explicit backup-based recovery path',page.evaluate('!DokdoApp.store.blocked && DokdoApp.state.xp===18750'))
         check('recovery keeps exact damaged bytes in a separate snapshot',page.evaluate('(k)=>localStorage.getItem(k)',KEY+':before-recovery')=='{damaged')
     except Exception as e:check('damaged record handling',False,str(e))
