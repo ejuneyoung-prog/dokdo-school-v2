@@ -512,7 +512,7 @@ async function choose(pick,skip=false){
    if(i===pick){b.classList.add(ok?'correct':'incorrect');mark.textContent=ok?'✓':'×';b.append(mark);}
   });
   $('dont-know').hidden=true;$('question-feedback').hidden=false;$('question-feedback').classList.toggle('bad',!ok);$('question-feedback').replaceChildren();
-  const head=document.createElement('h3');head.textContent=ok?(retry?tr('이제 이해했어요','Now you have it'):tr('잘 찾았어요','Well spotted')):tr('괜찮아요. 함께 다시 알아봐요.','That is okay. Let us work it out.');
+  const head=document.createElement('h3');head.textContent=(ok?'💡 ':'🤔 ')+(ok?(retry?tr('이제 이해했어요','Now you have it'):tr('잘 찾았어요','Well spotted')):tr('괜찮아요. 함께 다시 알아봐요.','That is okay. Let us work it out.'));
   const text=document.createElement('p');text.textContent=!ok&&!skip?q.item.wrong[q.order[pick]]:q.item.explain;
   const note=document.createElement('small');note.textContent=q.mode==='placement'?tr('시작점 확인은 이어갑니다. 틀린 뒤에는 같은 단계나 더 쉬운 문제를 살펴봅니다.','The starting check continues, at the same or an easier level after a mistake.'):retry?tr('다시 확인한 정답은 점수나 숙달 증거로 중복 계산하지 않습니다.','Immediate corrections do not add duplicate points or mastery evidence.'):tr('불빛은 남습니다. 오래 기억했는지는 다른 날 복습으로 확인해요.','Your earned lights remain. Later review checks lasting recall.');
   const correctLine=document.createElement('p');correctLine.className='feedback-answer';correctLine.textContent=tr('정답: ','Answer: ')+q.item.choices[q.item.answer];
@@ -974,7 +974,10 @@ function trackLabel(i){const t=musicList[i];return t?tr(t.t,t.tEn||t.t):'';}
 function ensureAudio(){
  if(audio)return;
  audio=new Audio();audio.preload='none';audio.volume=.45;
- audio.addEventListener('play',()=>{if(!soundOn||document.hidden){audio.muted=true;audio.pause();}});
+ // Once the user has turned music on, keep it going until they turn it
+ // off or leave the page -- a hidden/backgrounded tab is not a reason to
+ // stop (see the visibilitychange listener below, which no longer stops it).
+ audio.addEventListener('play',()=>{if(!soundOn){audio.muted=true;audio.pause();}});
  audio.addEventListener('error',()=>{stopSound();toast(tr('음악 파일을 재생하지 못했습니다.','The music file could not be played.'));});
  audio.addEventListener('ended',()=>{if(!musicList.length)return;trackIndex=(trackIndex+1)%musicList.length;playCurrentTrack();});
 }
@@ -982,7 +985,7 @@ async function playCurrentTrack(){
  if(!musicList.length)return;
  audio.src=musicList[trackIndex].f;
  const token=++audioToken;audio.muted=false;
- try{await audio.play();if(token!==audioToken||!soundOn||document.hidden){audio.muted=true;audio.pause();return;}
+ try{await audio.play();if(token!==audioToken||!soundOn){audio.muted=true;audio.pause();return;}
   const label=trackLabel(trackIndex);txt('sound',tr('♫ 소리 켜짐','♫ Sound on'));$('sound').setAttribute('aria-pressed','true');
   if(label)$('sound').title=label;
  }catch(e){stopSound();toast(tr('브라우저가 음악을 재생하지 못했습니다. 다시 소리 버튼을 눌러 주세요.','The browser could not play audio. Try the sound button again.'));}
@@ -991,6 +994,13 @@ async function toggleSound(){
  if(soundOn){stopSound();return;}
  if(!musicList.length){toast(tr('아직 연결된 음악이 없습니다.','No music is connected yet.'));return;}
  ensureAudio();soundOn=true;await playCurrentTrack();
+}
+async function musicSkip(dir){
+ if(!musicList.length)return;
+ if(dir<0&&soundOn&&audio&&audio.currentTime>3){audio.currentTime=0;return;}
+ trackIndex=(trackIndex+dir+musicList.length)%musicList.length;
+ if(!soundOn){toast(tr('먼저 소리를 켜 주세요.','Turn sound on first.'));return;}
+ ensureAudio();await playCurrentTrack();
 }
 let exporting=false;
 async function waitForFonts(){if(!document.fonts)return false;try{const loads=await Promise.race([Promise.all([document.fonts.load('500 16px GmarketSans','독도 Dokdo 123'),document.fonts.load('700 16px GmarketSans','독도'),document.fonts.load('400 16px SCoreDream','독도 Dokdo 123'),document.fonts.load('600 16px SCoreDream','독도')]),new Promise(r=>setTimeout(()=>r([]),5000))]);return loads.length===4&&loads.every(arr=>arr.length>0&&arr.every(f=>f.status==='loaded'));}catch(e){return false;}}
@@ -1051,6 +1061,7 @@ $('dispute-send').onclick=()=>{
 };
 $('tourism-go').onclick=()=>toast(tr('현재 준비 중입니다.','This is being prepared right now.'));
 $('sound').onclick=toggleSound;$('save-image').onclick=saveImage;
+$('music-prev').onclick=()=>musicSkip(-1);$('music-next').onclick=()=>musicSkip(1);
 $('zoom').onclick=()=>{const on=$('canvas-shell').classList.toggle('zoomed');$('zoom').setAttribute('aria-pressed',String(on));txt('zoom',on?tr('전체 보기','Fit'):tr('확대','Zoom'));if(on)$('canvas-shell').scrollLeft=$('canvas-shell').scrollWidth*.22;};
 $('invite-count').onchange=renderVisitors;
 $('invite').onclick=async()=>{if(busy||!guarded())return;busy=true;try{
@@ -1062,10 +1073,14 @@ $('enable-birds').onchange=async()=>{try{await mutate(s=>s.visual.birdsEnabled=$
 $('sea-density').onchange=async()=>{try{await mutate(s=>s.seaDensity=$('sea-density').value);paint();}catch(e){}};
 $('language').onclick=async()=>{
  if(lesson){toast(tr('수업을 마치거나 나온 뒤 언어를 바꿔 주세요.','Finish or leave the lesson before switching language.'));return;}
- try{const next=language==='ko'?'en':'ko';await mutate(s=>s.visual.language=next);language=next;translate();renderHome();renderJournal();if(currentView==='records')renderRecords();if(currentView==='learn'&&!lesson)renderCatalog();renderOutlines();mapFacts();stopSound();}catch(e){}
+ try{const next=language==='ko'?'en':'ko';await mutate(s=>s.visual.language=next);language=next;translate();renderHome();renderJournal();if(currentView==='records')renderRecords();if(currentView==='learn'&&!lesson)renderCatalog();renderOutlines();mapFacts();
+  if(soundOn){const label=trackLabel(trackIndex);if(label)$('sound').title=label;}
+ }catch(e){}
 };
 document.addEventListener('visibilitychange',()=>{
- frameLast=0;if(document.hidden){stopSound();if(getS()&&!store.blocked)store.save();}else paint();
+ // A backgrounded/hidden tab is not a reason to stop music the user turned
+ // on -- only stopSound() (their own choice) or pagehide (leaving) should.
+ frameLast=0;if(document.hidden){if(getS()&&!store.blocked)store.save();}else paint();
 });
 window.addEventListener('pagehide',()=>{stopSound();if(getS()&&!store.blocked)store.save();});
 window.addEventListener('storage',event=>{if(event.key===M.KEY&&event.newValue!==store.expected){store.blocked=true;store.error='CONFLICT: another tab changed this record.';stopSound();updateStorageStatus();}});

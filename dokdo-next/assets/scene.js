@@ -112,14 +112,18 @@ function fish(x,f,t){x.save();x.translate(f.x,f.y);x.rotate(f.angle);x.scale(f.s
  x.beginPath();x.moveTo(-3,0);x.lineTo(-6,-2+Math.sin(t*4)*.4);x.lineTo(-6,2);x.closePath();x.fill();x.restore();}
 function seal(x,g,t){
  x.save();x.translate(g.x,g.y);x.rotate(g.angle);x.scale(.47,.47);const beat=Math.sin(g.stroke);
+ // A thin rim on the body alone was too subtle to notice against the water,
+ // so gangchi now carry a soft gold halo (matching the light path's gold)
+ // behind the whole silhouette instead.
+ x.save();x.fillStyle='#F4C85F';x.shadowColor='#F4C85F';x.shadowBlur=32;x.globalAlpha=.55;
+ x.beginPath();x.ellipse(0,2,44,25,0,0,Math.PI*2);x.fill();
+ x.beginPath();x.ellipse(0,2,44,25,0,0,Math.PI*2);x.fill();
+ x.restore();
  x.strokeStyle='rgba(182,215,221,.36)';x.lineWidth=1.5;
  for(let i=0;i<2;i++){x.beginPath();x.ellipse(-35-i*14,0,15+i*2,6+i*2,0,-1.1,1.1);x.stroke();}
  const grad=x.createLinearGradient(0,-13,0,13);grad.addColorStop(0,'#B2A88C');grad.addColorStop(.6,'#766F5F');grad.addColorStop(1,'#454F51');
  x.fillStyle='#59605C';x.beginPath();x.moveTo(3,1);x.quadraticCurveTo(-10-beat*6,22,7-beat*5,18);x.lineTo(14,2);x.fill();
  x.fillStyle=grad;x.beginPath();x.moveTo(-31,0);x.bezierCurveTo(-14,-12,12,-11,23,-7);x.quadraticCurveTo(35,-13,40,-4);x.lineTo(46,-1);x.quadraticCurveTo(44,4,29,4);x.bezierCurveTo(10,14,-16,12,-31,0);x.fill();
- // Gangchi are easy to lose against the water -- a gold rim (matching the
- // light path's gold) around the main silhouette keeps them readable.
- x.strokeStyle='#F4C85F';x.lineWidth=1.8;x.shadowColor='#F4C85F';x.shadowBlur=7;x.stroke();x.shadowBlur=0;
  x.beginPath();x.moveTo(-26,0);x.quadraticCurveTo(-45,-5-beat*4,-48,-9);x.lineTo(-38,1);x.lineTo(-45,8+beat*4);x.quadraticCurveTo(-28,11,-26,0);x.fill();
  x.fillStyle='#8D8975';x.beginPath();x.moveTo(11,4);x.quadraticCurveTo(15+beat*5,23,23+beat*3,17);x.lineTo(20,3);x.fill();
  x.fillStyle='#202E32';x.beginPath();x.arc(36,-4,1.3,0,Math.PI*2);x.fill();x.restore();
