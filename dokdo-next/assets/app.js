@@ -30,6 +30,7 @@ const en={
  gull:'Black-tailed gull',gullText:'This bird appears in the Ministry of Foreign Affairs’ Dokdo nature information. Dokdo also offers a resting place for migratory birds.',
  birdReplay:'Replay the bird visit',ecologySource:'Read about Dokdo’s natural environment ↗',
  wildlifeNote:'Gangchi and bird visits are imaginary learning celebrations. They do not represent real sightings, restoration or population counts.',
+ badgesTitle:'Achievement Badges',
  backupTitle:'Keep and restore your record',localOnly:'The new view saves in this browser. It does not sync with a cloud account. Keep a private backup file, too.',
  backupFile:'Save learning backup',importFile:'Open a backup file',
  backupWarning:'A saved image is not a learning backup. Backup files may contain a name, school, old recovery code and learning history. Keep them private.',
@@ -73,7 +74,7 @@ const en={
  youtubeLive:'Watch the live stream ↗',
  youtubeWatchOn:'Open on YouTube ↗',
  youtubeNote:'Shows one of the Dokdo Korea channel’s videos at random. Tap to play — nothing plays automatically.',
- support:'♥ Support Dokdo Korea Membership',headerLive:'🔴 Live',headerChannel:'▶ My channel',
+ support:'♥ Support Dokdo Korea Membership',headerLive:'🔴 Dokdo Live Now',headerChannel:'▶ Dokdo Korea Channel',
  youtubeChannel:'Dokdo Korea channel ↗',
  tourismInfoTitle:'Ulleungdo–Dokdo travel information',
  tourismInfoBody:'Basic visitor information about Dokdo (ferry access via Ulleungdo, weather-dependent sailings, and what to know before visiting).',
@@ -592,7 +593,19 @@ function renderRecords(){
   legacy.textContent=tr(`이전 게임 성장 등급: ${s.grade||'K'} · 연속 출석 ${s.streak||0}일 (주간 집계와 별도)`,`Previous game rank: ${s.grade||'K'} · Attendance streak: ${s.streak||0} (separate from weekly totals)`);
   $('record-summary').append(legacy);
  }
- renderLegacy();updateStorageStatus();renderCloudPanel(s);
+ renderLegacy();updateStorageStatus();renderCloudPanel(s);renderBadges(s);
+}
+function renderBadges(s){
+ $('badges-grid').replaceChildren();
+ if(!s){$('badges-count').textContent='';return;}
+ const badges=M.computeBadges(s),earned=badges.filter(b=>b.earned).length;
+ txt('badges-count',earned+' / '+badges.length);
+ for(const b of badges){
+  const tile=document.createElement('div');tile.className='badge-tile'+(b.earned?' earned':'');
+  const icon=document.createElement('span');icon.className='badge-icon';icon.setAttribute('aria-hidden','true');icon.textContent=b.icon;
+  const name=document.createElement('b');name.textContent=tr(b.ko,b.en);
+  tile.append(icon,name);$('badges-grid').append(tile);
+ }
 }
 function renderCloudPanel(s){
  const configured=!!(window.DokdoLeaderboard&&DokdoLeaderboard.isConfigured());

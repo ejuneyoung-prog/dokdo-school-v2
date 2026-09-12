@@ -82,7 +82,7 @@
         seats.add(v.seat);ids.add(v.id);
       }
     }
-    for (const k of ['xp', 'streak', 'gcHit', 'run', 'best']) {
+    for (const k of ['xp', 'streak', 'gcHit', 'gcSummons', 'run', 'best']) {
       if (s[k] != null && (!Number.isFinite(s[k]) || s[k] < 0)) throw new Error('Invalid ' + k);
     }
     if (Object.keys(s.m).length > 20000) throw new Error('Too many question records.');
@@ -181,6 +181,7 @@
       s.gangchiVisits.push({id:String(now) + '-' + seat, remainingMs: VISIT_MS, seat});
     }
     s.gcHit = number(s.gcHit) - n*5;
+    s.gcSummons = number(s.gcSummons) + n;
     return n;
   }
   function tickVisits(s, dtMs, active) {

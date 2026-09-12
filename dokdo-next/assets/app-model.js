@@ -14,12 +14,12 @@ const Journey=typeof module==='object'&&module.exports?require('./journey.js'):g
 const clone=Core.clone;
 function fresh(now=Date.now()){
  return ensure(Core.ensure({name:'',nick:'',flag:'KR',school:'',schoolCat:'',recoveryCode:'',introDay:'',introOff:false,grade:'K',xp:0,streak:0,
-  gcHit:0,run:0,best:0,started:false,passed:[],badgesEver:[],recent:[],recentG:[],
+  gcHit:0,gcSummons:0,run:0,best:0,started:false,passed:[],badgesEver:[],recent:[],recentG:[],
   lastDay:'',m:{}},now),now);
 }
 function ensure(s,now=Date.now()){
  Core.ensure(s,now);
- if(s.flag==null)s.flag='KR';if(s.school==null)s.school='';if(s.schoolCat==null)s.schoolCat='';if(s.recoveryCode==null)s.recoveryCode='';if(s.introDay==null)s.introDay='';if(s.introOff==null)s.introOff=false;
+ if(s.flag==null)s.flag='KR';if(s.school==null)s.school='';if(s.schoolCat==null)s.schoolCat='';if(s.recoveryCode==null)s.recoveryCode='';if(s.introDay==null)s.introDay='';if(s.introOff==null)s.introOff=false;if(s.gcSummons==null)s.gcSummons=0;
  if(s.learningProfile && s.learningProfile.completed==null)s.learningProfile.completed={};
  if(s.learningProfile)Course.ensureProfile(s.learningProfile);
  if(!s.visual)s.visual={version:1,unlocks:{},birdVisit:null,birdsEnabled:true,reduceMotion:false,language:'ko',geometry:'art-v1'};
@@ -55,7 +55,7 @@ function summary(s){
  return {name:s.name||s.nick||'',questions:Object.keys(s.m).length,correct:Core.correctCount(s),
    xp:s.xp||0,lights:Object.values(s.m).filter(r=>Core.visualLevel(r)>0).length,
    beacons:Object.values(s.m).filter(r=>Core.visualLevel(r)===4).length,
-   credits:Math.floor((s.gcHit||0)/5),visitors:(s.gangchiVisits||[]).length,
+   credits:Math.floor((s.gcHit||0)/5),visitors:(s.gangchiVisits||[]).length,gcSummons:s.gcSummons||0,streak:s.streak||0,
    stage:s.learningProfile?.stage||0,grade:s.grade||'K'};
 }
 function activity(s,now){
@@ -246,6 +246,44 @@ class Store{
   return next;
  }
 }
+// Every threshold below reads directly off summary()/state fields that already
+// persist and only ever grow -- no separate "earned at" bookkeeping needed.
+const BADGES=[
+ {id:'c1',icon:'🌱',ko:'첫 정답',en:'First Correct Answer',need:a=>a.correct>=1},
+ {id:'c10',icon:'🌿',ko:'정답 10회',en:'10 Correct Answers',need:a=>a.correct>=10},
+ {id:'c50',icon:'🍀',ko:'정답 50회',en:'50 Correct Answers',need:a=>a.correct>=50},
+ {id:'c100',icon:'🌳',ko:'정답 100회',en:'100 Correct Answers',need:a=>a.correct>=100},
+ {id:'c250',icon:'🏵️',ko:'정답 250회',en:'250 Correct Answers',need:a=>a.correct>=250},
+ {id:'c500',icon:'🎖️',ko:'정답 500회',en:'500 Correct Answers',need:a=>a.correct>=500},
+ {id:'l1',icon:'✨',ko:'첫 불빛',en:'First Light',need:a=>a.lights>=1},
+ {id:'l10',icon:'💫',ko:'불빛 10개',en:'10 Lights',need:a=>a.lights>=10},
+ {id:'l50',icon:'🌟',ko:'불빛 50개',en:'50 Lights',need:a=>a.lights>=50},
+ {id:'l100',icon:'⭐',ko:'불빛 100개',en:'100 Lights',need:a=>a.lights>=100},
+ {id:'l250',icon:'🌠',ko:'불빛 250개',en:'250 Lights',need:a=>a.lights>=250},
+ {id:'l500',icon:'🌌',ko:'불빛 500개',en:'500 Lights',need:a=>a.lights>=500},
+ {id:'b1',icon:'🔥',ko:'첫 봉화',en:'First Beacon',need:a=>a.beacons>=1},
+ {id:'b3',icon:'🕯️',ko:'봉화 3개',en:'3 Beacons',need:a=>a.beacons>=3},
+ {id:'b10',icon:'🚨',ko:'봉화 10개',en:'10 Beacons',need:a=>a.beacons>=10},
+ {id:'b25',icon:'🗼',ko:'봉화 25개',en:'25 Beacons',need:a=>a.beacons>=25},
+ {id:'b50',icon:'🏛️',ko:'봉화 50개',en:'50 Beacons',need:a=>a.beacons>=50},
+ {id:'g1',icon:'🦭',ko:'강치 부르기 1회',en:'Called Gangchi Once',need:a=>a.gcSummons>=1},
+ {id:'g5',icon:'🐚',ko:'강치 부르기 5회',en:'Called Gangchi 5 Times',need:a=>a.gcSummons>=5},
+ {id:'g10',icon:'🌊',ko:'강치 부르기 10회',en:'Called Gangchi 10 Times',need:a=>a.gcSummons>=10},
+ {id:'g25',icon:'🏝️',ko:'강치 부르기 25회',en:'Called Gangchi 25 Times',need:a=>a.gcSummons>=25},
+ {id:'s3',icon:'📅',ko:'3일 연속 출석',en:'3-Day Streak',need:a=>a.streak>=3},
+ {id:'s7',icon:'🗓️',ko:'7일 연속 출석',en:'7-Day Streak',need:a=>a.streak>=7},
+ {id:'s14',icon:'📆',ko:'14일 연속 출석',en:'14-Day Streak',need:a=>a.streak>=14},
+ {id:'s30',icon:'🏆',ko:'30일 연속 출석',en:'30-Day Streak',need:a=>a.streak>=30},
+ {id:'s100',icon:'👑',ko:'100일 연속 출석',en:'100-Day Streak',need:a=>a.streak>=100},
+ {id:'st2',icon:'📘',ko:'학습 2단계 도약',en:'Reached Stage 2',need:a=>a.stage>=2},
+ {id:'st3',icon:'📗',ko:'학습 3단계 도약',en:'Reached Stage 3',need:a=>a.stage>=3},
+ {id:'st4',icon:'🎓',ko:'학습 4단계 완성',en:'Reached Stage 4',need:a=>a.stage>=4},
+ {id:'xp1000',icon:'💎',ko:'누적 1,000 XP',en:'1,000 XP Earned',need:a=>a.xp>=1000}
+];
+function computeBadges(s){
+ const a=summary(s);
+ return BADGES.map(b=>({id:b.id,icon:b.icon,ko:b.ko,en:b.en,earned:!!b.need(a)}));
+}
 return {VERSION,KEY,OLD_KEYS,Core,Course,Journey,fresh,ensure,validate,summary,selectProfile,answer,finish,unlock,
-        tick,replayBirds,backupText,parseImport,legacyCandidates,Store,MemoryStorage,clone};
+        tick,replayBirds,backupText,parseImport,legacyCandidates,Store,MemoryStorage,clone,BADGES,computeBadges};
 });
