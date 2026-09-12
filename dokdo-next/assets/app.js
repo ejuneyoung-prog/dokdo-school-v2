@@ -79,7 +79,7 @@ const en={
  channelInfoOpen:'About Dokdo Korea',channelInfoTitle:'About Dokdo Korea',
  channelContactTitle:'Contact',channelMusicTitle:'Music & Channel Links',channelCollabLink:'Collaboration & lecture inquiries (Linktree) ↗',
  support:'♥ Support Dokdo Korea Membership',headerLive:'🔴 Watch Dokdo Live Now',headerChannel:'▶ Dokdo Korea Channel',
- youtubeChannel:'Dokdo Korea channel ↗',
+ youtubeChannel:'Dokdo Korea Instagram ↗',
  tourismInfoTitle:'Ulleungdo–Dokdo travel information',
  tourismInfoBody:'Basic visitor information about Dokdo (ferry access via Ulleungdo, weather-dependent sailings, and what to know before visiting).',
  tourismInfoLink:'Book / continue ↗',
@@ -268,7 +268,6 @@ function renderYoutubeCard(){
   if(!activeYoutube||activeYoutube.containerId!==containerId)resetYoutubePlayer(containerId,id);
  });
  $('youtube-live-link').href=yt.liveUrl||yt.channelUrl||'#';
- $('youtube-channel-link').href=yt.channelUrl||'#';
 }
 function maybeShowIntro(){
  if(isolated)return;
