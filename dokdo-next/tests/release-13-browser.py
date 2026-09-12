@@ -6,6 +6,11 @@ from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
 p=argparse.ArgumentParser();p.add_argument('--mode',choices=['inline','http'],default='http');p.add_argument('--engine',choices=['chromium','webkit'],default='chromium');p.add_argument('--browser',default=os.environ.get('CHROMIUM_EXECUTABLE'));p.add_argument('--output',default='test-results/release-13-browser');a=p.parse_args();OUT=Path(a.output);OUT.mkdir(parents=True,exist_ok=True)
 checks=[];errors=[];requests=[]
+def wait_until(page,expression,timeout_ms=12000,step_ms=100):
+ for _ in range(max(1,timeout_ms//step_ms)):
+  if page.evaluate(expression):return True
+  page.wait_for_timeout(step_ms)
+ raise AssertionError('Timed out waiting for: '+expression)
 def check(name,ok,detail=None):
  checks.append({'name':name,'pass':bool(ok),'detail':detail})
  if not ok: print('FAIL',name,detail,flush=True)
@@ -35,7 +40,7 @@ try:
    page.evaluate("()=>{const m=new Map();Object.defineProperty(window,'localStorage',{value:{getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k)}});}")
    page.set_content(inline(),wait_until='domcontentloaded')
   else:page.goto('http://127.0.0.1:'+str(server.server_port)+'/',wait_until='domcontentloaded')
-  page.wait_for_function('!!window.DokdoApp');page.evaluate('DokdoApp.assetsReady')
+  wait_until(page,'!!window.DokdoApp');page.evaluate('DokdoApp.assetsReady')
   # The channel intro opens once a day over the home view. A visitor dismisses
   # it before doing anything else, and so must this run -- otherwise every
   # click below lands on the dialog backdrop instead of the page.
@@ -48,7 +53,9 @@ try:
   page.click('#start-lesson');page.select_option('#age-band','14-16');page.click('#age-form button[type=submit]')
   # Submitting the age form saves before it starts the lesson, so the lesson
   # appears a tick later; reading it straight away raced and failed at random.
-  page.wait_for_function('!!(window.DokdoApp&&DokdoApp.lesson&&DokdoApp.lesson.item)')
+  # Polled from here rather than with wait_for_function: that installs a
+  # page-side predicate, which this site's CSP blocks for lacking unsafe-eval.
+  wait_until(page,'!!(window.DokdoApp&&DokdoApp.lesson&&DokdoApp.lesson.item)')
   check('Middle-school track begins at its real starting unit (no placement test)',page.evaluate('DokdoApp.lesson.item.unit===8'))
   check('Question uses S-Core Dream token',page.eval_on_selector('#question-title','e=>getComputedStyle(e).fontFamily').startswith('SCoreDream'))
   page.evaluate("DokdoApp.view('home')");page.click('#start-lesson');page.click('#read-done')
