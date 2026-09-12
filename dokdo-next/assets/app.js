@@ -70,7 +70,18 @@ const en={
  youtubeTitle:'Dokdo Korea videos',
  youtubeLive:'Watch the live stream ↗',
  youtubeWatchOn:'Open on YouTube ↗',
- youtubeNote:'Shows one of the Dokdo Korea channel’s videos at random. Tap to play — nothing plays automatically.'
+ youtubeNote:'Shows one of the Dokdo Korea channel’s videos at random. Tap to play — nothing plays automatically.',
+ support:'♥ Support',
+ youtubeChannel:'Dokdo Korea channel ↗',
+ tourismInfoTitle:'Ulleungdo–Dokdo travel information',
+ tourismInfoBody:'Basic visitor information about Dokdo (ferry access via Ulleungdo, weather-dependent sailings, and what to know before visiting).',
+ tourismInfoLink:'Book / continue ↗',
+ tourismComingSoon:'This is being prepared right now.',
+ contactCollab:'Contact / collaborate',
+ tourismInfoBtn:'Ulleungdo·Dokdo travel info',
+ resetRecord:'Reset this record',
+ resetWarning:'Clears this device’s record and starts empty. Save a backup file above first, or remember your nickname#code so “Load a record from another device” can bring it back after resetting.',
+ resetConfirm:'This clears every record on this device and cannot be undone here. Have you saved a backup, or do you have your nickname#code? Continue?'
 };
 en.mapShapeNote='Dongdo is lower, with a comparatively level upper area. This authored comparison is not a surveyed 3D terrain or facility-position model.';
 let mode=document.querySelector('meta[name="dokdo-mode"]').content;
@@ -165,6 +176,7 @@ function renderHome(){
  txt('bird-count',Object.keys(s.visual.unlocks).length?1:0);txt('xp-label',num(s.xp)+' XP');
  $('first-light').hidden=a.lights>0;
  const step=p?.stage||1;const unit=C.unitInfo(p?.course?.unit||1);txt('course-title',unit[language]);txt('course-description',tr('짧게 배우고, 다섯 문제를 풀며 나만의 독도를 밝혀보세요.','Read a little, answer five questions, and add light to your island.'));
+ renderMotivationBanner(s,a,unit);
  $('journey-steps').replaceChildren();
  for(let i=1;i<=4;i++){const el=document.createElement('div');el.className='journey-step'+(i===step?' current':i<step?' done':'');
   const n=document.createElement('span');n.textContent=String(i).padStart(2,'0');const label=document.createElement('b');label.textContent=C.STAGES[language][i];el.append(n,label);$('journey-steps').append(el);}
@@ -217,6 +229,20 @@ function stopAllYoutubeEmbeds(){
  resetYoutubePlayer(containerId,videoId);
  if(wasPlaying)toggleSound().catch(()=>{});
 }
+function flagEmoji(code){
+ if(typeof code!=='string'||!/^[A-Za-z]{2}$/.test(code))return'';
+ const up=code.toUpperCase();
+ return String.fromCodePoint(...Array.from(up,c=>0x1f1e6+c.charCodeAt(0)-65));
+}
+function renderMotivationBanner(s,a,unit){
+ const banner=$('motivation-banner');
+ if(!a.name){banner.hidden=true;return;}
+ banner.hidden=false;
+ $('motivation-flag').textContent=flagEmoji(s.flag)||'🏳️';
+ const shownName=Array.from(a.name).length>20?Array.from(a.name).slice(0,20).join('')+'…':a.name;
+ txt('motivation-name',shownName);
+ txt('motivation-question',tr(`오늘의 문제 · ${unit[language]} · 매일 들르면 더 빨리 밝아져요`,`Today's question · ${unit['en']} · visit daily to light up faster`));
+}
 function renderYoutubeCard(){
  const yt=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.youtube)||{};
  const ids=Array.isArray(yt.videoIds)?yt.videoIds:[];
@@ -226,6 +252,7 @@ function renderYoutubeCard(){
  if(!activeYoutube||activeYoutube.containerId!=='youtube-card-player')resetYoutubePlayer('youtube-card-player',homeVideoId);
  $('youtube-video-link').href='https://www.youtube.com/watch?v='+encodeURIComponent(homeVideoId);
  $('youtube-live-link').href=yt.liveUrl||yt.channelUrl||'#';
+ $('youtube-channel-link').href=yt.channelUrl||'#';
 }
 function maybeShowIntro(){
  if(isolated)return;
@@ -267,6 +294,7 @@ function mapFacts(which='west'){
 function toggleMap(on){
  const previous=mapOpen;mapOpen=on;if(!view('home')){mapOpen=previous;return false;}$('stage-grid').classList.toggle('map-open',on);$('map-card').hidden=!on;$('today-card').hidden=on;
  renderOutlines();mapFacts();paint();txt('art-note',on?tr('지형 구조 비교 · 실측지도 아님','Landform comparison · not a survey'):tr('승인 일러스트의 상상 풍경 · 실제 지형은 지도 보기에서 비교','Approved imaginary landscape · compare actual landforms in Map'));
+ txt('save-image',on?tr('지도 저장','Save map'):tr('이미지 저장','Save image'));
 }
 function setupAge(callback,force=false){
  if(!guarded())return;
@@ -458,25 +486,40 @@ function renderResult(q,outcome){
  const more=document.createElement('button');more.className='button secondary';more.textContent=tr('한 번 더 배우기','Learn a little more');more.onclick=()=>start('daily');row.append(home,more);
  el.append(star,title,count,desc,note,facts,row,renderShareRow());el.focus();
 }
+function shareTrack(channel){if(window.DokdoAnalytics)DokdoAnalytics.track('share_click',{channel});}
+function shareButton(label,onClick){const b=document.createElement('button');b.className='button secondary';b.textContent=label;b.onclick=onClick;return b;}
 function renderShareRow(){
  const wrap=document.createElement('div');wrap.className='share-row';
  const label=document.createElement('p');label.className='fine';label.textContent=tr('독도 코리아 스쿨을 다른 사람에게 알려주세요. 나의 점수나 이름은 포함되지 않습니다.','Tell someone else about Dokdo Korea School. Your score and name are never included.');
  const row=document.createElement('div');row.className='button-row';
- const copy=document.createElement('button');copy.className='button secondary';copy.textContent=tr('링크 복사','Copy link');
- copy.onclick=async()=>{
-  if(window.DokdoAnalytics)DokdoAnalytics.track('share_click',{channel:'link'});
-  const res=await DokdoShare.copyLink();
+ row.append(shareButton(tr('링크 복사','Copy link'),async()=>{
+  shareTrack('link');const res=await DokdoShare.copyLink();
   toast(res.state==='copied'?tr('링크를 복사했습니다.','Link copied.'):tr('복사하지 못했습니다.','Could not copy the link.'));
- };
- row.append(copy);
+ }));
+ row.append(shareButton(tr('결과 이미지 저장','Save an image'),()=>{shareTrack('card');saveImage();}));
  if(window.DokdoShare&&DokdoShare.isKakaoConfigured()){
-  const kakao=document.createElement('button');kakao.className='button secondary';kakao.textContent=tr('카카오톡 공유','Share to KakaoTalk');
-  kakao.onclick=async()=>{
-   if(window.DokdoAnalytics)DokdoAnalytics.track('share_click',{channel:'kakaotalk'});
-   const res=await DokdoShare.kakaoShare();
+  row.append(shareButton(tr('카카오톡으로 보내기','Send via KakaoTalk'),async()=>{
+   shareTrack('kakaotalk');const res=await DokdoShare.kakaoShare();
    if(res.state==='error')toast(tr('카카오톡 공유를 열지 못했습니다.','Could not open KakaoTalk sharing.'));
-  };
-  row.append(kakao);
+  }));
+ }
+ if(window.DokdoShare&&DokdoShare.nativeShareSupported()){
+  row.append(shareButton(tr('다른 앱으로 공유','Share to another app'),async()=>{
+   shareTrack('device');const res=await DokdoShare.nativeShare();
+   if(res.state==='not_supported'||res.state==='error')toast(tr('이 기기에서는 공유창을 열 수 없습니다.','Sharing isn’t available on this device.'));
+  }));
+ }
+ row.append(shareButton(tr('인스타그램에 올리기','Post to Instagram'),()=>{
+  shareTrack('instagram');saveImage();
+  toast(tr('이미지를 저장했습니다. 인스타그램을 열어 직접 올려 주세요.','The image was saved. Open Instagram to post it yourself.'));
+ }));
+ const yt=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.youtube)||{};
+ if(yt.liveUrl||yt.channelUrl){
+  row.append(shareButton(tr('독도 코리아 라이브에 공유하기','Share to the Dokdo Korea live chat'),async()=>{
+   shareTrack('live');const res=await DokdoShare.copyForChat();
+   if(res.state==='copied'){toast(tr('채팅용 한 줄을 복사했습니다. 라이브를 열어 붙여넣어 주세요.','Copied a one-line message for chat. Open the live stream and paste it there.'));window.open(yt.liveUrl||yt.channelUrl,'_blank','noopener');}
+   else toast(tr('복사하지 못했습니다.','Could not copy the text.'));
+  }));
  }
  wrap.append(label,row);return wrap;
 }
@@ -638,6 +681,17 @@ $('import-file').onchange=async event=>{
  try{const raw=await file.text();importCandidate=M.parseImport(raw,getS());importOriginal=raw;showImport();}
  catch(e){toast(tr('형식이 다르거나 현재 성취를 잃는 파일입니다. 덮어쓰지 않았습니다.','This file is invalid or would lose achievements. Nothing was overwritten.'));}
 };
+$('reset-record').onclick=async()=>{
+ if(!getS()||busy)return;
+ if(!confirm(tr('이 기기의 모든 기록을 지우고 빈 상태로 시작합니다. 직전 기록은 이 브라우저에 한 번 더 보관되지만, 화면에서는 되돌릴 수 없습니다. 백업 파일을 저장했거나 별명#코드를 알고 계신가요? 계속할까요?','This clears every record on this device and starts empty. The previous record is kept once more in this browser, but there is no undo button here. Have you saved a backup, or do you have your nickname#code? Continue?')))return;
+ busy=true;
+ try{
+  await scheduleWrite(()=>store.importState(M.fresh()));
+  state=getS();language=state.visual.language;translate();lesson=null;lightDirty=true;homeVideoId=null;view('home',true);paint();
+  toast(tr('기록을 초기화했습니다. 필요하면 내 기록에서 다른 기기 기록 불러오기로 되돌릴 수 있습니다.','Record reset. If needed, use "Load a record from another device" in My records to bring it back.'));
+ }catch(e){toast(tr('초기화하지 못했습니다.','Could not reset the record.'));updateStorageStatus();}
+ finally{busy=false;}
+};
 $('export-records').onclick=()=>{const text=store.blocked?store.recovery():M.backupText(getS());download(text,'dokdo-learning-'+Core.dayKey()+'.json','application/json');toast(tr('기록 파일을 만들었습니다. 다운로드 위치를 확인해 주세요.','Backup created. Check your download folder.'));};
 function sources(){
  const wrap=$('source-content');wrap.replaceChildren();
@@ -762,21 +816,33 @@ async function updateKhoaObservation(){
 updateKhoaObservation();setInterval(()=>{if(!document.hidden)updateKhoaObservation();},1800000);
 $('hall-retry').onclick=()=>renderHall();
 
+const musicList=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.music)||[];
+let trackIndex=0;
 function stopSound(){
  soundOn=false;audioToken++;if(audio){audio.muted=true;audio.pause();}
- txt('sound',tr('♫ 소리 꺼짐','♫ Sound off'));$('sound').setAttribute('aria-pressed','false');
+ txt('sound',tr('♫ 소리 꺼짐','♫ Sound off'));$('sound').setAttribute('aria-pressed','false');$('sound').removeAttribute('title');
+}
+function trackLabel(i){const t=musicList[i];return t?tr(t.t,t.tEn||t.t):'';}
+function ensureAudio(){
+ if(audio)return;
+ audio=new Audio();audio.preload='none';audio.volume=.45;
+ audio.addEventListener('play',()=>{if(!soundOn||document.hidden){audio.muted=true;audio.pause();}});
+ audio.addEventListener('error',()=>{stopSound();toast(tr('음악 파일을 재생하지 못했습니다.','The music file could not be played.'));});
+ audio.addEventListener('ended',()=>{if(!musicList.length)return;trackIndex=(trackIndex+1)%musicList.length;playCurrentTrack();});
+}
+async function playCurrentTrack(){
+ if(!musicList.length)return;
+ audio.src=musicList[trackIndex].f;
+ const token=++audioToken;audio.muted=false;
+ try{await audio.play();if(token!==audioToken||!soundOn||document.hidden){audio.muted=true;audio.pause();return;}
+  const label=trackLabel(trackIndex);txt('sound',tr('♫ 소리 켜짐','♫ Sound on'));$('sound').setAttribute('aria-pressed','true');
+  if(label)$('sound').title=label;
+ }catch(e){stopSound();toast(tr('브라우저가 음악을 재생하지 못했습니다. 다시 소리 버튼을 눌러 주세요.','The browser could not play audio. Try the sound button again.'));}
 }
 async function toggleSound(){
  if(soundOn){stopSound();return;}
- if(!audio){
-  audio=new Audio('./assets/ambient.wav');audio.preload='none';audio.loop=true;audio.volume=.32;
-  audio.addEventListener('play',()=>{if(!soundOn||document.hidden){audio.muted=true;audio.pause();}});
-  audio.addEventListener('error',()=>{stopSound();toast(tr('음악 파일을 재생하지 못했습니다.','The music file could not be played.'));});
- }
- soundOn=true;const token=++audioToken;audio.muted=false;
- try{await audio.play();if(token!==audioToken||!soundOn||document.hidden){audio.muted=true;audio.pause();return;}
-  txt('sound',tr('♫ 소리 켜짐','♫ Sound on'));$('sound').setAttribute('aria-pressed','true');
- }catch(e){stopSound();toast(tr('브라우저가 음악을 재생하지 못했습니다. 다시 소리 버튼을 눌러 주세요.','The browser could not play audio. Try the sound button again.'));}
+ if(!musicList.length){toast(tr('아직 연결된 음악이 없습니다.','No music is connected yet.'));return;}
+ ensureAudio();soundOn=true;await playCurrentTrack();
 }
 let exporting=false;
 async function waitForFonts(){if(!document.fonts)return false;try{const loads=await Promise.race([Promise.all([document.fonts.load('500 16px GmarketSans','독도 Dokdo 123'),document.fonts.load('700 16px GmarketSans','독도'),document.fonts.load('400 16px SCoreDream','독도 Dokdo 123'),document.fonts.load('600 16px SCoreDream','독도')]),new Promise(r=>setTimeout(()=>r([]),5000))]);return loads.length===4&&loads.every(arr=>arr.length>0&&arr.every(f=>f.status==='loaded'));}catch(e){return false;}}
@@ -812,6 +878,12 @@ $('brand-home').onclick=()=>toggleMap(false);$('nav-map').onclick=()=>toggleMap(
 $('start-lesson').onclick=()=>start('daily');$('start-review').onclick=()=>start('review');$('start-placement').onclick=()=>start('placement',true);
 $('leave-lesson').onclick=()=>view('home');$('open-settings').onclick=settings;$('change-age').onclick=()=>{closeDialog('settings-dialog');setupAge(renderHome,true);};
 $('open-sources').onclick=sources;$('footer-sources').onclick=sources;$('arrange-beacon').onclick=beaconDialog;
+(function(){
+ const yt=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.youtube)||{};
+ $('support-link').href=yt.membershipUrl||yt.channelUrl||'#';
+})();
+$('open-tourism-info').onclick=()=>showDialog('tourism-dialog');
+$('tourism-go').onclick=()=>toast(tr('현재 준비 중입니다.','This is being prepared right now.'));
 $('sound').onclick=toggleSound;$('save-image').onclick=saveImage;
 $('zoom').onclick=()=>{const on=$('canvas-shell').classList.toggle('zoomed');$('zoom').setAttribute('aria-pressed',String(on));txt('zoom',on?tr('전체 보기','Fit'):tr('확대','Zoom'));if(on)$('canvas-shell').scrollLeft=$('canvas-shell').scrollWidth*.22;};
 $('invite-count').onchange=renderVisitors;

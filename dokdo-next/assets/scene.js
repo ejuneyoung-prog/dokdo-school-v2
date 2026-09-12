@@ -18,6 +18,20 @@ function arc(poly,f){let total=0;const l=poly.map((p,i)=>{const q=poly[(i+1)%pol
  for(let i=0;i<l.length;i++){if(r<=l[i]){const a=poly[i],b=poly[(i+1)%l.length],u=r/l[i];return [a[0]+u*(b[0]-a[0]),a[1]+u*(b[1]-a[1])];}r-=l[i];}return poly[0];}
 function vdc(n){let f=.5,r=0;while(n>0){r+=f*(n%2);n=Math.floor(n/2);f/=2;}return r;}
 const centers=[[413,219],[1167,408]];
+// Approximate, illustration-only anchors derived from the existing outline data
+// (no separate lighthouse/pier coordinates were ever supplied): the topmost
+// point of Dongdo for the lighthouse, nudged inland so the tower sits on solid
+// ground; the westmost (strait-facing) point of Dongdo for the pier, since
+// that is the shore facing the open water gangchi/boats travel through.
+function shoreAnchor(poly,pick,island,nudge){
+ let v=poly[0];for(const q of poly)if(pick(q,v))v=q;
+ const c=centers[island];return [v[0]+(c[0]-v[0])*nudge,v[1]+(c[1]-v[1])*nudge];
+}
+// The lighthouse tower needs solid ground under it, so it is nudged inland
+// from the outline. The pier is where the boat docks -- it stays right on
+// the coastline (nudge 0) so it is never drawn over by the island art.
+const LIGHTHOUSE=shoreAnchor(ART.east,(a,b)=>a[1]<b[1],1,.2);
+const PIER=shoreAnchor(ART.east,(a,b)=>a[0]<b[0],1,-.04);
 // These are light-placement paths on the illustration, NOT elevation contours.
 const rings=[ART.west,ART.east].map((p,island)=>Array.from({length:12},(_,i)=>p.map(a=>{
  const u=.18+i*.064;return [centers[island][0]+(a[0]-centers[island][0])*u,centers[island][1]+(a[1]-centers[island][1])*u];
@@ -117,6 +131,43 @@ function bird(x,p,t){
  x.fillStyle='#EFC570';x.beginPath();x.moveTo(12,-1);x.lineTo(17,.1);x.lineTo(12,1.8);x.fill();
  x.fillStyle='#2B4652';x.beginPath();x.moveTo(-9,0);x.lineTo(-16,-3);x.lineTo(-14,3);x.fill();x.restore();
 }
+function lighthouse(x,px,py,darkness,t){
+ x.save();x.translate(px,py);
+ x.fillStyle='#e7e3d3';x.strokeStyle='#3a3a34';x.lineWidth=.6;
+ x.beginPath();x.moveTo(-3,0);x.lineTo(-1.6,-17);x.lineTo(1.6,-17);x.lineTo(3,0);x.closePath();x.fill();x.stroke();
+ x.fillStyle='#c0392b';x.fillRect(-2.6,-9,5.2,2.4);
+ x.fillStyle='#2c2c28';x.fillRect(-2.2,-21,4.4,4);
+ if(darkness>.12){
+  const pulse=.55+.45*Math.sin(t*2.6);
+  x.fillStyle='#fff3c4';x.shadowColor='#ffe28a';x.shadowBlur=(10+14*pulse)*darkness;
+  x.beginPath();x.arc(0,-19,1.6+pulse*.6,0,Math.PI*2);x.fill();x.shadowBlur=0;
+  x.globalAlpha=.15*darkness*pulse;x.fillStyle='#ffe9ab';
+  x.beginPath();x.moveTo(0,-19);x.lineTo(-72,-58);x.lineTo(-72,-4);x.closePath();x.fill();
+  x.beginPath();x.moveTo(0,-19);x.lineTo(72,-58);x.lineTo(72,-4);x.closePath();x.fill();
+  x.globalAlpha=1;
+ }
+ x.restore();
+}
+function boat(x,px,py,angle,alpha){
+ x.save();x.translate(px,py);x.rotate(angle);x.globalAlpha=alpha;x.fillStyle='rgba(9,13,19,.55)';
+ x.beginPath();x.moveTo(-15,4);x.quadraticCurveTo(-17,9,-9,9);x.lineTo(9,9);x.quadraticCurveTo(16,9,14,3);x.closePath();x.fill();
+ x.fillRect(-4,-6,9,7);
+ x.restore();
+}
+// A single ferry-style silhouette makes one slow round trip to the pier per
+// cycle: eases in, holds at the dock, then eases back out to open water.
+function pierBoat(x,t,reduced){
+ if(reduced)return;
+ const cycle=t%170;if(cycle>=70)return;
+ const start=[PIER[0]-235,PIER[1]+55];
+ let u;
+ if(cycle<28)u=cycle/28;else if(cycle<42)u=1;else u=1-(cycle-42)/28;
+ const inbound=cycle<42;
+ const bx=start[0]+u*(PIER[0]-start[0]),by=start[1]+u*(PIER[1]-start[1]);
+ const angle=Math.atan2(PIER[1]-start[1],PIER[0]-start[0])+(inbound?0:Math.PI);
+ const fade=Math.min(1,cycle/5,(70-cycle)/5);
+ boat(x,bx,by,angle,fade);
+}
 function birdPositions(s,t,stationary=false){
  if(!s.visual?.birdsEnabled||!s.visual.birdVisit)return [];
  const elapsed=stationary?12:24-s.visual.birdVisit.remainingMs/1000,u=elapsed/24,fade=Math.min(1,u*6,(1-u)*6);
@@ -133,7 +184,11 @@ function drawLights(x,s){
   const r=p.lv===4?4.5:size;
   x.fillStyle=PALETTE[p.lv];x.shadowColor=PALETTE[p.lv];x.shadowBlur=p.lv===4?19:Math.max(2,14-lights.length/100);
   x.beginPath();x.arc(p.x,p.y,r,0,Math.PI*2);x.fill();
-  if(p.lv===4){x.shadowBlur=0;x.strokeStyle='rgba(124,232,213,.48)';x.lineWidth=1.4;x.beginPath();x.arc(p.x,p.y,12,0,Math.PI*2);x.stroke();}
+  if(p.lv===4){x.shadowBlur=0;x.strokeStyle='rgba(124,232,213,.48)';x.lineWidth=1.4;x.beginPath();x.arc(p.x,p.y,12,0,Math.PI*2);x.stroke();
+   // A glow alone reads poorly in daylight -- plant one small flag per earned
+   // beacon, exactly one-to-one, so the achievement stays visible day or night.
+   taegeukgi(x,p.x,p.y-4,.34);
+  }
  }
  x.shadowBlur=0;
 }
@@ -215,7 +270,7 @@ function render(ctx,s,t,options={}){
  const clock=reduced?0:t;
  ctx.strokeStyle='rgba(67,150,165,.08)';ctx.lineWidth=1.4;
  for(let j=0;j<17;j++){ctx.beginPath();for(let i=0;i<=32;i++){const xx=i*48,yy=30+j*43+Math.sin(i*.38+j*.7+clock*.12)*6;i?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy);}ctx.stroke();}
- const density={calm:72,rich:144,full:192}[s.seaDensity]||144;
+ const density={calm:144,rich:288,full:384}[s.seaDensity]||288;
  for(let i=0;i<density;i++)fish(ctx,fishPosition(i,clock),clock);
  // A distant, infrequent whale is clearly larger than the small gangchi.
  const cycle=clock%190;
@@ -226,6 +281,7 @@ function render(ctx,s,t,options={}){
   ctx.beginPath();ctx.moveTo(-66,0);ctx.lineTo(-110,-20);ctx.lineTo(-97,0);ctx.lineTo(-110,18);ctx.closePath();ctx.fill();ctx.restore();
  }
  for(const g of gangchiPositions(s,clock))seal(ctx,g,clock);
+ pierBoat(ctx,clock,reduced);
  if(islands?.complete&&islands.naturalWidth)ctx.drawImage(islands,0,0,W,H);
  else{ctx.fillStyle='#466569';for(const p of [ART.west,ART.east]){ctx.beginPath();p.forEach((v,i)=>i?ctx.lineTo(...v):ctx.moveTo(...v));ctx.closePath();ctx.fill();}}
  // Subtle twilight glaze on the original approved illustration.
@@ -235,6 +291,7 @@ function render(ctx,s,t,options={}){
  drawJourney(ctx,s,{darkness:phase.darkness,width:options.width||W});
  if(lightLayer)ctx.drawImage(lightLayer,0,0);else drawLights(ctx,s);
  for(const b of birdPositions(s,clock,reduced)){ctx.save();ctx.globalAlpha=b.fade;bird(ctx,b,clock);ctx.restore();}
+ lighthouse(ctx,LIGHTHOUSE[0],LIGHTHOUSE[1],phase.darkness,clock);
  if(labels){
   ctx.font='500 27px GmarketSans, sans-serif';ctx.fillStyle='#F5F4E9';ctx.shadowColor='#001322';ctx.shadowBlur=10;
   ctx.fillText('서도 · Seodo',300,535);ctx.fillText('동도 · Dongdo',1160,674);ctx.shadowBlur=0;

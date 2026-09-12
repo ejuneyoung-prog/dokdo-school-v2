@@ -447,3 +447,76 @@ API02–API07 (CORS/idempotency/auth/input-safety/secrets/backup-integrity), HAL
 (scale, failure states, live-feed correctness), WX02, VIS03/05/06, EDU01–03, OPS01/02: **NOT_RUN**.
 Nearly all of them require either a real backend connection or a real device/browser this
 session does not have. None are claimed as passed.
+
+## 18. Phase 5 — BGM, top nav, reset, share expansion, motivation banner, scene rendering
+
+Everything the operator asked for after reviewing the 1,513/4,539 screenshot and the old
+reference material, in one batch (their own "이전 수정 내용까지 다 포함해서 고고").
+
+- **BGM, 7 tracks (TESTED_MOCK, local):** `assets/music/bgm1.mp3`–`bgm7.mp3`, titles taken
+  verbatim from each file's own ID3 tag where one exists (`bgm1`/`bgm2` and the three newest
+  gayageum tracks `bgm5`–`bgm7` all carry a real `title`/`artist` tag, read with `mutagen`, not
+  guessed). `bgm3` (판소리) and `bgm4` (Let's Move) ship with no ID3 tag at all — their titles
+  come directly from the operator's own chat text and original filename, not an assumption.
+  Playback stays `preload='none'` per `<audio>` element and starts **only** from the existing
+  sound-button click handler (`toggleSound` → `ensureAudio`/`playCurrentTrack`); the only other
+  caller of `playCurrentTrack` is the track's own `ended` listener advancing to the next track,
+  which is a continuation of playback the user already started, not a fresh autoplay. No
+  `autoplay` attribute anywhere, verified by reading `assets/app.js` end to end. Real playback
+  through actual speakers was not something this sandbox could confirm (no audio output here);
+  file integrity (readable duration/bitrate via `mutagen`) and the click-to-play code path were
+  both checked directly.
+- **Top nav: 4 buttons + live link (TESTED_MOCK, local):** 후원하기 (given `youtube.membershipUrl`),
+  My YouTube channel link, live-link now pointed at the operator's explicit
+  `watch?v=wytHepZ1fcs` URL (not `/live`, per their instruction that this one stays live for a
+  month-plus and they'll resend if it changes), 문의(협업) in the footer next to a new
+  "울릉도·독도 관광 안내" dialog (placeholder content — no real tourism copy/link was supplied,
+  flagged rather than invented). **Open item, not silently assumed:** 문의(협업) reuses the
+  existing `mailto:ejuneyoung2@gmail.com` from the answer-dispute contact — never separately
+  confirmed with the operator that the same address should receive business/collaboration
+  inquiries specifically.
+- **Reset-record button (TESTED_MOCK, local):** goes through `store.importState(M.fresh())`
+  under the same `busy`/`scheduleWrite()` guard as every other state mutation, so it can't race
+  a save-in-flight; the existing before-import snapshot means a reset is recoverable the same
+  way an import is, which is what "복원 가능" required.
+- **Share menu expansion + map save (TESTED_MOCK, local):** `renderShareRow()` now offers
+  link copy, chat-safe copy (single line — YouTube Live chat strips newlines per the operator's
+  own note), native share sheet where supported, and Kakao share gated on the JS key being
+  configured; "지도 저장" reuses the existing save-image path with its label switched contextually.
+- **Motivation banner (name + flag + a level-matched question, IMPLEMENTED_LOCAL):** shows the
+  learner's own flag/name next to a question sized for their current grade on the home screen,
+  hidden entirely until a name exists so it never shows placeholder data.
+- **Scene rendering — night lighthouse, day-visible flags, fish density, pier boat
+  (TESTED_MOCK, local, screenshots below):**
+  - *Lighthouse:* no prior lighthouse render target existed anywhere in the codebase (checked
+    via `grep` across `assets/*.js` and `data/*.json`before writing anything). Its position is
+    computed, not hand-picked, from the same outline data every other coordinate in this file
+    already uses: the topmost vertex of Dongdo's polygon, nudged 20% toward the island's center
+    so the tower sits on solid ground rather than exactly on the coastline. It renders every
+    frame; only its glow/beam is gated on `phase.darkness > .12`, pulsing rather than static.
+  - *Flags = lights, exactly 1:1:* every level-4 ("beacon") position `drawLights()` already
+    drew as a glow dot now also gets a small Taegukgi planted on it, via the same `taegeukgi()`
+    function the journey-path decoration already used — same filtered list (`lv===4`) the app's
+    own `a.lights` counter is built from (`assets/app.js:724`), so the flag count cannot drift
+    from the light count; there is no separate cap or stride like the journey-path flags have.
+    This is deliberately unconditional (day and night both), since the ask was specifically that
+    earned lights stay visible in daylight, when the glow alone reads poorly.
+  - *Fish density doubled:* `{calm:72,rich:144,full:192}` → `{calm:144,rich:288,full:384}`.
+  - *Pier boat:* a small non-photorealistic silhouette (hull + cabin block, no rigging/detail)
+    makes one slow round trip every 170s of scene time — eases in from open water, holds at the
+    dock, eases back out — anchored at Dongdo's westmost (strait-facing) polygon vertex, nudged
+    slightly *outward* into the water (not inland, unlike the lighthouse) specifically so it
+    never renders underneath the island artwork at the moment it's docked. This was caught and
+    fixed during this session's own verification, not assumed correct on the first try.
+  - Verified by calling `DokdoVisualScene.render()` directly at chosen scene-time values (10s /
+    35s / 100s) against a demo-seeded 1,513-record state, in both `day` and `night` preview
+    modes (`assets/solar.js`'s existing `time-mode` override), and inspecting the resulting
+    canvas pixels — not by eyeballing the live animation loop and hoping the timing lined up.
+  - **Not verified:** how this looks against the *real* island raster illustration (this
+    session's checks used the flat fallback fill, since the real artwork file's exact
+    transparency/coastline shape wasn't inspected pixel-by-pixel) — worth one visual pass on the
+    deployed preview; and whether ~384 fish at `full` density costs enough frame time to matter
+    on a low-end phone, which this sandbox cannot benchmark.
+- `npm test` (156/156) and `python3 tools/check_site.py` (86/86) both pass after every change in
+  this section — no check was loosened to make that true; no new external host was touched, so
+  no CSP change was needed for this batch.

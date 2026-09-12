@@ -18,8 +18,7 @@ function shareMeta(){
   url:get('link[rel="canonical"]','content')||get('link[rel="canonical"]','href')||location.href
  };
 }
-async function copyLink(){
- const m=shareMeta();const text=m.title+'\n'+m.url;
+async function copyText(text){
  try{
   if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(text);
   else{
@@ -28,6 +27,18 @@ async function copyLink(){
   }
   return{state:'copied'};
  }catch(e){return{state:'error',error:String(e&&e.message||e)};}
+}
+async function copyLink(){const m=shareMeta();return copyText(m.title+'\n'+m.url);}
+/* Live chat text must stay on one line -- YouTube Live chat strips
+ * newlines and runs words together otherwise (per the operator's own
+ * V1 notes). */
+async function copyForChat(){const m=shareMeta();return copyText(m.title+' · '+m.url);}
+function nativeShareSupported(){return typeof navigator.share==='function';}
+async function nativeShare(){
+ if(!nativeShareSupported())return{state:'not_supported'};
+ const m=shareMeta();
+ try{await navigator.share({title:m.title,text:m.title,url:m.url});return{state:'shared'};}
+ catch(e){if(e&&e.name==='AbortError')return{state:'cancelled'};return{state:'error',error:String(e&&e.message||e)};}
 }
 let kakaoLoading=null;
 function loadKakaoSdk(){
@@ -58,5 +69,5 @@ async function kakaoShare(){
   return{state:'opened'};
  }catch(e){return{state:'error',error:String(e&&e.message||e)};}
 }
-return{copyLink,kakaoShare,isKakaoConfigured:()=>!!kakaoKey()};
+return{copyLink,copyForChat,nativeShare,nativeShareSupported,kakaoShare,isKakaoConfigured:()=>!!kakaoKey()};
 })();
