@@ -35,7 +35,7 @@ try:
   launch={'headless':True}
   if a.engine=='chromium':launch['args']=['--no-sandbox']
   if a.browser:launch['executable_path']=a.browser
-  browser=getattr(pw,a.engine).launch(**launch);ctx=browser.new_context(viewport={'width':1440,'height':1100},accept_downloads=True,reduced_motion='reduce');ctx.route('https://cdn.jsdelivr.net/**',lambda r:r.abort());page=ctx.new_page();page.set_default_timeout(12000);page.on('dialog',lambda d:d.accept());page.on('pageerror',lambda e:errors.append(str(e)));page.on('request',lambda r:requests.append(r.url) if r.url.startswith('http') and not any(x in r.url for x in ['127.0.0.1','cdn.jsdelivr.net']) else None)
+  browser=getattr(pw,a.engine).launch(**launch);ctx=browser.new_context(viewport={'width':1440,'height':1100},accept_downloads=True,reduced_motion='reduce');ctx.route('https://cdn.jsdelivr.net/**',lambda r:r.abort());page=ctx.new_page();page.set_default_timeout(12000);page.on('dialog',lambda d:d.accept());page.on('pageerror',lambda e:errors.append(str(e)));page.on('request',lambda r:requests.append(r.url) if r.url.startswith('http') and not any(x in r.url for x in ['127.0.0.1','cdn.jsdelivr.net','i.ytimg.com']) else None)
   if a.mode=='inline':
    page.evaluate("()=>{const m=new Map();Object.defineProperty(window,'localStorage',{value:{getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k)}});}")
    page.set_content(inline(),wait_until='domcontentloaded')
@@ -102,6 +102,10 @@ try:
   page.click('#language');page.evaluate("DokdoApp.view('home')");page.select_option('#time-mode','night')
   check('English environment interface uses English labels','circuit' in page.locator('#route-title').inner_text())
   check('English start lesson has translated context',page.evaluate("()=>{const q=DokdoStarter.getQuestion(920141,'en');return q.context.includes('1900')&&q.context.includes('Dokdo');}"))
+  # Third-party asset hosts the site embeds by design are excluded above
+  # (fonts from jsdelivr, video posters from ytimg). What this still
+  # catches is the app's own backend, the weather provider, analytics and
+  # Kakao -- the calls this mode is asserting the absence of.
   check('No production or weather calls under unconfigured mode',not requests,requests)
   check('No uncaught JavaScript errors',not errors,errors)
   browser.close()
