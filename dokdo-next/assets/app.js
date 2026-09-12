@@ -79,7 +79,7 @@ const en={
  youtubeNote:'Shows 3 of the Dokdo Korea channel’s videos at random. Tap to play — nothing plays automatically.',
  channelInfoOpen:'About Dokdo Korea',channelInfoTitle:'About Dokdo Korea',
  channelContactTitle:'Contact',channelMusicTitle:'Music & Channel Links',channelCollabLink:'Collaboration & lecture inquiries (Linktree) ↗',
- support:'♥ Support Dokdo Korea Membership',headerLive:'🔴 Watch Dokdo Live Now',headerChannel:'▶ YouTube\nDokdo Korea',headerCollab:'🤝 Collaborate',
+ support:'♥ Support Dokdo Korea',headerLive:'🔴 Watch Dokdo Live Now',headerChannel:'▶ YouTube\nDokdo Korea',headerCollab:'🤝 Collaborate',
  youtubeChannel:'Dokdo Korea Instagram ↗',
  tourismInfoTitle:'Ulleungdo–Dokdo travel information',
  tourismInfoBody:'Basic visitor information about Dokdo (ferry access via Ulleungdo, weather-dependent sailings, and what to know before visiting).',
