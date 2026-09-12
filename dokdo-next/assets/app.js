@@ -656,8 +656,17 @@ async function renderHall(){
  const ticker=$('hall-ticker-track'),weekEntries=d.week||[];
  if(ticker){
   ticker.replaceChildren();
-  if(weekEntries.length){
-   for(let rep=0;rep<2;rep++)for(const r of weekEntries){const span=document.createElement('span');span.textContent=`${r.nick} · ${tr('정답','Correct')} ${num(r.correct)}`;ticker.append(span);}
+  const highlights=[];
+  // Streak field isn't part of the documented week-row shape (nick/school/
+  // correct/days) -- only surface it if the server actually sends one,
+  // never a fabricated number.
+  const streakOf=r=>Number.isFinite(r.best)?r.best:Number.isFinite(r.streak)?r.streak:null;
+  const streakLeader=weekEntries.reduce((best,r)=>{const v=streakOf(r);return v!=null&&(!best||v>streakOf(best))?r:best;},null);
+  if(streakLeader)highlights.push(`🔥 ${streakLeader.nick} · ${tr('연속','Streak')} ${num(streakOf(streakLeader))}`);
+  const medals=['🥇','🥈','🥉'];
+  weekEntries.slice(0,3).forEach((r,i)=>highlights.push(`${medals[i]} ${r.nick} · ${tr('정답','Correct')} ${num(r.correct)}`));
+  if(highlights.length){
+   for(let rep=0;rep<2;rep++)for(const h of highlights){const span=document.createElement('span');span.textContent=h;ticker.append(span);}
    $('hall-ticker').hidden=false;
   }else $('hall-ticker').hidden=true;
  }
