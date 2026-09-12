@@ -15,6 +15,8 @@ const en={
  todayStep:'TODAY’S SMALL STEP',fiveQuestions:'5 questions',gentleLearning:'Learn with explanations',startLesson:'Start a little learning',
  review:'Recall · review',placement:'Choose age · find a starting point',pilotNote:'12 Dokdo units · 60 concepts · 240 rewritten question pairs. Cognitive demand and difficulty are separately reviewed.',
  outlineNote:'An outline comparison simplified from official illustrations. Placement, facility coordinates and elevation contours are not surveyed.',
+ locatorUlleung:'From Ulleungdo',locatorOki:'From the Oki Islands, Japan',locatorCounty:'Ulleung County, Gyeongsangbuk-do',
+ locatorNote:'A location guide using real distances and coordinates. The coastlines shown are simplified illustrations, not surveyed shapes.',
  west:'Seodo',east:'Dongdo',distanceMeaning:'The shortest distance between the shores, not the centres of the drawings.',
  officialMap:'See the official island outlines ↗',topographic:'Open the National Atlas map ↗',
  myLights:'Lights I have earned',lifetime:'Lifetime correct',discoveries:'Encounters with life',gullJournal:'Black-tailed gull journal',
