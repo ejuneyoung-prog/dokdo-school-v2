@@ -398,7 +398,7 @@ $('age-form').addEventListener('submit',async event=>{
  if(!C.band($('age-band').value)){txt('age-error',tr('나이대를 먼저 골라 주세요.','Please select an age band.'));return;}
  busy=true;
  try{
-  const band=$('age-band').value,easy=$('age-easy').checked,nick=$('nickname').value.trim();
+  const band=$('age-band').value,easy=$('age-easy').checked,nick=$('nickname').value.trim().normalize('NFC');
   const flagRaw=$('flag-select').value==='OTHER'?$('flag-other').value.trim().toUpperCase():$('flag-select').value;
   const flag=/^[A-Z]{2}$/.test(flagRaw)?flagRaw:'KR';
   const schoolCat=$('school-cat').value,schoolName=$('school-name').value.trim().slice(0,60);
@@ -737,14 +737,14 @@ async function copyPlainText(text){
 }
 $('cloud-key-copy').onclick=async()=>{
  const s=getS();if(!s)return;
- const nick=(s.name||'').trim();if(!nick)return;
+ const nick=(s.name||'').trim().normalize('NFC');if(!nick)return;
  const ok=await copyPlainText(nick);
  toast(ok?tr('별명을 복사했습니다. 다른 기기의 입력칸에 그대로 붙여넣으세요.','Nickname copied. Paste it exactly into the field on the other device.'):tr('복사하지 못했습니다.','Could not copy.'));
 };
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 $('cloud-save').onclick=async()=>{
  const s=getS();if(!s)return;
- const nick=(s.name||'').trim();
+ const nick=(s.name||'').trim().normalize('NFC');
  if(!nick){txt('cloud-save-status',tr('별명을 먼저 설정해 주세요.','Set a nickname first.'));return;}
  $('cloud-save').disabled=true;txt('cloud-save-status',tr('전송 중…','Sending…'));
  const key=nick,payload=store.blocked?store.recovery():M.backupText(s);
@@ -769,7 +769,7 @@ $('cloud-save').onclick=async()=>{
  $('cloud-save').disabled=false;
 };
 $('cloud-load').onclick=async()=>{
- const nick=$('cloud-load-nick').value.trim();
+ const nick=$('cloud-load-nick').value.trim().normalize('NFC');
  if(!nick){txt('cloud-load-status',tr('불러올 별명을 입력해 주세요.','Enter the nickname to load.'));return;}
  if(store.blocked&&getS()!==null){guarded();return;}
  $('cloud-load').disabled=true;txt('cloud-load-status',tr('불러오는 중…','Loading…'));
