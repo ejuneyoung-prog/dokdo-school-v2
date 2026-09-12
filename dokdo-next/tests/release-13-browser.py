@@ -74,6 +74,8 @@ try:
   check('Day and night render differently',(OUT/'day-1500.png').read_bytes()!=(OUT/'night-1500.png').read_bytes())
   check('Weather setup does not block automatic sunset calculation',page.locator('#dokdo-sun').inner_text().find(':')>=0)
   page.select_option('#invite-count','10');page.click('#invite')
+  # Inviting saves before the visitors appear, so this reads them once stored.
+  wait_until(page,'DokdoApp.state.gangchiVisits.length===10')
   check('Ten earned visitors can coexist',page.evaluate('DokdoApp.state.gangchiVisits.length===10'))
   check('New visits last at most 60 seconds',page.evaluate('DokdoApp.state.gangchiVisits.every(v=>v.remainingMs<=60000 && v.remainingMs>59000)'))
   page.evaluate("DokdoApp.view('learn')");paused=page.evaluate('DokdoApp.state.gangchiVisits.map(v=>v.remainingMs)');page.wait_for_timeout(300)
