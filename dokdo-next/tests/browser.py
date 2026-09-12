@@ -95,7 +95,11 @@ try:
         # A test must never reach the operator's live sheet: CI runs were
         # appending rows to the real activity log.
         ctx.route('**/assets/site-config.js',lambda r:r.fulfill(status=200,content_type='application/javascript',body=unconfigured()))
-        ctx.on('request',lambda r: requests.append(r.url) if r.url.startswith('http') and '127.0.0.1' not in r.url and 'cdn.jsdelivr.net' not in r.url else None)
+        # Third-party asset hosts the site embeds by design are excluded (fonts
+        # from jsdelivr, video posters from ytimg), matching the other runs.
+        # What this still catches is the app's own backend, the weather
+        # provider, analytics and Kakao.
+        ctx.on('request',lambda r: requests.append(r.url) if r.url.startswith('http') and not any(x in r.url for x in ['127.0.0.1','cdn.jsdelivr.net','i.ytimg.com']) else None)
         entries=list((seed or {}).items())
         if args.mode=='inline':
             page.evaluate(INIT,entries);page.set_content(inline_html(file),wait_until='domcontentloaded')
