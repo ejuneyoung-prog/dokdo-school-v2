@@ -89,6 +89,8 @@ const en={
  tourismInfoBtn:'Ulleungdo·Dokdo travel info',
  promoTitle:'Dokdo Korea · Music & Social',
  visitCollabTitle:'Visit · Contact',
+ gradeTab:'Grade',gradeLadderTitle:'Full grade ladder',
+ gradeNote:'No placement test — everyone starts at Kindergarten. Correct answers auto-promote you to the next grade, and progress already earned carries forward.',
  resetRecord:'Reset this record',
  resetWarning:'Clears this device’s record and starts empty. Save a backup file above first, or remember your nickname so “Load a record from another device” can bring it back after resetting.',
  resetConfirm:'This clears every record on this device and cannot be undone here. Have you saved a backup, or do you have your nickname#code? Continue?',
@@ -113,6 +115,17 @@ const tr=(a,b)=>language==='en'?b:a;
 const txt=(id,value)=>{if($(id))$(id).textContent=String(value);};
 const num=x=>Number(x||0).toLocaleString(language==='en'?'en-US':'ko-KR');
 const getS=()=>store.state;
+const GRADE_LABELS={
+ ko:{K:'유치원',E1:'초등 1학년',E2:'초등 2학년',E3:'초등 3학년',E4:'초등 4학년',E5:'초등 5학년',E6:'초등 6학년',
+  M1:'중학 1학년',M2:'중학 2학년',M3:'중학 3학년',H1:'고등 1학년',H2:'고등 2학년',H3:'고등 3학년',
+  U1:'대학 1학년',U2:'대학 2학년',U3:'대학 3학년',U4:'대학 4학년',MA1:'석사 1년차',MA2:'석사 2년차',PHD1:'박사 1년차',PHD2:'박사 2년차',
+  DK1:'독도 명예학위 1단계',DK2:'독도 명예학위 2단계',DK3:'독도 명예학위 3단계',DK4:'독도 명예학위 4단계',DK5:'독도 명예학위 5단계',DK6:'독도 명예학위 6단계',DK7:'독도 명예학위 7단계',DK8:'독도 명예학위 8단계',DK9:'독도 명예학위 9단계'},
+ en:{K:'Kindergarten',E1:'Grade 1',E2:'Grade 2',E3:'Grade 3',E4:'Grade 4',E5:'Grade 5',E6:'Grade 6',
+  M1:'Middle 1',M2:'Middle 2',M3:'Middle 3',H1:'High 1',H2:'High 2',H3:'High 3',
+  U1:'University Y1',U2:'University Y2',U3:'University Y3',U4:'University Y4',MA1:"Master's Y1",MA2:"Master's Y2",PHD1:'PhD Y1',PHD2:'PhD Y2',
+  DK1:'Dokdo Honors I',DK2:'Dokdo Honors II',DK3:'Dokdo Honors III',DK4:'Dokdo Honors IV',DK5:'Dokdo Honors V',DK6:'Dokdo Honors VI',DK7:'Dokdo Honors VII',DK8:'Dokdo Honors VIII',DK9:'Dokdo Honors IX'}
+};
+const gradeLabel=code=>(GRADE_LABELS[language]&&GRADE_LABELS[language][code])||code;
 function toast(message){txt('toast',message);$('toast').hidden=false;clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('toast').hidden=true,5200);}
 function translate(){
  document.documentElement.lang=language;
@@ -191,6 +204,7 @@ function view(id,force=false){
  if(id==='records')renderRecords();
  if(id==='journal')renderJournal();
  if(id==='hall')renderHall();
+ if(id==='grade')renderGrade();
  frameLast=0;window.scrollTo({top:0,behavior:'instant'});
  $('main').focus({preventScroll:true});
  return true;
@@ -201,6 +215,7 @@ function renderHome(){
  const a=M.summary(s),p=s.learningProfile;
  const shownName=Array.from(a.name).length>25?Array.from(a.name).slice(0,25).join('')+'…':a.name;
  txt('greeting',a.name?tr(`${shownName}님, 오늘도 독도를 밝혀볼까요?`,`${shownName}, shall we brighten Dokdo today?`):tr('오늘도, 독도를 밝혀볼까요?','Shall we brighten Dokdo today?'));
+ renderGradeLine(s,a);
  txt('lights-count',num(a.lights));txt('beacon-count',tr('봉화 ','Beacons ')+num(a.beacons));
  txt('correct-count',num(a.correct));Core.rollover(s);
  txt('weekly-count',tr('이번 주 ','This week ')+num(s.weekly.correct)+(s.weekly.partial?tr(' · 전환 후',' · since update'):''));
@@ -219,6 +234,30 @@ function renderHome(){
  $('arrange-beacon').disabled=!a.beacons;
  $('start-review').disabled=!Object.entries(s.m).some(([id,r])=>C.isActive(id)&&(r.cor>0||r.courseLearned));
  updateStorageStatus();
+}
+function renderGradeLine(s,a){
+ const el=$('grade-line');if(!el)return;
+ el.hidden=!a.name;if(!a.name)return;
+ const gp=Core.gradeProgress(a.correct);
+ txt('grade-badge',gradeLabel(gp.grade));
+ txt('grade-stats',tr(`정답 ${num(a.correct)} · XP ${num(a.xp)}`,`Correct ${num(a.correct)} · XP ${num(a.xp)}`));
+ $('grade-gauge').max=gp.need;$('grade-gauge').value=gp.have;
+ txt('grade-gauge-label',gp.graduated?tr('최고 학년 달성','Top grade reached'):tr(`${gp.have}/${gp.need} · 다음 학년(${gradeLabel(Core.GRADES[gp.rank+1])})까지`,`${gp.have}/${gp.need} to ${gradeLabel(Core.GRADES[gp.rank+1])}`));
+}
+function renderGrade(){
+ const s=getS();if(!s)return;
+ const a=M.summary(s),gp=Core.gradeProgress(a.correct);
+ txt('grade-view-current',gradeLabel(gp.grade));
+ txt('grade-view-stats',tr(`정답 ${num(a.correct)} · XP ${num(a.xp)}`,`Correct ${num(a.correct)} · XP ${num(a.xp)}`));
+ $('grade-view-gauge').max=gp.need;$('grade-view-gauge').value=gp.have;
+ txt('grade-view-gauge-label',gp.graduated?tr('최고 학년 달성','Top grade reached'):tr(`${gp.have}/${gp.need} · 다음 학년(${gradeLabel(Core.GRADES[gp.rank+1])})까지`,`${gp.have}/${gp.need} to ${gradeLabel(Core.GRADES[gp.rank+1])}`));
+ const ladder=$('grade-ladder');ladder.replaceChildren();
+ Core.GRADES.forEach((code,i)=>{
+  const row=document.createElement('div');row.className='grade-row'+(i===gp.rank?' current':i<gp.rank?' done':'');
+  const n=document.createElement('span');n.className='grade-row-index';n.textContent=String(i+1);
+  const name=document.createElement('span');name.className='grade-row-name';name.textContent=gradeLabel(code);
+  row.append(n,name);ladder.append(row);
+ });
 }
 function renderVisitors(){
  const s=getS();if(!s)return;
@@ -976,7 +1015,7 @@ document.querySelectorAll('[data-start]').forEach(b=>b.onclick=()=>start(b.datas
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeDialog(b.dataset.close));
 document.querySelectorAll('[data-island]').forEach(b=>b.onclick=()=>mapFacts(b.dataset.island));
 $('brand-home').onclick=()=>toggleMap(false);$('nav-map').onclick=()=>toggleMap(!mapOpen);$('close-map').onclick=()=>toggleMap(false);
-$('start-lesson').onclick=()=>start('daily');$('start-review').onclick=()=>start('review');$('start-placement').onclick=()=>start('placement',true);
+$('start-lesson').onclick=()=>start('daily');$('start-review').onclick=()=>start('review');
 $('leave-lesson').onclick=()=>view('home');$('open-settings').onclick=settings;$('change-age').onclick=()=>{closeDialog('settings-dialog');setupAge(renderHome,true);};
 $('age-recover-link').onclick=()=>{closeDialog('age-dialog');ageNext=null;view('records');$('cloud-load-nick')?.focus();};
 $('open-sources').onclick=sources;$('footer-sources').onclick=sources;$('arrange-beacon').onclick=beaconDialog;

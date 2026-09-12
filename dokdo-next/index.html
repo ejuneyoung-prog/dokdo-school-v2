@@ -62,6 +62,7 @@
   <button class="nav-item" data-view="learn"><span aria-hidden="true">▤</span><span data-i18n="learn">학습하기</span></button>
   <button class="nav-item" data-view="journal"><span aria-hidden="true">♧</span><span data-i18n="journal">생명 도감</span></button>
   <button class="nav-item" data-view="hall"><span aria-hidden="true">★</span><span data-i18n="hallOfFame">명예의 전당</span></button>
+  <button class="nav-item" data-view="grade"><span aria-hidden="true">◆</span><span data-i18n="gradeTab">학년</span></button>
  </nav>
  <div class="header-actions"><a id="support-link" class="button primary small-button header-cta support-button" href="#" target="_blank" rel="noopener noreferrer" data-i18n="support">♥ 독도코리아 멤버십 후원하기</a><a id="header-live-link" class="button secondary small-button header-cta" href="#" target="_blank" rel="noopener noreferrer" data-i18n="headerLive">🔴 독도 실시간 라이브 보러가기</a><a id="header-channel-link" class="button secondary small-button header-cta" href="#" target="_blank" rel="noopener noreferrer" data-i18n="headerChannel">▶ YouTube
 Dokdo Korea</a><a id="header-collab-link" class="button primary small-button header-cta header-collab" href="https://linktr.ee/DokdoKorea" target="_blank" rel="noopener noreferrer" data-i18n="headerCollab">🤝 협업 문의</a><button id="language" class="icon-button" aria-label="Switch to English">EN</button><button id="open-settings" class="icon-button" aria-label="설정">⚙</button><button class="profile-button" data-view="records"><span class="profile-dot">✦</span><span data-i18n="myRecords">내 기록</span></button></div>
@@ -69,7 +70,9 @@ Dokdo Korea</a><a id="header-collab-link" class="button primary small-button hea
 
 <main id="main" tabindex="-1">
 <section id="view-home" class="view">
- <div class="section-heading"><div><p class="eyebrow">LEARN · LIGHT · REMEMBER</p><h1 id="greeting">오늘도, 독도를 밝혀볼까요?</h1></div><span class="save-indicator" id="save-status" role="status">이 기기의 기록</span></div>
+ <div class="section-heading"><div><p class="eyebrow">LEARN · LIGHT · REMEMBER</p><h1 id="greeting">오늘도, 독도를 밝혀볼까요?</h1>
+  <div id="grade-line" class="grade-line" hidden><span id="grade-badge" class="grade-badge"></span><span id="grade-stats" class="fine"></span><progress id="grade-gauge" value="0" max="5"></progress><small id="grade-gauge-label" class="fine"></small></div>
+  </div><span class="save-indicator" id="save-status" role="status">이 기기의 기록</span></div>
  <div id="legacy-banner" class="legacy-banner" hidden><div><strong data-i18n="oldFound">이 브라우저에 이전 학습 기록이 있어요.</strong><p data-i18n="oldCopy">원본은 그대로 두고 새 화면으로 복사해 이어갈 수 있어요.</p></div><button class="button secondary" data-view="records" data-i18n="checkRecords">기록 확인하기</button></div>
  <button type="button" id="motivation-banner" class="motivation-banner" data-start="daily" hidden>
   <span id="motivation-flag" class="motivation-flag" aria-hidden="true"></span>
@@ -104,7 +107,6 @@ Dokdo Korea</a><a id="header-collab-link" class="button primary small-button hea
    <div class="course-meta"><span data-i18n="fiveQuestions">5문항</span><span data-i18n="gentleLearning">해설과 함께 배우기</span></div>
    <button id="start-lesson" class="button primary"><span data-i18n="startLesson">오늘의 배움 시작</span><span aria-hidden="true">→</span></button>
    <button id="start-review" class="button secondary" data-i18n="review">기억 꺼내기 · 복습</button>
-   <button id="start-placement" class="text-button" data-i18n="placement">나이대 선택 · 시작점 찾기</button>
    <p class="fine" data-i18n="pilotNote">독도 12단원 · 60개념 · 새로 쓴 240문항. 질문의 난이도와 실제 사고 활동을 구분합니다.</p>
   </aside>
   <aside class="map-card" id="map-card" hidden>
@@ -198,7 +200,6 @@ Dokdo Korea</a><a id="header-collab-link" class="button primary small-button hea
  <div id="learning-menu" class="learning-menu">
   <article class="menu-course"><span>01</span><h2 data-i18n="dailyTitle">짧게 배우기</h2><p data-i18n="dailyDesc">설명을 읽고 문제를 풀어요. 틀린 부분은 해설 뒤에 다시 확인해요.</p><button class="button primary" data-start="daily" data-i18n="start">시작하기</button></article>
   <article class="menu-course"><span>02</span><h2 data-i18n="reviewTitle">기억 꺼내기</h2><p data-i18n="reviewDesc">배운 내용을 다른 날에도 기억하는지 살펴봐요. 같은 문제 반복만으로 진급하지 않아요.</p><button class="button secondary" data-start="review" data-i18n="start">시작하기</button></article>
-  <article class="menu-course"><span>03</span><h2 data-i18n="placementTitle">시작점 찾기</h2><p data-i18n="placementDesc">나이대를 먼저 고른 뒤 다섯 문제로 편안한 시작점을 찾아요.</p><button class="button secondary" data-start="placement" data-i18n="start">시작하기</button></article>
  </div>
  <section id="course-catalog" class="course-catalog"><div class="card-heading"><div><p class="eyebrow">DOKDO CORE COURSE</p><h2 id="path-name">나에게 맞는 독도 과정</h2></div><button class="text-button" id="catalog-age">시작 수준 바꾸기</button></div><p id="path-explanation" class="fine"></p><div id="course-unit-list" class="course-unit-list"></div><button id="deeper-course" class="button secondary" hidden>다음 깊이의 과정 열기</button></section>
  <article id="lesson" class="lesson" hidden>
@@ -236,6 +237,16 @@ Dokdo Korea</a><a id="header-collab-link" class="button primary small-button hea
   <section class="record-panel"><h2 data-i18n="hallSchool">학교 부문 순위</h2><div class="island-facts" id="hall-school-tabs"></div><div id="hall-school-list"></div></section>
   <section class="record-panel"><h2 data-i18n="hallRecent">최근 참여</h2><div id="hall-recent-list"></div></section>
  </div>
+</section>
+
+<section id="view-grade" class="view narrow" hidden>
+ <div class="section-heading"><div><p class="eyebrow">YOUR LEARNING GRADE</p><h1 data-i18n="gradeTab">학년</h1></div><button class="text-button" data-view="home" data-i18n="backHome">내 독도로</button></div>
+ <section class="record-panel">
+  <div class="card-heading"><h2 id="grade-view-current"></h2><span id="grade-view-stats" class="fine"></span></div>
+  <div class="gangchi-gauge"><progress id="grade-view-gauge" value="0" max="5"></progress><small id="grade-view-gauge-label" class="fine"></small></div>
+  <p class="fine" data-i18n="gradeNote">배치고사 없이 누구나 유치원부터 시작합니다. 정답을 맞힐수록 다음 학년으로 자동 승급하며, 이미 맞힌 정답은 그대로 이어집니다.</p>
+ </section>
+ <section class="record-panel"><h2 data-i18n="gradeLadderTitle">전체 학년 사다리</h2><div id="grade-ladder" class="grade-ladder"></div></section>
 </section>
 
 <section id="view-records" class="view narrow" hidden>

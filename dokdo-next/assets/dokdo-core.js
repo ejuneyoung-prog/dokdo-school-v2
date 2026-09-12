@@ -143,6 +143,24 @@
     return Math.min(MAX_LIGHT, Math.max(number(r && r.lightBest), number(r && r.lv), number(r && r.cor) > 0 ? 1 : 0));
   }
   function correctCount(s) {return Object.values(s.m).reduce((a,r)=>a+number(r.cor),0);}
+  // Grade is derived from lifetime correct answers, not stored/advanced by
+  // hand: the placement test is gone, everyone starts at K (rank 0), and
+  // each tier needs 5 more correct than the last to graduate (K needs 5,
+  // the next tier 10 more, and so on). Progress already earned toward the
+  // current tier carries forward automatically since it's just arithmetic
+  // on the running total, never a separately-tracked/resettable counter.
+  const GRADE_TIER_BASE = 5;
+  function gradeTierNeed(rank) {return GRADE_TIER_BASE * (rank + 1);}
+  function gradeProgress(correct) {
+    let rank = 0, base = 0;
+    while (rank < GRADES.length - 1) {
+      const need = gradeTierNeed(rank);
+      if (base + need > number(correct)) break;
+      base += need; rank++;
+    }
+    const need = gradeTierNeed(rank), have = Math.min(need, number(correct) - base);
+    return {grade: GRADES[rank], rank, ranks: GRADES.length, have, need, graduated: rank >= GRADES.length - 1};
+  }
   function registerAnswer(s, id, correct, now = Date.now()) {
     ensure(s, now);
     if (!correct) return;
@@ -257,5 +275,6 @@
     return incoming;
   }
   return {VERSION, VISIT_MS, MAX_VISITORS, dayKey, weekKey, addDays, validateState, ensure, rollover, visualLevel,
-    correctCount, registerAnswer, advanceLearning, invite, tickVisits, envelope, readBackup, clone};
+    correctCount, registerAnswer, advanceLearning, invite, tickVisits, envelope, readBackup, clone,
+    GRADES, GRADE_ALIASES, gradeRank, gradeProgress};
 });
