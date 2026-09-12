@@ -32,7 +32,7 @@ async function copyLink(){const m=shareMeta();return copyText(m.title+'\n'+m.url
 /* Live chat text must stay on one line -- YouTube Live chat strips
  * newlines and runs words together otherwise (per the operator's own
  * V1 notes). */
-async function copyForChat(){const m=shareMeta();return copyText(m.title+' · '+m.url);}
+async function copyForChat(brag){const m=shareMeta();const prefix=brag?brag+' · ':'';return copyText(prefix+m.title+' · '+m.url);}
 function nativeShareSupported(){return typeof navigator.share==='function';}
 async function nativeShare(){
  if(!nativeShareSupported())return{state:'not_supported'};

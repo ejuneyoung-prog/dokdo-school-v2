@@ -22,12 +22,13 @@ function shoreAnchor(poly,pick,island,nudge){
  let v=poly[0];for(const q of poly)if(pick(q,v))v=q;
  const c=centers[island];return [v[0]+(c[0]-v[0])*nudge,v[1]+(c[1]-v[1])*nudge];
 }
-// The real dokdo-islands.webp art (1536x704, same pixel space as this canvas)
-// already draws an actual lighthouse building partway down Dongdo's eastern
-// shoulder -- measured directly from the image (bright-pixel crop inspection),
-// not guessed. Only its lamp position matters here; the tower itself is the
-// artwork's, not ours to redraw.
-const LIGHTHOUSE=[1300,197];
+// The actual lighthouse building lives in the dongdo-facilities.png overlay
+// (composited onto the base art via the facilities-overlay.json affine
+// transform, not drawn straight from dokdo-islands.webp) -- its lamp room
+// was located in that overlay's own pixel space, then mapped through the
+// same transform used to place the overlay, landing here. Only its lamp
+// position matters; the tower itself is the artwork's, not ours to redraw.
+const LIGHTHOUSE=[1223,478];
 // The pier is where the boat docks -- it stays right on the coastline
 // (nudge 0, then slightly out) so it is never drawn over by the island art.
 const PIER=shoreAnchor(ART.east,(a,b)=>a[0]<b[0],1,-.04);
@@ -139,16 +140,15 @@ function lighthouse(x,px,py,darkness,t){
  if(darkness<=.1)return;
  x.save();x.translate(px,py);
  const pulse=.6+.4*Math.sin(t*2.2),glow=darkness*pulse;
+ // Two circles only -- a bright core and one large soft halo. A fanned-out
+ // beam read as unrealistic (reported as not convincing) and is gone.
+ x.globalAlpha=.22*glow;x.fillStyle='#ffe9ab';
+ x.beginPath();x.arc(0,0,150,0,Math.PI*2);x.fill();
+ x.globalAlpha=1;
  x.fillStyle='#fff8e0';x.shadowColor='#ffe9ab';x.shadowBlur=90*glow;
  x.beginPath();x.arc(0,0,4+3*pulse,0,Math.PI*2);x.fill();
  x.shadowBlur=55*glow;x.beginPath();x.arc(0,0,4+3*pulse,0,Math.PI*2);x.fill();
  x.shadowBlur=0;
- x.globalAlpha=.4*glow;x.fillStyle='#ffe9ab';
- x.beginPath();x.moveTo(0,0);x.lineTo(-330,-190);x.lineTo(-330,60);x.closePath();x.fill();
- x.beginPath();x.moveTo(0,0);x.lineTo(330,-190);x.lineTo(330,60);x.closePath();x.fill();
- x.globalAlpha=.18*glow;
- x.beginPath();x.arc(0,0,150,0,Math.PI*2);x.fill();
- x.globalAlpha=1;
  x.restore();
 }
 function boat(x,px,py,angle,alpha){
@@ -205,8 +205,19 @@ function drawLights(x,s){
 // Durable progress is separate from the decorative route coordinates.
 const Journey=typeof module==='object'&&module.exports?require('./journey.js'):globalThis.DokdoJourney;
 const Solar=typeof module==='object'&&module.exports?require('./solar.js'):globalThis.DokdoSolar;
+// Every ring is ART.east/ART.west uniformly scaled toward its own center, so
+// an arc-length fraction on the base outline lands on the same vertex at any
+// ring radius. Dongdo's light path should start at its summit (the topmost
+// outline vertex) rather than wherever the old fixed .06 offset happened to
+// land, so the very first credit lights up there.
+function arcFractionOfVertex(poly,idx){let total=0,upto=0;
+ for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length],d=Math.hypot(b[0]-a[0],b[1]-a[1]);if(i<idx)upto+=d;total+=d;}
+ return upto/total;
+}
+function topmostIndex(poly){let idx=0;for(let i=1;i<poly.length;i++)if(poly[i][1]<poly[idx][1])idx=i;return idx;}
+const ROUTE_START=[.06,arcFractionOfVertex(ART.east,topmostIndex(ART.east))];
 const ROUTES=[0,1].map(island=>Array.from({length:500},(_,i)=>{
- let p=arc(rings[island][10-2*Math.floor(i/100)],(i%100)/100+.06);
+ let p=arc(rings[island][10-2*Math.floor(i/100)],(i%100)/100+ROUTE_START[island]);
  for(let k=0;k<20&&!inside(p,[ART.west,ART.east][island]);k++)p=[(p[0]+centers[island][0])/2,(p[1]+centers[island][1])/2];
  return p;
 }));

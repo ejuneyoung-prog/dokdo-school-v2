@@ -88,7 +88,13 @@ const en={
  tourismInfoBtn:'Ulleungdo·Dokdo travel info',
  resetRecord:'Reset this record',
  resetWarning:'Clears this device’s record and starts empty. Save a backup file above first, or remember your nickname#code so “Load a record from another device” can bring it back after resetting.',
- resetConfirm:'This clears every record on this device and cannot be undone here. Have you saved a backup, or do you have your nickname#code? Continue?'
+ resetConfirm:'This clears every record on this device and cannot be undone here. Have you saved a backup, or do you have your nickname#code? Continue?',
+ disputeButton:'Something wrong with this question?',
+ disputeTitle:'Report a question',
+ disputeHelp:'If you think this question, answer or explanation is wrong, let us know. Your email app opens with the question details already filled in.',
+ disputeReason:'What seems wrong? (optional)',
+ disputeSend:'Send by email',
+ disputeSent:'Opened your email app. Please review and send it.'
 };
 en.mapShapeNote='Dongdo is lower, with a comparatively level upper area. This authored comparison is not a surveyed 3D terrain or facility-position model.';
 let mode=document.querySelector('meta[name="dokdo-mode"]').content;
@@ -189,7 +195,7 @@ function renderHome(){
   const n=document.createElement('span');n.textContent=String(i).padStart(2,'0');const label=document.createElement('b');label.textContent=C.STAGES[language][i];el.append(n,label);$('journey-steps').append(el);}
  const evidence=p?C.courseEvidence(p,s.m,Core.dayKey()):{count:0,concepts:0};
  txt('journey-note',p?tr(`${C.trackName(p)} 경로 · 완료 ${evidence.completed}/12단원 · 다른 날 두 번 확인한 개념 ${evidence.count}/60개. 같은 개념의 다른 보기는 중복 진급으로 세지 않아요.`,`${C.trackName(p,'en')} · ${evidence.completed}/12 units complete · ${evidence.count}/60 concepts checked on two later days.`):tr('첫 수업 전에 나이대와 시작점을 고릅니다.','Choose an age band before your first lesson.'));
- renderVisitors();renderYoutubeCard();
+ renderVisitors();renderYoutubeCard();renderBadges(s);
  const olds=!isolated?M.legacyCandidates(storage):[];
  $('legacy-banner').hidden=!olds.length||a.questions>0||s.visual.importedFrom;
  $('arrange-beacon').disabled=!a.beacons;
@@ -451,7 +457,9 @@ async function choose(pick,skip=false){
   const note=document.createElement('small');note.textContent=q.mode==='placement'?tr('시작점 확인은 이어갑니다. 틀린 뒤에는 같은 단계나 더 쉬운 문제를 살펴봅니다.','The starting check continues, at the same or an easier level after a mistake.'):retry?tr('다시 확인한 정답은 점수나 숙달 증거로 중복 계산하지 않습니다.','Immediate corrections do not add duplicate points or mastery evidence.'):tr('불빛은 남습니다. 오래 기억했는지는 다른 날 복습으로 확인해요.','Your earned lights remain. Later review checks lasting recall.');
   const correctLine=document.createElement('p');correctLine.className='feedback-answer';correctLine.textContent=tr('정답: ','Answer: ')+q.item.choices[q.item.answer];
   const takeaway=document.createElement('p');takeaway.className='feedback-takeaway';takeaway.textContent=tr('기억할 독도 한 가지 · ','One Dokdo fact to remember · ')+q.item.fact;
-  $('question-feedback').append(head,correctLine,text,takeaway,note);
+  const report=document.createElement('button');report.type='button';report.className='text-button dispute-button';report.textContent=tr('이 문제가 이상한가요? 이의제기','Something wrong with this question?');
+  report.onclick=()=>openDispute(q.item);
+  $('question-feedback').append(head,correctLine,text,takeaway,note,report);
   $('retry-question').hidden=!q.needsRetry;$('next-question').hidden=q.needsRetry;
   txt('next-question',q.index+1===q.total?tr('결과 보기','See results'):tr('다음으로','Continue'));
   $('question-feedback').scrollIntoView({block:'nearest',behavior:'smooth'});
@@ -505,7 +513,7 @@ function shareTrack(channel){if(window.DokdoAnalytics)DokdoAnalytics.track('shar
 function shareButton(label,onClick){const b=document.createElement('button');b.className='button secondary';b.textContent=label;b.onclick=onClick;return b;}
 function renderShareRow(){
  const wrap=document.createElement('div');wrap.className='share-row';
- const label=document.createElement('p');label.className='fine';label.textContent=tr('독도 코리아 스쿨을 다른 사람에게 알려주세요. 나의 점수나 이름은 포함되지 않습니다.','Tell someone else about Dokdo Korea School. Your score and name are never included.');
+ const label=document.createElement('p');label.className='fine';label.textContent=tr('독도 코리아 스쿨을 다른 사람에게 알려주세요. "라이브에 공유하기"만 내 별명과 기록이 포함되고, 나머지는 점수·이름이 포함되지 않습니다.','Tell someone else about Dokdo Korea School. Only "Share to the live chat" includes your nickname and record — the rest never include your score or name.');
  const row=document.createElement('div');row.className='button-row';
  row.append(shareButton(tr('링크 복사','Copy link'),async()=>{
   shareTrack('link');const res=await DokdoShare.copyLink();
@@ -536,7 +544,9 @@ function renderShareRow(){
    // await -- Safari (and most browsers) silently block a popup opened
    // after an awaited promise, leaving a blank "about:blank" tab.
    window.open(yt.liveUrl||yt.channelUrl,'_blank','noopener');
-   const res=await DokdoShare.copyForChat();
+   const s=getS(),a=s?M.summary(s):null;
+   const brag=a?tr(`${a.name||tr('독도 코리아 스쿨','Dokdo Korea School')} · 정답 ${num(a.correct)}문제 · ${num(a.xp)} XP`,`${a.name||'Dokdo Korea School'} · ${num(a.correct)} correct · ${num(a.xp)} XP`):'';
+   const res=await DokdoShare.copyForChat(brag);
    toast(res.state==='copied'?tr('채팅용 한 줄을 복사했습니다. 라이브를 열어 붙여넣어 주세요.','Copied a one-line message for chat. Open the live stream and paste it there.'):tr('복사하지 못했습니다.','Could not copy the text.'));
   }));
  }
@@ -607,17 +617,22 @@ function renderRecords(){
  }
  renderLegacy();updateStorageStatus();renderCloudPanel(s);renderBadges(s);
 }
-function renderBadges(s){
- $('badges-grid').replaceChildren();
- if(!s){$('badges-count').textContent='';return;}
+function renderBadgesInto(s,gridId,countId){
+ const grid=$(gridId);if(!grid)return;
+ grid.replaceChildren();
+ if(!s){if($(countId))$(countId).textContent='';return;}
  const badges=M.computeBadges(s),earned=badges.filter(b=>b.earned).length;
- txt('badges-count',earned+' / '+badges.length);
+ if($(countId))txt(countId,earned+' / '+badges.length);
  for(const b of badges){
   const tile=document.createElement('div');tile.className='badge-tile'+(b.earned?' earned':'');
   const icon=document.createElement('span');icon.className='badge-icon';icon.setAttribute('aria-hidden','true');icon.textContent=b.icon;
   const name=document.createElement('b');name.textContent=tr(b.ko,b.en);
-  tile.append(icon,name);$('badges-grid').append(tile);
+  tile.append(icon,name);grid.append(tile);
  }
+}
+function renderBadges(s){
+ renderBadgesInto(s,'badges-grid','badges-count');
+ renderBadgesInto(s,'home-badges-grid','home-badges-count');
 }
 function renderCloudPanel(s){
  const configured=!!(window.DokdoLeaderboard&&DokdoLeaderboard.isConfigured());
@@ -920,6 +935,17 @@ $('open-sources').onclick=sources;$('footer-sources').onclick=sources;$('arrange
 })();
 $('open-tourism-info').onclick=()=>showDialog('tourism-dialog');
 $('open-channel-info').onclick=()=>showDialog('channel-info-dialog');
+let disputeItem=null;
+function openDispute(item){disputeItem=item;$('dispute-reason').value='';showDialog('dispute-dialog');}
+$('dispute-send').onclick=()=>{
+ if(!disputeItem)return;
+ const item=disputeItem,reason=$('dispute-reason').value.trim();
+ const subject=encodeURIComponent('[독도 코리아 스쿨] 문제 이의제기 - 문항 '+item.id);
+ const body=encodeURIComponent('문항 ID: '+item.id+'\n문제: '+item.q+'\n정답으로 표시된 보기: '+item.choices[item.answer]+'\n\n의견:\n'+(reason||'(작성 없음)'));
+ location.href='mailto:officialdokdokorea@gmail.com?subject='+subject+'&body='+body;
+ closeDialog('dispute-dialog');
+ toast(tr('이메일 앱을 열었습니다. 내용을 확인하고 보내주세요.','Opened your email app. Please review and send it.'));
+};
 $('tourism-go').onclick=()=>toast(tr('현재 준비 중입니다.','This is being prepared right now.'));
 $('sound').onclick=toggleSound;$('save-image').onclick=saveImage;
 $('zoom').onclick=()=>{const on=$('canvas-shell').classList.toggle('zoomed');$('zoom').setAttribute('aria-pressed',String(on));txt('zoom',on?tr('전체 보기','Fit'):tr('확대','Zoom'));if(on)$('canvas-shell').scrollLeft=$('canvas-shell').scrollWidth*.22;};
