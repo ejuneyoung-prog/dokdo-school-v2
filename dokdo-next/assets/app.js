@@ -42,7 +42,17 @@ const en={
  enableBirds:'Show birds after achievements',seaDensity:'Life in the sea',calm:'Calm',rich:'Lively',full:'More lively',
  changeAge:'Age and starting-point settings',soundRule:'Sound starts only when you turn it on. Leaving the app turns it off. Returning does not restart it.',
  beaconHelp:'Only earned beacons can be moved. Choose a location that does not overlap another beacon.',
- beacon:'Beacon',position:'Position',savePosition:'Save this position'
+ beacon:'Beacon',position:'Position',savePosition:'Save this position',
+ hallOfFame:'Hall of fame',
+ hallNotConfiguredTitle:'Not connected to a server yet',
+ hallNotConfiguredBody:'Weekly rankings, school standings and broadcast screens appear once a real aggregation server is connected. This status message is shown instead of an empty board, so a missing connection is never mistaken for zero participants.',
+ hallNotConfiguredHint:'Operator action: set leaderboard.apiUrl in assets/site-config.js to the real aggregation server URL, and add that origin to connect-src in the Content-Security-Policy meta tag in index.html.',
+ hallLoading:'Loading this week’s record…',
+ hallRetry:'Try again',
+ hallWeeklyPersonal:'Weekly personal ranking',
+ hallWeeklyPersonalNote:'Sorted by correct answers, then days participated, then longest streak. Shows at most 60 people — not the full participant count.',
+ hallSchool:'School standings',
+ hallRecent:'Recent participation'
 };
 en.mapShapeNote='Dongdo is lower, with a comparatively level upper area. This authored comparison is not a surveyed 3D terrain or facility-position model.';
 let mode=document.querySelector('meta[name="dokdo-mode"]').content;
@@ -119,6 +129,7 @@ function view(id,force=false){
  if(id==='learn'&&!lesson){$('learning-menu').hidden=false;$('course-catalog').hidden=false;$('lesson').hidden=true;$('lesson-result').hidden=true;renderCatalog();}
  if(id==='records')renderRecords();
  if(id==='journal')renderJournal();
+ if(id==='hall')renderHall();
  frameLast=0;window.scrollTo({top:0,behavior:'instant'});
  $('main').focus({preventScroll:true});
  return true;
@@ -349,6 +360,51 @@ function renderJournal(){
  txt('bird-unlock-rule',unlocked?tr('성취는 도감에 남습니다. 다시 보기는 점수나 새 보상을 추가하지 않아요.','Your discovery stays. Replaying does not add points or awards.'):tr('독도 단원을 세 개 마치거나 생태 단원을 처음 완료하면 만날 수 있어요.','Meet this visitor after completing three Dokdo units or a first ecology unit.'));
  $('bird-replay').disabled=!unlocked||store.blocked;
 }
+let hallSchoolFilter='E';
+function hallShow(which){
+ for(const id of['hall-not-configured','hall-loading','hall-error','hall-content'])$(id).hidden=id!==which;
+}
+function hallRenderList(container,rows,cols){
+ container.replaceChildren();
+ if(!rows||!rows.length){const p=document.createElement('p');p.className='fine';p.textContent=tr('아직 집계된 참여가 없습니다.','No participation recorded yet.');container.append(p);return;}
+ const table=document.createElement('table');
+ const thead=document.createElement('thead');const htr=document.createElement('tr');
+ for(const c of cols){const th=document.createElement('th');th.textContent=c.label;htr.append(th);}
+ thead.append(htr);table.append(thead);
+ const tbody=document.createElement('tbody');
+ for(const row of rows){const tr2=document.createElement('tr');for(const c of cols){const td=document.createElement('td');td.textContent=row[c.key]??'';tr2.append(td);}tbody.append(tr2);}
+ table.append(tbody);container.append(table);
+}
+async function renderHall(){
+ if(!window.DokdoLeaderboard||!DokdoLeaderboard.isConfigured()){hallShow('hall-not-configured');return;}
+ hallShow('hall-loading');
+ const res=await DokdoLeaderboard.fetchWeekly();
+ if(res.state==='error'){hallShow('hall-error');$('hall-error-text').textContent=tr('이번 주 기록을 불러오지 못했습니다: ','Could not load this week’s data: ')+res.error;return;}
+ if(res.state==='not_configured'){hallShow('hall-not-configured');return;}
+ const d=res.data||{};
+ hallShow('hall-content');
+ $('hall-summary').replaceChildren();
+ for(const [n,label] of [[d.today,tr('오늘 참여 시도','Attempts today')],[d.people,tr('오늘 참여자','Participants today')],[d.people_week,tr('이번 주(최대 60명)','This week (up to 60)')]]){
+  const div=document.createElement('div'),v=document.createElement('strong'),t=document.createElement('small');
+  v.textContent=n==null?'—':num(n);t.textContent=label;div.append(v,t);$('hall-summary').append(div);
+ }
+ hallRenderList($('hall-week-list'),d.week,[
+  {key:'nick',label:tr('별명','Nickname')},{key:'school',label:tr('학교','School')},
+  {key:'correct',label:tr('정답','Correct')},{key:'days',label:tr('참여일','Days')}
+ ]);
+ const tabs=$('hall-school-tabs');tabs.replaceChildren();
+ for(const cat of['E','M','H','W']){
+  const b=document.createElement('button');b.className='fact-tab'+(cat===hallSchoolFilter?' selected':'');b.setAttribute('aria-pressed',String(cat===hallSchoolFilter));
+  b.textContent={E:tr('초등','Elem.'),M:tr('중등','Middle'),H:tr('고등','High'),W:tr('해외한국학교','Korean sch. abroad')}[cat];
+  b.onclick=()=>{hallSchoolFilter=cat;renderHall();};tabs.append(b);
+ }
+ hallRenderList($('hall-school-list'),(d.schools&&d.schools[hallSchoolFilter])||[],[
+  {key:'name',label:tr('학교','School')},{key:'correct',label:tr('정답','Correct')},{key:'people',label:tr('인원','People')}
+ ]);
+ hallRenderList($('hall-recent-list'),d.recent,[
+  {key:'nick',label:tr('별명','Nickname')},{key:'flag',label:tr('국가','Country')},{key:'min',label:tr('분 전','Min. ago')}
+ ]);
+}
 function renderRecords(){
  const s=getS();$('record-summary').replaceChildren();
  if(s){
@@ -533,6 +589,7 @@ assetsReady.then(()=>{updateEnvironment();paint();requestAnimationFrame(frame);}
 $('time-mode').onchange=()=>{timeMode=$('time-mode').value;updateEnvironment();paint();};
 $('weather-refresh').onclick=async()=>{if(!weatherClient.enabled){toast(tr('배포자가 assets/site-config.js에서 비상업용 조건을 확인한 뒤 날씨를 연결합니다. 낮밤 전환은 계속 작동합니다.','Weather requires the operator to confirm its non-commercial terms in assets/site-config.js. Day/night still works.'));return;}await weatherClient.refresh(true);updateEnvironment();paint();};
 if(weatherClient.enabled){weatherClient.refresh().then(()=>{updateEnvironment();paint();});setInterval(()=>{if(!document.hidden)weatherClient.refresh().then(updateEnvironment);},300000);}
+$('hall-retry').onclick=()=>renderHall();
 
 function stopSound(){
  soundOn=false;audioToken++;if(audio){audio.muted=true;audio.pause();}
