@@ -982,6 +982,21 @@ $('hall-retry').onclick=()=>renderHall();
 
 const musicList=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.music)||[];
 let trackIndex=0;
+// A track can carry an explicit `weight` (its own play probability, e.g.
+// .5 for 50%); the remaining probability mass is split evenly across
+// tracks that don't specify one, so adding an unweighted track never
+// needs the others' numbers rebalanced by hand.
+function pickWeightedTrack(){
+ if(!musicList.length)return 0;
+ const explicitSum=musicList.reduce((s,m)=>s+(typeof m.weight==='number'?m.weight:0),0);
+ const unweighted=musicList.filter(m=>typeof m.weight!=='number').length;
+ const share=unweighted?Math.max(0,1-explicitSum)/unweighted:0;
+ const probs=musicList.map(m=>typeof m.weight==='number'?m.weight:share);
+ const total=probs.reduce((a,b)=>a+b,0)||1;
+ let r=Math.random()*total;
+ for(let i=0;i<probs.length;i++){r-=probs[i];if(r<=0)return i;}
+ return musicList.length-1;
+}
 function stopSound(){
  soundOn=false;audioToken++;if(audio){audio.muted=true;audio.pause();}
  txt('sound',tr('♫ 소리 꺼짐','♫ Sound off'));$('sound').setAttribute('aria-pressed','false');$('sound').removeAttribute('title');
@@ -995,7 +1010,7 @@ function ensureAudio(){
  // stop (see the visibilitychange listener below, which no longer stops it).
  audio.addEventListener('play',()=>{if(!soundOn){audio.muted=true;audio.pause();}});
  audio.addEventListener('error',()=>{stopSound();toast(tr('음악 파일을 재생하지 못했습니다.','The music file could not be played.'));});
- audio.addEventListener('ended',()=>{if(!musicList.length)return;trackIndex=(trackIndex+1)%musicList.length;playCurrentTrack();});
+ audio.addEventListener('ended',()=>{if(!musicList.length)return;trackIndex=pickWeightedTrack();playCurrentTrack();});
 }
 async function playCurrentTrack(){
  if(!musicList.length)return;
@@ -1009,12 +1024,12 @@ async function playCurrentTrack(){
 async function toggleSound(){
  if(soundOn){stopSound();return;}
  if(!musicList.length){toast(tr('아직 연결된 음악이 없습니다.','No music is connected yet.'));return;}
- ensureAudio();soundOn=true;await playCurrentTrack();
+ ensureAudio();trackIndex=pickWeightedTrack();soundOn=true;await playCurrentTrack();
 }
 async function musicSkip(dir){
  if(!musicList.length)return;
  if(dir<0&&soundOn&&audio&&audio.currentTime>3){audio.currentTime=0;return;}
- trackIndex=(trackIndex+dir+musicList.length)%musicList.length;
+ trackIndex=dir<0?(trackIndex-1+musicList.length)%musicList.length:pickWeightedTrack();
  if(!soundOn){toast(tr('먼저 소리를 켜 주세요.','Turn sound on first.'));return;}
  ensureAudio();await playCurrentTrack();
 }
