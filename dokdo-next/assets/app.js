@@ -64,11 +64,13 @@ const en={
  cloudLoadNick:'Nickname to load',cloudLoadCode:'4-digit code',
  cloudLoadBtn:'Load a record from another device',
  introTitle:'Today’s Dokdo Korea video',
- introNote:'One of the Dokdo Korea channel’s videos. Tap to watch on YouTube — nothing plays automatically here.',
+ introNote:'One of the Dokdo Korea channel’s videos. Tap to play — nothing plays automatically.',
+ introOff:'Don’t show this again',
  introClose:'Close',
  youtubeTitle:'Dokdo Korea videos',
  youtubeLive:'Watch the live stream ↗',
- youtubeNote:'Shows one of the Dokdo Korea channel’s videos at random. Opens the YouTube channel.'
+ youtubeWatchOn:'Open on YouTube ↗',
+ youtubeNote:'Shows one of the Dokdo Korea channel’s videos at random. Tap to play — nothing plays automatically.'
 };
 en.mapShapeNote='Dongdo is lower, with a comparatively level upper area. This authored comparison is not a surveyed 3D terrain or facility-position model.';
 let mode=document.querySelector('meta[name="dokdo-mode"]').content;
@@ -135,6 +137,7 @@ function view(id,force=false){
   if(!confirm(tr('이번 수업을 나갈까요? 이미 저장한 기록은 남습니다.','Leave this lesson? Recorded answers will remain.')))return false;
   lesson=null;
  }
+ if(id!==currentView&&activeYoutube&&activeYoutube.containerId==='youtube-card-player')stopAllYoutubeEmbeds();
  currentView=id;
  document.querySelectorAll('.view').forEach(el=>el.hidden=el.id!=='view-'+id);
  document.querySelectorAll('.nav-item').forEach(el=>{
@@ -184,14 +187,43 @@ function renderVisitors(){
  txt('invite',vis.length>=10?tr('10마리와 함께하는 중','10 visitors here'):ready?tr(`강치 ${Math.min(requested,ready,10-vis.length)}마리 부르기`,`Invite ${Math.min(requested,ready,10-vis.length)} gangchi`):tr('인정 정답 10개로 첫 만남','First visit after 10 credits'));
  $('bird-toast').hidden=!s.visual.birdVisit||!s.visual.birdsEnabled;
 }
+let activeYoutube=null;
+function resetYoutubePlayer(containerId,videoId){
+ const el=$(containerId);if(!el)return;el.innerHTML='';
+ const btn=document.createElement('button');btn.type='button';btn.className='youtube-thumb';
+ btn.setAttribute('aria-label',tr('영상 재생','Play video'));
+ const img=document.createElement('img');img.alt=tr('독도코리아 영상 미리보기','Dokdo Korea video preview');
+ img.src='https://i.ytimg.com/vi/'+encodeURIComponent(videoId)+'/hqdefault.jpg';
+ const play=document.createElement('span');play.className='play-badge';play.setAttribute('aria-hidden','true');play.textContent='▶';
+ btn.append(img,play);btn.onclick=()=>playYoutubeEmbed(containerId,videoId);el.append(btn);
+}
+function playYoutubeEmbed(containerId,videoId){
+ stopAllYoutubeEmbeds();
+ const el=$(containerId);if(!el)return;el.innerHTML='';
+ const iframe=document.createElement('iframe');
+ iframe.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(videoId)+'?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+ iframe.title=tr('독도코리아 영상','Dokdo Korea video');
+ iframe.className='youtube-embed';
+ iframe.setAttribute('allow','autoplay; encrypted-media; picture-in-picture');
+ iframe.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
+ iframe.setAttribute('frameborder','0');iframe.allowFullscreen=true;
+ el.append(iframe);
+ const wasPlaying=soundOn;if(soundOn)stopSound();
+ activeYoutube={containerId,videoId,wasPlaying};
+}
+function stopAllYoutubeEmbeds(){
+ if(!activeYoutube)return;
+ const {containerId,videoId,wasPlaying}=activeYoutube;activeYoutube=null;
+ resetYoutubePlayer(containerId,videoId);
+ if(wasPlaying)toggleSound().catch(()=>{});
+}
 function renderYoutubeCard(){
  const yt=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.youtube)||{};
  const ids=Array.isArray(yt.videoIds)?yt.videoIds:[];
  $('youtube-card').hidden=!ids.length;
  if(!ids.length)return;
  if(!homeVideoId)homeVideoId=ids[Math.floor(Math.random()*ids.length)];
- $('youtube-thumb-img').src='https://i.ytimg.com/vi/'+encodeURIComponent(homeVideoId)+'/hqdefault.jpg';
- $('youtube-thumb-img').alt=tr('독도코리아 영상 미리보기','Dokdo Korea video preview');
+ if(!activeYoutube||activeYoutube.containerId!=='youtube-card-player')resetYoutubePlayer('youtube-card-player',homeVideoId);
  $('youtube-video-link').href='https://www.youtube.com/watch?v='+encodeURIComponent(homeVideoId);
  $('youtube-live-link').href=yt.liveUrl||yt.channelUrl||'#';
 }
@@ -199,15 +231,19 @@ function maybeShowIntro(){
  if(isolated)return;
  const yt=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.youtube)||{};
  const ids=Array.isArray(yt.videoIds)?yt.videoIds:[];if(!ids.length)return;
- const s=getS();if(!s)return;
+ const s=getS();if(!s||s.introOff)return;
  const today=Core.dayKey();if(s.introDay===today)return;
  const id=ids[Math.floor(Math.random()*ids.length)];
- $('intro-thumb-img').src='https://i.ytimg.com/vi/'+encodeURIComponent(id)+'/hqdefault.jpg';
- $('intro-thumb-img').alt=tr('독도코리아 영상 미리보기','Dokdo Korea video preview');
+ resetYoutubePlayer('intro-player',id);
  $('intro-video-link').href='https://www.youtube.com/watch?v='+encodeURIComponent(id);
+ $('intro-off').checked=false;
  showDialog('youtube-intro-dialog');
  mutate(s2=>{s2.introDay=today;}).catch(()=>{});
 }
+$('youtube-intro-dialog').addEventListener('close',()=>{
+ stopAllYoutubeEmbeds();
+ if($('intro-off').checked)mutate(s=>{s.introOff=true;}).catch(()=>{});
+});
 function renderOutlines(){
  $('outline-compare').replaceChildren();
  for(const key of ['west','east']){
@@ -357,7 +393,7 @@ async function choose(pick,skip=false){
    nick:cur.name||'',flag:cur.flag||'KR',grade:cur.grade||'K',qid:q.item.id,ok:ok?1:0,
    run:cur.run||0,best:cur.best||0,mode:q.mode,school:cur.school||'',schoolCode:cur.school||'',schoolCat:cur.schoolCat||''
   }).catch(()=>{});}
-  if(window.DokdoAnalytics)DokdoAnalytics.track('question_answered',{qid:q.item.id,correct:ok?1:0,qtype:q.item.atype||q.mode,grade:getS().grade||'K'});
+  if(window.DokdoAnalytics)DokdoAnalytics.track('question_answered',{qid:q.item.id,correct:ok?1:0,qtype:q.item.atype||q.mode,grade:getS().grade||'K',retry:retry?1:0});
   q.answered=true;q.needsRetry=q.mode!=='placement'&&!ok;
   if(q.mode==='placement'){C.recordPlacement(q.diagnostic,q.item,ok,skip);if(ok)q.first++;}
   else if(!retry){if(ok)q.first++;q.xp+=awarded.xp;}
@@ -413,14 +449,36 @@ function renderResult(q,outcome){
  const el=$('lesson-result');el.replaceChildren();
  const star=document.createElement('div');star.className='result-star';star.textContent='✧';
  const title=document.createElement('h2');title.textContent=q.mode==='placement'?tr('여기서 편하게 시작해요','Start comfortably here'):outcome.advanced?tr('다음 탐험이 열렸어요','Your next exploration is ready'):tr('오늘도 독도가 조금 더 빛나요','Dokdo shines a little brighter today');
- const count=document.createElement('p');count.className='result-score';count.textContent=`${q.first} / ${q.total}`;
+ const count=document.createElement('p');count.className='result-score mono';count.textContent=`${q.first} / ${q.total}`;
  const desc=document.createElement('p');desc.textContent=q.mode==='placement'?C.unitInfo(outcome.unit)[language]+' · '+C.DIFFICULTY[language][outcome.suggested]:tr(`처음 답해서 맞힌 문제 ${q.first}개 · 해설 후 확인 ${q.corrected}개`,`${q.first} correct first attempts · ${q.corrected} corrections with help`);
  const note=document.createElement('p');note.className='fine';note.textContent=q.mode==='placement'?tr('다섯 문제로 학교 학년이나 학력을 판정하지 않습니다. 기존 성취는 유지됩니다.','Five questions do not certify a school grade. Previous achievements remain.'):tr('기억은 다른 날 다시 확인해요. 이미 얻은 불빛과 봉화는 사라지지 않습니다.','Review again on another day. Earned lights and beacons are never taken away.');
  const facts=document.createElement('div');facts.className='lesson-takeaway';const h=document.createElement('h3');h.textContent=tr('이번에 알게 된 독도','Dokdo knowledge to take away');const para=document.createElement('p');para.textContent=(q.mode==='placement'?q.diagnostic.answers.map(a=>C.getQuestion(a.id,language)):q.items).map(it=>it.fact).join(' ');facts.append(h,para);
  const row=document.createElement('div');row.className='button-row';
  const home=document.createElement('button');home.className='button primary';home.textContent=tr('내 독도로 돌아가기','Back to my Dokdo');home.onclick=()=>view('home');
  const more=document.createElement('button');more.className='button secondary';more.textContent=tr('한 번 더 배우기','Learn a little more');more.onclick=()=>start('daily');row.append(home,more);
- el.append(star,title,count,desc,note,facts,row);el.focus();
+ el.append(star,title,count,desc,note,facts,row,renderShareRow());el.focus();
+}
+function renderShareRow(){
+ const wrap=document.createElement('div');wrap.className='share-row';
+ const label=document.createElement('p');label.className='fine';label.textContent=tr('독도 코리아 스쿨을 다른 사람에게 알려주세요. 나의 점수나 이름은 포함되지 않습니다.','Tell someone else about Dokdo Korea School. Your score and name are never included.');
+ const row=document.createElement('div');row.className='button-row';
+ const copy=document.createElement('button');copy.className='button secondary';copy.textContent=tr('링크 복사','Copy link');
+ copy.onclick=async()=>{
+  if(window.DokdoAnalytics)DokdoAnalytics.track('share_click',{channel:'link'});
+  const res=await DokdoShare.copyLink();
+  toast(res.state==='copied'?tr('링크를 복사했습니다.','Link copied.'):tr('복사하지 못했습니다.','Could not copy the link.'));
+ };
+ row.append(copy);
+ if(window.DokdoShare&&DokdoShare.isKakaoConfigured()){
+  const kakao=document.createElement('button');kakao.className='button secondary';kakao.textContent=tr('카카오톡 공유','Share to KakaoTalk');
+  kakao.onclick=async()=>{
+   if(window.DokdoAnalytics)DokdoAnalytics.track('share_click',{channel:'kakaotalk'});
+   const res=await DokdoShare.kakaoShare();
+   if(res.state==='error')toast(tr('카카오톡 공유를 열지 못했습니다.','Could not open KakaoTalk sharing.'));
+  };
+  row.append(kakao);
+ }
+ wrap.append(label,row);return wrap;
 }
 function renderJournal(){
  const s=getS();if(!s)return;
@@ -693,6 +751,15 @@ assetsReady.then(()=>{updateEnvironment();paint();requestAnimationFrame(frame);m
 $('time-mode').onchange=()=>{timeMode=$('time-mode').value;updateEnvironment();paint();};
 $('weather-refresh').onclick=async()=>{if(!weatherClient.enabled){toast(tr('배포자가 assets/site-config.js에서 비상업용 조건을 확인한 뒤 날씨를 연결합니다. 낮밤 전환은 계속 작동합니다.','Weather requires the operator to confirm its non-commercial terms in assets/site-config.js. Day/night still works.'));return;}await weatherClient.refresh(true);updateEnvironment();paint();};
 if(weatherClient.enabled){weatherClient.refresh().then(()=>{updateEnvironment();paint();});setInterval(()=>{if(!document.hidden)weatherClient.refresh().then(updateEnvironment);},300000);}
+async function updateKhoaObservation(){
+ const wc=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.weather)||{};
+ if(!wc.khoaViaAppsScript||!window.DokdoLeaderboard||!DokdoLeaderboard.isConfigured()){$('khoa-observation').hidden=true;return;}
+ const res=await DokdoLeaderboard.fetchKhoaWeather();
+ if(res.state!=='ok'){$('khoa-observation').hidden=true;return;}
+ const d=res.data;$('khoa-observation').hidden=false;
+ txt('khoa-observation',tr(`${d.station} 실측 기온 · ${d.temperature}°C (참고값)`,`${d.station} observed · ${d.temperature}°C (reference only)`));
+}
+updateKhoaObservation();setInterval(()=>{if(!document.hidden)updateKhoaObservation();},1800000);
 $('hall-retry').onclick=()=>renderHall();
 
 function stopSound(){

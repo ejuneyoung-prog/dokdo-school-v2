@@ -79,5 +79,18 @@ async function saveProgress(key,nick,grade,payloadText){
  }catch(e){return{state:'error',error:String(e&&e.message||e)};}
 }
 
-return{isConfigured,fetchWeekly,fetchLive,postEvent,loadProgress,saveProgress};
+/* GET <SHEET_API>?weather=1 — proposed KHOA relay (see
+ * docs/WEATHER-PROXY-CODE-GS.md). Inert until the operator's Apps Script
+ * actually implements this branch; a missing/unexpected shape is treated
+ * as an error, never as fabricated weather. */
+async function fetchKhoaWeather(){
+ if(!isConfigured())return{state:'not_configured'};
+ try{
+  const data=await getJSON(apiUrl()+'?weather=1&ts='+Date.now());
+  if(!data||typeof data.temperature!=='number'||typeof data.station!=='string')return{state:'error',error:'unexpected_response_shape'};
+  return{state:'ok',data};
+ }catch(e){return{state:'error',error:String(e&&e.message||e)};}
+}
+
+return{isConfigured,fetchWeekly,fetchLive,postEvent,loadProgress,saveProgress,fetchKhoaWeather};
 })();

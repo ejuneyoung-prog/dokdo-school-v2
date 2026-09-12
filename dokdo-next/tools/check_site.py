@@ -25,14 +25,18 @@ for name in ['index.html','demo.html','question-review.html']:
     for ref in p.refs:
         if ref.startswith('./'):check(name+' local asset '+ref,(ROOT/ref).is_file())
     csp=next((a.get('content','') for a in p.meta if a.get('http-equiv')=='Content-Security-Policy'),'')
-    connect_allowlist={"'self'","'none'",'https://api.open-meteo.com','https://script.google.com','https://script.googleusercontent.com','https://*.googleusercontent.com','https://www.google-analytics.com','https://www.googletagmanager.com'}
+    connect_allowlist={"'self'","'none'",'https://api.open-meteo.com','https://script.google.com','https://script.googleusercontent.com','https://*.googleusercontent.com','https://www.google-analytics.com','https://*.google-analytics.com','https://www.googletagmanager.com','https://*.analytics.google.com'}
     connect_directive=next((d for d in csp.split(';') if d.strip().startswith('connect-src')),'')
     connect_tokens=connect_directive.strip().split()[1:]
     check(name+' connect-src only names the approved weather/leaderboard/analytics endpoints',bool(connect_tokens) and set(connect_tokens)<=connect_allowlist,connect_tokens)
-    script_allowlist={"'self'",'https://www.googletagmanager.com'}
+    script_allowlist={"'self'",'https://www.googletagmanager.com','https://t1.kakaocdn.net'}
     script_directive=next((d for d in csp.split(';') if d.strip().startswith('script-src')),'')
     script_tokens=script_directive.strip().split()[1:]
-    check(name+' restricts executable scripts to local files or the approved GA4 loader',bool(script_tokens) and set(script_tokens)<=script_allowlist,script_tokens)
+    check(name+' restricts executable scripts to local files or the approved GA4/Kakao loaders',bool(script_tokens) and set(script_tokens)<=script_allowlist,script_tokens)
+    frame_allowlist={"'none'",'https://www.youtube-nocookie.com'}
+    frame_directive=next((d for d in csp.split(';') if d.strip().startswith('frame-src')),'')
+    frame_tokens=frame_directive.strip().split()[1:]
+    check(name+' frame-src only names the approved YouTube embed host',(not frame_tokens) or set(frame_tokens)<=frame_allowlist,frame_tokens)
 for f in sorted((ROOT/'assets').glob('*.js')):
     r=subprocess.run(['node','--check',str(f)],capture_output=True,text=True)
     check(f.name+' JavaScript syntax',r.returncode==0,r.stderr.strip() if r.returncode else None)

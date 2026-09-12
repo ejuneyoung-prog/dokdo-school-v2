@@ -224,18 +224,224 @@ request that this session actually made and observed.
   do here until `schools_raw.json` is shared; the free-text school field added this session
   (section 2b of this doc) stays as the fallback until then.
 
-## 10. Something worth flagging back: the screenshot with 1,513 lights / 4,539 lifetime-correct
+## 10. The 1,513/4,539 screenshot — code-path audit, not a number-matching guess
 
-- The operator sent a screenshot showing far more progress than expected ("내가 이렇게 많이
-  맞추진 않았네"). Those exact numbers (`xp:18750`, `grade:'PHD2'`, `streak:7`) match this
-  codebase's own hardcoded **demo seed** almost exactly (`assets/app.js`, the `startDemo`-style
-  function that seeds `demo.html`'s "가상 탐험가" heavy-user preview). The strong suspicion is
-  the screenshot was taken on `/dokdo-next/demo.html` rather than `/dokdo-next/`, not a real bug
-  in the real account — `demo.html` is explicitly a separate, intentionally-seeded preview that
-  resets on reload and is isolated from real records. **Worth the operator double-checking the
-  exact URL in that screenshot's address bar before this is treated as a data bug.**
+The operator correctly pushed back on treating this as settled just because the numbers matched
+a seed. Here is the actual code audit, not a restated guess:
 
-## 11. Everything else in `docs/05-ACCEPTANCE.ko.md`
+1. **Entry files and their mode flag.** `index.html` carries `<meta name="dokdo-mode" content="live">`;
+   `demo.html` carries `content="demo"`. `app.js` reads this once: `const isolated=mode!=='live'`.
+   This is a static, load-time property of which HTML file was opened — nothing at runtime
+   changes it, and nothing in `index.html`'s own code path can set `isolated=true` for itself.
+2. **Storage backend is chosen from that same flag, before anything else runs:**
+   `storage=isolated?new M.MemoryStorage():window.localStorage`. `MemoryStorage` (`app-model.js`)
+   is a plain `Map` — `getItem`/`setItem`/`removeItem` never touch `window.localStorage` at all.
+   So `demo.html` is not merely "supposed to" avoid the real save key
+   (`dokdo-korea-school-cinematic-v1`); it has no code path capable of reaching it. Nothing
+   demo.html does can write into, or read from, a real visitor's actual save slot, and nothing
+   index.html does can read demo.html's in-memory state (it's discarded on navigation/reload).
+3. **The seed itself only runs behind the same flag:** `if(isolated)initializeDemo();` at the
+   bottom of `app.js`, and `initializeDemo()` is the only caller of `seedDemo()`. `seedDemo()`
+   hardcodes `xp:18750, grade:'PHD2', gcHit:50, streak:7, passed:['M3']` — literal constants, not
+   derived from anything — so every single demo.html load reproduces the exact same numbers, not
+   "probably similar" ones. `index.html` never calls `seedDemo` or `initializeDemo` under any
+   input; there is no conditional path in `choose()`, `mutate()`, `finish()`, or anywhere else in
+   `app.js`/`app-model.js` that reaches those functions from live mode.
+4. **No routing/caching could blur the two.** There is no `vercel.json` anywhere in this repo (so
+   no rewrites/redirects between `/dokdo-next/` and `/dokdo-next/demo.html`), and no service
+   worker (`sw.js` doesn't exist; `tools/check_site.py` has its own standing check for this,
+   `'No service worker with unknown stale caches'`, currently passing). A browser cache could
+   only ever serve stale copies of the *same* file it was requested for, not swap one entry file's
+   response for the other's.
+5. **What this session could not do:** open the operator's actual browser and read the address
+   bar in that screenshot. Steps 1–4 are a full static proof that the seed is architecturally
+   confined to `demo.html` and cannot leak into a real `index.html` session — not an inference
+   from the numbers matching. Given that, the numbers matching *exactly* (not approximately) is
+   the expected signature of "this was demo.html," not independent corroboration of a bug.
+   **Still worth the operator's own confirmation of the address bar in that screenshot**, since
+   this session cannot see it directly — but the code gives no path by which it could be
+   anything else.
+
+## 11. Video: click-to-play inline embed (superseding the earlier link-out choice)
+
+Per the operator's explicit instruction (overriding both this session's original "link-out"
+choice and the attached "이전 클로드" doc's autoplay-on-open recommendation): tap-to-play inside
+the page, never automatic, "Open on YouTube" link kept alongside.
+
+- Both the home card and the intro dialog now show a thumbnail with a play button
+  (`resetYoutubePlayer`); tapping it replaces the thumbnail with a `youtube-nocookie.com` iframe
+  (`playYoutubeEmbed`), `autoplay=1` only on that iframe — i.e. autoplay fires strictly as the
+  direct result of the tap, never on page/dialog load. This matches "사용자가 누르면 화면 안에서
+  재생, 자동재생은 하지 말고" precisely: the *page* never autoplays; the *video the user just
+  tapped* does, which is what "누르면 재생" requires.
+- **Teardown, not CSS-hide:** closing the intro dialog (`close` event on the `<dialog>`, which
+  fires for the close button, the ✕, and Esc alike) and navigating away from the home view both
+  call `stopAllYoutubeEmbeds()`, which replaces the iframe's container's `innerHTML` — the
+  `<iframe>` element is actually removed, not hidden. Verified in this session: after opening the
+  intro video then closing the dialog, `document.querySelector('#intro-player iframe')` is `null`;
+  after opening the home card's video then navigating to another nav tab,
+  `document.querySelector('#youtube-card-player iframe')` is likewise `null`.
+- **BGM interaction:** starting a video calls `stopSound()` if it was playing, recording
+  `wasPlaying`. On teardown, sound resumes only if it had actually been playing (`wasPlaying`) —
+  if the user had it off already, or muted it during the video some other way, it stays off. Not
+  tested with real audio in this sandbox (headless Chromium audio is unreliable to verify), but
+  the logic doesn't depend on audio actually producing sound to behave correctly.
+- **`no-referrer` → `strict-origin-when-cross-origin`, and the Referer/error-153 point:** the
+  operator's flagged risk was correct and live — `index.html` did still have
+  `<meta name="referrer" content="no-referrer">`. Changed to `strict-origin-when-cross-origin`
+  (sends the origin only, cross-origin — enough for YouTube's embed check, without leaking the
+  full page path). CSP `frame-src` now allows `https://www.youtube-nocookie.com`, and the iframe
+  itself carries `referrerpolicy="strict-origin-when-cross-origin"` explicitly (belt-and-braces
+  regardless of what any page-level meta says). **Not verified against a real YouTube embed**:
+  `youtube-nocookie.com` is blocked by this sandbox's egress, so whether this actually clears
+  error 153 can only be confirmed on the real deployed site.
+- Verified this session (Chromium, local static server): tapping either player produces the
+  correct `https://www.youtube-nocookie.com/embed/<id>?autoplay=1&rel=0&modestbranding=1&playsinline=1`
+  src for a random id drawn from the configured list; zero CSP-violation console messages
+  throughout a full run (video play, full lesson flow, share); zero other console/page errors.
+
+## 12. Share button (no longer deferred)
+
+- Added `assets/share.js` + a share row on the lesson-result screen: "링크 복사" (always) and
+  "카카오톡 공유" (only rendered if `kakao.jsKey` is configured — it is, with the operator's real
+  key). Both fire `share_click` with `channel:'link'|'kakaotalk'` — the click itself, never
+  claimed as delivery to a recipient.
+- **Default share content is exactly the page's own OG tags** (title/description/image/canonical
+  URL), read from the DOM at share time, not reconstructed — so it's guaranteed to match whatever
+  SHARE01 already established. No score, nickname, school or flag is read into it. The existing
+  "이미지 저장" button (personalized result card) remains separate and local-only, per SHARE05/
+  the operator's "카드" vs default-link distinction.
+- Kakao SDK (`https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js`, matching the version the
+  operator's V1 doc names) loads lazily on first Kakao-share click, `Kakao.init()` guarded by
+  `Kakao.isInitialized()` so it's never called twice. **No `integrity` hash was added** — this
+  session has no live access to confirm the current official hash from Kakao's docs, and a wrong
+  one would silently block the script per the operator's own warning; safer to ship without one
+  and have the operator add it once verified, than guess.
+- Verified this session: completing a lesson renders both buttons; clicking "링크 복사" actually
+  writes the correct title+URL to the clipboard (checked via `navigator.clipboard.readText()`);
+  clicking "카카오톡 공유" fails gracefully with a toast (`kakao_sdk_load_failed`, because
+  `t1.kakaocdn.net` is blocked in this sandbox) rather than throwing — expected to succeed for
+  real once run somewhere that can reach Kakao's CDN. **Real Kakao card rendering is unverified**
+  and needs the operator's own device test, same as SHARE04 already required.
+- Channel-domain registration in the Kakao developer console (must include the real deployed
+  domain) is an operator console action, not something this session can do or verify.
+
+## 13. Fonts — IBM Plex Mono for numerals (correction accepted)
+
+- The operator is right and this session's earlier "already correct, no IBM" note was wrong:
+  V1 genuinely uses a third, numerals-only font. Added `.mono{font-family:"IBM Plex Mono",...
+  !important;font-variant-numeric:tabular-nums}` and applied it to XP, the three home stat
+  counts, the growth-path count, and the lesson-result score — the "주요 수치" surfaces named.
+  Gmarket Sans (headings/menu/buttons) and S-Core Dream (questions/body) are unchanged.
+- **Not independently verified live**: the `@font-face` src
+  (`cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@latest/files/...woff2`) could not be checked
+  from this sandbox (jsdelivr's own package-metadata API is also blocked here). Used the
+  unpinned `@latest` tag rather than guessing a specific version number that might not exist —
+  unlike the existing Gmarket/S-Core declarations, which pin exact versions. **Ask:** once
+  deployed, confirm in a real browser that `document.fonts` actually reports this family as
+  `loaded`, and pin an exact version if you want the same reproducibility the other two fonts
+  have. If the URL is ever wrong, the fallback chain (`var(--heading)`, then generic
+  `monospace`) means digits still render — just not in IBM Plex Mono — never a broken layout.
+- Numbers embedded inside a longer localized string (e.g. `"18,750 XP"`) get `.mono` applied to
+  the whole string rather than just the digits — a scope simplification for this pass. The `XP`
+  suffix rendering in IBM Plex Mono instead of Gmarket Sans is the one visible compromise; the
+  actual goal (stable digit width so XP ticking up doesn't jitter) is unaffected either way.
+
+## 14. Weather: KHOA-via-Apps-Script — code ready, inert until the operator's own steps
+
+- Per the operator's explicit instruction, **no key was requested or handled** anywhere in this
+  session, in code, or in chat.
+- `docs/WEATHER-PROXY-CODE-GS.md` (new) contains the exact `Code.gs` branch to paste: reads
+  `KHOA_SERVICE_KEY` from `PropertiesService` (never hardcoded), caches the KHOA response for
+  1800s via `CacheService` (the operator's own addendum — same pattern the sheet backend already
+  uses), masks upstream error detail from logs/responses, and returns a small fixed shape
+  (`provider`, `station`, `temperature`, `observedAt`, `fetchedAt`). Also notes the operator's
+  GitHub-Actions-static-JSON alternative for when Apps Script's own execution quotas become the
+  binding constraint, as a documented option rather than something built now.
+- Client side (`assets/leaderboard.js`'s `fetchKhoaWeather()`, wired into a new
+  `updateKhoaObservation()` in `app.js`) is written and gated behind a new, currently-`false`
+  config flag `weather.khoaViaAppsScript` — completely inert (the element it would populate,
+  `#khoa-observation`, stays `hidden`) until the operator flips it after completing their side.
+- **Design decision made under "나머진 알아서 해줘", flagged rather than silently assumed:** KHOA
+  only adds a supplementary "울릉도 실측 기온 · _°C (참고값)" line. Open-Meteo keeps driving the
+  actual day/sunset/night visual effect, because KHOA's endpoint returns temperature only — no
+  cloud/rain/wind — and fabricating those from a single number is exactly what
+  `docs/02-LEGACY-API-CONTRACT.ko.md` and the operator's own V1 doc both warn against. If a full
+  KHOA-driven visual replacement was actually wanted instead of an additive reading, say so.
+
+## 15. GA4 — event install, real receipt, duplicate prevention (separated as asked)
+
+- **Event install (verified this session, locally):** ran a full lesson end-to-end in this
+  session's Chromium and read `window.dataLayer` directly afterward. Confirmed, in order: one
+  `question_answered` per confirmed answer (5 first attempts + however many corrections that run
+  happened to need, each with a `retry:0|1` flag — added this round per the operator's explicit
+  "재풀이와 첫 시도 분리" requirement, which the previous pass had missed), then **exactly one**
+  `lesson_complete` at the very end (not one per question, not one per render) with the correct
+  `correct`/`total`/`percent`. No `grade_up` fired on that particular run because
+  `outcome.advanced` was false for it — confirmed the field is read correctly, not confirmed
+  `grade_up` firing itself in this run (would need a run that actually completes a unit).
+- **What "verified" does *not* mean here:** `gtag.js` itself never loaded — `googletagmanager.com`
+  is blocked by this sandbox's egress (confirmed independently: it's on the same blocked list as
+  every other external host tested this session). So this confirms the *app* calls `gtag(...)`
+  with correct, deduplicated arguments; it does **not** confirm Google actually received
+  anything. Per the operator's own taxonomy: this is `REQUEST_OBSERVED`, not
+  `GA4_RECEIPT_NOT_VERIFIED`-resolved — actual receipt needs the operator's own GA4 Realtime/
+  DebugView check on the real deployed site, which this session has no access to.
+- **Duplicate-firing risk, checked architecturally, not just asserted:** `lesson_complete`/
+  `grade_up`/`placement_done` all fire from one synchronous block that runs exactly once per
+  `mutate(...)` resolution inside the lesson "next"/finish action, itself guarded by the existing
+  `busy` flag (blocks re-entry from a double click) and by `lesson=null` immediately after (so
+  the same finish can't fire twice even if some other code path called the render function
+  again). A page reload loses the in-memory `lesson` object entirely (never persisted), so a
+  reload cannot replay a just-finished lesson's events either. This is static-analysis
+  confidence, not a captured-duplicate-and-confirmed-it-didn't-refire test — this session has no
+  way to force a genuine race (e.g. two tabs finishing the same lesson state) to test empirically.
+- **Consent / privacy config:** unchanged from the previous pass —
+  `allow_google_signals:false`, `allow_ad_personalization_signals:false`, `anonymize_ip:true`.
+  **Not done, and flagged rather than silently assumed away:** this session did **not** add a
+  consent-gate (Google Consent Mode or otherwise) before the tag fires — GA4 currently loads
+  and fires on every real visit once deployed, gated only by "does `gaId` exist," not by any
+  user consent action. The operator's attached doc explicitly asks for a conservative default
+  (no tag before consent) for a service children use. Implementing real consent-mode wiring is a
+  decision with legal/product weight this session did not make unilaterally — flagging it as
+  the single most important open item in this section, not quietly deferring it.
+- **CSP, checked per the operator's three named surfaces, not just script-src:** `script-src`
+  allows `googletagmanager.com`; `connect-src` allows `google-analytics.com`,
+  `*.google-analytics.com`, `googletagmanager.com`, and `*.analytics.google.com` (regional
+  collection endpoints); `img-src` was **not** touched for GA4 specifically — gtag.js's own
+  network calls go through `fetch`/`sendBeacon` (covered by `connect-src`), not `<img>` pixels,
+  in this integration path. Both the CSP `<meta>` here and `tools/check_site.py`'s allowlist
+  check were updated together so neither drifts from the other; there is no separate
+  server/Vercel-header CSP in this static-site setup to reconcile against.
+- Custom-dimension/Key-event registration in the GA4 admin console remains something only the
+  property owner can do — not attempted, not claimable as done by this session.
+- **Not verified:** whether `G-WJM7KL33ST` is actually the operator's own property (this session
+  has no GA4 access to check), enhanced-measurement/auto-collected fields (`page_location` etc.)
+  leaking anything beyond what's already public in the URL, or demo.html's exclusion from real
+  GA4 traffic (demo.html doesn't load `analytics.js` — check: it does **not** appear in
+  `demo.html`'s script list, so demo sessions send no GA4 events at all, which is stronger than
+  "excluded," though also means no demo-only test property distinction was set up either).
+
+## 16. Status summary (operator's taxonomy)
+
+| Item | Status | Evidence / what's missing |
+|---|---|---|
+| Share OG image + canonical | TESTED_MOCK (local) | `check_share.py` local PASS; online crawl still NOT_RUN — needs a deploy first |
+| Kakao paste-link preview | BLOCKED_OWNER_ACTION | needs a real KakaoTalk test on the deployed URL |
+| Share button (link/Kakao) | TESTED_MOCK (local) | clipboard copy verified in-browser; Kakao SDK verified to fail *gracefully* only (network blocked here) |
+| Hall of fame real GET/POST | IMPLEMENTED_LOCAL | real URL wired, CSP open; `script.google.com` blocked in this sandbox so no real round-trip observed here |
+| HALL01 (1 answer → +1, survives reload) | BLOCKED_OWNER_ACTION | needs the operator's own browser test against the live URL |
+| Flag/school/recovery-code UI | TESTED_MOCK (local) | full profile-save round-trip verified via localStorage inspection |
+| GA4 event install + dedup | TESTED_MOCK (local) | `dataLayer` contents verified directly; real receipt is `REQUEST_OBSERVED` only |
+| GA4 consent gating | NOT IMPLEMENTED | flagged in section 15 as a decision this session didn't make unilaterally |
+| YouTube click-to-play + teardown | TESTED_MOCK (local) | iframe creation/removal verified in-browser; real playback/error-153 clearance needs the live site |
+| Demo-seed code-path audit | VERIFIED (static analysis) | see section 10 — architectural proof, not a live-browser observation |
+| Weather (KHOA proxy) | IMPLEMENTED_LOCAL, inert | `Code.gs` snippet handed off; client wired behind a flag; nothing live until the operator's own steps |
+| Fonts (3-font system incl. IBM Plex Mono) | IMPLEMENTED_LOCAL | applied to the named numeric surfaces; live font-load check still BLOCKED (sandbox network) |
+| Schools dataset | BLOCKED_OWNER_ACTION | waiting on `schools_raw.json` |
+| BGM | BLOCKED_OWNER_ACTION | waiting on MP3 exports + titles |
+
+## 17. Everything else in `docs/05-ACCEPTANCE.ko.md`
 
 API02–API07 (CORS/idempotency/auth/input-safety/secrets/backup-integrity), HALL04–HALL06
 (scale, failure states, live-feed correctness), WX02, VIS03/05/06, EDU01–03, OPS01/02: **NOT_RUN**.

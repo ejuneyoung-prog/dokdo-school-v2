@@ -24,8 +24,8 @@
 <meta name="twitter:description" content="독도의 지리·역사·생태를 배우고, 나의 학습으로 독도를 밝혀보세요.">
 <meta name="twitter:image" content="https://dokdo-school-v2.vercel.app/dokdo-next/assets/share/dokdo-main-96151b75db9b.jpg">
 <meta name="twitter:image:alt" content="독도 코리아 스쿨의 두 섬과 바다 생명을 표현한 서비스 대표 일러스트">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://i.ytimg.com; media-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://api.open-meteo.com https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com https://www.google-analytics.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'none'; worker-src 'none'">
-<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com https://t1.kakaocdn.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://i.ytimg.com; media-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://api.open-meteo.com https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://*.analytics.google.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'none'; worker-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="dokdo-mode" content="live">
 <title>독도 코리아 스쿨 · 나의 독도</title>
 <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
@@ -38,6 +38,7 @@
 <script defer src="./assets/site-config.js"></script>
 <script defer src="./assets/leaderboard.js"></script>
 <script defer src="./assets/analytics.js"></script>
+<script defer src="./assets/share.js"></script>
 <script defer src="./assets/solar.js"></script>
 <script defer src="./assets/weather.js"></script>
 <script defer src="./assets/journey.js"></script>
@@ -107,22 +108,24 @@
   <div><strong id="dokdo-clock"></strong><small id="dokdo-sun"></small></div>
   <label><span id="time-mode-label">그림 시간</span><select id="time-mode"><option value="auto">독도 실제 시간</option><option value="day">낮 미리보기</option><option value="sunset">노을 미리보기</option><option value="night">야경 미리보기</option></select></label>
   <div class="weather-status"><span id="weather-status"></span><button id="weather-refresh" type="button" class="text-button">날씨 연결 확인</button><a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo · 예보 기반</a></div>
+  <small id="khoa-observation" hidden></small>
   </section>
-  <section class="journey-progress" aria-label="Learning path"><div><strong id="route-title"></strong><span id="route-count"></span></div><progress id="route-progress" value="0" max="1025"></progress><p id="route-note"></p></section>
+  <section class="journey-progress" aria-label="Learning path"><div><strong id="route-title"></strong><span id="route-count" class="mono"></span></div><progress id="route-progress" value="0" max="1025"></progress><p id="route-note"></p></section>
  </div>
 <div class="home-stats">
-  <article class="stat-card"><span class="stat-icon warm" aria-hidden="true">✧</span><div><p data-i18n="myLights">내가 밝힌 불빛</p><strong id="lights-count">0</strong><small id="beacon-count">봉화 0</small></div><button class="text-button" id="arrange-beacon" data-i18n="placeBeacons">봉화 자리</button></article>
-  <article class="stat-card"><span class="stat-icon" aria-hidden="true">▤</span><div><p data-i18n="lifetime">누적 정답</p><strong id="correct-count">0</strong><small id="weekly-count">이번 주 0</small></div></article>
-  <article class="stat-card"><span class="stat-icon mint" aria-hidden="true">♧</span><div><p data-i18n="discoveries">생명과 만난 기록</p><strong id="bird-count">0</strong><small data-i18n="gullJournal">괭이갈매기 도감</small></div><button class="text-button" data-view="journal" data-i18n="openJournal">도감 보기</button></article>
+  <article class="stat-card"><span class="stat-icon warm" aria-hidden="true">✧</span><div><p data-i18n="myLights">내가 밝힌 불빛</p><strong id="lights-count" class="mono">0</strong><small id="beacon-count">봉화 0</small></div><button class="text-button" id="arrange-beacon" data-i18n="placeBeacons">봉화 자리</button></article>
+  <article class="stat-card"><span class="stat-icon" aria-hidden="true">▤</span><div><p data-i18n="lifetime">누적 정답</p><strong id="correct-count" class="mono">0</strong><small id="weekly-count">이번 주 0</small></div></article>
+  <article class="stat-card"><span class="stat-icon mint" aria-hidden="true">♧</span><div><p data-i18n="discoveries">생명과 만난 기록</p><strong id="bird-count" class="mono">0</strong><small data-i18n="gullJournal">괭이갈매기 도감</small></div><button class="text-button" data-view="journal" data-i18n="openJournal">도감 보기</button></article>
  </div>
  <div class="home-lower">
-  <section class="journey-card"><div class="card-heading"><h2 data-i18n="journey">나의 배움 여정</h2><span id="xp-label">0 XP</span></div><div id="journey-steps" class="journey-steps"></div><p id="journey-note" class="fine"></p></section>
+  <section class="journey-card"><div class="card-heading"><h2 data-i18n="journey">나의 배움 여정</h2><span id="xp-label" class="mono">0 XP</span></div><div id="journey-steps" class="journey-steps"></div><p id="journey-note" class="fine"></p></section>
   <section class="life-card"><div class="card-heading"><h2 data-i18n="seaVisitors">잠깐 찾아오는 바다 친구</h2><span id="visitor-status">0 / 10</span></div><p data-i18n="visitRule">정답 보상을 모아 강치를 부르면, 두 섬 사이에서 1분 동안 함께해요.</p><div class="invite-row"><label><span class="sr-only" data-i18n="visitCount">부를 강치 수</span><select id="invite-count"><option value="1">1</option><option value="3">3</option><option value="5">5</option><option value="10">10</option></select></label><button id="invite" class="button secondary" data-i18n="invite">강치 부르기</button><small id="invite-credit"></small></div></section>
  </div>
  <section class="youtube-card" id="youtube-card" hidden>
   <div class="card-heading"><h2 data-i18n="youtubeTitle">독도코리아 영상</h2><a id="youtube-live-link" class="text-button" href="#" target="_blank" rel="noopener noreferrer" data-i18n="youtubeLive">실시간 라이브 보러가기 ↗</a></div>
-  <a id="youtube-video-link" class="youtube-thumb" href="#" target="_blank" rel="noopener noreferrer"><img id="youtube-thumb-img" alt=""></a>
-  <p class="fine" data-i18n="youtubeNote">독도코리아 채널의 영상 중 하나를 무작위로 보여줍니다. 눌러서 유튜브 채널로 이동합니다.</p>
+  <div class="youtube-player" id="youtube-card-player"></div>
+  <div class="youtube-links"><a id="youtube-video-link" class="text-button" href="#" target="_blank" rel="noopener noreferrer" data-i18n="youtubeWatchOn">YouTube에서 열기 ↗</a></div>
+  <p class="fine" data-i18n="youtubeNote">독도코리아 채널의 영상 중 하나를 무작위로 보여줍니다. 눌러서 재생하며, 자동으로 재생되지 않습니다.</p>
  </section>
 </section>
 
@@ -237,8 +240,10 @@
 <dialog id="youtube-intro-dialog" class="dialog">
  <div class="dialog-top"><span class="eyebrow">DOKDO KOREA</span><button type="button" class="icon-button" data-close="youtube-intro-dialog" aria-label="닫기">×</button></div>
  <h2 data-i18n="introTitle">오늘의 독도코리아 영상</h2>
- <a id="intro-video-link" class="youtube-thumb" href="#" target="_blank" rel="noopener noreferrer"><img id="intro-thumb-img" alt=""></a>
- <p class="fine" data-i18n="introNote">독도코리아 채널의 영상 중 하나입니다. 눌러서 유튜브에서 봅니다. 자동으로 재생되지 않습니다.</p>
+ <div class="youtube-player" id="intro-player"></div>
+ <div class="youtube-links"><a id="intro-video-link" class="text-button" href="#" target="_blank" rel="noopener noreferrer" data-i18n="youtubeWatchOn">YouTube에서 열기 ↗</a></div>
+ <p class="fine" data-i18n="introNote">독도코리아 채널의 영상 중 하나입니다. 눌러서 재생하며, 자동으로 재생되지 않습니다.</p>
+ <label class="check-row"><input type="checkbox" id="intro-off"><span data-i18n="introOff">다음에는 이 안내를 보지 않기</span></label>
  <button class="button secondary" data-close="youtube-intro-dialog" data-i18n="introClose">닫기</button>
 </dialog>
 </body>
