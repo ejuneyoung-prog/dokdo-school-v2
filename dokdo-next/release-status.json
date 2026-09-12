@@ -1,0 +1,35 @@
+{
+  "version": "1.3.0",
+  "status": "UPLOAD_PACKAGE_BUILT_LOCAL_CHECKS_COMPLETED_NOT_PRODUCTION_CERTIFICATION",
+  "activeQuestionPairs": 240,
+  "conceptFamilies": 60,
+  "added": [
+    "journey-1025",
+    "taegeukgi-markers",
+    "dokdo-solar-day-night",
+    "weather-client-operator-opt-in",
+    "facility-composition",
+    "historical-context",
+    "translation-glossary",
+    "font-routing"
+  ],
+  "weather": {
+    "codeImplemented": true,
+    "enabledByDefault": false,
+    "requiresOperatorTermsConfirmation": true,
+    "liveRetrievalVerified": false
+  },
+  "fonts": {
+    "GmarketSansAndSCoreDreamRouted": true,
+    "binaryFilesIncluded": false,
+    "externalDownloadVerified": false
+  },
+  "independentEducationApproval": false,
+  "independentRedTeamApproval": false,
+  "nativeMobileVerified": false,
+  "liveCloudMigration": false,
+  "productionUploaded": false,
+  "nativeHttpBrowserTests": "blocked in this environment; CI configured but not run here",
+  "mapSurveyed": false,
+  "legacy1513Rewritten": false
+}

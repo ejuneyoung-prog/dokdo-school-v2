@@ -1,0 +1,33 @@
+{
+  "pairCount": 240,
+  "differentKoreanStems": 240,
+  "differentEnglishStems": 240,
+  "newIds": 240,
+  "allOldIDsMapped": true,
+  "files": {
+    "assets/dokdo-islands.webp": {
+      "unchanged": true,
+      "sha256": "4ef0e9af60a5e8b82debc220f9b57dce00d77fea5512cec84820d8ec2821603d"
+    },
+    "assets/dokdo-terrain.webp": {
+      "unchanged": true,
+      "sha256": "c9fee6cc75272a22317c21308d1aa2522f2fdb715f5da79f8f7f82b2d6b16f42"
+    },
+    "assets/art-geometry.js": {
+      "unchanged": true,
+      "sha256": "a889a84a5ff523f1c0760f693115ff7ec9a2648e980581f99ea05662a55462a6"
+    },
+    "assets/scene.js": {
+      "unchanged": true,
+      "sha256": "91452aee820f5001b17bb91b3dc2853b0ffae75c6890b578f01620fce75f3ec6"
+    },
+    "assets/dokdo-core.js": {
+      "unchanged": true,
+      "sha256": "74930c438bedebda24a9e6a510442ab6f6375501409c0f0dcce467954f0443ed"
+    },
+    "data/terrain-geometry.json": {
+      "unchanged": true,
+      "sha256": "5f426c7f0a5efaebfde7aea5eefb92f25eb550d13111740b3f5f128701b7eda6"
+    }
+  }
+}

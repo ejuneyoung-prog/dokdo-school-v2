@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ko" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#061827">
+<meta name="description" content="배우는 만큼, 더 빛나는 독도. 나의 학습 기록으로 독도를 밝히는 독도 코리아 스쿨.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'none'; worker-src 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="dokdo-mode" content="demo">
+<title>독도 코리아 스쿨 · 분리된 시연</title>
+<link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./assets/app.css">
+<script defer src="./assets/dokdo-core.js"></script>
+<script defer src="./assets/course-data.js"></script>
+<script defer src="./assets/starter-course.js"></script>
+<script defer src="./assets/art-geometry.js"></script>
+<script defer src="./assets/outline-data.js"></script>
+<script defer src="./assets/site-config.js"></script>
+<script defer src="./assets/solar.js"></script>
+<script defer src="./assets/weather.js"></script>
+<script defer src="./assets/journey.js"></script>
+<script defer src="./assets/app-model.js"></script>
+<script defer src="./assets/scene.js"></script>
+<script defer src="./assets/demo-ids.js"></script>
+<script defer src="./assets/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="skip">본문으로 바로가기</a>
+<noscript><div class="warning">학습과 기록 저장을 사용하려면 JavaScript를 켜 주세요. Please enable JavaScript.</div></noscript>
+<div id="demo-banner" class="demo-banner" hidden><span data-i18n="demoBanner">미리보기 전용 · 새로고침하면 시연 기록 초기화 · 실제 계정과 분리</span><button id="demo-reset" class="small-button" data-i18n="demoReset">빈 기록으로 확인</button></div>
+<div id="storage-alert" class="warning" role="alert" hidden></div>
+<header class="site-header">
+ <button class="brand" id="brand-home" aria-label="독도 코리아 스쿨 홈">
+  <svg viewBox="0 0 70 54" aria-hidden="true"><path d="M3 40 13 30 18 14 25 22 34 4 43 26 46 37 54 24 61 30 66 42Z" fill="#C5E4E4"/><path d="m12 40 14-7 13 7 9-3 9 5M5 48q8-6 16 0t16 0t16 0t16 0" fill="none" stroke="#5FACBD" stroke-width="3"/></svg>
+  <span><strong data-i18n="brand">독도 코리아 스쿨</strong><small data-i18n="tagline">배우는 만큼, 더 빛나는 독도</small></span>
+ </button>
+ <nav class="main-nav" aria-label="주 메뉴">
+  <button class="nav-item active" data-view="home" aria-current="page"><span aria-hidden="true">⌂</span><span data-i18n="myDokdo">내 독도</span></button>
+  <button class="nav-item" id="nav-map"><span aria-hidden="true">▱</span><span data-i18n="map">지도 살펴보기</span></button>
+  <button class="nav-item" data-view="learn"><span aria-hidden="true">▤</span><span data-i18n="learn">학습하기</span></button>
+  <button class="nav-item" data-view="journal"><span aria-hidden="true">♧</span><span data-i18n="journal">생명 도감</span></button>
+ </nav>
+ <div class="header-actions"><button id="language" class="icon-button" aria-label="Switch to English">EN</button><button id="open-settings" class="icon-button" aria-label="설정">⚙</button><button class="profile-button" data-view="records"><span class="profile-dot">✦</span><span data-i18n="myRecords">내 기록</span></button></div>
+</header>
+
+<main id="main" tabindex="-1">
+<section id="view-home" class="view">
+ <div class="section-heading"><div><p class="eyebrow">LEARN · LIGHT · REMEMBER</p><h1 id="greeting">오늘도, 독도를 밝혀볼까요?</h1></div><span class="save-indicator" id="save-status" role="status">이 기기의 기록</span></div>
+ <div id="legacy-banner" class="legacy-banner" hidden><div><strong data-i18n="oldFound">이 브라우저에 이전 학습 기록이 있어요.</strong><p data-i18n="oldCopy">원본은 그대로 두고 새 화면으로 복사해 이어갈 수 있어요.</p></div><button class="button secondary" data-view="records" data-i18n="checkRecords">기록 확인하기</button></div>
+ <div class="stage-grid" id="stage-grid">
+  <section class="scene-panel" aria-label="나의 독도 풍경">
+   <div class="scene-toolbar"><span class="scene-label"><i></i><span id="scene-mode-label" data-i18n="landscape">나의 독도</span></span>
+    <div class="scene-actions">
+     <button id="sound" class="small-button" aria-pressed="false" data-i18n="soundOff">♫ 소리 꺼짐</button>
+     <button id="zoom" class="small-button" aria-pressed="false" data-i18n="zoom">확대</button>
+     <button id="save-image" class="small-button" data-i18n="saveImage">이미지 저장</button>
+    </div>
+   </div>
+   <div class="canvas-shell" id="canvas-shell"><canvas id="island-canvas" width="1536" height="704" role="img" aria-label="독도를 표현한 학습 풍경. 불빛과 동물은 나의 학습 보상입니다."></canvas></div>
+   <div class="scene-empty" id="first-light"><span>✧</span><span data-i18n="firstLight">첫 배움이 첫 불빛이 됩니다.</span></div>
+   <div id="bird-toast" class="bird-toast" hidden><span>♧</span><div><b data-i18n="birdsHere">독도에 새가 찾아왔어요</b><small data-i18n="birdsHereSub">새로운 배움을 기념하는 짧은 방문</small></div></div>
+   <div class="scene-bottom"><span id="art-note" data-i18n="artNote">승인한 그림을 바탕으로 한 상상 풍경 · 실측지도 아님</span><button class="text-button" id="open-sources" data-i18n="sources">그림과 자료 출처</button></div>
+  </section>
+  <aside class="today-card" id="today-card">
+   <div class="tiny-label" data-i18n="todayStep">오늘의 한 걸음</div><span class="compass-icon" aria-hidden="true">✦</span>
+   <h2 id="course-title">독도와<br>처음 만나요</h2>
+   <p id="course-description">짧게 배우고, 다섯 문제를 풀며 나만의 독도를 밝혀보세요.</p>
+   <div class="course-meta"><span data-i18n="fiveQuestions">5문항</span><span data-i18n="gentleLearning">해설과 함께 배우기</span></div>
+   <button id="start-lesson" class="button primary"><span data-i18n="startLesson">오늘의 배움 시작</span><span aria-hidden="true">→</span></button>
+   <button id="start-review" class="button secondary" data-i18n="review">기억 꺼내기 · 복습</button>
+   <button id="start-placement" class="text-button" data-i18n="placement">나이대 선택 · 시작점 찾기</button>
+   <p class="fine" data-i18n="pilotNote">독도 12단원 · 60개념 · 새로 쓴 240문항. 질문의 난이도와 실제 사고 활동을 구분합니다.</p>
+  </aside>
+  <aside class="map-card" id="map-card" hidden>
+   <div class="map-card-top"><div><p class="eyebrow">DOKDO AT A GLANCE</p><h2 data-i18n="map">지도 살펴보기</h2></div><button id="close-map" class="icon-button" aria-label="지도 정보 닫기">×</button></div>
+   <p class="fine" id="map-shape-note" data-i18n="mapShapeNote">동도는 상대적으로 낮고 정상 부근이 비교적 평탄합니다. 왼쪽 구조도는 외곽선과 이 특징을 설명한 자체 도판이며, 실측 3D 지형이나 정확한 시설 위치가 아닙니다.</p><div id="outline-compare" class="outline-compare"></div>
+   <p class="fine" data-i18n="outlineNote">공식 형상 자료를 단순화한 모양 비교도입니다. 두 섬의 실제 배치·시설 좌표·등고선은 표시하지 않습니다.</p>
+   <div class="island-facts"><button class="fact-tab selected" data-island="west" aria-pressed="true" data-i18n="west">서도</button><button class="fact-tab" data-island="east" aria-pressed="false" data-i18n="east">동도</button></div>
+   <dl id="island-facts"></dl>
+   <details class="facility-details"><summary data-i18n="facilityTitle">지명·시설 알아보기</summary><div id="facility-info"></div><a class="source-link" href="https://dokdo.mofa.go.kr/kor/introduce/facility.jsp" target="_blank" rel="noopener noreferrer" data-i18n="facilitySource">외교부 시설 자료 ↗</a></details><p class="map-distance"><b>151 m</b><span data-i18n="distanceMeaning">두 섬 해안선 사이의 최단 거리입니다. 그림의 두 중심 사이 거리가 아닙니다.</span></p>
+   <a href="https://dokdo.mofa.go.kr/kor/introduce/location.jsp" target="_blank" rel="noopener noreferrer" class="source-link" data-i18n="officialMap">외교부의 실제 형상 자료 보기 ↗</a>
+   <a href="https://nationalatlas.ngii.go.kr/pages/page_415.php" target="_blank" rel="noopener noreferrer" class="source-link" data-i18n="topographic">국가지도집 지형도 보기 ↗</a>
+  </aside>
+ </div>
+ <section class="environment-panel" aria-label="Dokdo time and weather">
+ <div><strong id="dokdo-clock"></strong><small id="dokdo-sun"></small></div>
+ <label><span id="time-mode-label">그림 시간</span><select id="time-mode"><option value="auto">독도 실제 시간</option><option value="day">낮 미리보기</option><option value="sunset">노을 미리보기</option><option value="night">야경 미리보기</option></select></label>
+ <div class="weather-status"><span id="weather-status"></span><button id="weather-refresh" type="button" class="text-button">날씨 연결 확인</button><a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo · 예보 기반</a></div>
+ </section><section class="journey-progress" aria-label="Learning path"><div><strong id="route-title"></strong><span id="route-count"></span></div><progress id="route-progress" value="0" max="1025"></progress><p id="route-note"></p></section>
+<div class="home-stats">
+  <article class="stat-card"><span class="stat-icon warm" aria-hidden="true">✧</span><div><p data-i18n="myLights">내가 밝힌 불빛</p><strong id="lights-count">0</strong><small id="beacon-count">봉화 0</small></div><button class="text-button" id="arrange-beacon" data-i18n="placeBeacons">봉화 자리</button></article>
+  <article class="stat-card"><span class="stat-icon" aria-hidden="true">▤</span><div><p data-i18n="lifetime">누적 정답</p><strong id="correct-count">0</strong><small id="weekly-count">이번 주 0</small></div></article>
+  <article class="stat-card"><span class="stat-icon mint" aria-hidden="true">♧</span><div><p data-i18n="discoveries">생명과 만난 기록</p><strong id="bird-count">0</strong><small data-i18n="gullJournal">괭이갈매기 도감</small></div><button class="text-button" data-view="journal" data-i18n="openJournal">도감 보기</button></article>
+ </div>
+ <div class="home-lower">
+  <section class="journey-card"><div class="card-heading"><h2 data-i18n="journey">나의 배움 여정</h2><span id="xp-label">0 XP</span></div><div id="journey-steps" class="journey-steps"></div><p id="journey-note" class="fine"></p></section>
+  <section class="life-card"><div class="card-heading"><h2 data-i18n="seaVisitors">잠깐 찾아오는 바다 친구</h2><span id="visitor-status">0 / 10</span></div><p data-i18n="visitRule">정답 보상을 모아 강치를 부르면, 두 섬 사이에서 1분 동안 함께해요.</p><div class="invite-row"><label><span class="sr-only" data-i18n="visitCount">부를 강치 수</span><select id="invite-count"><option value="1">1</option><option value="3">3</option><option value="5">5</option><option value="10">10</option></select></label><button id="invite" class="button secondary" data-i18n="invite">강치 부르기</button><small id="invite-credit"></small></div></section>
+ </div>
+</section>
+
+<section id="view-learn" class="view narrow" hidden>
+ <div class="section-heading"><div><p class="eyebrow">A SMALL STEP, A LASTING LIGHT</p><h1 data-i18n="learn">학습하기</h1></div><button class="text-button" data-view="home" data-i18n="backHome">내 독도로</button></div>
+ <div id="learning-menu" class="learning-menu">
+  <article class="menu-course"><span>01</span><h2 data-i18n="dailyTitle">짧게 배우기</h2><p data-i18n="dailyDesc">설명을 읽고 문제를 풀어요. 틀린 부분은 해설 뒤에 다시 확인해요.</p><button class="button primary" data-start="daily" data-i18n="start">시작하기</button></article>
+  <article class="menu-course"><span>02</span><h2 data-i18n="reviewTitle">기억 꺼내기</h2><p data-i18n="reviewDesc">배운 내용을 다른 날에도 기억하는지 살펴봐요. 같은 문제 반복만으로 진급하지 않아요.</p><button class="button secondary" data-start="review" data-i18n="start">시작하기</button></article>
+  <article class="menu-course"><span>03</span><h2 data-i18n="placementTitle">시작점 찾기</h2><p data-i18n="placementDesc">나이대를 먼저 고른 뒤 다섯 문제로 편안한 시작점을 찾아요.</p><button class="button secondary" data-start="placement" data-i18n="start">시작하기</button></article>
+ </div>
+ <section id="course-catalog" class="course-catalog"><div class="card-heading"><div><p class="eyebrow">DOKDO CORE COURSE</p><h2 id="path-name">나에게 맞는 독도 과정</h2></div><button class="text-button" id="catalog-age">시작 수준 바꾸기</button></div><p id="path-explanation" class="fine"></p><div id="course-unit-list" class="course-unit-list"></div><button id="deeper-course" class="button secondary" hidden>다음 깊이의 과정 열기</button></section>
+ <article id="lesson" class="lesson" hidden>
+  <div class="lesson-top"><button id="leave-lesson" class="text-button" data-i18n="leave">학습 나가기</button><progress id="lesson-progress" max="5" value="0" aria-label="학습 진행"></progress><span id="lesson-position">1 / 5</span></div>
+  <div class="lesson-context"><span id="lesson-mode" class="pill"></span><span id="lesson-stage"></span></div>
+  <div id="teaching"><p class="eyebrow" data-i18n="beforeQuestion">문제를 풀기 전에</p><h2 data-i18n="learnTogether">먼저 함께 알아봐요</h2><p id="teaching-text"></p><details id="teaching-help" class="word-help"><summary>낯선 말 함께 읽기 · Word help</summary><dl id="teaching-help-list"></dl></details><button id="read-done" class="button primary" data-i18n="readDone">읽었어요 · 문제 풀기</button></div>
+  <div id="question-area" hidden><h2 id="question-title" tabindex="-1"></h2><div id="question-context" class="question-context" hidden></div><div id="question-material" class="question-material" hidden></div><details id="word-help" class="word-help"><summary>낯선 말 풀이 / Word help</summary><dl id="word-help-list"></dl></details>
+ <div id="question-options" class="question-options"></div><aside id="question-citations" class="question-citations" aria-label="Sources"></aside><button id="dont-know" class="text-button" data-i18n="dontKnow">아직 모르겠어요</button></div>
+  <div id="question-feedback" class="question-feedback" role="status" hidden></div>
+  <div class="question-actions"><button id="retry-question" class="button secondary" hidden data-i18n="retry">해설을 읽었어요 · 다시 풀기</button><button id="next-question" class="button primary" hidden data-i18n="next">다음으로</button></div>
+ </article>
+ <article id="lesson-result" class="result-card" hidden tabindex="-1"></article>
+</section>
+
+<section id="view-journal" class="view narrow" hidden>
+ <div class="section-heading"><div><p class="eyebrow">LIFE FINDS A HOME HERE</p><h1 data-i18n="journal">생명 도감</h1></div><button class="text-button" data-view="home" data-i18n="backHome">내 독도로</button></div>
+ <p class="lead" data-i18n="journalIntro">독도는 생명이 쉬고 머무는 곳입니다. 배움의 한 단계를 마치면 짧은 방문이 기록으로 남아요.</p>
+ <article class="species-card"><div class="species-art" aria-hidden="true"><svg viewBox="0 0 280 210"><path d="M122 101 Q55 45 19 70Q60 87 105 117L92 139L130 129Q174 124 231 48Q193 63 152 94Z" fill="#dce9e7"/><path d="m130 97q27-28 42-7l21 10-27 7-22 11Z" fill="#f6f4e9"/><path d="m168 88 24 12-24 1" fill="#d9ba70"/><path d="m93 123-27 19 28-3" fill="#31535f"/><circle cx="164" cy="89" r="3" fill="#09283b"/></svg></div>
+ <div><span id="bird-unlocked" class="pill"></span><h2 data-i18n="gull">괭이갈매기</h2><p data-i18n="gullText">외교부의 독도 자연환경 자료에서 소개하는 새입니다. 독도는 철새가 쉬어 가는 곳이기도 합니다.</p><p id="bird-unlock-rule" class="fine"></p><button id="bird-replay" class="button secondary" data-i18n="birdReplay">새의 방문 다시 보기</button><a class="source-link" href="https://dokdo.mofa.go.kr/kor/introduce/nature.jsp" target="_blank" rel="noopener noreferrer" data-i18n="ecologySource">독도 자연환경 자료 ↗</a></div></article>
+ <p class="fine" data-i18n="wildlifeNote">강치와 새의 방문은 학습을 기념하는 상상 연출입니다. 실제 동물의 출현·복원·개체 수를 뜻하지 않습니다.</p>
+</section>
+
+<section id="view-records" class="view narrow" hidden>
+ <div class="section-heading"><div><p class="eyebrow">YOUR LEARNING STAYS WITH YOU</p><h1 data-i18n="myRecords">내 기록</h1></div><button class="text-button" data-view="home" data-i18n="backHome">내 독도로</button></div>
+ <div class="record-summary" id="record-summary"></div>
+ <section class="record-panel"><h2 data-i18n="backupTitle">기록 보관과 복원</h2><p data-i18n="localOnly">새 화면은 이 브라우저에 저장됩니다. 클라우드 계정과 자동 동기화되지 않으니 백업 파일도 보관해 주세요.</p><div class="button-row"><button id="export-records" class="button primary" data-i18n="backupFile">학습 기록 파일 저장</button><label class="button secondary file-label"><span data-i18n="importFile">백업 파일 불러오기</span><input id="import-file" type="file" accept=".json,application/json"></label></div><p class="fine" data-i18n="backupWarning">이미지 저장은 기록 백업이 아닙니다. 백업 파일에는 이름·학교·구형 복원 코드·학습 내역이 들어갈 수 있으니 비공개로 보관하세요.</p><div id="import-preview" class="import-preview" hidden></div></section>
+ <section class="record-panel" id="legacy-panel"><h2 data-i18n="oldRecords">기존 독도학교 기록</h2><div id="legacy-records"></div><p class="fine" data-i18n="oldRecordWarning">같은 주소·같은 브라우저의 기록만 확인할 수 있습니다. 원본과 구형 클라우드는 수정하지 않습니다. 두 버전은 자동 동기화되지 않습니다.</p></section>
+ <section class="record-panel"><h2 data-i18n="weeklyHistory">주간 배움 기록</h2><p class="fine" data-i18n="weeklyRule">한국 시간 월요일마다 이번 주 집계만 바뀝니다. 누적 정답·불빛·봉화는 남습니다.</p><div id="weekly-history"></div></section>
+</section>
+</main>
+
+<footer class="site-footer"><span data-i18n="footer">작은 배움이 모여, 독도가 더 빛납니다.</span><div><button class="text-button" id="footer-sources" data-i18n="sources">그림과 자료 출처</button><a href="./question-review.html">240문항 살펴보기</a><a href="./demo.html" data-i18n="demoLink">분리된 시연</a><span>v1.3 · LOCAL</span></div></footer>
+<div id="toast" class="toast" role="status" hidden></div>
+
+<dialog id="age-dialog" class="dialog">
+ <form id="age-form"><div class="dialog-top"><span class="eyebrow">YOUR STARTING POINT</span><button type="button" class="icon-button" data-close="age-dialog" aria-label="닫기">×</button></div><h2 data-i18n="ageTitle">어디서부터 함께 배울까요?</h2><p data-i18n="ageDesc">나이대는 설명을 고르는 참고값이에요. 생년월일은 받지 않아요.</p>
+ <label class="field"><span data-i18n="nickname">별명 (선택)</span><input id="nickname" maxlength="40" autocomplete="nickname" placeholder="독도 탐험가"></label>
+ <label class="field"><span data-i18n="ageBand">나이대</span><select id="age-band" required><option value="" data-i18n="selectAge">나이대를 골라 주세요</option></select></label>
+ <label class="check-row"><input type="checkbox" id="age-easy"><span data-i18n="easyStart">나이에 관계없이 아주 쉬운 말부터 시작할게요.</span></label>
+ <p id="age-error" class="error" role="alert"></p><button class="button primary" type="submit" data-i18n="continue">계속하기</button><p class="fine" data-i18n="agePreserve">기존 성장 등급과 기록을 낮추지 않습니다.</p></form>
+</dialog>
+<dialog id="settings-dialog" class="dialog">
+ <div class="dialog-top"><h2 data-i18n="settings">설정</h2><button class="icon-button" data-close="settings-dialog" aria-label="닫기">×</button></div>
+ <label class="check-row"><input type="checkbox" id="reduce-motion"><span data-i18n="reduceMotion">움직임 줄이기</span></label>
+ <label class="check-row"><input type="checkbox" id="enable-birds"><span data-i18n="enableBirds">성취 후 새의 방문 보기</span></label>
+ <label class="field"><span data-i18n="seaDensity">바다의 생동감</span><select id="sea-density"><option value="calm" data-i18n="calm">차분하게</option><option value="rich" data-i18n="rich">풍성하게</option><option value="full" data-i18n="full">더 풍성하게</option></select></label>
+ <button id="change-age" class="button secondary" data-i18n="changeAge">나이대·시작점 다시 설정</button><p id="font-status" class="fine"></p>
+ <p class="fine" data-i18n="soundRule">소리는 직접 켤 때만 재생됩니다. 다른 앱으로 이동하면 꺼지고, 돌아와도 저절로 켜지지 않습니다.</p>
+</dialog>
+<dialog id="sources-dialog" class="dialog wide-dialog">
+ <div class="dialog-top"><h2 data-i18n="sources">그림과 자료 출처</h2><button class="icon-button" data-close="sources-dialog" aria-label="닫기">×</button></div>
+ <div id="source-content"></div>
+</dialog>
+<dialog id="beacon-dialog" class="dialog">
+ <div class="dialog-top"><h2 data-i18n="placeBeacons">봉화 자리</h2><button class="icon-button" data-close="beacon-dialog" aria-label="닫기">×</button></div>
+ <p data-i18n="beaconHelp">획득한 봉화만 옮길 수 있어요. 다른 봉화와 너무 겹치는 자리는 선택할 수 없습니다.</p><label class="field"><span data-i18n="beacon">봉화</span><select id="beacon-select"></select></label><label class="field"><span data-i18n="position">자리</span><select id="beacon-position"></select></label><canvas id="beacon-preview" width="768" height="352" role="img" aria-label="선택한 봉화 위치 미리보기"></canvas><p id="beacon-error" class="error"></p><button id="beacon-save" class="button primary" data-i18n="savePosition">이 자리에 저장</button>
+</dialog>
+</body>
+</html>

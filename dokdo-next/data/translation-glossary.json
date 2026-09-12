@@ -1,0 +1,30 @@
+[
+  {
+    "ko": "수토관",
+    "en": "Sutogwan (island inspection official)",
+    "avoid": [
+      "Water pipe"
+    ],
+    "note": "The uploaded 1,513-question English archive already uses Sutogwan at 490-492. A browser auto-translation could cause another displayed term; deployment source not verified.",
+    "source": "https://dokdo.mofa.go.kr/eng/dokdo/reason.jsp"
+  },
+  {
+    "ko": "유인등대",
+    "en": "staffed lighthouse",
+    "avoid": [
+      "Yoo in Lighthouse",
+      "manned attraction"
+    ],
+    "note": "The term describes resident lighthouse staff, not a personal name. Staffed operation began in December 1998.",
+    "source": "https://dokdo.mofa.go.kr/eng/introduce/facility.jsp"
+  },
+  {
+    "ko": "무인등대",
+    "en": "unstaffed lighthouse",
+    "avoid": [
+      "unmanned attraction"
+    ],
+    "note": "Without resident lighthouse staff.",
+    "source": "https://dokdo.mofa.go.kr/eng/introduce/facility.jsp"
+  }
+]

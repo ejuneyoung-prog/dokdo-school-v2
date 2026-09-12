@@ -1,0 +1,64 @@
+{
+  "mode": "inline",
+  "phase": "screens",
+  "storage": "controlled adapter",
+  "landscapeAnimation": "native requestAnimationFrame; reduced-motion preference",
+  "checks": [
+    {
+      "name": "live starts with zero question rewards",
+      "pass": true
+    },
+    {
+      "name": "ban-desktop no horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "ban-mobile no horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "snow-mobile no horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "dajokan-desktop no horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "address-320 no horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "whole lesson still reaches a recorded five-concept conclusion",
+      "pass": true
+    },
+    {
+      "name": "actual backup JSON contains new question records",
+      "pass": true
+    },
+    {
+      "name": "read-only review can jump straight to a specific item",
+      "pass": true
+    },
+    {
+      "name": "review exposes every option-specific explanation",
+      "pass": true
+    },
+    {
+      "name": "no uncaught script errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "no production requests",
+      "pass": true,
+      "detail": []
+    }
+  ],
+  "pass": 12,
+  "fail": 0,
+  "questionRenderPaths": 0,
+  "paths": [],
+  "errors": [],
+  "requests": []
+}

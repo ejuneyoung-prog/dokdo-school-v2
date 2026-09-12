@@ -1,0 +1,1247 @@
+{
+  "version": "2026-09-11-rc3-pilot",
+  "status": "AUTHOR_REVIEWED_PILOT_NOT_TEACHER_APPROVED",
+  "legacyBankEligible": false,
+  "sources": {
+    "geography": {
+      "title": "외교부 독도 · 구성 및 위치",
+      "url": "https://dokdo.mofa.go.kr/kor/introduce/location.jsp",
+      "checked": "2026-09-11",
+      "scope": "두 큰 섬, 이름·방향, 제시된 높이"
+    },
+    "scenario": {
+      "title": "직접 작성한 학습·자료 읽기 시나리오",
+      "scope": "가상의 관찰·비교 사례. 실제 독도 관측값으로 표시하지 않음"
+    },
+    "product": {
+      "title": "독도학교 시범판 설계 규칙",
+      "scope": "디지털 불빛·강치는 학습 연출; 실제 생태 변화와 구별"
+    }
+  },
+  "questions": [
+    {
+      "id": 900001,
+      "stage": 1,
+      "conceptId": "island",
+      "readingBand": 1,
+      "sourceKey": "geography",
+      "answer": 0,
+      "ko": {
+        "q": "독도는 어떤 곳일까요?",
+        "choices": [
+          "바다에 있는 섬",
+          "숲속의 마을"
+        ],
+        "explain": "독도는 바다에 있는 섬이에요. 섬은 둘레가 물로 둘러싸인 땅이에요."
+      },
+      "en": {
+        "q": "What kind of place is Dokdo?",
+        "choices": [
+          "Islands in the sea",
+          "A village in a forest"
+        ],
+        "explain": "Dokdo is a group of islands in the sea. An island is land surrounded by water."
+      }
+    },
+    {
+      "id": 900002,
+      "stage": 1,
+      "conceptId": "two-islands",
+      "readingBand": 1,
+      "sourceKey": "geography",
+      "answer": 1,
+      "ko": {
+        "q": "독도의 큰 섬 두 개는 동도와 무엇일까요?",
+        "choices": [
+          "남도",
+          "서도"
+        ],
+        "explain": "독도의 큰 섬 두 개는 동도와 서도예요. 주변에는 작은 바위섬도 있어요."
+      },
+      "en": {
+        "q": "The two main islands are Dongdo and which other island?",
+        "choices": [
+          "Namdo",
+          "Seodo"
+        ],
+        "explain": "The two main islands are Dongdo and Seodo. Smaller rocky islets surround them."
+      }
+    },
+    {
+      "id": 900003,
+      "stage": 1,
+      "conceptId": "east-west",
+      "readingBand": 1,
+      "sourceKey": "geography",
+      "answer": 0,
+      "ko": {
+        "q": "이름에서 ‘동’은 동쪽을 뜻해요. 동도는 어느 쪽 섬일까요?",
+        "choices": [
+          "동쪽",
+          "서쪽"
+        ],
+        "explain": "동도는 동쪽 섬이에요. 서도는 서쪽 섬이에요."
+      },
+      "en": {
+        "q": "In the name Dongdo, 'dong' means east. Which island is it?",
+        "choices": [
+          "The eastern island",
+          "The western island"
+        ],
+        "explain": "Dongdo is the eastern island. Seodo is the western island."
+      }
+    },
+    {
+      "id": 900004,
+      "stage": 1,
+      "conceptId": "habitat",
+      "readingBand": 1,
+      "sourceKey": "scenario",
+      "answer": 0,
+      "ko": {
+        "q": "물고기가 헤엄치는 곳은 어디일까요?",
+        "choices": [
+          "바닷물 속",
+          "마른 바위 위"
+        ],
+        "explain": "물고기는 물속에서 헤엄쳐요. 독도 둘레에도 바다가 있어요."
+      },
+      "en": {
+        "q": "Where do fish swim?",
+        "choices": [
+          "In the water",
+          "On dry rocks"
+        ],
+        "explain": "Fish swim in water. The sea surrounds Dokdo."
+      }
+    },
+    {
+      "id": 900005,
+      "stage": 1,
+      "conceptId": "care",
+      "readingBand": 1,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "바다에서 새를 만났어요. 어떻게 볼까요?",
+        "choices": [
+          "쫓아가서 만져요",
+          "거리를 두고 조용히 봐요"
+        ],
+        "explain": "새를 쫓지 않고 조용히 지켜봐요. 생물이 편하게 지내도록 도와주는 행동이에요."
+      },
+      "en": {
+        "q": "How should we watch a wild seabird?",
+        "choices": [
+          "Chase it and touch it",
+          "Watch quietly from a distance"
+        ],
+        "explain": "Watch quietly without chasing it. Give wildlife space."
+      }
+    },
+    {
+      "id": 900006,
+      "stage": 1,
+      "conceptId": "litter",
+      "readingBand": 1,
+      "sourceKey": "scenario",
+      "answer": 0,
+      "ko": {
+        "q": "간식을 먹고 빈 봉지가 남았어요. 어떻게 할까요?",
+        "choices": [
+          "챙겨서 가져가요",
+          "바다에 버려요"
+        ],
+        "explain": "쓰레기는 챙겨서 가져가요. 바다에 남기지 않아요."
+      },
+      "en": {
+        "q": "What should we do with an empty snack wrapper?",
+        "choices": [
+          "Take it away with us",
+          "Throw it into the sea"
+        ],
+        "explain": "Take your rubbish away. Do not leave it in the sea."
+      }
+    },
+    {
+      "id": 900007,
+      "stage": 1,
+      "conceptId": "map",
+      "readingBand": 1,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "독도가 어디 있는지 찾아보려 해요. 무엇을 볼까요?",
+        "choices": [
+          "날짜만 적힌 달력",
+          "이름이 적힌 지도"
+        ],
+        "explain": "지도에는 장소와 이름이 나와요. 찾는 곳의 위치를 살펴볼 수 있어요."
+      },
+      "en": {
+        "q": "What helps us find where Dokdo is?",
+        "choices": [
+          "A calendar with dates",
+          "A map with place names"
+        ],
+        "explain": "A map shows places and their names. It helps us find locations."
+      }
+    },
+    {
+      "id": 900008,
+      "stage": 1,
+      "conceptId": "fantasy",
+      "readingBand": 1,
+      "sourceKey": "product",
+      "answer": 0,
+      "ko": {
+        "q": "앱에서 강치를 불렀어요. 실제 바다에도 생긴 걸까요?",
+        "choices": [
+          "그림 속에서 만난 거예요",
+          "실제 바다에 생긴 거예요"
+        ],
+        "explain": "앱의 강치는 상상 속 친구예요. 화면에서 만나는 것과 실제 바다는 달라요."
+      },
+      "en": {
+        "q": "Does inviting a gangchi in the app create a real animal?",
+        "choices": [
+          "No, it is a digital visitor",
+          "Yes, a real animal appears"
+        ],
+        "explain": "The gangchi in the app is an imaginary visitor. The screen and the real sea are different."
+      }
+    },
+    {
+      "id": 900009,
+      "stage": 1,
+      "conceptId": "count",
+      "readingBand": 1,
+      "sourceKey": "geography",
+      "answer": 1,
+      "ko": {
+        "q": "동도 하나, 서도 하나. 큰 섬을 모두 세면 몇 개일까요?",
+        "choices": [
+          "한 개",
+          "두 개"
+        ],
+        "explain": "하나와 하나를 합하면 두 개예요. 독도의 큰 섬은 두 개예요."
+      },
+      "en": {
+        "q": "One Dongdo and one Seodo: how many main islands?",
+        "choices": [
+          "One",
+          "Two"
+        ],
+        "explain": "One plus one is two. Dokdo has two main islands."
+      }
+    },
+    {
+      "id": 900010,
+      "stage": 1,
+      "conceptId": "west",
+      "readingBand": 1,
+      "sourceKey": "geography",
+      "answer": 1,
+      "ko": {
+        "q": "서도에서 ‘서’는 서쪽이에요. 서도는 어느 쪽 섬일까요?",
+        "choices": [
+          "동쪽",
+          "서쪽"
+        ],
+        "explain": "서도는 서쪽, 동도는 동쪽 섬이에요."
+      },
+      "en": {
+        "q": "'Seo' means west. Which main island is Seodo?",
+        "choices": [
+          "The eastern island",
+          "The western island"
+        ],
+        "explain": "Seodo is the western island. Dongdo is the eastern island."
+      }
+    },
+    {
+      "id": 900011,
+      "stage": 1,
+      "conceptId": "observation",
+      "readingBand": 1,
+      "sourceKey": "scenario",
+      "answer": 0,
+      "ko": {
+        "q": "바다 사진에서 파도를 찾았어요. 무엇을 본 걸까요?",
+        "choices": [
+          "물의 움직임",
+          "바위의 이름"
+        ],
+        "explain": "파도는 움직이는 물의 모습이에요. 사진 속에서 무엇을 보았는지 말해 봐요."
+      },
+      "en": {
+        "q": "You found waves in a sea photo. What did you see?",
+        "choices": [
+          "Moving water",
+          "The name of a rock"
+        ],
+        "explain": "Waves show moving water. Describe what you can actually see."
+      }
+    },
+    {
+      "id": 900012,
+      "stage": 1,
+      "conceptId": "help",
+      "readingBand": 1,
+      "sourceKey": "scenario",
+      "answer": 0,
+      "ko": {
+        "q": "처음 보는 말이 나왔어요. 어떻게 해 볼까요?",
+        "choices": [
+          "도움말을 보고 물어봐요",
+          "모르는 채로만 넘겨요"
+        ],
+        "explain": "모르는 말은 도움말을 보거나 물어보며 배워요. 처음부터 다 알 필요는 없어요."
+      },
+      "en": {
+        "q": "What can you do when you find an unfamiliar word?",
+        "choices": [
+          "Read help or ask",
+          "Always skip it without help"
+        ],
+        "explain": "Use help or ask a question. You do not need to know every word already."
+      }
+    },
+    {
+      "id": 900013,
+      "stage": 2,
+      "conceptId": "two-islands",
+      "readingBand": 2,
+      "sourceKey": "geography",
+      "answer": 0,
+      "ko": {
+        "q": "독도를 설명한 말로 알맞은 것은 무엇일까요?",
+        "choices": [
+          "큰 섬 두 개와 작은 바위섬들이 있어요",
+          "큰 섬 하나만 있어요",
+          "바다 없이 땅으로만 이어져 있어요"
+        ],
+        "explain": "독도는 동도·서도와 주변의 작은 바위섬들로 이루어져 있어요."
+      },
+      "en": {
+        "q": "Which description fits Dokdo?",
+        "choices": [
+          "Two main islands and smaller islets",
+          "Only one main island",
+          "Land with no surrounding sea"
+        ],
+        "explain": "Dokdo consists of Dongdo, Seodo, and surrounding smaller rocky islets."
+      }
+    },
+    {
+      "id": 900014,
+      "stage": 2,
+      "conceptId": "east-west",
+      "readingBand": 2,
+      "sourceKey": "geography",
+      "answer": 1,
+      "ko": {
+        "q": "지도에서 오른쪽에 ‘동쪽’이라고 써 있어요. 동도는 서도의 어느 쪽일까요?",
+        "choices": [
+          "왼쪽",
+          "오른쪽",
+          "아래쪽"
+        ],
+        "explain": "동도는 서도의 동쪽이에요. 이 지도에서는 동쪽을 오른쪽으로 표시했어요."
+      },
+      "en": {
+        "q": "A map labels its right side 'east'. Where is Dongdo relative to Seodo?",
+        "choices": [
+          "To the left",
+          "To the right",
+          "Below"
+        ],
+        "explain": "Dongdo is east of Seodo. On this map, east is shown on the right."
+      }
+    },
+    {
+      "id": 900015,
+      "stage": 2,
+      "conceptId": "land-sea",
+      "readingBand": 2,
+      "sourceKey": "geography",
+      "answer": 1,
+      "ko": {
+        "q": "‘섬’을 설명한 말은 무엇일까요?",
+        "choices": [
+          "높은 산이면 모두 섬이에요",
+          "둘레가 물로 둘러싸인 땅이에요",
+          "바다에 떠 있는 구름이에요"
+        ],
+        "explain": "섬은 둘레가 물로 둘러싸인 땅이에요. 크거나 작을 수 있어요."
+      },
+      "en": {
+        "q": "Which sentence describes an island?",
+        "choices": [
+          "Every tall mountain is an island",
+          "Land surrounded by water",
+          "A cloud above the sea"
+        ],
+        "explain": "An island is land surrounded by water. Islands can be large or small."
+      }
+    },
+    {
+      "id": 900016,
+      "stage": 2,
+      "conceptId": "litter",
+      "readingBand": 2,
+      "sourceKey": "scenario",
+      "answer": 2,
+      "ko": {
+        "q": "바다를 아끼는 행동을 고르세요.",
+        "choices": [
+          "쓰레기를 바위 틈에 숨겨요",
+          "봉지를 바람에 날려 보내요",
+          "쓰레기를 챙겨 되가져가요"
+        ],
+        "explain": "눈에 안 보이게 숨겨도 쓰레기는 남아요. 가져온 것은 다시 챙겨요."
+      },
+      "en": {
+        "q": "Choose a way to care for the sea.",
+        "choices": [
+          "Hide rubbish between rocks",
+          "Let a bag blow away",
+          "Take rubbish away with you"
+        ],
+        "explain": "Hidden rubbish is still there. Take your things and rubbish away."
+      }
+    },
+    {
+      "id": 900017,
+      "stage": 2,
+      "conceptId": "habitat",
+      "readingBand": 2,
+      "sourceKey": "scenario",
+      "answer": 0,
+      "ko": {
+        "q": "생물이 사는 곳을 ‘서식지’라고 해요. 물고기의 서식지에 가까운 것은?",
+        "choices": [
+          "바닷물 속",
+          "빈 종이 상자",
+          "교실 칠판"
+        ],
+        "explain": "서식지는 생물이 살아가는 곳이에요. 물고기는 물속에서 살아요."
+      },
+      "en": {
+        "q": "A habitat is where an organism lives. Which is a fish habitat?",
+        "choices": [
+          "Seawater",
+          "An empty paper box",
+          "A classroom board"
+        ],
+        "explain": "A habitat is a place where an organism lives. Fish live in water."
+      }
+    },
+    {
+      "id": 900018,
+      "stage": 2,
+      "conceptId": "observe",
+      "readingBand": 2,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "관찰은 자세히 살펴보는 일이에요. 관찰한 말은?",
+        "choices": [
+          "언젠가 모든 파도가 사라질 거야",
+          "사진에 흰 물거품이 보여",
+          "바다는 무조건 조용할 거야"
+        ],
+        "explain": "사진에서 실제로 보이는 물거품을 말했어요. 미래를 짐작한 말과 달라요."
+      },
+      "en": {
+        "q": "An observation describes what you notice. Which is an observation?",
+        "choices": [
+          "All waves will disappear one day",
+          "I can see white foam in the photo",
+          "The sea must always be quiet"
+        ],
+        "explain": "White foam is visible in the photo. That is different from predicting the future."
+      }
+    },
+    {
+      "id": 900019,
+      "stage": 2,
+      "conceptId": "legend",
+      "readingBand": 2,
+      "sourceKey": "scenario",
+      "answer": 2,
+      "ko": {
+        "q": "지도에 ‘파란색: 바다’라고 써 있어요. 파란 부분은 무엇일까요?",
+        "choices": [
+          "산",
+          "길",
+          "바다"
+        ],
+        "explain": "지도 기호나 색의 뜻을 알려 주는 설명을 보면 돼요."
+      },
+      "en": {
+        "q": "A map key says 'blue: sea'. What does a blue area show?",
+        "choices": [
+          "Mountains",
+          "Roads",
+          "Sea"
+        ],
+        "explain": "Read the map key to learn what its colours and symbols mean."
+      }
+    },
+    {
+      "id": 900020,
+      "stage": 2,
+      "conceptId": "compare",
+      "readingBand": 2,
+      "sourceKey": "scenario",
+      "answer": 0,
+      "ko": {
+        "q": "연습 그림에서 동도 옆에 배가 2척, 서도 옆에 1척 있어요. 어느 쪽에 더 많을까요?",
+        "choices": [
+          "동도 쪽",
+          "서도 쪽",
+          "같아요"
+        ],
+        "explain": "이 연습 그림에서는 2척이 1척보다 많아요. 실제 배의 수를 나타낸 자료는 아니에요."
+      },
+      "en": {
+        "q": "In a practice drawing, two boats are near Dongdo and one near Seodo. Where are there more?",
+        "choices": [
+          "Near Dongdo",
+          "Near Seodo",
+          "Equal numbers"
+        ],
+        "explain": "Two is more than one in this practice drawing. These are not real boat counts."
+      }
+    },
+    {
+      "id": 900021,
+      "stage": 2,
+      "conceptId": "fantasy",
+      "readingBand": 2,
+      "sourceKey": "product",
+      "answer": 1,
+      "ko": {
+        "q": "앱의 불빛을 모두 켰어요. 알맞은 설명은 무엇일까요?",
+        "choices": [
+          "실제 독도에 전등을 설치했어요",
+          "나의 학습 기록을 그림으로 보여 줘요",
+          "실제 섬의 높이가 커졌어요"
+        ],
+        "explain": "불빛은 앱에서 쌓은 성취를 보여 주는 그림이에요. 실제 독도에 전등이 생긴 것은 아니에요."
+      },
+      "en": {
+        "q": "What do the app's learning lights represent?",
+        "choices": [
+          "New lamps installed on the real islands",
+          "A picture of your learning progress",
+          "An increase in the islands' height"
+        ],
+        "explain": "The lights represent your progress in the app, not physical lamps on Dokdo."
+      }
+    },
+    {
+      "id": 900022,
+      "stage": 2,
+      "conceptId": "ask-source",
+      "readingBand": 2,
+      "sourceKey": "scenario",
+      "answer": 2,
+      "ko": {
+        "q": "독도에 관한 글을 읽었어요. 더 확인하려면 무엇을 볼까요?",
+        "choices": [
+          "글자 색만 봐요",
+          "그림이 예쁜지만 봐요",
+          "누가 언제 쓴 글인지 봐요"
+        ],
+        "explain": "글을 만든 사람이나 기관, 날짜를 살펴보면 내용을 확인하는 데 도움이 돼요."
+      },
+      "en": {
+        "q": "What helps you check an article about Dokdo?",
+        "choices": [
+          "Only its text colour",
+          "Only how pretty its pictures are",
+          "Who wrote it and when"
+        ],
+        "explain": "The author or organisation and the date help you check a source."
+      }
+    },
+    {
+      "id": 900023,
+      "stage": 2,
+      "conceptId": "two-photos",
+      "readingBand": 2,
+      "sourceKey": "scenario",
+      "answer": 0,
+      "ko": {
+        "q": "같은 바다를 다른 날 찍었어요. 파도 모습이 달라요. 알맞은 말은?",
+        "choices": [
+          "다른 날에는 바다 모습이 달라질 수 있어요",
+          "둘 중 하나는 무조건 가짜예요",
+          "바다는 늘 같은 모습이어야 해요"
+        ],
+        "explain": "찍은 날과 날씨가 다르면 바다의 모습도 달라질 수 있어요."
+      },
+      "en": {
+        "q": "Two photos show different waves on different days. Which is reasonable?",
+        "choices": [
+          "The sea can look different on different days",
+          "One photo must be fake",
+          "The sea must always look the same"
+        ],
+        "explain": "The sea can look different with changes in weather and time."
+      }
+    },
+    {
+      "id": 900024,
+      "stage": 2,
+      "conceptId": "care-distance",
+      "readingBand": 2,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "새가 쉬는 바위 가까이 왔어요. 먼저 할 일은?",
+        "choices": [
+          "쉬는 새를 쫓아내요",
+          "거리를 두고 조용히 관찰해요",
+          "먹이를 아무거나 던져요"
+        ],
+        "explain": "야생 생물을 방해하지 않도록 거리를 두고 살펴봐요."
+      },
+      "en": {
+        "q": "You are near a rock where birds are resting. What should you do?",
+        "choices": [
+          "Drive the birds away",
+          "Watch quietly from a distance",
+          "Throw any food at them"
+        ],
+        "explain": "Give wildlife space and avoid disturbing it."
+      }
+    },
+    {
+      "id": 900025,
+      "stage": 3,
+      "conceptId": "compare-heights",
+      "readingBand": 3,
+      "sourceKey": "geography",
+      "answer": 1,
+      "ko": {
+        "q": "자료에 동도 98.6m, 서도 168.5m라고 적혀 있습니다. 더 높은 섬은?",
+        "choices": [
+          "동도",
+          "서도",
+          "이 자료로 비교할 수 없음"
+        ],
+        "explain": "168.5는 98.6보다 큽니다. 수치를 외우는 문제가 아니라 제시된 값을 비교하는 문제입니다."
+      },
+      "en": {
+        "q": "A source lists Dongdo at 98.6 m and Seodo at 168.5 m. Which is higher?",
+        "choices": [
+          "Dongdo",
+          "Seodo",
+          "The values cannot be compared"
+        ],
+        "explain": "168.5 is greater than 98.6. Read and compare the given values; no memorisation is needed."
+      }
+    },
+    {
+      "id": 900026,
+      "stage": 3,
+      "conceptId": "observe-infer",
+      "readingBand": 3,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "‘사진에 새가 보인다’와 ‘새가 먹이를 찾는 것 같다’의 차이는?",
+        "choices": [
+          "둘 다 정확히 같은 관찰이다",
+          "첫째는 관찰, 둘째는 추측이다",
+          "첫째는 추측, 둘째는 관찰이다"
+        ],
+        "explain": "보이는 것은 관찰이고, 행동의 이유를 짐작한 것은 추측입니다. 추측은 더 확인해야 합니다."
+      },
+      "en": {
+        "q": "How do 'a bird is visible' and 'it seems to be looking for food' differ?",
+        "choices": [
+          "They are identical observations",
+          "First an observation, second an inference",
+          "First an inference, second an observation"
+        ],
+        "explain": "Seeing a bird is an observation. Suggesting its purpose is an inference that needs checking."
+      }
+    },
+    {
+      "id": 900027,
+      "stage": 3,
+      "conceptId": "map-orientation",
+      "readingBand": 3,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "지도를 돌려 놓으면 동쪽이 항상 화면 오른쪽일까요?",
+        "choices": [
+          "언제나 오른쪽이다",
+          "방향 표시를 먼저 확인해야 한다",
+          "섬 이름도 바뀐다"
+        ],
+        "explain": "지도의 방향을 확인해야 합니다. 종이나 화면을 돌려도 실제 동쪽과 서쪽이 바뀌지는 않습니다."
+      },
+      "en": {
+        "q": "If a map is rotated, is east always on the screen's right?",
+        "choices": [
+          "Always",
+          "Check the direction marker first",
+          "The island names change"
+        ],
+        "explain": "Check the map's direction marker. Rotating a page does not change geographic east and west."
+      }
+    },
+    {
+      "id": 900028,
+      "stage": 3,
+      "conceptId": "old-record",
+      "readingBand": 3,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "10년 전의 관찰 기록을 찾았습니다. 현재 모습이라고 바로 말해도 될까요?",
+        "choices": [
+          "네, 날짜는 중요하지 않다",
+          "아니요, 최근 자료도 확인해야 한다",
+          "오래된 자료는 전부 버린다"
+        ],
+        "explain": "오래된 자료는 당시 모습을 알려 줍니다. 현재 상태는 최근 자료와 함께 확인해야 합니다."
+      },
+      "en": {
+        "q": "Can an observation from ten years ago be treated as the current situation?",
+        "choices": [
+          "Yes, dates never matter",
+          "No, check recent evidence too",
+          "Discard every old source"
+        ],
+        "explain": "An old record describes its time. Check recent evidence before describing the present."
+      }
+    },
+    {
+      "id": 900029,
+      "stage": 3,
+      "conceptId": "small-sample",
+      "readingBand": 3,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "연습 기록: 한 바위에서 새 3마리를 봤습니다. 알맞은 결론은?",
+        "choices": [
+          "독도 전체에 새가 꼭 3마리 있다",
+          "그때 그 바위에서 3마리를 관찰했다",
+          "다른 바위에는 새가 없다"
+        ],
+        "explain": "관찰한 장소와 시간을 넘어서 단정하지 않습니다. 이 수는 연습용 예시입니다."
+      },
+      "en": {
+        "q": "Practice record: three birds were seen on one rock. What can we conclude?",
+        "choices": [
+          "Exactly three birds live on all of Dokdo",
+          "Three were seen there at that time",
+          "There are no birds on other rocks"
+        ],
+        "explain": "Do not extend a local observation to the whole area. These are hypothetical practice numbers."
+      }
+    },
+    {
+      "id": 900030,
+      "stage": 3,
+      "conceptId": "source-choice",
+      "readingBand": 3,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "같은 주장에 대해 두 글을 읽었습니다. 먼저 비교할 것은?",
+        "choices": [
+          "제목 글자 크기",
+          "근거 자료와 작성 날짜",
+          "공감 표시의 색"
+        ],
+        "explain": "주장을 뒷받침하는 근거와 날짜를 확인합니다. 눈에 띄는 디자인이 정확성을 보장하지는 않습니다."
+      },
+      "en": {
+        "q": "Two articles make the same claim. What should you compare first?",
+        "choices": [
+          "Their title size",
+          "Their evidence and dates",
+          "The colour of the like button"
+        ],
+        "explain": "Check supporting evidence and dates. Striking design does not guarantee accuracy."
+      }
+    },
+    {
+      "id": 900031,
+      "stage": 3,
+      "conceptId": "sea-care",
+      "readingBand": 3,
+      "sourceKey": "scenario",
+      "answer": 0,
+      "ko": {
+        "q": "바다 청소 활동을 기록하려 합니다. 더 도움이 되는 기록은?",
+        "choices": [
+          "청소 전후 장소·날짜·쓰레기 수를 함께 적기",
+          "좋았다는 느낌만 적기",
+          "사람 수만 크게 쓰기"
+        ],
+        "explain": "무엇을 언제 어디에서 살펴보았는지 남기면 전후를 비교하기 쉽습니다."
+      },
+      "en": {
+        "q": "Which record best supports a comparison before and after a beach clean-up?",
+        "choices": [
+          "Place, date and rubbish counts before and after",
+          "Only how good it felt",
+          "Only the number of people"
+        ],
+        "explain": "Record what was measured, where and when, so the comparison can be checked."
+      }
+    },
+    {
+      "id": 900032,
+      "stage": 3,
+      "conceptId": "not-seen",
+      "readingBand": 3,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "짧게 관찰했는데 물고기를 못 봤습니다. 알맞은 말은?",
+        "choices": [
+          "그 바다에는 물고기가 전혀 없다",
+          "이번 관찰에서는 보지 못했다",
+          "물고기는 이제 모두 사라졌다"
+        ],
+        "explain": "보지 못했다는 사실만 말할 수 있습니다. 짧은 관찰로 생물이 전혀 없다고 단정하지 않습니다."
+      },
+      "en": {
+        "q": "No fish were seen during a short observation. Which statement is supported?",
+        "choices": [
+          "There are no fish in that sea",
+          "No fish were seen in this observation",
+          "All the fish have disappeared"
+        ],
+        "explain": "A short observation supports 'not seen', not a claim that no fish exist there."
+      }
+    },
+    {
+      "id": 900033,
+      "stage": 3,
+      "conceptId": "count-units",
+      "readingBand": 3,
+      "sourceKey": "scenario",
+      "answer": 0,
+      "ko": {
+        "q": "연습 표: 오늘 새 4마리, 어제 새 2마리. 오늘은 어제보다 몇 마리 더 보았나요?",
+        "choices": [
+          "2마리",
+          "4마리",
+          "6마리"
+        ],
+        "explain": "같은 단위의 수를 비교하면 4−2=2입니다. 실제 독도 관측값이 아닌 연습 표입니다."
+      },
+      "en": {
+        "q": "Practice table: four birds today, two yesterday. How many more today?",
+        "choices": [
+          "Two",
+          "Four",
+          "Six"
+        ],
+        "explain": "With the same unit, 4 minus 2 is 2. These are hypothetical practice observations."
+      }
+    },
+    {
+      "id": 900034,
+      "stage": 3,
+      "conceptId": "labels",
+      "readingBand": 3,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "사진 설명에 ‘학습용 상상 그림’이라고 적혀 있습니다. 어떻게 써야 할까요?",
+        "choices": [
+          "현장 사진이라고 소개한다",
+          "그림임을 밝히고 설명한다",
+          "실제 동물 수의 증거로 쓴다"
+        ],
+        "explain": "설명된 자료의 성격을 그대로 밝힙니다. 상상 그림을 현장 관측의 증거로 쓰지 않습니다."
+      },
+      "en": {
+        "q": "A picture is labelled 'imaginary learning illustration'. How should you present it?",
+        "choices": [
+          "As a field photograph",
+          "Clearly identify it as an illustration",
+          "As evidence of actual animal numbers"
+        ],
+        "explain": "Identify the type of source correctly. An imaginary drawing is not field evidence."
+      }
+    },
+    {
+      "id": 900035,
+      "stage": 3,
+      "conceptId": "understand",
+      "readingBand": 3,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "독도 설명을 더 쉽게 고치려 합니다. 어떤 방법이 좋을까요?",
+        "choices": [
+          "어려운 말을 더 넣는다",
+          "짧은 문장과 필요한 뜻풀이를 쓴다",
+          "출처를 모두 지운다"
+        ],
+        "explain": "문장을 짧게 하고 낯선 말의 뜻을 설명합니다. 쉽게 쓰더라도 근거는 남깁니다."
+      },
+      "en": {
+        "q": "How can an explanation be made easier to understand?",
+        "choices": [
+          "Add more jargon",
+          "Use shorter sentences and explain unfamiliar words",
+          "Remove every source"
+        ],
+        "explain": "Use shorter sentences and explain unfamiliar words while retaining the evidence."
+      }
+    },
+    {
+      "id": 900036,
+      "stage": 3,
+      "conceptId": "map-scale",
+      "readingBand": 3,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "학습 그림에서 섬을 크게 그렸습니다. 실제 면적도 커졌다는 뜻일까요?",
+        "choices": [
+          "네, 그림 크기가 실제 크기다",
+          "아니요, 그림의 표현 크기가 바뀐 것이다",
+          "섬의 이름이 바뀐 것이다"
+        ],
+        "explain": "알아보기 쉽게 그림의 크기를 바꿀 수 있습니다. 실제 면적 변화와는 다릅니다."
+      },
+      "en": {
+        "q": "An island is drawn larger in a learning scene. Has its actual area increased?",
+        "choices": [
+          "Yes, drawing size is actual size",
+          "No, only the illustration size changed",
+          "The island's name changed"
+        ],
+        "explain": "An illustration can be enlarged for clarity without changing the actual island."
+      }
+    },
+    {
+      "id": 900037,
+      "stage": 4,
+      "conceptId": "fair-comparison",
+      "readingBand": 4,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "A팀은 10분, B팀은 1시간 동안 새를 셌습니다. 수만 보고 어느 곳에 새가 더 많다고 해도 될까요?",
+        "choices": [
+          "네, 수가 큰 쪽이 무조건 많다",
+          "아니요, 관찰 시간과 방법부터 맞춰야 한다",
+          "시간을 더한 뒤 비교한다"
+        ],
+        "explain": "관찰 시간이 다르면 단순한 수 비교가 어려울 수 있습니다. 장소와 방법도 함께 확인합니다."
+      },
+      "en": {
+        "q": "Team A counted birds for 10 minutes and team B for an hour. Is comparing only totals fair?",
+        "choices": [
+          "Yes, the larger total always proves more birds",
+          "No, check the observation time and method",
+          "Add the two times together"
+        ],
+        "explain": "Different observation durations can make raw totals misleading. Check location and method too."
+      }
+    },
+    {
+      "id": 900038,
+      "stage": 4,
+      "conceptId": "traceability",
+      "readingBand": 4,
+      "sourceKey": "scenario",
+      "answer": 0,
+      "ko": {
+        "q": "기사에 ‘연구 결과’라고만 써 있습니다. 내용을 확인할 다음 행동은?",
+        "choices": [
+          "원문 연구와 사용한 자료를 찾는다",
+          "제목이 강하면 믿는다",
+          "공유 횟수로 사실을 정한다"
+        ],
+        "explain": "원문과 자료를 찾아 결과가 어떤 조건에서 나왔는지 확인합니다."
+      },
+      "en": {
+        "q": "An article only says 'research shows'. What is the next useful step?",
+        "choices": [
+          "Find the original study and data",
+          "Trust it if the title is strong",
+          "Judge truth by the share count"
+        ],
+        "explain": "Find the original work and check the conditions behind its conclusions."
+      }
+    },
+    {
+      "id": 900039,
+      "stage": 4,
+      "conceptId": "limits",
+      "readingBand": 4,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "보고서는 ‘조사한 세 지점에서 확인했다’고 합니다. 요약으로 알맞은 것은?",
+        "choices": [
+          "독도 모든 곳에 반드시 있다",
+          "조사한 세 지점에서 확인되었다",
+          "조사하지 않은 곳에는 전혀 없다"
+        ],
+        "explain": "보고서가 확인한 범위를 넘겨 말하지 않습니다. 조사하지 않은 곳의 상태는 이 문장만으로 알 수 없습니다."
+      },
+      "en": {
+        "q": "A report says something was found at three surveyed locations. Which summary is accurate?",
+        "choices": [
+          "It must exist everywhere on Dokdo",
+          "It was found at those three surveyed locations",
+          "It does not exist at any other location"
+        ],
+        "explain": "Keep the conclusion within the surveyed scope. Unsurveyed locations remain unknown."
+      }
+    },
+    {
+      "id": 900040,
+      "stage": 4,
+      "conceptId": "fact-opinion",
+      "readingBand": 4,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "‘내가 본 섬 중 가장 아름답다’는 말은 무엇에 가까울까요?",
+        "choices": [
+          "높이를 잰 측정값",
+          "개인의 느낌과 평가",
+          "방문객 수 통계"
+        ],
+        "explain": "아름다움에 대한 개인의 평가입니다. 느낌을 말할 수 있지만 측정된 사실과는 구분합니다."
+      },
+      "en": {
+        "q": "'The most beautiful island I have seen' is closest to what?",
+        "choices": [
+          "A measured height",
+          "A personal evaluation",
+          "A visitor statistic"
+        ],
+        "explain": "It is a personal evaluation. Opinions can be expressed, but should be distinguished from measurements."
+      }
+    },
+    {
+      "id": 900041,
+      "stage": 4,
+      "conceptId": "units",
+      "readingBand": 4,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "같은 거리 자료를 A는 m, B는 km로 적었습니다. 비교 전에 할 일은?",
+        "choices": [
+          "숫자가 큰 것을 무조건 고른다",
+          "단위를 같게 맞춘다",
+          "작은 숫자를 지운다"
+        ],
+        "explain": "단위가 다르면 숫자만 비교하지 않습니다. 같은 단위로 바꾼 뒤 비교합니다."
+      },
+      "en": {
+        "q": "One distance is given in metres, another in kilometres. What should you do before comparing?",
+        "choices": [
+          "Always choose the larger number",
+          "Convert to the same unit",
+          "Delete the smaller number"
+        ],
+        "explain": "Do not compare bare numbers with different units. Convert them to the same unit first."
+      }
+    },
+    {
+      "id": 900042,
+      "stage": 4,
+      "conceptId": "uncertainty",
+      "readingBand": 4,
+      "sourceKey": "scenario",
+      "answer": 0,
+      "ko": {
+        "q": "자료 두 개의 수치가 다릅니다. 먼저 확인할 항목은?",
+        "choices": [
+          "조사 날짜·범위·방법",
+          "웹사이트 배경색",
+          "글쓴이 사진 크기"
+        ],
+        "explain": "날짜와 조사 범위, 측정 방법이 다를 수 있습니다. 차이를 확인한 뒤 해석합니다."
+      },
+      "en": {
+        "q": "Two sources report different values. What should you check first?",
+        "choices": [
+          "Dates, scope and methods",
+          "Website background colours",
+          "Author photo sizes"
+        ],
+        "explain": "Differences in dates, scope or methods may explain the values."
+      }
+    },
+    {
+      "id": 900043,
+      "stage": 4,
+      "conceptId": "weather-inference",
+      "readingBand": 4,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "큰 파도를 찍은 사진 한 장이 있습니다. ‘이곳은 항상 파도가 크다’고 해도 될까요?",
+        "choices": [
+          "사진 한 장이면 충분하다",
+          "그때의 모습만으로 항상 그렇다고 단정할 수 없다",
+          "파도가 사진보다 작다고 단정한다"
+        ],
+        "explain": "한 시점의 사진은 그때의 모습을 보여 줍니다. ‘항상’이라는 주장은 더 많은 자료가 필요합니다."
+      },
+      "en": {
+        "q": "Can one photo of large waves prove that waves are always large there?",
+        "choices": [
+          "One photo is enough",
+          "No, one moment does not establish 'always'",
+          "It proves the waves were smaller"
+        ],
+        "explain": "A photo records a moment. An 'always' claim requires much more evidence."
+      }
+    },
+    {
+      "id": 900044,
+      "stage": 4,
+      "conceptId": "quote",
+      "readingBand": 4,
+      "sourceKey": "scenario",
+      "answer": 0,
+      "ko": {
+        "q": "자료를 다른 사람에게 소개합니다. 알맞은 방법은?",
+        "choices": [
+          "뜻을 바꾸지 않고 출처와 날짜를 적는다",
+          "유리한 단어만 골라 뜻을 바꾼다",
+          "내가 직접 조사한 것처럼 쓴다"
+        ],
+        "explain": "문맥을 유지하고 출처를 밝히면 다른 사람도 원문을 확인할 수 있습니다."
+      },
+      "en": {
+        "q": "How should you introduce a source to someone else?",
+        "choices": [
+          "Preserve its meaning and give the source and date",
+          "Change its meaning by selecting convenient words",
+          "Present it as your own fieldwork"
+        ],
+        "explain": "Preserve the context and cite the source so others can check it."
+      }
+    },
+    {
+      "id": 900045,
+      "stage": 4,
+      "conceptId": "protect-memory",
+      "readingBand": 4,
+      "sourceKey": "product",
+      "answer": 1,
+      "ko": {
+        "q": "앱의 주간 순위가 새로 시작됩니다. 누적 학습 기록은 어떻게 하는 것이 맞을까요?",
+        "choices": [
+          "함께 지운다",
+          "보존하고 이번 주 점수만 새로 센다",
+          "이름이 같으면 남의 기록과 합친다"
+        ],
+        "explain": "주간 활동과 누적 성취는 별개입니다. 이 앱의 설계 원칙을 묻는 문항입니다."
+      },
+      "en": {
+        "q": "The app starts a new weekly ranking. What should happen to lifetime progress?",
+        "choices": [
+          "Delete it too",
+          "Keep it and start a new weekly count",
+          "Merge it with anyone sharing the name"
+        ],
+        "explain": "Weekly activity and lifetime achievements are separate. This question describes the app's design principle."
+      }
+    },
+    {
+      "id": 900046,
+      "stage": 4,
+      "conceptId": "missing-evidence",
+      "readingBand": 4,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "어떤 주장에 대한 근거를 아직 찾지 못했습니다. 가장 정확한 표현은?",
+        "choices": [
+          "이미 사실로 증명되었다",
+          "아직 확인하지 못했다",
+          "누구도 영원히 알 수 없다"
+        ],
+        "explain": "확인하지 못한 상태를 그대로 밝힙니다. 미확인을 증명이나 영구적인 불가능과 혼동하지 않습니다."
+      },
+      "en": {
+        "q": "You have not yet found evidence for a claim. Which statement is most accurate?",
+        "choices": [
+          "It is already proven",
+          "I have not verified it yet",
+          "Nobody can ever know"
+        ],
+        "explain": "State what is unknown. Lack of verification is not proof or permanent impossibility."
+      }
+    },
+    {
+      "id": 900047,
+      "stage": 4,
+      "conceptId": "source-scope",
+      "readingBand": 4,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "학습용 지도가 실제 지형을 단순화했습니다. 쓰임으로 알맞은 것은?",
+        "choices": [
+          "정확한 측량 없이 공사 위치를 정한다",
+          "큰 섬의 관계를 익히는 데 쓴다",
+          "실제 해저 깊이를 계산한다"
+        ],
+        "explain": "단순화한 지도는 개념을 배우는 데 씁니다. 측량이나 안전한 항해에는 그 목적에 맞는 자료가 필요합니다."
+      },
+      "en": {
+        "q": "What is a suitable use for a simplified learning map?",
+        "choices": [
+          "Choose a construction site without measurements",
+          "Learn how the main islands relate",
+          "Calculate actual seabed depths"
+        ],
+        "explain": "A simplified map supports learning. Surveying and navigation need suitable specialist sources."
+      }
+    },
+    {
+      "id": 900048,
+      "stage": 4,
+      "conceptId": "revise",
+      "readingBand": 4,
+      "sourceKey": "scenario",
+      "answer": 1,
+      "ko": {
+        "q": "더 나은 근거를 찾아 예전 설명이 틀렸음을 알았습니다. 어떻게 할까요?",
+        "choices": [
+          "예전 설명을 숨기고 그대로 둔다",
+          "근거와 수정 이유를 남기고 고친다",
+          "모든 자료를 무조건 삭제한다"
+        ],
+        "explain": "틀린 내용을 바로잡고 수정 이유와 근거를 남깁니다. 확인하고 고치는 것도 학습의 일부입니다."
+      },
+      "en": {
+        "q": "Better evidence shows an earlier explanation was wrong. What should you do?",
+        "choices": [
+          "Hide the issue and leave it unchanged",
+          "Correct it and record the reason and evidence",
+          "Delete every source"
+        ],
+        "explain": "Correct the error and explain the evidence and change. Checking and revising are part of learning."
+      }
+    }
+  ]
+}

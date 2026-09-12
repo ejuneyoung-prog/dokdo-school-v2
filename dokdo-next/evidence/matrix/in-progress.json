@@ -1,0 +1,26 @@
+[
+  {
+    "name": "live starts with zero question rewards",
+    "pass": true
+  },
+  {
+    "name": "ko all 240 ordinary quiz renders and both answer paths",
+    "pass": true,
+    "detail": []
+  },
+  {
+    "name": "en all 240 ordinary quiz renders and both answer paths",
+    "pass": true,
+    "detail": []
+  },
+  {
+    "name": "no uncaught script errors",
+    "pass": true,
+    "detail": []
+  },
+  {
+    "name": "no production requests",
+    "pass": true,
+    "detail": []
+  }
+]

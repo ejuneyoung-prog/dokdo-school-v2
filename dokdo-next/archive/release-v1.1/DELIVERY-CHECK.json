@@ -1,0 +1,16 @@
+{
+  "version": "1.1.0-dokdo-course",
+  "scope": {
+    "questionPairs": 240,
+    "conceptFamilies": 60,
+    "units": 12,
+    "legacy1513Rewritten": false,
+    "legacyBankEligible": false,
+    "old48Active": false,
+    "independentEducationApproval": false,
+    "primaryPathsShareBasicCognitiveAllocation": true
+  },
+  "inputAudit": "workbook-vs-original.json",
+  "currentTestEvidence": "../evidence/",
+  "previousResultCountsNotReused": true
+}

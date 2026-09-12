@@ -1,0 +1,17 @@
+{
+  "source": "previous-turn/east-after.png",
+  "alignment": [
+    [
+      0.6666992396690421,
+      -0.0003680252383592411,
+      1030.1304036533602
+    ],
+    [
+      0.0003680252383592411,
+      0.6666992396690421,
+      159.95806066708613
+    ]
+  ],
+  "inliers": 402,
+  "warning": "illustration-space alignment, not geographic survey"
+}

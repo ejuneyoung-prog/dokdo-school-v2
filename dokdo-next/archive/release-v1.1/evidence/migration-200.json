@@ -1,0 +1,1008 @@
+{
+  "synthetic": true,
+  "seed": 12345678,
+  "cases": 200,
+  "failed": 0,
+  "details": [
+    {
+      "case": 0,
+      "questions": 1261,
+      "preserved": true
+    },
+    {
+      "case": 1,
+      "questions": 558,
+      "preserved": true
+    },
+    {
+      "case": 2,
+      "questions": 235,
+      "preserved": true
+    },
+    {
+      "case": 3,
+      "questions": 1008,
+      "preserved": true
+    },
+    {
+      "case": 4,
+      "questions": 142,
+      "preserved": true
+    },
+    {
+      "case": 5,
+      "questions": 445,
+      "preserved": true
+    },
+    {
+      "case": 6,
+      "questions": 647,
+      "preserved": true
+    },
+    {
+      "case": 7,
+      "questions": 1310,
+      "preserved": true
+    },
+    {
+      "case": 8,
+      "questions": 1306,
+      "preserved": true
+    },
+    {
+      "case": 9,
+      "questions": 1301,
+      "preserved": true
+    },
+    {
+      "case": 10,
+      "questions": 1382,
+      "preserved": true
+    },
+    {
+      "case": 11,
+      "questions": 818,
+      "preserved": true
+    },
+    {
+      "case": 12,
+      "questions": 99,
+      "preserved": true
+    },
+    {
+      "case": 13,
+      "questions": 1089,
+      "preserved": true
+    },
+    {
+      "case": 14,
+      "questions": 560,
+      "preserved": true
+    },
+    {
+      "case": 15,
+      "questions": 645,
+      "preserved": true
+    },
+    {
+      "case": 16,
+      "questions": 782,
+      "preserved": true
+    },
+    {
+      "case": 17,
+      "questions": 743,
+      "preserved": true
+    },
+    {
+      "case": 18,
+      "questions": 307,
+      "preserved": true
+    },
+    {
+      "case": 19,
+      "questions": 1428,
+      "preserved": true
+    },
+    {
+      "case": 20,
+      "questions": 1148,
+      "preserved": true
+    },
+    {
+      "case": 21,
+      "questions": 1408,
+      "preserved": true
+    },
+    {
+      "case": 22,
+      "questions": 100,
+      "preserved": true
+    },
+    {
+      "case": 23,
+      "questions": 1368,
+      "preserved": true
+    },
+    {
+      "case": 24,
+      "questions": 928,
+      "preserved": true
+    },
+    {
+      "case": 25,
+      "questions": 162,
+      "preserved": true
+    },
+    {
+      "case": 26,
+      "questions": 149,
+      "preserved": true
+    },
+    {
+      "case": 27,
+      "questions": 324,
+      "preserved": true
+    },
+    {
+      "case": 28,
+      "questions": 431,
+      "preserved": true
+    },
+    {
+      "case": 29,
+      "questions": 187,
+      "preserved": true
+    },
+    {
+      "case": 30,
+      "questions": 81,
+      "preserved": true
+    },
+    {
+      "case": 31,
+      "questions": 1377,
+      "preserved": true
+    },
+    {
+      "case": 32,
+      "questions": 463,
+      "preserved": true
+    },
+    {
+      "case": 33,
+      "questions": 913,
+      "preserved": true
+    },
+    {
+      "case": 34,
+      "questions": 969,
+      "preserved": true
+    },
+    {
+      "case": 35,
+      "questions": 212,
+      "preserved": true
+    },
+    {
+      "case": 36,
+      "questions": 1355,
+      "preserved": true
+    },
+    {
+      "case": 37,
+      "questions": 383,
+      "preserved": true
+    },
+    {
+      "case": 38,
+      "questions": 316,
+      "preserved": true
+    },
+    {
+      "case": 39,
+      "questions": 3,
+      "preserved": true
+    },
+    {
+      "case": 40,
+      "questions": 1378,
+      "preserved": true
+    },
+    {
+      "case": 41,
+      "questions": 572,
+      "preserved": true
+    },
+    {
+      "case": 42,
+      "questions": 252,
+      "preserved": true
+    },
+    {
+      "case": 43,
+      "questions": 1074,
+      "preserved": true
+    },
+    {
+      "case": 44,
+      "questions": 553,
+      "preserved": true
+    },
+    {
+      "case": 45,
+      "questions": 585,
+      "preserved": true
+    },
+    {
+      "case": 46,
+      "questions": 62,
+      "preserved": true
+    },
+    {
+      "case": 47,
+      "questions": 916,
+      "preserved": true
+    },
+    {
+      "case": 48,
+      "questions": 868,
+      "preserved": true
+    },
+    {
+      "case": 49,
+      "questions": 1087,
+      "preserved": true
+    },
+    {
+      "case": 50,
+      "questions": 1003,
+      "preserved": true
+    },
+    {
+      "case": 51,
+      "questions": 1082,
+      "preserved": true
+    },
+    {
+      "case": 52,
+      "questions": 1002,
+      "preserved": true
+    },
+    {
+      "case": 53,
+      "questions": 519,
+      "preserved": true
+    },
+    {
+      "case": 54,
+      "questions": 1373,
+      "preserved": true
+    },
+    {
+      "case": 55,
+      "questions": 479,
+      "preserved": true
+    },
+    {
+      "case": 56,
+      "questions": 236,
+      "preserved": true
+    },
+    {
+      "case": 57,
+      "questions": 433,
+      "preserved": true
+    },
+    {
+      "case": 58,
+      "questions": 532,
+      "preserved": true
+    },
+    {
+      "case": 59,
+      "questions": 1057,
+      "preserved": true
+    },
+    {
+      "case": 60,
+      "questions": 244,
+      "preserved": true
+    },
+    {
+      "case": 61,
+      "questions": 100,
+      "preserved": true
+    },
+    {
+      "case": 62,
+      "questions": 510,
+      "preserved": true
+    },
+    {
+      "case": 63,
+      "questions": 1163,
+      "preserved": true
+    },
+    {
+      "case": 64,
+      "questions": 1491,
+      "preserved": true
+    },
+    {
+      "case": 65,
+      "questions": 472,
+      "preserved": true
+    },
+    {
+      "case": 66,
+      "questions": 565,
+      "preserved": true
+    },
+    {
+      "case": 67,
+      "questions": 243,
+      "preserved": true
+    },
+    {
+      "case": 68,
+      "questions": 514,
+      "preserved": true
+    },
+    {
+      "case": 69,
+      "questions": 1298,
+      "preserved": true
+    },
+    {
+      "case": 70,
+      "questions": 325,
+      "preserved": true
+    },
+    {
+      "case": 71,
+      "questions": 813,
+      "preserved": true
+    },
+    {
+      "case": 72,
+      "questions": 1492,
+      "preserved": true
+    },
+    {
+      "case": 73,
+      "questions": 854,
+      "preserved": true
+    },
+    {
+      "case": 74,
+      "questions": 1075,
+      "preserved": true
+    },
+    {
+      "case": 75,
+      "questions": 815,
+      "preserved": true
+    },
+    {
+      "case": 76,
+      "questions": 771,
+      "preserved": true
+    },
+    {
+      "case": 77,
+      "questions": 551,
+      "preserved": true
+    },
+    {
+      "case": 78,
+      "questions": 790,
+      "preserved": true
+    },
+    {
+      "case": 79,
+      "questions": 1148,
+      "preserved": true
+    },
+    {
+      "case": 80,
+      "questions": 255,
+      "preserved": true
+    },
+    {
+      "case": 81,
+      "questions": 225,
+      "preserved": true
+    },
+    {
+      "case": 82,
+      "questions": 42,
+      "preserved": true
+    },
+    {
+      "case": 83,
+      "questions": 919,
+      "preserved": true
+    },
+    {
+      "case": 84,
+      "questions": 1499,
+      "preserved": true
+    },
+    {
+      "case": 85,
+      "questions": 1341,
+      "preserved": true
+    },
+    {
+      "case": 86,
+      "questions": 1512,
+      "preserved": true
+    },
+    {
+      "case": 87,
+      "questions": 808,
+      "preserved": true
+    },
+    {
+      "case": 88,
+      "questions": 675,
+      "preserved": true
+    },
+    {
+      "case": 89,
+      "questions": 291,
+      "preserved": true
+    },
+    {
+      "case": 90,
+      "questions": 861,
+      "preserved": true
+    },
+    {
+      "case": 91,
+      "questions": 440,
+      "preserved": true
+    },
+    {
+      "case": 92,
+      "questions": 1459,
+      "preserved": true
+    },
+    {
+      "case": 93,
+      "questions": 1363,
+      "preserved": true
+    },
+    {
+      "case": 94,
+      "questions": 1152,
+      "preserved": true
+    },
+    {
+      "case": 95,
+      "questions": 86,
+      "preserved": true
+    },
+    {
+      "case": 96,
+      "questions": 518,
+      "preserved": true
+    },
+    {
+      "case": 97,
+      "questions": 410,
+      "preserved": true
+    },
+    {
+      "case": 98,
+      "questions": 230,
+      "preserved": true
+    },
+    {
+      "case": 99,
+      "questions": 1270,
+      "preserved": true
+    },
+    {
+      "case": 100,
+      "questions": 1286,
+      "preserved": true
+    },
+    {
+      "case": 101,
+      "questions": 955,
+      "preserved": true
+    },
+    {
+      "case": 102,
+      "questions": 1333,
+      "preserved": true
+    },
+    {
+      "case": 103,
+      "questions": 52,
+      "preserved": true
+    },
+    {
+      "case": 104,
+      "questions": 324,
+      "preserved": true
+    },
+    {
+      "case": 105,
+      "questions": 1175,
+      "preserved": true
+    },
+    {
+      "case": 106,
+      "questions": 458,
+      "preserved": true
+    },
+    {
+      "case": 107,
+      "questions": 91,
+      "preserved": true
+    },
+    {
+      "case": 108,
+      "questions": 319,
+      "preserved": true
+    },
+    {
+      "case": 109,
+      "questions": 97,
+      "preserved": true
+    },
+    {
+      "case": 110,
+      "questions": 315,
+      "preserved": true
+    },
+    {
+      "case": 111,
+      "questions": 1361,
+      "preserved": true
+    },
+    {
+      "case": 112,
+      "questions": 406,
+      "preserved": true
+    },
+    {
+      "case": 113,
+      "questions": 1318,
+      "preserved": true
+    },
+    {
+      "case": 114,
+      "questions": 646,
+      "preserved": true
+    },
+    {
+      "case": 115,
+      "questions": 1433,
+      "preserved": true
+    },
+    {
+      "case": 116,
+      "questions": 221,
+      "preserved": true
+    },
+    {
+      "case": 117,
+      "questions": 537,
+      "preserved": true
+    },
+    {
+      "case": 118,
+      "questions": 468,
+      "preserved": true
+    },
+    {
+      "case": 119,
+      "questions": 537,
+      "preserved": true
+    },
+    {
+      "case": 120,
+      "questions": 698,
+      "preserved": true
+    },
+    {
+      "case": 121,
+      "questions": 1009,
+      "preserved": true
+    },
+    {
+      "case": 122,
+      "questions": 162,
+      "preserved": true
+    },
+    {
+      "case": 123,
+      "questions": 1390,
+      "preserved": true
+    },
+    {
+      "case": 124,
+      "questions": 944,
+      "preserved": true
+    },
+    {
+      "case": 125,
+      "questions": 464,
+      "preserved": true
+    },
+    {
+      "case": 126,
+      "questions": 1025,
+      "preserved": true
+    },
+    {
+      "case": 127,
+      "questions": 1478,
+      "preserved": true
+    },
+    {
+      "case": 128,
+      "questions": 425,
+      "preserved": true
+    },
+    {
+      "case": 129,
+      "questions": 500,
+      "preserved": true
+    },
+    {
+      "case": 130,
+      "questions": 23,
+      "preserved": true
+    },
+    {
+      "case": 131,
+      "questions": 699,
+      "preserved": true
+    },
+    {
+      "case": 132,
+      "questions": 936,
+      "preserved": true
+    },
+    {
+      "case": 133,
+      "questions": 643,
+      "preserved": true
+    },
+    {
+      "case": 134,
+      "questions": 733,
+      "preserved": true
+    },
+    {
+      "case": 135,
+      "questions": 421,
+      "preserved": true
+    },
+    {
+      "case": 136,
+      "questions": 233,
+      "preserved": true
+    },
+    {
+      "case": 137,
+      "questions": 2,
+      "preserved": true
+    },
+    {
+      "case": 138,
+      "questions": 553,
+      "preserved": true
+    },
+    {
+      "case": 139,
+      "questions": 1333,
+      "preserved": true
+    },
+    {
+      "case": 140,
+      "questions": 1234,
+      "preserved": true
+    },
+    {
+      "case": 141,
+      "questions": 1111,
+      "preserved": true
+    },
+    {
+      "case": 142,
+      "questions": 646,
+      "preserved": true
+    },
+    {
+      "case": 143,
+      "questions": 524,
+      "preserved": true
+    },
+    {
+      "case": 144,
+      "questions": 1417,
+      "preserved": true
+    },
+    {
+      "case": 145,
+      "questions": 282,
+      "preserved": true
+    },
+    {
+      "case": 146,
+      "questions": 30,
+      "preserved": true
+    },
+    {
+      "case": 147,
+      "questions": 1023,
+      "preserved": true
+    },
+    {
+      "case": 148,
+      "questions": 1441,
+      "preserved": true
+    },
+    {
+      "case": 149,
+      "questions": 196,
+      "preserved": true
+    },
+    {
+      "case": 150,
+      "questions": 1117,
+      "preserved": true
+    },
+    {
+      "case": 151,
+      "questions": 317,
+      "preserved": true
+    },
+    {
+      "case": 152,
+      "questions": 148,
+      "preserved": true
+    },
+    {
+      "case": 153,
+      "questions": 1171,
+      "preserved": true
+    },
+    {
+      "case": 154,
+      "questions": 461,
+      "preserved": true
+    },
+    {
+      "case": 155,
+      "questions": 782,
+      "preserved": true
+    },
+    {
+      "case": 156,
+      "questions": 1122,
+      "preserved": true
+    },
+    {
+      "case": 157,
+      "questions": 225,
+      "preserved": true
+    },
+    {
+      "case": 158,
+      "questions": 1194,
+      "preserved": true
+    },
+    {
+      "case": 159,
+      "questions": 991,
+      "preserved": true
+    },
+    {
+      "case": 160,
+      "questions": 51,
+      "preserved": true
+    },
+    {
+      "case": 161,
+      "questions": 488,
+      "preserved": true
+    },
+    {
+      "case": 162,
+      "questions": 1356,
+      "preserved": true
+    },
+    {
+      "case": 163,
+      "questions": 1330,
+      "preserved": true
+    },
+    {
+      "case": 164,
+      "questions": 205,
+      "preserved": true
+    },
+    {
+      "case": 165,
+      "questions": 184,
+      "preserved": true
+    },
+    {
+      "case": 166,
+      "questions": 1123,
+      "preserved": true
+    },
+    {
+      "case": 167,
+      "questions": 1211,
+      "preserved": true
+    },
+    {
+      "case": 168,
+      "questions": 1045,
+      "preserved": true
+    },
+    {
+      "case": 169,
+      "questions": 426,
+      "preserved": true
+    },
+    {
+      "case": 170,
+      "questions": 963,
+      "preserved": true
+    },
+    {
+      "case": 171,
+      "questions": 1381,
+      "preserved": true
+    },
+    {
+      "case": 172,
+      "questions": 81,
+      "preserved": true
+    },
+    {
+      "case": 173,
+      "questions": 61,
+      "preserved": true
+    },
+    {
+      "case": 174,
+      "questions": 733,
+      "preserved": true
+    },
+    {
+      "case": 175,
+      "questions": 1310,
+      "preserved": true
+    },
+    {
+      "case": 176,
+      "questions": 418,
+      "preserved": true
+    },
+    {
+      "case": 177,
+      "questions": 677,
+      "preserved": true
+    },
+    {
+      "case": 178,
+      "questions": 3,
+      "preserved": true
+    },
+    {
+      "case": 179,
+      "questions": 743,
+      "preserved": true
+    },
+    {
+      "case": 180,
+      "questions": 14,
+      "preserved": true
+    },
+    {
+      "case": 181,
+      "questions": 712,
+      "preserved": true
+    },
+    {
+      "case": 182,
+      "questions": 1473,
+      "preserved": true
+    },
+    {
+      "case": 183,
+      "questions": 173,
+      "preserved": true
+    },
+    {
+      "case": 184,
+      "questions": 25,
+      "preserved": true
+    },
+    {
+      "case": 185,
+      "questions": 335,
+      "preserved": true
+    },
+    {
+      "case": 186,
+      "questions": 1390,
+      "preserved": true
+    },
+    {
+      "case": 187,
+      "questions": 1169,
+      "preserved": true
+    },
+    {
+      "case": 188,
+      "questions": 1359,
+      "preserved": true
+    },
+    {
+      "case": 189,
+      "questions": 1146,
+      "preserved": true
+    },
+    {
+      "case": 190,
+      "questions": 1101,
+      "preserved": true
+    },
+    {
+      "case": 191,
+      "questions": 64,
+      "preserved": true
+    },
+    {
+      "case": 192,
+      "questions": 352,
+      "preserved": true
+    },
+    {
+      "case": 193,
+      "questions": 490,
+      "preserved": true
+    },
+    {
+      "case": 194,
+      "questions": 1083,
+      "preserved": true
+    },
+    {
+      "case": 195,
+      "questions": 1104,
+      "preserved": true
+    },
+    {
+      "case": 196,
+      "questions": 298,
+      "preserved": true
+    },
+    {
+      "case": 197,
+      "questions": 413,
+      "preserved": true
+    },
+    {
+      "case": 198,
+      "questions": 732,
+      "preserved": true
+    },
+    {
+      "case": 199,
+      "questions": 1513,
+      "preserved": true
+    }
+  ]
+}

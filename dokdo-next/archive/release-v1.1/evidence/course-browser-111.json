@@ -1,0 +1,457 @@
+{
+  "mode": "inline",
+  "engine": "chromium",
+  "storage": "controlled in-memory adapter",
+  "checks": [
+    {
+      "name": "ko/u7 has its specified Dokdo starting unit",
+      "pass": true
+    },
+    {
+      "name": "ko/u7 one taught unit has five unique concept families",
+      "pass": true
+    },
+    {
+      "name": "ko/u7 instruction is a whole Dokdo paragraph, not generic etiquette",
+      "pass": true
+    },
+    {
+      "name": "ko/u7 active new ID, not old 48 demo",
+      "pass": true
+    },
+    {
+      "name": "ko/u7 correct sources and wrong explanations are attached",
+      "pass": true
+    },
+    {
+      "name": "ko/u7 no mobile horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "ko/u7 wrong answer blocks both button and next function",
+      "pass": true
+    },
+    {
+      "name": "ko/u7 feedback links the actual source",
+      "pass": true
+    },
+    {
+      "name": "ko/u7 correction is understood without bonus XP",
+      "pass": true
+    },
+    {
+      "name": "ko/u7 twelve selectable units are actually displayed",
+      "pass": true
+    },
+    {
+      "name": "ko/8-9 has its specified Dokdo starting unit",
+      "pass": true
+    },
+    {
+      "name": "ko/8-9 one taught unit has five unique concept families",
+      "pass": true
+    },
+    {
+      "name": "ko/8-9 instruction is a whole Dokdo paragraph, not generic etiquette",
+      "pass": true
+    },
+    {
+      "name": "ko/8-9 active new ID, not old 48 demo",
+      "pass": true
+    },
+    {
+      "name": "ko/8-9 correct sources and wrong explanations are attached",
+      "pass": true
+    },
+    {
+      "name": "ko/8-9 no mobile horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "ko/8-9 wrong answer blocks both button and next function",
+      "pass": true
+    },
+    {
+      "name": "ko/8-9 feedback links the actual source",
+      "pass": true
+    },
+    {
+      "name": "ko/8-9 correction is understood without bonus XP",
+      "pass": true
+    },
+    {
+      "name": "ko/8-9 twelve selectable units are actually displayed",
+      "pass": true
+    },
+    {
+      "name": "ko/10-11 has its specified Dokdo starting unit",
+      "pass": true
+    },
+    {
+      "name": "ko/10-11 one taught unit has five unique concept families",
+      "pass": true
+    },
+    {
+      "name": "ko/10-11 instruction is a whole Dokdo paragraph, not generic etiquette",
+      "pass": true
+    },
+    {
+      "name": "ko/10-11 active new ID, not old 48 demo",
+      "pass": true
+    },
+    {
+      "name": "ko/10-11 correct sources and wrong explanations are attached",
+      "pass": true
+    },
+    {
+      "name": "ko/10-11 no mobile horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "ko/10-11 wrong answer blocks both button and next function",
+      "pass": true
+    },
+    {
+      "name": "ko/10-11 feedback links the actual source",
+      "pass": true
+    },
+    {
+      "name": "ko/10-11 correction is understood without bonus XP",
+      "pass": true
+    },
+    {
+      "name": "ko/10-11 twelve selectable units are actually displayed",
+      "pass": true
+    },
+    {
+      "name": "ko/12-13 has its specified Dokdo starting unit",
+      "pass": true
+    },
+    {
+      "name": "ko/12-13 one taught unit has five unique concept families",
+      "pass": true
+    },
+    {
+      "name": "ko/12-13 instruction is a whole Dokdo paragraph, not generic etiquette",
+      "pass": true
+    },
+    {
+      "name": "ko/12-13 active new ID, not old 48 demo",
+      "pass": true
+    },
+    {
+      "name": "ko/12-13 correct sources and wrong explanations are attached",
+      "pass": true
+    },
+    {
+      "name": "ko/12-13 no mobile horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "ko/12-13 wrong answer blocks both button and next function",
+      "pass": true
+    },
+    {
+      "name": "ko/12-13 feedback links the actual source",
+      "pass": true
+    },
+    {
+      "name": "ko/12-13 correction is understood without bonus XP",
+      "pass": true
+    },
+    {
+      "name": "ko/12-13 twelve selectable units are actually displayed",
+      "pass": true
+    },
+    {
+      "name": "ko/14-16 has its specified Dokdo starting unit",
+      "pass": true
+    },
+    {
+      "name": "ko/14-16 one taught unit has five unique concept families",
+      "pass": true
+    },
+    {
+      "name": "ko/14-16 instruction is a whole Dokdo paragraph, not generic etiquette",
+      "pass": true
+    },
+    {
+      "name": "ko/14-16 active new ID, not old 48 demo",
+      "pass": true
+    },
+    {
+      "name": "ko/14-16 correct sources and wrong explanations are attached",
+      "pass": true
+    },
+    {
+      "name": "ko/14-16 no mobile horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "ko/14-16 wrong answer blocks both button and next function",
+      "pass": true
+    },
+    {
+      "name": "ko/14-16 feedback links the actual source",
+      "pass": true
+    },
+    {
+      "name": "ko/14-16 correction is understood without bonus XP",
+      "pass": true
+    },
+    {
+      "name": "ko/14-16 displayed evidence is real text",
+      "pass": true
+    },
+    {
+      "name": "ko/14-16 completed unit is recorded once",
+      "pass": true
+    },
+    {
+      "name": "ko/14-16 take-away paragraph includes the five related facts",
+      "pass": true
+    },
+    {
+      "name": "ko/14-16 twelve selectable units are actually displayed",
+      "pass": true
+    },
+    {
+      "name": "ko/17-19 has its specified Dokdo starting unit",
+      "pass": true
+    },
+    {
+      "name": "ko/17-19 one taught unit has five unique concept families",
+      "pass": true
+    },
+    {
+      "name": "ko/17-19 instruction is a whole Dokdo paragraph, not generic etiquette",
+      "pass": true
+    },
+    {
+      "name": "ko/17-19 active new ID, not old 48 demo",
+      "pass": true
+    },
+    {
+      "name": "ko/17-19 correct sources and wrong explanations are attached",
+      "pass": true
+    },
+    {
+      "name": "ko/17-19 no mobile horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "ko/17-19 wrong answer blocks both button and next function",
+      "pass": true
+    },
+    {
+      "name": "ko/17-19 feedback links the actual source",
+      "pass": true
+    },
+    {
+      "name": "ko/17-19 correction is understood without bonus XP",
+      "pass": true
+    },
+    {
+      "name": "ko/17-19 twelve selectable units are actually displayed",
+      "pass": true
+    },
+    {
+      "name": "ko/20+ has its specified Dokdo starting unit",
+      "pass": true
+    },
+    {
+      "name": "ko/20+ one taught unit has five unique concept families",
+      "pass": true
+    },
+    {
+      "name": "ko/20+ instruction is a whole Dokdo paragraph, not generic etiquette",
+      "pass": true
+    },
+    {
+      "name": "ko/20+ active new ID, not old 48 demo",
+      "pass": true
+    },
+    {
+      "name": "ko/20+ correct sources and wrong explanations are attached",
+      "pass": true
+    },
+    {
+      "name": "ko/20+ no mobile horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "ko/20+ wrong answer blocks both button and next function",
+      "pass": true
+    },
+    {
+      "name": "ko/20+ feedback links the actual source",
+      "pass": true
+    },
+    {
+      "name": "ko/20+ correction is understood without bonus XP",
+      "pass": true
+    },
+    {
+      "name": "ko/20+ twelve selectable units are actually displayed",
+      "pass": true
+    },
+    {
+      "name": "en/8-9 has its specified Dokdo starting unit",
+      "pass": true
+    },
+    {
+      "name": "en/8-9 one taught unit has five unique concept families",
+      "pass": true
+    },
+    {
+      "name": "en/8-9 instruction is a whole Dokdo paragraph, not generic etiquette",
+      "pass": true
+    },
+    {
+      "name": "en/8-9 active new ID, not old 48 demo",
+      "pass": true
+    },
+    {
+      "name": "en/8-9 correct sources and wrong explanations are attached",
+      "pass": true
+    },
+    {
+      "name": "en/8-9 no mobile horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "en/8-9 wrong answer blocks both button and next function",
+      "pass": true
+    },
+    {
+      "name": "en/8-9 feedback links the actual source",
+      "pass": true
+    },
+    {
+      "name": "en/8-9 correction is understood without bonus XP",
+      "pass": true
+    },
+    {
+      "name": "en/8-9 completed unit is recorded once",
+      "pass": true
+    },
+    {
+      "name": "en/8-9 take-away paragraph includes the five related facts",
+      "pass": true
+    },
+    {
+      "name": "en/8-9 twelve selectable units are actually displayed",
+      "pass": true
+    },
+    {
+      "name": "en/14-16 has its specified Dokdo starting unit",
+      "pass": true
+    },
+    {
+      "name": "en/14-16 one taught unit has five unique concept families",
+      "pass": true
+    },
+    {
+      "name": "en/14-16 instruction is a whole Dokdo paragraph, not generic etiquette",
+      "pass": true
+    },
+    {
+      "name": "en/14-16 active new ID, not old 48 demo",
+      "pass": true
+    },
+    {
+      "name": "en/14-16 correct sources and wrong explanations are attached",
+      "pass": true
+    },
+    {
+      "name": "en/14-16 no mobile horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "en/14-16 wrong answer blocks both button and next function",
+      "pass": true
+    },
+    {
+      "name": "en/14-16 feedback links the actual source",
+      "pass": true
+    },
+    {
+      "name": "en/14-16 correction is understood without bonus XP",
+      "pass": true
+    },
+    {
+      "name": "en/14-16 twelve selectable units are actually displayed",
+      "pass": true
+    },
+    {
+      "name": "en/20+ has its specified Dokdo starting unit",
+      "pass": true
+    },
+    {
+      "name": "en/20+ one taught unit has five unique concept families",
+      "pass": true
+    },
+    {
+      "name": "en/20+ instruction is a whole Dokdo paragraph, not generic etiquette",
+      "pass": true
+    },
+    {
+      "name": "en/20+ active new ID, not old 48 demo",
+      "pass": true
+    },
+    {
+      "name": "en/20+ correct sources and wrong explanations are attached",
+      "pass": true
+    },
+    {
+      "name": "en/20+ no mobile horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "en/20+ wrong answer blocks both button and next function",
+      "pass": true
+    },
+    {
+      "name": "en/20+ feedback links the actual source",
+      "pass": true
+    },
+    {
+      "name": "en/20+ correction is understood without bonus XP",
+      "pass": true
+    },
+    {
+      "name": "en/20+ twelve selectable units are actually displayed",
+      "pass": true
+    },
+    {
+      "name": "cancelling a map navigation preserves the active lesson and visible view",
+      "pass": true
+    },
+    {
+      "name": "generated catalogue switches to English too",
+      "pass": true
+    },
+    {
+      "name": "landform mode identifies itself as a non-surveyed reference",
+      "pass": true
+    },
+    {
+      "name": "320px question and options fit",
+      "pass": true
+    },
+    {
+      "name": "no uncaught JavaScript errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "no production or analytics requests",
+      "pass": true,
+      "detail": []
+    }
+  ],
+  "pass": 111,
+  "fail": 0,
+  "errors": [],
+  "requests": []
+}

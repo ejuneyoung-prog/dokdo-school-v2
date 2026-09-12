@@ -1,0 +1,33 @@
+{
+  "version": "1.2.0-clear-questions",
+  "activeQuestionPairs": 240,
+  "authoredChoiceFeedbackPairs": 711,
+  "scope": "all 240 currently active questions, not original 1513",
+  "nodeTests": 106,
+  "contentGateTests": 18,
+  "browserConditions": 56,
+  "exhaustiveQuestionLanguagePaths": 480,
+  "staticChecks": 65,
+  "portableAppChecks": 11,
+  "portableReviewChecks": 10,
+  "migrationCases": 200,
+  "homepageSwitchChecks": 7,
+  "workbook": {
+    "sheets": 9,
+    "questions": 240,
+    "feedbackRows": 711,
+    "formulaCells": 259,
+    "cachedValuesVerified": true,
+    "errorCells": 0,
+    "render": "cell previews; native renderer service failed to start",
+    "xlsx": "/mnt/data/dokdo-questions-240-v1.2.xlsx"
+  },
+  "pending": [
+    "independent educational review",
+    "child/learner comprehension trials",
+    "native phone storage and sound",
+    "live backend authentication/migration",
+    "geographic artwork repair"
+  ],
+  "unchangedGeography": true
+}

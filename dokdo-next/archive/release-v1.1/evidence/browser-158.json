@@ -1,0 +1,646 @@
+{
+  "mode": "inline",
+  "nativeOrigin": false,
+  "storage": "controlled adapter",
+  "media": "native HTMLMediaElement",
+  "device": "desktop chromium, responsive viewport (not a physical phone)",
+  "checks": [
+    {
+      "name": "ko/390 first visit has no seeded rewards",
+      "pass": true
+    },
+    {
+      "name": "ko/390 no horizontal document overflow",
+      "pass": true
+    },
+    {
+      "name": "ko/390 real labels and controls not baked into background",
+      "pass": true
+    },
+    {
+      "name": "ko/390 invite without credits is disabled",
+      "pass": true
+    },
+    {
+      "name": "ko/390 map information appears",
+      "pass": true
+    },
+    {
+      "name": "ko/390 sourced outline comparison, no fake measured contours",
+      "pass": true
+    },
+    {
+      "name": "ko/390 separate eastern-island facts",
+      "pass": true
+    },
+    {
+      "name": "ko/390 landscape and map are independently switchable",
+      "pass": true
+    },
+    {
+      "name": "ko/390 age gate before placement",
+      "pass": true
+    },
+    {
+      "name": "ko/390 missing age cannot start diagnostic",
+      "pass": true
+    },
+    {
+      "name": "ko/390 low-primary pool is actually simple",
+      "pass": true
+    },
+    {
+      "name": "ko/390 diagnostic does not invent school grade or invitations",
+      "pass": true
+    },
+    {
+      "name": "ko/390 teach before testing",
+      "pass": true
+    },
+    {
+      "name": "ko/390 question and options visible",
+      "pass": true
+    },
+    {
+      "name": "ko/390 wrong answer blocks next and programmatic bypass",
+      "pass": true
+    },
+    {
+      "name": "ko/390 correction does not grant extra XP",
+      "pass": true
+    },
+    {
+      "name": "ko/390 full lesson completes",
+      "pass": true
+    },
+    {
+      "name": "ko/390 learned lights are visible",
+      "pass": true
+    },
+    {
+      "name": "ko/390 reduced motion is saved",
+      "pass": true
+    },
+    {
+      "name": "ko/390 art/source limitations are visible",
+      "pass": true
+    },
+    {
+      "name": "ko/390 translated main page after completion",
+      "pass": true
+    },
+    {
+      "name": "en/390 first visit has no seeded rewards",
+      "pass": true
+    },
+    {
+      "name": "en/390 no horizontal document overflow",
+      "pass": true
+    },
+    {
+      "name": "en/390 real labels and controls not baked into background",
+      "pass": true
+    },
+    {
+      "name": "en/390 invite without credits is disabled",
+      "pass": true
+    },
+    {
+      "name": "en/390 map information appears",
+      "pass": true
+    },
+    {
+      "name": "en/390 sourced outline comparison, no fake measured contours",
+      "pass": true
+    },
+    {
+      "name": "en/390 separate eastern-island facts",
+      "pass": true
+    },
+    {
+      "name": "en/390 landscape and map are independently switchable",
+      "pass": true
+    },
+    {
+      "name": "en/390 age gate before placement",
+      "pass": true
+    },
+    {
+      "name": "en/390 missing age cannot start diagnostic",
+      "pass": true
+    },
+    {
+      "name": "en/390 low-primary pool is actually simple",
+      "pass": true
+    },
+    {
+      "name": "en/390 diagnostic does not invent school grade or invitations",
+      "pass": true
+    },
+    {
+      "name": "en/390 teach before testing",
+      "pass": true
+    },
+    {
+      "name": "en/390 question and options visible",
+      "pass": true
+    },
+    {
+      "name": "en/390 wrong answer blocks next and programmatic bypass",
+      "pass": true
+    },
+    {
+      "name": "en/390 correction does not grant extra XP",
+      "pass": true
+    },
+    {
+      "name": "en/390 full lesson completes",
+      "pass": true
+    },
+    {
+      "name": "en/390 learned lights are visible",
+      "pass": true
+    },
+    {
+      "name": "en/390 reduced motion is saved",
+      "pass": true
+    },
+    {
+      "name": "en/390 art/source limitations are visible",
+      "pass": true
+    },
+    {
+      "name": "en/390 translated main page after completion",
+      "pass": true
+    },
+    {
+      "name": "ko/768 first visit has no seeded rewards",
+      "pass": true
+    },
+    {
+      "name": "ko/768 no horizontal document overflow",
+      "pass": true
+    },
+    {
+      "name": "ko/768 real labels and controls not baked into background",
+      "pass": true
+    },
+    {
+      "name": "ko/768 invite without credits is disabled",
+      "pass": true
+    },
+    {
+      "name": "ko/768 map information appears",
+      "pass": true
+    },
+    {
+      "name": "ko/768 sourced outline comparison, no fake measured contours",
+      "pass": true
+    },
+    {
+      "name": "ko/768 separate eastern-island facts",
+      "pass": true
+    },
+    {
+      "name": "ko/768 landscape and map are independently switchable",
+      "pass": true
+    },
+    {
+      "name": "ko/768 age gate before placement",
+      "pass": true
+    },
+    {
+      "name": "ko/768 missing age cannot start diagnostic",
+      "pass": true
+    },
+    {
+      "name": "ko/768 low-primary pool is actually simple",
+      "pass": true
+    },
+    {
+      "name": "ko/768 diagnostic does not invent school grade or invitations",
+      "pass": true
+    },
+    {
+      "name": "ko/768 teach before testing",
+      "pass": true
+    },
+    {
+      "name": "ko/768 question and options visible",
+      "pass": true
+    },
+    {
+      "name": "ko/768 wrong answer blocks next and programmatic bypass",
+      "pass": true
+    },
+    {
+      "name": "ko/768 correction does not grant extra XP",
+      "pass": true
+    },
+    {
+      "name": "ko/768 full lesson completes",
+      "pass": true
+    },
+    {
+      "name": "ko/768 learned lights are visible",
+      "pass": true
+    },
+    {
+      "name": "ko/768 reduced motion is saved",
+      "pass": true
+    },
+    {
+      "name": "ko/768 art/source limitations are visible",
+      "pass": true
+    },
+    {
+      "name": "ko/768 translated main page after completion",
+      "pass": true
+    },
+    {
+      "name": "en/768 first visit has no seeded rewards",
+      "pass": true
+    },
+    {
+      "name": "en/768 no horizontal document overflow",
+      "pass": true
+    },
+    {
+      "name": "en/768 real labels and controls not baked into background",
+      "pass": true
+    },
+    {
+      "name": "en/768 invite without credits is disabled",
+      "pass": true
+    },
+    {
+      "name": "en/768 map information appears",
+      "pass": true
+    },
+    {
+      "name": "en/768 sourced outline comparison, no fake measured contours",
+      "pass": true
+    },
+    {
+      "name": "en/768 separate eastern-island facts",
+      "pass": true
+    },
+    {
+      "name": "en/768 landscape and map are independently switchable",
+      "pass": true
+    },
+    {
+      "name": "en/768 age gate before placement",
+      "pass": true
+    },
+    {
+      "name": "en/768 missing age cannot start diagnostic",
+      "pass": true
+    },
+    {
+      "name": "en/768 low-primary pool is actually simple",
+      "pass": true
+    },
+    {
+      "name": "en/768 diagnostic does not invent school grade or invitations",
+      "pass": true
+    },
+    {
+      "name": "en/768 teach before testing",
+      "pass": true
+    },
+    {
+      "name": "en/768 question and options visible",
+      "pass": true
+    },
+    {
+      "name": "en/768 wrong answer blocks next and programmatic bypass",
+      "pass": true
+    },
+    {
+      "name": "en/768 correction does not grant extra XP",
+      "pass": true
+    },
+    {
+      "name": "en/768 full lesson completes",
+      "pass": true
+    },
+    {
+      "name": "en/768 learned lights are visible",
+      "pass": true
+    },
+    {
+      "name": "en/768 reduced motion is saved",
+      "pass": true
+    },
+    {
+      "name": "en/768 art/source limitations are visible",
+      "pass": true
+    },
+    {
+      "name": "en/768 translated main page after completion",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 first visit has no seeded rewards",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 no horizontal document overflow",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 real labels and controls not baked into background",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 invite without credits is disabled",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 map information appears",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 sourced outline comparison, no fake measured contours",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 separate eastern-island facts",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 landscape and map are independently switchable",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 age gate before placement",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 missing age cannot start diagnostic",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 low-primary pool is actually simple",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 diagnostic does not invent school grade or invitations",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 teach before testing",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 question and options visible",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 wrong answer blocks next and programmatic bypass",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 correction does not grant extra XP",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 full lesson completes",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 learned lights are visible",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 reduced motion is saved",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 art/source limitations are visible",
+      "pass": true
+    },
+    {
+      "name": "ko/1440 translated main page after completion",
+      "pass": true
+    },
+    {
+      "name": "en/1440 first visit has no seeded rewards",
+      "pass": true
+    },
+    {
+      "name": "en/1440 no horizontal document overflow",
+      "pass": true
+    },
+    {
+      "name": "en/1440 real labels and controls not baked into background",
+      "pass": true
+    },
+    {
+      "name": "en/1440 invite without credits is disabled",
+      "pass": true
+    },
+    {
+      "name": "en/1440 map information appears",
+      "pass": true
+    },
+    {
+      "name": "en/1440 sourced outline comparison, no fake measured contours",
+      "pass": true
+    },
+    {
+      "name": "en/1440 separate eastern-island facts",
+      "pass": true
+    },
+    {
+      "name": "en/1440 landscape and map are independently switchable",
+      "pass": true
+    },
+    {
+      "name": "en/1440 age gate before placement",
+      "pass": true
+    },
+    {
+      "name": "en/1440 missing age cannot start diagnostic",
+      "pass": true
+    },
+    {
+      "name": "en/1440 low-primary pool is actually simple",
+      "pass": true
+    },
+    {
+      "name": "en/1440 diagnostic does not invent school grade or invitations",
+      "pass": true
+    },
+    {
+      "name": "en/1440 teach before testing",
+      "pass": true
+    },
+    {
+      "name": "en/1440 question and options visible",
+      "pass": true
+    },
+    {
+      "name": "en/1440 wrong answer blocks next and programmatic bypass",
+      "pass": true
+    },
+    {
+      "name": "en/1440 correction does not grant extra XP",
+      "pass": true
+    },
+    {
+      "name": "en/1440 full lesson completes",
+      "pass": true
+    },
+    {
+      "name": "en/1440 learned lights are visible",
+      "pass": true
+    },
+    {
+      "name": "en/1440 reduced motion is saved",
+      "pass": true
+    },
+    {
+      "name": "en/1440 art/source limitations are visible",
+      "pass": true
+    },
+    {
+      "name": "en/1440 translated main page after completion",
+      "pass": true
+    },
+    {
+      "name": "migration banner detects existing records",
+      "pass": true
+    },
+    {
+      "name": "migration requires explicit confirmation",
+      "pass": true
+    },
+    {
+      "name": "full history, XP and grade preserved after copy",
+      "pass": true
+    },
+    {
+      "name": "legacy original is byte-for-byte unchanged",
+      "pass": true
+    },
+    {
+      "name": "real Blob download contains all 1513 records",
+      "pass": true
+    },
+    {
+      "name": "ten visible visitors have one-minute budgets",
+      "pass": true
+    },
+    {
+      "name": "three beacons and 1513 lights are reflected by UI",
+      "pass": true
+    },
+    {
+      "name": "a dialog pauses active visitor time",
+      "pass": true
+    },
+    {
+      "name": "actual canvas export creates PNG",
+      "pass": true
+    },
+    {
+      "name": "native media can play after an explicit click",
+      "pass": true
+    },
+    {
+      "name": "sound-off really pauses and mutes the native player",
+      "pass": true
+    },
+    {
+      "name": "visitors expire without losing credits or lights",
+      "pass": true
+    },
+    {
+      "name": "bird award is recorded once",
+      "pass": true
+    },
+    {
+      "name": "duplicate bird achievement gives no duplicate discovery",
+      "pass": true
+    },
+    {
+      "name": "bird journal remains after animation finishes",
+      "pass": true
+    },
+    {
+      "name": "file picker parses and previews backup before importing",
+      "pass": true
+    },
+    {
+      "name": "file restore in another isolated browser preserves full history",
+      "pass": true
+    },
+    {
+      "name": "heavy user mobile layout remains within viewport",
+      "pass": true
+    },
+    {
+      "name": "language switch preserves the shared new record",
+      "pass": true
+    },
+    {
+      "name": "damaged real record is not replaced by a fresh account",
+      "pass": true
+    },
+    {
+      "name": "damaged raw bytes stay intact",
+      "pass": true
+    },
+    {
+      "name": "unreadable record has an explicit backup-based recovery path",
+      "pass": true
+    },
+    {
+      "name": "recovery keeps exact damaged bytes in a separate snapshot",
+      "pass": true
+    },
+    {
+      "name": "demo is clearly labelled and separate",
+      "pass": true
+    },
+    {
+      "name": "demo data is not written to the real new key",
+      "pass": true
+    },
+    {
+      "name": "late audio completion cannot undo a user mute (controlled media race)",
+      "pass": true
+    },
+    {
+      "name": "stale browser tab enters record protection",
+      "pass": true
+    },
+    {
+      "name": "stale browser tab cannot overwrite the newer record",
+      "pass": true
+    },
+    {
+      "name": "long imported name is not allowed to break mobile layout",
+      "pass": true
+    },
+    {
+      "name": "long name is preserved in data rather than truncated in storage",
+      "pass": true
+    },
+    {
+      "name": "no unhandled browser JavaScript errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "no operational server or tracking request attempts",
+      "pass": true,
+      "detail": []
+    }
+  ],
+  "passed": 158,
+  "failed": 0,
+  "errors": []
+}

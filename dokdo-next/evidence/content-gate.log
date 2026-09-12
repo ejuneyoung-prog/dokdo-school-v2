@@ -1,0 +1,23 @@
+test_all_choices_cannot_share_same_reason (tests.test_content_gate.ContentGate.test_all_choices_cannot_share_same_reason) ... ok
+test_country_must_be_on_source_record (tests.test_content_gate.ContentGate.test_country_must_be_on_source_record) ... ok
+test_deterministic_compilation (tests.test_content_gate.ContentGate.test_deterministic_compilation) ... ok
+test_duplicate_option_ids_fail (tests.test_content_gate.ContentGate.test_duplicate_option_ids_fail) ... ok
+test_duplicate_question_ids_fail (tests.test_content_gate.ContentGate.test_duplicate_question_ids_fail) ... ok
+test_every_compiled_choice_matches_its_authored_feedback (tests.test_content_gate.ContentGate.test_every_compiled_choice_matches_its_authored_feedback) ... ok
+test_generic_family_fact_cannot_silently_replace_reason (tests.test_content_gate.ContentGate.test_generic_family_fact_cannot_silently_replace_reason) ... ok
+test_inactive_id_cannot_return (tests.test_content_gate.ContentGate.test_inactive_id_cannot_return) ... ok
+test_incomplete_route_cannot_fallback_to_old_bank (tests.test_content_gate.ContentGate.test_incomplete_route_cannot_fallback_to_old_bank) ... ok
+test_invisible_map_material_cannot_be_removed (tests.test_content_gate.ContentGate.test_invisible_map_material_cannot_be_removed) ... ok
+test_japanese_historic_actor_is_not_modern_publisher (tests.test_content_gate.ContentGate.test_japanese_historic_actor_is_not_modern_publisher) ... ok
+test_missing_correct_id_fails (tests.test_content_gate.ContentGate.test_missing_correct_id_fails) ... ok
+test_missing_english_reason_fails (tests.test_content_gate.ContentGate.test_missing_english_reason_fails) ... ok
+test_missing_evidence_blocks_even_easy_question (tests.test_content_gate.ContentGate.test_missing_evidence_blocks_even_easy_question) ... ok
+test_missing_reason_does_not_fall_back_to_fact (tests.test_content_gate.ContentGate.test_missing_reason_does_not_fall_back_to_fact) ... ok
+test_precise_source_locator_required (tests.test_content_gate.ContentGate.test_precise_source_locator_required) ... ok
+test_table_reference_requires_table_without_flag (tests.test_content_gate.ContentGate.test_table_reference_requires_table_without_flag) ... ok
+test_valid_authored_set (tests.test_content_gate.ContentGate.test_valid_authored_set) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.731s
+
+OK

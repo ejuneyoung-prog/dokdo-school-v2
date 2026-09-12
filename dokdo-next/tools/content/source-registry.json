@@ -1,0 +1,466 @@
+{
+  "location": {
+    "title": "대한민국 외교부 · 독도의 구성 및 위치",
+    "url": "https://dokdo.mofa.go.kr/kor/introduce/location.jsp",
+    "locator": "두 큰 섬·부속 도서 / 높이·면적 / 울릉도·오키섬 거리",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Foreign Affairs · Composition and location",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "현재 공개된 기관 안내; 조사 시기·범위의 한계를 유지",
+      "en": "Published institutional information; observation dates and scope retained"
+    }
+  },
+  "geology": {
+    "title": "대한민국 한국해양과학기술원 · 독도 지형 및 지질",
+    "url": "https://www.dokdo.re.kr/home/cms/cmsCont.do?cntnts_sn=66",
+    "locator": "해저 화산의 형성 / 해안 침식 지형 / 물골 / 지형 변화",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "Republic of Korea, KIOST · Dokdo geology and landforms",
+    "verificationAccess": "official-indexed-text; live-page access limited",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "현재 공개된 기관 안내; 조사 시기·범위의 한계를 유지",
+      "en": "Published institutional information; observation dates and scope retained"
+    }
+  },
+  "nature": {
+    "title": "대한민국 외교부 · 독도의 자연환경",
+    "url": "https://dokdo.mofa.go.kr/kor/introduce/nature.jsp",
+    "locator": "독도 식물·조류·해양생물 / 철새 이동경로의 휴식처",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Foreign Affairs · Natural environment",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "현재 공개된 기관 안내; 조사 시기·범위의 한계를 유지",
+      "en": "Published institutional information; observation dates and scope retained"
+    }
+  },
+  "forest": {
+    "title": "대한민국 한국해양과학기술원 · 독도 암반생태계",
+    "url": "https://www.dokdo.re.kr/home/cms/cmsCont.do?cntnts_sn=87",
+    "locator": "감태·대황 해조숲 / 바위틈 생물 / 장기 관찰",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "Republic of Korea, KIOST · Rocky marine ecosystem",
+    "verificationAccess": "official-indexed-text; live-page access limited",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "현재 공개된 기관 안내; 조사 시기·범위의 한계를 유지",
+      "en": "Published institutional information; observation dates and scope retained"
+    }
+  },
+  "facility": {
+    "title": "대한민국 외교부 · 독도 주요시설물",
+    "url": "https://dokdo.mofa.go.kr/kor/introduce/facility.jsp",
+    "locator": "서도 주민숙소 / 동도 접안시설·등대·경비대 / 담수시설",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Foreign Affairs · Facilities",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "현재 공개된 기관 안내; 조사 시기·범위의 한계를 유지",
+      "en": "Published institutional information; observation dates and scope retained"
+    }
+  },
+  "visit": {
+    "title": "대한민국 외교부 · 주민 및 입도 안내",
+    "url": "https://dokdo.mofa.go.kr/kor/introduce/residence.jsp",
+    "locator": "입도 유의사항·동도 선착장 관람 / 2026년 7월 기준 표기. 실제 방문 전 최신 안내 확인",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Foreign Affairs · Residents and visitor access",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "현재 공개된 기관 안내; 조사 시기·범위의 한계를 유지",
+      "en": "Published institutional information; observation dates and scope retained"
+    }
+  },
+  "sejong": {
+    "title": "대한민국 외교부 자료실 · 세종실록 지리지(1454)",
+    "url": "https://dokdo.mofa.go.kr/kor/pds/part06_view02.jsp",
+    "locator": "우산·무릉과 맑은 날의 가시성; 괄호 안 현대 지명은 외교부 해석",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Foreign Affairs · Sejong geographical record (1454)",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "originalCreator": {
+      "ko": "조선 · 『세종실록』 지리지",
+      "en": "Joseon · geographical appendix to the Annals of Sejong"
+    },
+    "role": {
+      "ko": "역사 원문·역문과 현대 대한민국 기관의 해설을 구분",
+      "en": "Historical text/translation distinguished from modern ROK commentary"
+    }
+  },
+  "an": {
+    "title": "대한민국 외교부 · 안용복의 활동과 기록",
+    "url": "https://dokdo.mofa.go.kr/kor/include/print_faq.jsp?class_faq=q5",
+    "locator": "1693년과 1696년 / 숙종실록과 오키섬 조사 기록",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Foreign Affairs · An Yong-bok and historical records",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "현재 공개된 기관 안내; 조사 시기·범위의 한계를 유지",
+      "en": "Published institutional information; observation dates and scope retained"
+    }
+  },
+  "timeline": {
+    "title": "대한민국 외교부 · 독도 연표",
+    "url": "https://dokdo.mofa.go.kr/m/kor/dokdo/reason_list.jsp",
+    "locator": "1694 수토 / 1696년 1월 금지령·5월 도일 / 1900·1905·1906 순서",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Foreign Affairs · Dokdo timeline",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "현재 공개된 기관 안내; 조사 시기·범위의 한계를 유지",
+      "en": "Published institutional information; observation dates and scope retained"
+    }
+  },
+  "decree": {
+    "title": "대한민국 외교부 자료실 · 대한제국 칙령 제41호",
+    "url": "https://dokdo.mofa.go.kr/kor/pds/part02_view02.jsp",
+    "locator": "1900.10.25 / 제1조 울도·군수 / 제2조 울릉전도·죽도·석도",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Foreign Affairs · Decree No. 41 (1900)",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "originalCreator": {
+      "ko": "1900년 대한제국 · 고종 황제의 칙령",
+      "en": "Korean Empire · imperial decree, 1900"
+    },
+    "role": {
+      "ko": "역사 원문·역문과 현대 대한민국 기관의 해설을 구분",
+      "en": "Historical text/translation distinguished from modern ROK commentary"
+    }
+  },
+  "gazette": {
+    "title": "대한민국 외교부 자료실 · 관보(1900.10.27)",
+    "url": "https://dokdo.mofa.go.kr/kor/pds/part02_view03.jsp",
+    "locator": "관보 게재 날짜와 칙령 날짜의 구분",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Foreign Affairs · Government gazette (1900)",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "originalCreator": {
+      "ko": "1900년 대한제국 관보",
+      "en": "Korean Empire government gazette, 1900"
+    },
+    "role": {
+      "ko": "역사 원문·역문과 현대 대한민국 기관의 해설을 구분",
+      "en": "Historical text/translation distinguished from modern ROK commentary"
+    }
+  },
+  "petition": {
+    "title": "대한민국 외교부 자료실 · 의정부 청의서(1900.10.22)",
+    "url": "https://dokdo.mofa.go.kr/kor/pds/part02_view01.jsp",
+    "locator": "행정 개편 제안과 칙령안",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Foreign Affairs · Reform petition (1900)",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "originalCreator": {
+      "ko": "1900년 대한제국의 행정 개편 청의서",
+      "en": "Korean Empire administrative reform petition, 1900"
+    },
+    "role": {
+      "ko": "역사 원문·역문과 현대 대한민국 기관의 해설을 구분",
+      "en": "Historical text/translation distinguished from modern ROK commentary"
+    }
+  },
+  "shim": {
+    "title": "대한민국 외교부 자료실 · 심흥택 보고서(1906)",
+    "url": "https://dokdo.mofa.go.kr/kor/pds/part02_view04.jsp",
+    "locator": "본군 소속 독도 / 일본 관리 발언의 인용 / 보고 전달",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Foreign Affairs · Shim Heung-taek report (1906)",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "originalCreator": {
+      "ko": "1906년 대한제국 울도군수 심흥택의 보고",
+      "en": "Report by Korean Empire Uldo magistrate Shim Heung-taek, 1906"
+    },
+    "role": {
+      "ko": "역사 원문·역문과 현대 대한민국 기관의 해설을 구분",
+      "en": "Historical text/translation distinguished from modern ROK commentary"
+    }
+  },
+  "order": {
+    "title": "대한민국 외교부 자료실 · 지령 제3호(1906.5.10)",
+    "url": "https://dokdo.mofa.go.kr/kor/pds/part02_view05.jsp",
+    "locator": "일본 주장 부인과 형편·행동 재조사 지시",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Foreign Affairs · Directive No. 3 (1906)",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "originalCreator": {
+      "ko": "1906년 대한제국 지령 제3호",
+      "en": "Korean Empire Directive No. 3, 1906"
+    },
+    "role": {
+      "ko": "역사 원문·역문과 현대 대한민국 기관의 해설을 구분",
+      "en": "Historical text/translation distinguished from modern ROK commentary"
+    }
+  },
+  "dajokan": {
+    "title": "대한민국 외교부 자료실 · 태정관지령(1877)",
+    "url": "https://dokdo.mofa.go.kr/kor/pds/part05_view03.jsp",
+    "locator": "행정 질의·지령, 다케시마 외 일도; 현대 지명 식별은 외교부 해설",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Foreign Affairs · Dajokan directive (1877)",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "originalCreator": {
+      "ko": "1877년 일본 태정관; 질의는 일본 내무성",
+      "en": "Japan’s Dajokan; inquiry from the Home Ministry, 1877"
+    },
+    "role": {
+      "ko": "역사 원문·역문과 현대 대한민국 기관의 해설을 구분",
+      "en": "Historical text/translation distinguished from modern ROK commentary"
+    }
+  },
+  "dajokanmap": {
+    "title": "대한민국 외교부 · 태정관지령과 기죽도약도",
+    "url": "https://dokdo.mofa.go.kr/kor/include/print_faq.jsp?class_faq=q7",
+    "locator": "첨부 지도와 문서의 지명 대응",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Foreign Affairs · Commentary on the attached map",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "originalCreator": {
+      "ko": "1877년 일본 내무성 품의서 관련 첨부 지도",
+      "en": "Map attached to Japanese Home Ministry papers, 1877"
+    },
+    "role": {
+      "ko": "역사 원문·역문과 현대 대한민국 기관의 해설을 구분",
+      "en": "Historical text/translation distinguished from modern ROK commentary"
+    }
+  },
+  "arch": {
+    "title": "대한민국 한국관광공사 · 독립문바위",
+    "url": "https://korean.visitkorea.or.kr/detail/ms_detail.do?cotid=0fe4eeb6-3f6a-48b1-ab75-c8d4ab6b43be",
+    "locator": "동도 해식아치의 형태와 형성",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "Republic of Korea, Korea Tourism Organization · Dongnimmun Rock",
+    "verificationAccess": "official-indexed-text; live-page access limited",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "현재 공개된 기관 안내; 조사 시기·범위의 한계를 유지",
+      "en": "Published institutional information; observation dates and scope retained"
+    }
+  },
+  "cave": {
+    "title": "대한민국 한국관광공사 · 천장굴",
+    "url": "https://korean.visitkorea.or.kr/detail/ms_detail.do?cotid=21978541-1e2d-4dd8-83fd-92ce4f55dec6",
+    "locator": "동도 중앙의 우물 모양 함몰 지형",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "Republic of Korea, Korea Tourism Organization · Cheonjang Cave",
+    "verificationAccess": "official-indexed-text; live-page access limited",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "현재 공개된 기관 안내; 조사 시기·범위의 한계를 유지",
+      "en": "Published institutional information; observation dates and scope retained"
+    }
+  },
+  "photos": {
+    "title": "대한민국 전북교육청 · 독도 사진 자료",
+    "url": "https://www.jbe.go.kr/dokdo/assets/sub/picture.html",
+    "locator": "두 섬·선착장·등대로 가는 길·바위의 사진 설명; 사진 파일은 재배포하지 않음",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "Republic of Korea, Jeonbuk State Office of Education · Dokdo photographs",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "현재 공개된 기관 안내; 조사 시기·범위의 한계를 유지",
+      "en": "Published institutional information; observation dates and scope retained"
+    }
+  },
+  "reserve": {
+    "title": "대한민국 국가유산청 · 독도 천연보호구역",
+    "url": "https://www.heritage.go.kr/heri/cul/culSelectDetail.do?VdkVgwKey=16%2C03360000%2C37&pageNo=1_1_2_0",
+    "locator": "해안지형·조류 번식지·식생 보호; 지정 날짜를 묻는 문항은 제외",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "Republic of Korea, Korea Heritage Service · Dokdo Natural Reserve",
+    "verificationAccess": "official-indexed-text; live-page access limited",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "현재 공개된 기관 안내; 조사 시기·범위의 한계를 유지",
+      "en": "Published institutional information; observation dates and scope retained"
+    }
+  },
+  "gangchi": {
+    "title": "대한민국 해양수산부 · 독도 강치 연구 발표(2022)",
+    "url": "https://www.mof.go.kr/doc/ko/selectDoc.do?bbsSeq=10&docSeq=45126&menuSeq=971",
+    "locator": "포획 자료 기반 개체군 추정과 남획의 영향; 모델과 직접 관측 구분",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Oceans and Fisheries · Sea lion study release (2022)",
+    "verificationAccess": "official-indexed-text; live-page access limited",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "현재 공개된 기관 안내; 조사 시기·범위의 한계를 유지",
+      "en": "Published institutional information; observation dates and scope retained"
+    }
+  },
+  "effect": {
+    "title": "대한민국 한국해양과학기술원 · 독도 섬효과",
+    "url": "https://www.dokdo.re.kr/home/cms/cmsCont.do?cntnts_sn=82",
+    "locator": "난류·한류 혼합 / 영양염의 상층 공급 / 식물플랑크톤과 성육장 기능",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "Republic of Korea, KIOST · Dokdo island effect",
+    "verificationAccess": "official-indexed-text; live-page access limited",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "현재 공개된 기관 안내; 조사 시기·범위의 한계를 유지",
+      "en": "Published institutional information; observation dates and scope retained"
+    }
+  },
+  "gangchi-paper": {
+    "title": "국제 학술지 JMSE · Lee 외 강치 개체군 연구(2022)",
+    "url": "https://www.mdpi.com/2077-1312/10/2/271",
+    "locator": "Abstract 및 Discussion / 포획 압력·모델 가정과 환경 변화 미포함의 한계; CC BY 4.0",
+    "checked": "2026-09-12",
+    "publisherCountry": "international-journal",
+    "titleEn": "Lee and colleagues (2022) · Sea lion population modelling, JMSE",
+    "verificationAccess": "official-indexed-text; live-page access limited",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "동료심사 논문의 연구 모형·가정 설명",
+      "en": "Research-model methods and assumptions in a journal article"
+    }
+  },
+  "names": {
+    "title": "대한민국 한국해양과학기술원 · 독도의 지명",
+    "url": "https://www.dokdo.re.kr/home/cms/cmsCont.do?cntnts_sn=65",
+    "locator": "천장굴·독립문바위·숫돌바위·가제바위·탕건봉의 지명 유래; 지도용 정확한 좌표로 사용하지 않음",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "Republic of Korea, KIOST · Dokdo place names",
+    "verificationAccess": "official-indexed-text; live-page access limited",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "현재 공개된 기관 안내; 조사 시기·범위의 한계를 유지",
+      "en": "Published institutional information; observation dates and scope retained"
+    }
+  },
+  "sutdol": {
+    "title": "대한민국 한국관광공사 · 숫돌바위",
+    "url": "https://korean.visitkorea.or.kr/detail/ms_detail.do?cotid=603167d6-1056-43c1-8a3d-c8640dd25938",
+    "locator": "동도 선착장 근처 / 숫돌과 비슷한 암질 / 수평 주상절리",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "Republic of Korea, Korea Tourism Organization · Sutdol Rock",
+    "verificationAccess": "official-indexed-text; live-page access limited",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "현재 공개된 기관 안내; 조사 시기·범위의 한계를 유지",
+      "en": "Published institutional information; observation dates and scope retained"
+    }
+  },
+  "address": {
+    "title": "대한민국 해양수산부 · 독도의 주소와 위치",
+    "url": "https://www.mof.go.kr/doc/ko/selectDoc.do?bbsSeq=27&docSeq=20937&menuSeq=929",
+    "locator": "동도·서도의 도로명 주소와 위치; 2018년 등록 자료, 2026-09-11 대조",
+    "checked": "2026-09-12",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Oceans and Fisheries · Dokdo addresses and location",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "현재 공개된 기관 안내; 조사 시기·범위의 한계를 유지",
+      "en": "Published institutional information; observation dates and scope retained"
+    }
+  },
+  "ban1696": {
+    "title": "대한민국 외교부 · 울릉도 도해금지령(1696)",
+    "url": "https://dokdo.mofa.go.kr/kor/pds/part05_view06.jsp",
+    "locator": "1696년 금지령 역문, 다케시마(울릉도)로의 도항 금지",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Foreign Affairs · Ulleungdo voyage prohibition (1696)",
+    "checked": "2026-09-12",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "originalCreator": {
+      "ko": "1696년 일본 에도 막부",
+      "en": "Japan’s Edo shogunate, 1696"
+    },
+    "role": {
+      "ko": "역사 원문·역문과 현대 대한민국 기관의 해설을 구분",
+      "en": "Historical text/translation distinguished from modern ROK commentary"
+    }
+  },
+  "dajokan-analysis": {
+    "title": "대한민국 외교부 · 태정관지령과 기죽도약도(1877)",
+    "url": "https://dokdo.mofa.go.kr/kor/pds/part06_view09.jsp",
+    "locator": "지령 배경, 첨부 지도, 외 1도=독도 해설과 역문",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Foreign Affairs · Dajokan directive and attached map",
+    "checked": "2026-09-12",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "originalCreator": {
+      "ko": "1877년 일본 태정관 및 내무성 관련 문서·첨부 지도",
+      "en": "Japanese Dajokan/Home Ministry records and attached map, 1877"
+    },
+    "role": {
+      "ko": "역사 원문·역문과 현대 대한민국 기관의 해설을 구분",
+      "en": "Historical text/translation distinguished from modern ROK commentary"
+    }
+  },
+  "decree-analysis": {
+    "title": "대한민국 외교부 · 칙령 제41호와 독도 관할 해설",
+    "url": "https://dokdo.mofa.go.kr/kor/include/print_faq.jsp?class_faq=q8",
+    "locator": "제2조 석도(독도)의 울도군 관할 설명; 원문과 현대 해설 구분",
+    "publisherCountry": "대한민국",
+    "titleEn": "ROK Ministry of Foreign Affairs · Decree No. 41 and jurisdiction",
+    "checked": "2026-09-12",
+    "verificationAccess": "official-page text or official indexed text",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "originalCreator": {
+      "ko": "1900년 대한제국 칙령 제41호",
+      "en": "Korean Empire Decree No. 41, 1900"
+    },
+    "role": {
+      "ko": "역사 원문·역문과 현대 대한민국 기관의 해설을 구분",
+      "en": "Historical text/translation distinguished from modern ROK commentary"
+    }
+  },
+  "size": {
+    "title": "대한민국 한국해양과학기술원 · 독도 위치 및 규모",
+    "url": "https://www.dokdo.re.kr/home/cms/cmsCont.do?cntnts_sn=64",
+    "locator": "동도 73,297㎡ / 서도 88,740㎡ / 부속 도서 25,517㎡ / 전체 187,554㎡",
+    "publisherCountry": "대한민국",
+    "titleEn": "Republic of Korea, KIOST · Dokdo location and dimensions",
+    "checked": "2026-09-12",
+    "verificationAccess": "official-indexed-text; live-page access limited",
+    "reviewStatus": "source-compared-by-author; independent-review-pending",
+    "role": {
+      "ko": "현재 공개된 기관 안내; 조사 시기·범위의 한계를 유지",
+      "en": "Published institutional information; observation dates and scope retained"
+    }
+  }
+}

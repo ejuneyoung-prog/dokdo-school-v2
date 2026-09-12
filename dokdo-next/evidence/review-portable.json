@@ -1,0 +1,47 @@
+{
+  "checks": [
+    {
+      "name": "240 items are embedded",
+      "pass": true
+    },
+    {
+      "name": "winter question accessible directly",
+      "pass": true
+    },
+    {
+      "name": "four comparable choices",
+      "pass": true
+    },
+    {
+      "name": "four individual explanations",
+      "pass": true
+    },
+    {
+      "name": "source separated below choices",
+      "pass": true
+    },
+    {
+      "name": "country included in source",
+      "pass": true
+    },
+    {
+      "name": "English version exists",
+      "pass": true
+    },
+    {
+      "name": "historical question accessible",
+      "pass": true
+    },
+    {
+      "name": "no horizontal mobile overflow",
+      "pass": true
+    },
+    {
+      "name": "no script or storage errors",
+      "pass": true
+    }
+  ],
+  "passed": 10,
+  "failed": 0,
+  "errors": []
+}

@@ -1,0 +1,4270 @@
+[
+  {
+    "id": 920046,
+    "before": {
+      "id": 920046,
+      "replaces": 910046,
+      "unit": 3,
+      "stage": 1,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-formation-time",
+      "conceptId": "formation-time",
+      "sourceIds": [
+        "geology"
+      ],
+      "topic": {
+        "ko": "독도가 만들어진 시간",
+        "en": "Dokdo’s formation through time"
+      },
+      "stem": {
+        "ko": "독도가 바다 위로 드러난 뒤 해안을 계속 바꾼 작용은 무엇인가요?",
+        "en": "Which process kept reshaping Dokdo’s coast after it emerged?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "파도 등에 의한 침식",
+            "en": "Erosion by waves and other agents"
+          },
+          "feedback": {
+            "ko": "바다 위로 나온 뒤에도 파도에 깎이면서 독도의 해안 모양이 변했어요.",
+            "en": "Erosion, including wave action, reshaped the exposed coastline."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "산호가 섬 전체를 덮는 성장",
+            "en": "Coral growth covering the whole island"
+          },
+          "feedback": {
+            "ko": "자료는 독도 모양의 주요 변화를 산호 성장으로 설명하지 않아요.",
+            "en": "The account does not attribute the main reshaping to coral growth."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "강 하구에 모래가 쌓이는 퇴적",
+            "en": "Sand deposition at a river mouth"
+          },
+          "feedback": {
+            "ko": "독도의 지형 변화 설명은 강 하구 삼각주의 형성과 달라요.",
+            "en": "The account of Dokdo differs from formation of a river delta."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "독도는 해저에서 자란 뒤 수면 위로 드러났고, 오랜 시간 침식되며 모습이 달라졌어요.",
+        "en": "Dokdo grew underwater, emerged, and was reshaped by erosion over a long period."
+      },
+      "scope": {
+        "ko": "형성 시기는 연구 자료의 대략적인 추정값이며 정확한 하루를 뜻하지 않아요.",
+        "en": "Formation ages are approximate research estimates, not exact calendar dates."
+      },
+      "goal": {
+        "ko": "독도가 바다 위로 드러난 뒤 해안을 계속 바꾼 작용은 무엇인가요? 정답 대상: 파도 등에 의한 침식",
+        "en": "Which process kept reshaping Dokdo’s coast after it emerged? Answer target: Erosion by waves and other agents"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "geology",
+          "locator": "해저 화산의 형성 / 해안 침식 지형 / 물골 / 지형 변화",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920046,
+      "replaces": 910046,
+      "unit": 3,
+      "stage": 1,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-formation-time",
+      "conceptId": "formation-time",
+      "sourceIds": [
+        "geology"
+      ],
+      "topic": {
+        "ko": "독도가 만들어진 시간",
+        "en": "Dokdo’s formation through time"
+      },
+      "stem": {
+        "ko": "독도가 생긴 뒤 해안을 깎아 온 작용은 무엇인가요?",
+        "en": "What has eroded Dokdo’s coast since the islands formed?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "파도 등에 의한 침식",
+            "en": "Erosion by waves"
+          },
+          "feedback": {
+            "ko": "바다 위로 나온 뒤에도 파도에 깎이면서 독도의 해안 모양이 변했어요.",
+            "en": "Erosion, including wave action, reshaped the exposed coastline."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "산호가 섬을 덮는 성장",
+            "en": "Coral growing over the islands"
+          },
+          "feedback": {
+            "ko": "자료는 독도 모양의 주요 변화를 산호 성장으로 설명하지 않아요.",
+            "en": "The account does not attribute the main reshaping to coral growth."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "강 하구에 모래가 쌓이는 퇴적",
+            "en": "Sand deposited at a river mouth"
+          },
+          "feedback": {
+            "ko": "독도의 지형 변화 설명은 강 하구 삼각주의 형성과 달라요.",
+            "en": "The account of Dokdo differs from formation of a river delta."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "독도는 해저에서 자란 뒤 수면 위로 드러났고, 오랜 시간 침식되며 모습이 달라졌어요.",
+        "en": "Dokdo grew underwater, emerged, and was reshaped by erosion over a long period."
+      },
+      "scope": {
+        "ko": "형성 시기는 연구 자료의 대략적인 추정값이며 정확한 하루를 뜻하지 않아요.",
+        "en": "Formation ages are approximate research estimates, not exact calendar dates."
+      },
+      "goal": {
+        "ko": "독도가 생긴 뒤 해안을 깎아 온 작용은 무엇인가요? 정답 대상: 파도 등에 의한 침식",
+        "en": "What has eroded Dokdo’s coast since the islands formed? Answer target: Erosion by waves"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "geology",
+          "locator": "해저 화산의 형성 / 해안 침식 지형 / 물골 / 지형 변화",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920098,
+    "before": {
+      "id": 920098,
+      "replaces": 910098,
+      "unit": 5,
+      "stage": 2,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-model-evidence",
+      "conceptId": "model-evidence",
+      "sourceIds": [
+        "gangchi-paper",
+        "gangchi"
+      ],
+      "topic": {
+        "ko": "강치 기록과 추정",
+        "en": "Sea lion records and estimates"
+      },
+      "stem": {
+        "ko": "독도 강치의 ‘포획 수’와 ‘전체 개체 수’는 어떻게 다른가요?",
+        "en": "How do “catch count” and “total population” differ for Dokdo sea lions?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "포획 수는 잡힌 수이고, 전체에는 잡히지 않은 개체도 포함돼요",
+            "en": "Catches count hunted animals; the population also includes uncaught ones"
+          },
+          "feedback": {
+            "ko": "잡힌 개체만 기록한 수를 전체 개체 수와 같다고 할 수 없어요.",
+            "en": "A count of captured animals cannot automatically equal the entire population."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "두 수는 항상 같아요",
+            "en": "They are always equal"
+          },
+          "feedback": {
+            "ko": "잡히지 않은 개체가 있을 수 있어 두 수가 같다고 가정할 수 없어요.",
+            "en": "Uncaught animals may exist, so equality cannot be assumed."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "포획 수는 태어난 새끼 수예요",
+            "en": "Catch count is the number of newborns"
+          },
+          "feedback": {
+            "ko": "포획 수는 태어난 수가 아니라 사냥으로 잡힌 수예요.",
+            "en": "Catches count animals taken by hunting, not births."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "과거 강치 개체 수의 모형 추정값은 당시 현장에서 전부 센 값과 구분해야 해요.",
+        "en": "Modelled historical sea lion populations must be distinguished from complete field counts."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "독도 강치의 ‘포획 수’와 ‘전체 개체 수’는 어떻게 다른가요? 정답 대상: 포획 수는 잡힌 수이고, 전체에는 잡히지 않은 개체도 포함돼요",
+        "en": "How do “catch count” and “total population” differ for Dokdo sea lions? Answer target: Catches count hunted animals; the population also includes uncaught ones"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "gangchi-paper",
+          "locator": "Abstract 및 Discussion / 포획 압력·모델 가정과 환경 변화 미포함의 한계; CC BY 4.0",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "gangchi",
+          "locator": "포획 자료 기반 개체군 추정과 남획의 영향; 모델과 직접 관측 구분",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920098,
+      "replaces": 910098,
+      "unit": 5,
+      "stage": 2,
+      "difficulty": 2,
+      "cognitive": 1,
+      "familyId": "dk-model-evidence",
+      "conceptId": "model-evidence",
+      "sourceIds": [
+        "gangchi-paper",
+        "gangchi"
+      ],
+      "topic": {
+        "ko": "강치 기록과 추정",
+        "en": "Sea lion records and estimates"
+      },
+      "stem": {
+        "ko": "독도 강치의 ‘포획 수’는 무엇을 센 값인가요?",
+        "en": "What does a historical Dokdo sea lion catch total count?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "사람에게 잡힌 강치",
+            "en": "Sea lions caught by people"
+          },
+          "feedback": {
+            "ko": "잡힌 개체만 기록한 수를 전체 개체 수와 같다고 할 수 없어요.",
+            "en": "A count of captured animals cannot automatically equal the entire population."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "당시에 살던 강치 전부",
+            "en": "Every sea lion alive at the time"
+          },
+          "feedback": {
+            "ko": "잡히지 않은 개체가 있을 수 있어 두 수가 같다고 가정할 수 없어요.",
+            "en": "Uncaught animals may exist, so equality cannot be assumed."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "그해 태어난 강치",
+            "en": "Sea lions born that year"
+          },
+          "feedback": {
+            "ko": "포획 수는 태어난 수가 아니라 사냥으로 잡힌 수예요.",
+            "en": "Catches count animals taken by hunting, not births."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "과거 강치 개체 수의 모형 추정값은 당시 현장에서 전부 센 값과 구분해야 해요.",
+        "en": "Modelled historical sea lion populations must be distinguished from complete field counts."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "독도 강치의 ‘포획 수’는 무엇을 센 값인가요? 정답 대상: 사람에게 잡힌 강치",
+        "en": "What does a historical Dokdo sea lion catch total count? Answer target: Sea lions caught by people"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "gangchi-paper",
+          "locator": "Abstract 및 Discussion / 포획 압력·모델 가정과 환경 변화 미포함의 한계; CC BY 4.0",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "gangchi",
+          "locator": "포획 자료 기반 개체군 추정과 남획의 영향; 모델과 직접 관측 구분",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920117,
+    "before": {
+      "id": 920117,
+      "replaces": 910117,
+      "unit": 6,
+      "stage": 2,
+      "difficulty": 1,
+      "cognitive": 1,
+      "familyId": "dk-routes",
+      "conceptId": "routes",
+      "sourceIds": [
+        "facility",
+        "photos"
+      ],
+      "topic": {
+        "ko": "선착장에서 시설까지",
+        "en": "From the dock to island facilities"
+      },
+      "stem": {
+        "ko": "동도 선착장에서 위쪽 시설로 이동할 때 이용하는 육상 통로는 무엇인가요?",
+        "en": "What land route connects Dongdo’s dock with facilities higher up?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "섬 위로 이어지는 계단과 길",
+            "en": "Steps and paths ascending the island"
+          },
+          "feedback": {
+            "ko": "사진 자료는 선착장에서 위쪽으로 이어지는 계단과 길을 보여줘요.",
+            "en": "Photographs show steps and paths leading upward from the dock."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "서도로 이어지는 육교",
+            "en": "A footbridge to Seodo"
+          },
+          "feedback": {
+            "ko": "제시된 자료는 두 섬 사이 육교가 아니라 동도 안의 길을 보여줘요.",
+            "en": "The material shows routes within Dongdo, not a bridge between islands."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "수중 터널",
+            "en": "An underwater tunnel"
+          },
+          "feedback": {
+            "ko": "자료에서 이동로는 섬 위 계단과 길로 소개돼요.",
+            "en": "The illustrated route is above ground, using steps and paths."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "동도 선착장과 상부 시설은 다른 장소이며 길과 운반 시설로 연결돼요.",
+        "en": "Dongdo’s dock and upper facilities are distinct locations linked by routes and transport equipment."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "동도 선착장에서 위쪽 시설로 이동할 때 이용하는 육상 통로는 무엇인가요? 정답 대상: 섬 위로 이어지는 계단과 길",
+        "en": "What land route connects Dongdo’s dock with facilities higher up? Answer target: Steps and paths ascending the island"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "facility",
+          "locator": "서도 주민숙소 / 동도 접안시설·등대·경비대 / 담수시설",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "photos",
+          "locator": "두 섬·선착장·등대로 가는 길·바위의 사진 설명; 사진 파일은 재배포하지 않음",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920117,
+      "replaces": 910117,
+      "unit": 6,
+      "stage": 2,
+      "difficulty": 1,
+      "cognitive": 1,
+      "familyId": "dk-routes",
+      "conceptId": "routes",
+      "sourceIds": [
+        "facility",
+        "photos"
+      ],
+      "topic": {
+        "ko": "선착장에서 시설까지",
+        "en": "From the dock to island facilities"
+      },
+      "stem": {
+        "ko": "동도 선착장에서 위쪽 시설로 걸어갈 때 이용하는 길은 무엇인가요?",
+        "en": "What route do people use to walk uphill from Dongdo’s dock?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "계단과 길",
+            "en": "Steps and paths"
+          },
+          "feedback": {
+            "ko": "동도 선착장에서 위쪽 시설로는 계단과 길을 따라 걸어 올라가요.",
+            "en": "Steps and paths lead uphill from Dongdo’s dock."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "화물 운반 케이블",
+            "en": "Cargo cableway"
+          },
+          "feedback": {
+            "ko": "케이블은 짐을 옮기는 시설이에요. 질문은 사람이 걸어가는 계단과 길을 물어요.",
+            "en": "The cableway carries cargo. The question asks about the steps and paths used on foot."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "배가 다니는 항로",
+            "en": "Vessel route"
+          },
+          "feedback": {
+            "ko": "항로는 배가 바다에서 다니는 길이에요. 동도 안에서 걸어 올라가는 길은 계단과 길이에요.",
+            "en": "A vessel route is in the sea. Walking uphill on Dongdo uses steps and paths."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "동도 선착장과 상부 시설은 다른 장소이며 길과 운반 시설로 연결돼요.",
+        "en": "Dongdo’s dock and upper facilities are distinct locations linked by routes and transport equipment."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "동도 선착장에서 위쪽 시설로 걸어갈 때 이용하는 길은 무엇인가요? 정답 대상: 계단과 길",
+        "en": "What route do people use to walk uphill from Dongdo’s dock? Answer target: Steps and paths"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "facility",
+          "locator": "서도 주민숙소 / 동도 접안시설·등대·경비대 / 담수시설",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "photos",
+          "locator": "두 섬·선착장·등대로 가는 길·바위의 사진 설명; 사진 파일은 재배포하지 않음",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920121,
+    "before": {
+      "id": 920121,
+      "replaces": 910121,
+      "unit": 7,
+      "stage": 3,
+      "difficulty": 1,
+      "cognitive": 1,
+      "familyId": "dk-sejong-record",
+      "conceptId": "sejong-record",
+      "sourceIds": [
+        "sejong"
+      ],
+      "topic": {
+        "ko": "세종실록 지리지의 두 섬",
+        "en": "Two islands in the Sejong geographical record"
+      },
+      "stem": {
+        "ko": "조선의 지역을 설명하며 우산과 무릉 두 섬을 기록한 책은 무엇인가요?",
+        "en": "Which Joseon geographical text records the two islands Usan and Mureung?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "『세종실록』 지리지",
+            "en": "The geographical appendix to the Annals of Sejong"
+          },
+          "feedback": {
+            "ko": "이 기록은 조선의 지역 정보를 설명하며 우산·무릉 두 섬을 적고 있어요.",
+            "en": "This geographical record of Joseon includes the two islands Usan and Mureung."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "대한제국 칙령 제41호",
+            "en": "Korean Empire Decree No. 41"
+          },
+          "feedback": {
+            "ko": "칙령 제41호는 1900년의 행정 명령으로 질문의 조선 지리지와 달라요.",
+            "en": "The decree is an administrative order from 1900, not the Joseon geographical text."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "일본 태정관지령",
+            "en": "Japan’s Dajokan directive"
+          },
+          "feedback": {
+            "ko": "태정관지령은 1877년 일본의 행정 문서예요.",
+            "en": "The Dajokan directive is a Japanese administrative document from 1877."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "지리지는 한 나라의 여러 지역과 산·강·섬을 설명한 기록이에요.",
+        "en": "A geographical record describes regions, mountains, rivers and islands."
+      },
+      "takeaway": {
+        "ko": "『세종실록』 지리지의 우산·무릉은 대한민국 외교부 해설에서 독도·울릉도로 풀이돼요.",
+        "en": "ROK Ministry of Foreign Affairs commentary identifies Usan and Mureung in the Sejong geographical record as Dokdo and Ulleungdo."
+      },
+      "scope": {
+        "ko": "옛 지명과 현대 지명의 대응은 대한민국 외교부의 역문·해설을 따랐어요.",
+        "en": "Modern place-name identifications follow the ROK Ministry of Foreign Affairs translation and commentary."
+      },
+      "goal": {
+        "ko": "조선의 지역을 설명하며 우산과 무릉 두 섬을 기록한 책은 무엇인가요? 정답 대상: 『세종실록』 지리지",
+        "en": "Which Joseon geographical text records the two islands Usan and Mureung? Answer target: The geographical appendix to the Annals of Sejong"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "sejong",
+          "locator": "우산·무릉과 맑은 날의 가시성; 괄호 안 현대 지명은 외교부 해석",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920121,
+      "replaces": 910121,
+      "unit": 7,
+      "stage": 3,
+      "difficulty": 1,
+      "cognitive": 1,
+      "familyId": "dk-sejong-record",
+      "conceptId": "sejong-record",
+      "sourceIds": [
+        "sejong"
+      ],
+      "topic": {
+        "ko": "세종실록 지리지의 두 섬",
+        "en": "Two islands in the Sejong geographical record"
+      },
+      "stem": {
+        "ko": "우산·무릉 두 섬을 기록한 조선의 지리 기록은 무엇인가요?",
+        "en": "Which Joseon geographical record describes the islands Usan and Mureung?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "『세종실록』 지리지",
+            "en": "The geographical appendix to the Annals of Sejong"
+          },
+          "feedback": {
+            "ko": "이 기록은 조선의 지역 정보를 설명하며 우산·무릉 두 섬을 적고 있어요.",
+            "en": "This geographical record of Joseon includes the two islands Usan and Mureung."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "대한제국 칙령 제41호",
+            "en": "Korean Empire Decree No. 41"
+          },
+          "feedback": {
+            "ko": "칙령 제41호는 1900년의 행정 명령으로 질문의 조선 지리지와 달라요.",
+            "en": "The decree is an administrative order from 1900, not the Joseon geographical text."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "일본 태정관지령",
+            "en": "Japan’s Dajokan directive"
+          },
+          "feedback": {
+            "ko": "태정관지령은 1877년 일본의 행정 문서예요.",
+            "en": "The Dajokan directive is a Japanese administrative document from 1877."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "지리지는 한 나라의 여러 지역과 산·강·섬을 설명한 기록이에요.",
+        "en": "A geographical record describes regions, mountains, rivers and islands."
+      },
+      "takeaway": {
+        "ko": "『세종실록』 지리지의 우산·무릉은 대한민국 외교부 해설에서 독도·울릉도로 풀이돼요.",
+        "en": "ROK Ministry of Foreign Affairs commentary identifies Usan and Mureung in the Sejong geographical record as Dokdo and Ulleungdo."
+      },
+      "scope": {
+        "ko": "옛 지명과 현대 지명의 대응은 대한민국 외교부의 역문·해설을 따랐어요.",
+        "en": "Modern place-name identifications follow the ROK Ministry of Foreign Affairs translation and commentary."
+      },
+      "goal": {
+        "ko": "우산·무릉 두 섬을 기록한 조선의 지리 기록은 무엇인가요? 정답 대상: 『세종실록』 지리지",
+        "en": "Which Joseon geographical record describes the islands Usan and Mureung? Answer target: The geographical appendix to the Annals of Sejong"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "sejong",
+          "locator": "우산·무릉과 맑은 날의 가시성; 괄호 안 현대 지명은 외교부 해석",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920141,
+    "before": {
+      "id": 920141,
+      "replaces": 910141,
+      "unit": 8,
+      "stage": 3,
+      "difficulty": 1,
+      "cognitive": 1,
+      "familyId": "dk-decree-name",
+      "conceptId": "decree-name",
+      "sourceIds": [
+        "decree"
+      ],
+      "topic": {
+        "ko": "대한제국 칙령 제41호",
+        "en": "Korean Empire Decree No. 41"
+      },
+      "stem": {
+        "ko": "1900년 울릉도를 울도로 바꾸고 행정 체계를 정한 명령은 무엇인가요?",
+        "en": "Which order renamed Ulleungdo as Uldo and reorganised its administration in 1900?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "대한제국 칙령 제41호",
+            "en": "Korean Empire Decree No. 41"
+          },
+          "feedback": {
+            "ko": "칙령 제41호 제1조에 이름과 행정 책임자 변경이 나와요.",
+            "en": "Article 1 of Decree No. 41 records the changes of name and administrative office."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "울릉도 도해금지령",
+            "en": "The Ulleungdo voyage prohibition"
+          },
+          "feedback": {
+            "ko": "도해금지령은 1696년 일본 어민의 울릉도 도항을 금지한 명령이에요.",
+            "en": "The 1696 prohibition concerned Japanese fishermen’s voyages to Ulleungdo."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "태정관지령",
+            "en": "The Dajokan directive"
+          },
+          "feedback": {
+            "ko": "태정관지령은 1877년 일본의 행정 문서이며 1900년 대한제국의 칙령과 달라요.",
+            "en": "The Dajokan directive is a Japanese document from 1877, not this Korean Empire decree."
+          },
+          "id": "c"
+        },
+        {
+          "text": {
+            "ko": "지령 제3호",
+            "en": "Directive No. 3"
+          },
+          "feedback": {
+            "ko": "지령 제3호는 1906년 독도 관련 보고에 대한 대한제국의 대응이에요.",
+            "en": "Directive No. 3 was a Korean Empire response to a Dokdo report in 1906."
+          },
+          "id": "d"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "칙령은 황제가 내리는 명령이에요. 대한제국 칙령 제41호는 1900년에 발표됐어요.",
+        "en": "A decree is an order issued by the emperor. Korean Empire Decree No. 41 dates to 1900."
+      },
+      "takeaway": {
+        "ko": "1900년 대한제국 칙령 제41호는 울릉도를 울도로 바꾸고 행정 체계를 정했어요.",
+        "en": "Korean Empire Decree No. 41 of 1900 renamed Ulleungdo as Uldo and reorganised its administration."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "1900년 울릉도를 울도로 바꾸고 행정 체계를 정한 명령은 무엇인가요? 정답 대상: 대한제국 칙령 제41호",
+        "en": "Which order renamed Ulleungdo as Uldo and reorganised its administration in 1900? Answer target: Korean Empire Decree No. 41"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "decree",
+          "locator": "1900.10.25 / 제1조 울도·군수 / 제2조 울릉전도·죽도·석도",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920141,
+      "replaces": 910141,
+      "unit": 8,
+      "stage": 3,
+      "difficulty": 1,
+      "cognitive": 1,
+      "familyId": "dk-decree-name",
+      "conceptId": "decree-name",
+      "sourceIds": [
+        "decree"
+      ],
+      "topic": {
+        "ko": "대한제국 칙령 제41호",
+        "en": "Korean Empire Decree No. 41"
+      },
+      "stem": {
+        "ko": "1900년 울릉도를 울도로 이름 바꾼 명령은 무엇인가요?",
+        "en": "Which 1900 order renamed Ulleungdo as Uldo?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "대한제국 칙령 제41호",
+            "en": "Korean Empire Decree No. 41"
+          },
+          "feedback": {
+            "ko": "칙령 제41호 제1조에 이름과 행정 책임자 변경이 나와요.",
+            "en": "Article 1 of Decree No. 41 records the changes of name and administrative office."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "울릉도 도해금지령",
+            "en": "The Ulleungdo voyage prohibition"
+          },
+          "feedback": {
+            "ko": "도해금지령은 1696년 일본 어민의 울릉도 도항을 금지한 명령이에요.",
+            "en": "The 1696 prohibition concerned Japanese fishermen’s voyages to Ulleungdo."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "태정관지령",
+            "en": "The Dajokan directive"
+          },
+          "feedback": {
+            "ko": "태정관지령은 1877년 일본의 행정 문서이며 1900년 대한제국의 칙령과 달라요.",
+            "en": "The Dajokan directive is a Japanese document from 1877, not this Korean Empire decree."
+          },
+          "id": "c"
+        },
+        {
+          "text": {
+            "ko": "지령 제3호",
+            "en": "Directive No. 3"
+          },
+          "feedback": {
+            "ko": "지령 제3호는 1906년 독도 관련 보고에 대한 대한제국의 대응이에요.",
+            "en": "Directive No. 3 was a Korean Empire response to a Dokdo report in 1906."
+          },
+          "id": "d"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "칙령은 황제가 내리는 명령이에요. 대한제국 칙령 제41호는 1900년에 발표됐어요.",
+        "en": "A decree is an order issued by the emperor. Korean Empire Decree No. 41 dates to 1900."
+      },
+      "takeaway": {
+        "ko": "1900년 대한제국 칙령 제41호는 울릉도를 울도로 바꾸고 행정 체계를 정했어요.",
+        "en": "Korean Empire Decree No. 41 of 1900 renamed Ulleungdo as Uldo and reorganised its administration."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "1900년 울릉도를 울도로 이름 바꾼 명령은 무엇인가요? 정답 대상: 대한제국 칙령 제41호",
+        "en": "Which 1900 order renamed Ulleungdo as Uldo? Answer target: Korean Empire Decree No. 41"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "decree",
+          "locator": "1900.10.25 / 제1조 울도·군수 / 제2조 울릉전도·죽도·석도",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920154,
+    "before": {
+      "id": 920154,
+      "replaces": 910154,
+      "unit": 8,
+      "stage": 3,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-gazette-date",
+      "conceptId": "gazette-date",
+      "sourceIds": [
+        "decree",
+        "gazette"
+      ],
+      "topic": {
+        "ko": "칙령 날짜와 관보 날짜",
+        "en": "The decree date and gazette date"
+      },
+      "stem": {
+        "ko": "대한제국의 관보는 어떤 내용을 공식적으로 알리는 기록인가요?",
+        "en": "What does the Korean Empire’s government gazette officially publish?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "법령과 정부의 공고",
+            "en": "Laws and government notices"
+          },
+          "feedback": {
+            "ko": "관보는 칙령 등 국가의 공식 내용을 공표하는 기록이에요.",
+            "en": "The gazette publishes official material such as decrees."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "관리의 제안만 모아 황제에게 올린 문서",
+            "en": "Only proposals submitted to the emperor"
+          },
+          "feedback": {
+            "ko": "제안을 올리는 청의서와 공표하는 관보는 역할이 달라요.",
+            "en": "A proposal petition differs from the gazette that publishes official notices."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "현지 관리가 상부에만 보내는 보고",
+            "en": "A local report sent only to higher officials"
+          },
+          "feedback": {
+            "ko": "상황을 보고하는 문서와 공식 공표 매체를 구분해야 해요.",
+            "en": "An internal report differs from an official publication medium."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "칙령 제41호는 1900년 10월 25일자 문서이며 관보에는 10월 27일 실렸어요.",
+        "en": "Decree No. 41 is dated 25 October 1900 and appeared in the gazette on 27 October."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "대한제국의 관보는 어떤 내용을 공식적으로 알리는 기록인가요? 정답 대상: 법령과 정부의 공고",
+        "en": "What does the Korean Empire’s government gazette officially publish? Answer target: Laws and government notices"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "decree",
+          "locator": "1900.10.25 / 제1조 울도·군수 / 제2조 울릉전도·죽도·석도",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "gazette",
+          "locator": "관보 게재 날짜와 칙령 날짜의 구분",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920154,
+      "replaces": 910154,
+      "unit": 8,
+      "stage": 3,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-gazette-date",
+      "conceptId": "gazette-date",
+      "sourceIds": [
+        "decree",
+        "gazette"
+      ],
+      "topic": {
+        "ko": "칙령 날짜와 관보 날짜",
+        "en": "The decree date and gazette date"
+      },
+      "stem": {
+        "ko": "칙령이 실린 대한제국 관보의 역할은 무엇인가요?",
+        "en": "What was the role of the Korean Empire gazette that published the decree?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "결정된 명령을 공식적으로 알림",
+            "en": "Officially announcing an issued order"
+          },
+          "feedback": {
+            "ko": "관보는 칙령 등 국가의 공식 내용을 공표하는 기록이에요.",
+            "en": "The gazette publishes official material such as decrees."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "새 행정 개편안을 상부에 제안",
+            "en": "Submitting a new reform proposal"
+          },
+          "feedback": {
+            "ko": "제안을 올리는 청의서와 공표하는 관보는 역할이 달라요.",
+            "en": "A proposal petition differs from the gazette that publishes official notices."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "현지 상황을 상부에만 보고",
+            "en": "Reporting local events only to a superior"
+          },
+          "feedback": {
+            "ko": "상황을 보고하는 문서와 공식 공표 매체를 구분해야 해요.",
+            "en": "An internal report differs from an official publication medium."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "칙령 제41호는 1900년 10월 25일자 문서이며 관보에는 10월 27일 실렸어요.",
+        "en": "Decree No. 41 is dated 25 October 1900 and appeared in the gazette on 27 October."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "칙령이 실린 대한제국 관보의 역할은 무엇인가요? 정답 대상: 결정된 명령을 공식적으로 알림",
+        "en": "What was the role of the Korean Empire gazette that published the decree? Answer target: Officially announcing an issued order"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "decree",
+          "locator": "1900.10.25 / 제1조 울도·군수 / 제2조 울릉전도·죽도·석도",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "gazette",
+          "locator": "관보 게재 날짜와 칙령 날짜의 구분",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920166,
+    "before": {
+      "id": 920166,
+      "replaces": 910166,
+      "unit": 9,
+      "stage": 3,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-county-affiliation",
+      "conceptId": "county-affiliation",
+      "sourceIds": [
+        "shim"
+      ],
+      "topic": {
+        "ko": "본군 소속 독도",
+        "en": "Dokdo belonging to the county"
+      },
+      "stem": {
+        "ko": "심흥택이 독도를 ‘본군 소속’이라고 쓴 것은 어떤 인식을 보여주나요?",
+        "en": "What understanding does Shim express by calling Dokdo “belonging to this county”?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "독도가 울도군에 속한다는 인식",
+            "en": "That Dokdo belongs to Uldo county"
+          },
+          "feedback": {
+            "ko": "자신이 맡은 군의 섬으로 표현했으므로 울도군 소속이라는 인식이 드러나요.",
+            "en": "He describes Dokdo as an island of his own county."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "독도가 일본 오키섬에 속한다는 인식",
+            "en": "That Dokdo belongs to Japan’s Oki Islands"
+          },
+          "feedback": {
+            "ko": "그것은 보고 작성자의 ‘본군 소속’ 표현과 맞지 않아요.",
+            "en": "That contradicts the author’s description of affiliation with his own county."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "독도의 위치를 전혀 모른다는 인식",
+            "en": "That he has no idea where Dokdo is"
+          },
+          "feedback": {
+            "ko": "해당 표현은 소속을 명시한 것이지 위치를 전혀 모른다는 진술이 아니에요.",
+            "en": "The phrase specifies affiliation rather than expressing total ignorance."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "심흥택 보고의 ‘본군 소속 독도’는 독도를 울도군에 속한 섬으로 인식했음을 보여줘요.",
+        "en": "Shim’s phrase “Dokdo belonging to this county” shows his understanding of Dokdo as part of Uldo county."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "심흥택이 독도를 ‘본군 소속’이라고 쓴 것은 어떤 인식을 보여주나요? 정답 대상: 독도가 울도군에 속한다는 인식",
+        "en": "What understanding does Shim express by calling Dokdo “belonging to this county”? Answer target: That Dokdo belongs to Uldo county"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "shim",
+          "locator": "본군 소속 독도 / 일본 관리 발언의 인용 / 보고 전달",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920166,
+      "replaces": 910166,
+      "unit": 9,
+      "stage": 3,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-county-affiliation",
+      "conceptId": "county-affiliation",
+      "sourceIds": [
+        "shim"
+      ],
+      "topic": {
+        "ko": "본군 소속 독도",
+        "en": "Dokdo belonging to the county"
+      },
+      "stem": {
+        "ko": "심흥택이 ‘본군 소속 독도’라고 쓴 뜻은 무엇인가요?",
+        "en": "What did Shim Heung-taek mean by ‘Dokdo belonging to this county’?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "독도는 울도군에 속한다",
+            "en": "Dokdo belongs to Uldo County"
+          },
+          "feedback": {
+            "ko": "자신이 맡은 군의 섬으로 표현했으므로 울도군 소속이라는 인식이 드러나요.",
+            "en": "He describes Dokdo as an island of his own county."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "독도는 일본 오키군에 속한다",
+            "en": "Dokdo belongs to Japan’s Oki district"
+          },
+          "feedback": {
+            "ko": "그것은 보고 작성자의 ‘본군 소속’ 표현과 맞지 않아요.",
+            "en": "That contradicts the author’s description of affiliation with his own county."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "독도의 소속을 모른다",
+            "en": "Dokdo’s affiliation is unknown"
+          },
+          "feedback": {
+            "ko": "해당 표현은 소속을 명시한 것이지 위치를 전혀 모른다는 진술이 아니에요.",
+            "en": "The phrase specifies affiliation rather than expressing total ignorance."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "심흥택 보고의 ‘본군 소속 독도’는 독도를 울도군에 속한 섬으로 인식했음을 보여줘요.",
+        "en": "Shim’s phrase “Dokdo belonging to this county” shows his understanding of Dokdo as part of Uldo county."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "심흥택이 ‘본군 소속 독도’라고 쓴 뜻은 무엇인가요? 정답 대상: 독도는 울도군에 속한다",
+        "en": "What did Shim Heung-taek mean by ‘Dokdo belonging to this county’? Answer target: Dokdo belongs to Uldo County"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "shim",
+          "locator": "본군 소속 독도 / 일본 관리 발언의 인용 / 보고 전달",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920169,
+    "before": {
+      "id": 920169,
+      "replaces": 910169,
+      "unit": 9,
+      "stage": 3,
+      "difficulty": 1,
+      "cognitive": 1,
+      "familyId": "dk-reported-speech",
+      "conceptId": "reported-speech",
+      "sourceIds": [
+        "shim",
+        "order"
+      ],
+      "topic": {
+        "ko": "보고 속 인용과 작성자",
+        "en": "Quoted claims and the reporting official"
+      },
+      "stem": {
+        "ko": "1906년 심흥택에게 독도가 일본 영토가 되었다고 말한 쪽은 누구인가요?",
+        "en": "Who told Shim in 1906 that Dokdo had become Japanese territory?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "방문한 일본 관리들",
+            "en": "The visiting Japanese officials"
+          },
+          "feedback": {
+            "ko": "보고에는 일본 관리에게 들은 주장으로 적혀 있어요.",
+            "en": "The report presents this as a claim heard from Japanese officials."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "대한제국 황제",
+            "en": "The Korean Empire’s emperor"
+          },
+          "feedback": {
+            "ko": "이 주장은 황제의 명령이 아니라 방문한 일본 관리들의 발언으로 전해져요.",
+            "en": "The claim is reported as the visitors’ statement, not an imperial order."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "울도군수 자신",
+            "en": "The Uldo magistrate himself"
+          },
+          "feedback": {
+            "ko": "심흥택은 남의 주장을 보고한 것이며 자신의 결론으로 승인한 것은 아니에요.",
+            "en": "Shim reports another party’s claim rather than adopting it as his own conclusion."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "심흥택은 독도를 ‘본군 소속’이라고 적은 뒤, 일본 관리들에게 들은 주장을 보고했어요.",
+        "en": "Shim called Dokdo part of his county and reported the claim he heard from visiting Japanese officials."
+      },
+      "takeaway": {
+        "ko": "심흥택 보고에 일본 관리의 주장이 적혀 있어도, 보고자가 그 주장에 동의했다는 뜻은 아니에요.",
+        "en": "A Japanese official’s claim quoted in Shim’s report is not an endorsement by Shim."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "1906년 심흥택에게 독도가 일본 영토가 되었다고 말한 쪽은 누구인가요? 정답 대상: 방문한 일본 관리들",
+        "en": "Who told Shim in 1906 that Dokdo had become Japanese territory? Answer target: The visiting Japanese officials"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "shim",
+          "locator": "본군 소속 독도 / 일본 관리 발언의 인용 / 보고 전달",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "order",
+          "locator": "일본 주장 부인과 형편·행동 재조사 지시",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920169,
+      "replaces": 910169,
+      "unit": 9,
+      "stage": 3,
+      "difficulty": 1,
+      "cognitive": 1,
+      "familyId": "dk-reported-speech",
+      "conceptId": "reported-speech",
+      "sourceIds": [
+        "shim",
+        "order"
+      ],
+      "topic": {
+        "ko": "보고 속 인용과 작성자",
+        "en": "Quoted claims and the reporting official"
+      },
+      "stem": {
+        "ko": "1906년 심흥택에게 독도의 일본 소속을 주장한 쪽은 누구인가요?",
+        "en": "Who told Shim Heung-taek in 1906 that Dokdo belonged to Japan?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "방문한 일본 관리들",
+            "en": "The visiting Japanese officials"
+          },
+          "feedback": {
+            "ko": "보고에는 일본 관리에게 들은 주장으로 적혀 있어요.",
+            "en": "The report presents this as a claim heard from Japanese officials."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "대한제국 황제",
+            "en": "The Korean Empire’s emperor"
+          },
+          "feedback": {
+            "ko": "이 주장은 황제의 명령이 아니라 방문한 일본 관리들의 발언으로 전해져요.",
+            "en": "The claim is reported as the visitors’ statement, not an imperial order."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "울도군수 자신",
+            "en": "The Uldo magistrate himself"
+          },
+          "feedback": {
+            "ko": "심흥택은 남의 주장을 보고한 것이며 자신의 결론으로 승인한 것은 아니에요.",
+            "en": "Shim reports another party’s claim rather than adopting it as his own conclusion."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "심흥택은 독도를 ‘본군 소속’이라고 적은 뒤, 일본 관리들에게 들은 주장을 보고했어요.",
+        "en": "Shim called Dokdo part of his county and reported the claim he heard from visiting Japanese officials."
+      },
+      "takeaway": {
+        "ko": "심흥택 보고에 일본 관리의 주장이 적혀 있어도, 보고자가 그 주장에 동의했다는 뜻은 아니에요.",
+        "en": "A Japanese official’s claim quoted in Shim’s report is not an endorsement by Shim."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "1906년 심흥택에게 독도의 일본 소속을 주장한 쪽은 누구인가요? 정답 대상: 방문한 일본 관리들",
+        "en": "Who told Shim Heung-taek in 1906 that Dokdo belonged to Japan? Answer target: The visiting Japanese officials"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "shim",
+          "locator": "본군 소속 독도 / 일본 관리 발언의 인용 / 보고 전달",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "order",
+          "locator": "일본 주장 부인과 형편·행동 재조사 지시",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920173,
+    "before": {
+      "id": 920173,
+      "replaces": 910173,
+      "unit": 9,
+      "stage": 3,
+      "difficulty": 1,
+      "cognitive": 1,
+      "familyId": "dk-order-response",
+      "conceptId": "order-response",
+      "sourceIds": [
+        "order"
+      ],
+      "topic": {
+        "ko": "1906년 지령 제3호",
+        "en": "Directive No. 3 of 1906"
+      },
+      "stem": {
+        "ko": "1906년 독도에 대한 일본 주장을 부인하고 재조사를 지시한 문서는 무엇인가요?",
+        "en": "Which document rejected Japan’s Dokdo claim and ordered further investigation in 1906?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "지령 제3호",
+            "en": "Directive No. 3"
+          },
+          "feedback": {
+            "ko": "1906년 지령 제3호는 보고를 받은 뒤 주장을 부인하고 조사를 지시했어요.",
+            "en": "Directive No. 3 rejected the claim and requested investigation after receiving the report."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "대한제국 칙령 제41호",
+            "en": "Korean Empire Decree No. 41"
+          },
+          "feedback": {
+            "ko": "칙령 제41호는 1900년 행정 개편 문서예요.",
+            "en": "Decree No. 41 concerns administrative reorganisation in 1900."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "울릉도 도해금지령",
+            "en": "The Ulleungdo voyage prohibition"
+          },
+          "feedback": {
+            "ko": "이는 1696년 일본 에도 막부의 명령으로 이 대응 문서와 달라요.",
+            "en": "That was a 1696 Edo shogunate order, not this response."
+          },
+          "id": "c"
+        },
+        {
+          "text": {
+            "ko": "태정관지령",
+            "en": "The Dajokan directive"
+          },
+          "feedback": {
+            "ko": "태정관지령은 1877년 일본의 문서예요.",
+            "en": "The Dajokan directive is a Japanese document from 1877."
+          },
+          "id": "d"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "1906년 대한제국 지령 제3호는 일본의 독도 주장을 부인하고 상황을 더 조사해 보고하도록 했어요.",
+        "en": "Korean Empire Directive No. 3 of 1906 rejected Japan’s Dokdo claim and ordered further investigation and reporting."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "1906년 독도에 대한 일본 주장을 부인하고 재조사를 지시한 문서는 무엇인가요? 정답 대상: 지령 제3호",
+        "en": "Which document rejected Japan’s Dokdo claim and ordered further investigation in 1906? Answer target: Directive No. 3"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "order",
+          "locator": "일본 주장 부인과 형편·행동 재조사 지시",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920173,
+      "replaces": 910173,
+      "unit": 9,
+      "stage": 3,
+      "difficulty": 1,
+      "cognitive": 1,
+      "familyId": "dk-order-response",
+      "conceptId": "order-response",
+      "sourceIds": [
+        "order"
+      ],
+      "topic": {
+        "ko": "1906년 지령 제3호",
+        "en": "Directive No. 3 of 1906"
+      },
+      "stem": {
+        "ko": "1906년 일본의 독도 주장을 부인한 지령은 무엇인가요?",
+        "en": "Which 1906 directive rejected Japan’s claim to Dokdo?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "지령 제3호",
+            "en": "Directive No. 3"
+          },
+          "feedback": {
+            "ko": "1906년 지령 제3호는 보고를 받은 뒤 주장을 부인하고 조사를 지시했어요.",
+            "en": "Directive No. 3 rejected the claim and requested investigation after receiving the report."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "대한제국 칙령 제41호",
+            "en": "Korean Empire Decree No. 41"
+          },
+          "feedback": {
+            "ko": "칙령 제41호는 1900년 행정 개편 문서예요.",
+            "en": "Decree No. 41 concerns administrative reorganisation in 1900."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "울릉도 도해금지령",
+            "en": "The Ulleungdo voyage prohibition"
+          },
+          "feedback": {
+            "ko": "이는 1696년 일본 에도 막부의 명령으로 이 대응 문서와 달라요.",
+            "en": "That was a 1696 Edo shogunate order, not this response."
+          },
+          "id": "c"
+        },
+        {
+          "text": {
+            "ko": "태정관지령",
+            "en": "The Dajokan directive"
+          },
+          "feedback": {
+            "ko": "태정관지령은 1877년 일본의 문서예요.",
+            "en": "The Dajokan directive is a Japanese document from 1877."
+          },
+          "id": "d"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "1906년 대한제국 지령 제3호는 일본의 독도 주장을 부인하고 상황을 더 조사해 보고하도록 했어요.",
+        "en": "Korean Empire Directive No. 3 of 1906 rejected Japan’s Dokdo claim and ordered further investigation and reporting."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "1906년 일본의 독도 주장을 부인한 지령은 무엇인가요? 정답 대상: 지령 제3호",
+        "en": "Which 1906 directive rejected Japan’s claim to Dokdo? Answer target: Directive No. 3"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "order",
+          "locator": "일본 주장 부인과 형편·행동 재조사 지시",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920178,
+    "before": {
+      "id": 920178,
+      "replaces": 910178,
+      "unit": 9,
+      "stage": 3,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-1900-1906",
+      "conceptId": "1900-1906",
+      "sourceIds": [
+        "decree",
+        "shim",
+        "order"
+      ],
+      "topic": {
+        "ko": "1900년과 1906년을 잇기",
+        "en": "Connecting 1900 and 1906"
+      },
+      "stem": {
+        "ko": "울도 행정 체계를 정한 문서와 독도 상황을 보고한 문서를 순서대로 고르면 무엇인가요?",
+        "en": "Which pair identifies the document organising Uldo and the later report on Dokdo?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "칙령 제41호 → 심흥택 보고",
+            "en": "Decree No. 41 → Shim’s report"
+          },
+          "feedback": {
+            "ko": "행정 개편과 현지 보고라는 서로 다른 역할의 문서예요.",
+            "en": "The documents concern reorganisation and subsequent local reporting."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "심흥택 보고 → 칙령 제41호",
+            "en": "Shim’s report → Decree No. 41"
+          },
+          "feedback": {
+            "ko": "질문이 요구한 역할 순서와 반대예요.",
+            "en": "This reverses the requested order of roles."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "태정관지령 → 울릉도 도해금지령",
+            "en": "Dajokan directive → Ulleungdo voyage prohibition"
+          },
+          "feedback": {
+            "ko": "이 두 일본 문서는 질문의 1900년·1906년 대한제국 문서가 아니에요.",
+            "en": "These Japanese documents are not the Korean Empire records from 1900 and 1906."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "1900년 칙령은 울도 행정을 정했고 1906년 보고와 지령은 독도 관련 상황에 대한 대응을 보여줘요.",
+        "en": "The 1900 decree organised Uldo administration; the 1906 report and directive show responses concerning Dokdo."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "울도 행정 체계를 정한 문서와 독도 상황을 보고한 문서를 순서대로 고르면 무엇인가요? 정답 대상: 칙령 제41호 → 심흥택 보고",
+        "en": "Which pair identifies the document organising Uldo and the later report on Dokdo? Answer target: Decree No. 41 → Shim’s report"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "decree",
+          "locator": "1900.10.25 / 제1조 울도·군수 / 제2조 울릉전도·죽도·석도",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "shim",
+          "locator": "본군 소속 독도 / 일본 관리 발언의 인용 / 보고 전달",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "order",
+          "locator": "일본 주장 부인과 형편·행동 재조사 지시",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920178,
+      "replaces": 910178,
+      "unit": 9,
+      "stage": 3,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-1900-1906",
+      "conceptId": "1900-1906",
+      "sourceIds": [
+        "decree",
+        "shim",
+        "order"
+      ],
+      "topic": {
+        "ko": "1900년과 1906년을 잇기",
+        "en": "Connecting 1900 and 1906"
+      },
+      "stem": {
+        "ko": "울도 행정 개편 뒤 독도 상황을 보고한 문서는 무엇인가요?",
+        "en": "Which document reported events concerning Dokdo after Uldo’s administrative reform?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "심흥택 보고",
+            "en": "Shim Heung-taek’s report"
+          },
+          "feedback": {
+            "ko": "심흥택은 1906년 독도와 관련해 들은 상황을 상부에 보고했어요. 1900년 행정 개편 뒤의 현지 보고에 해당해요.",
+            "en": "Shim reported information about Dokdo in 1906, after the administrative reform of 1900."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "칙령 제41호",
+            "en": "Decree No. 41"
+          },
+          "feedback": {
+            "ko": "칙령 제41호는 앞서 1900년 행정 체계를 정한 명령이에요. 뒤의 현지 보고는 심흥택 보고예요.",
+            "en": "Decree No. 41 is the earlier administrative order of 1900, not the later local report."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "태정관지령",
+            "en": "The Dajokan directive"
+          },
+          "feedback": {
+            "ko": "태정관지령은 1877년 일본의 지시예요. 1906년 울도군수의 현지 보고와는 다른 문서예요.",
+            "en": "The Dajokan directive was a Japanese instruction in 1877, not the 1906 Uldo magistrate’s report."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "1900년 칙령 제41호는 울도의 행정 체계를 정했어요. 그 뒤 1906년에는 현지 상황을 알리는 보고가 나왔어요.",
+        "en": "Decree No. 41 set Uldo’s administrative structure in 1900. A report on local events followed in 1906."
+      },
+      "takeaway": {
+        "ko": "1900년 칙령은 울도 행정을 정했고 1906년 보고와 지령은 독도 관련 상황에 대한 대응을 보여줘요.",
+        "en": "The 1900 decree organised Uldo administration; the 1906 report and directive show responses concerning Dokdo."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "울도 행정 개편 뒤 독도 상황을 보고한 문서는 무엇인가요? 정답 대상: 심흥택 보고",
+        "en": "Which document reported events concerning Dokdo after Uldo’s administrative reform? Answer target: Shim Heung-taek’s report"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "decree",
+          "locator": "1900.10.25 / 제1조 울도·군수 / 제2조 울릉전도·죽도·석도",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "shim",
+          "locator": "본군 소속 독도 / 일본 관리 발언의 인용 / 보고 전달",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "order",
+          "locator": "일본 주장 부인과 형편·행동 재조사 지시",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920201,
+    "before": {
+      "id": 920201,
+      "replaces": 910201,
+      "unit": 11,
+      "stage": 4,
+      "difficulty": 1,
+      "cognitive": 1,
+      "familyId": "dk-dajokan-type",
+      "conceptId": "dajokan-type",
+      "sourceIds": [
+        "dajokan",
+        "dajokan-analysis"
+      ],
+      "topic": {
+        "ko": "1877년 태정관지령",
+        "en": "The Dajokan directive of 1877"
+      },
+      "stem": {
+        "ko": "1877년 일본이 울릉도와 독도를 일본과 관계없는 것으로 알아두라고 지시한 문서는 무엇인가요?",
+        "en": "Which Japanese document of 1877 instructed that Ulleungdo and Dokdo be understood as unrelated to Japan?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "태정관지령",
+            "en": "The Dajokan directive"
+          },
+          "feedback": {
+            "ko": "일본 최고 행정기관 태정관이 내무성에 내린 1877년 지시예요.",
+            "en": "This is the 1877 instruction from Japan’s highest administrative body to its Home Ministry."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "대한제국 칙령 제41호",
+            "en": "Korean Empire Decree No. 41"
+          },
+          "feedback": {
+            "ko": "칙령 제41호는 1900년 대한제국의 울도 행정 개편 명령이에요.",
+            "en": "This is the Korean Empire’s 1900 administrative reorganisation decree."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "울릉도 도해금지령",
+            "en": "The Ulleungdo voyage prohibition"
+          },
+          "feedback": {
+            "ko": "도해금지령은 1696년 일본 어민의 울릉도 도항을 금지한 명령이에요.",
+            "en": "This is the 1696 order prohibiting Japanese fishermen’s voyages to Ulleungdo."
+          },
+          "id": "c"
+        },
+        {
+          "text": {
+            "ko": "지령 제3호",
+            "en": "Directive No. 3"
+          },
+          "feedback": {
+            "ko": "지령 제3호는 1906년 대한제국이 독도 보고에 대응한 문서예요.",
+            "en": "This is the Korean Empire’s 1906 response to the Dokdo report."
+          },
+          "id": "d"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "태정관은 당시 일본의 최고 행정기관이에요. ‘지령’은 상급 기관이 내리는 업무 지시예요.",
+        "en": "The Dajokan was Japan’s highest administrative body at the time. A directive is an instruction from a superior authority."
+      },
+      "takeaway": {
+        "ko": "1877년 일본 태정관은 울릉도와 독도를 일본과 관계없는 것으로 알아두라고 내무성에 지시했어요.",
+        "en": "In 1877 Japan’s Dajokan instructed the Home Ministry to understand Ulleungdo and Dokdo as having no relation to Japan."
+      },
+      "scope": {
+        "ko": "원문은 ‘다케시마 외 1도’예요. 울릉도·독도라는 현대 지명 풀이는 대한민국 외교부가 공개한 역문·첨부 지도 해설을 따랐어요.",
+        "en": "The original wording is “Takeshima and one other island”. Modern names follow ROK MOFA’s published translation and commentary on the attached map."
+      },
+      "goal": {
+        "ko": "1877년 일본이 울릉도와 독도를 일본과 관계없는 것으로 알아두라고 지시한 문서는 무엇인가요? 정답 대상: 태정관지령",
+        "en": "Which Japanese document of 1877 instructed that Ulleungdo and Dokdo be understood as unrelated to Japan? Answer target: The Dajokan directive"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "dajokan",
+          "locator": "행정 질의·지령, 다케시마 외 일도; 현대 지명 식별은 외교부 해설",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "dajokan-analysis",
+          "locator": "지령 배경, 첨부 지도, 외 1도=독도 해설과 역문",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920201,
+      "replaces": 910201,
+      "unit": 11,
+      "stage": 4,
+      "difficulty": 1,
+      "cognitive": 1,
+      "familyId": "dk-dajokan-type",
+      "conceptId": "dajokan-type",
+      "sourceIds": [
+        "dajokan",
+        "dajokan-analysis"
+      ],
+      "topic": {
+        "ko": "1877년 태정관지령",
+        "en": "The Dajokan directive of 1877"
+      },
+      "stem": {
+        "ko": "1877년 일본이 울릉도·독도를 일본과 관계없다고 한 문서는 무엇인가요?",
+        "en": "Which 1877 Japanese document said Ulleungdo and Dokdo had nothing to do with Japan?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "태정관지령",
+            "en": "The Dajokan directive"
+          },
+          "feedback": {
+            "ko": "일본 최고 행정기관 태정관이 내무성에 내린 1877년 지시예요.",
+            "en": "This is the 1877 instruction from Japan’s highest administrative body to its Home Ministry."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "대한제국 칙령 제41호",
+            "en": "Korean Empire Decree No. 41"
+          },
+          "feedback": {
+            "ko": "칙령 제41호는 1900년 대한제국의 울도 행정 개편 명령이에요.",
+            "en": "This is the Korean Empire’s 1900 administrative reorganisation decree."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "울릉도 도해금지령",
+            "en": "The Ulleungdo voyage prohibition"
+          },
+          "feedback": {
+            "ko": "도해금지령은 1696년 일본 어민의 울릉도 도항을 금지한 명령이에요.",
+            "en": "This is the 1696 order prohibiting Japanese fishermen’s voyages to Ulleungdo."
+          },
+          "id": "c"
+        },
+        {
+          "text": {
+            "ko": "지령 제3호",
+            "en": "Directive No. 3"
+          },
+          "feedback": {
+            "ko": "지령 제3호는 1906년 대한제국이 독도 보고에 대응한 문서예요.",
+            "en": "This is the Korean Empire’s 1906 response to the Dokdo report."
+          },
+          "id": "d"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "태정관은 당시 일본의 최고 행정기관이에요. ‘지령’은 상급 기관이 내리는 업무 지시예요.",
+        "en": "The Dajokan was Japan’s highest administrative body at the time. A directive is an instruction from a superior authority."
+      },
+      "takeaway": {
+        "ko": "1877년 일본 태정관은 울릉도와 독도를 일본과 관계없는 것으로 알아두라고 내무성에 지시했어요.",
+        "en": "In 1877 Japan’s Dajokan instructed the Home Ministry to understand Ulleungdo and Dokdo as having no relation to Japan."
+      },
+      "scope": {
+        "ko": "원문은 ‘다케시마 외 1도’예요. 울릉도·독도라는 현대 지명 풀이는 대한민국 외교부가 공개한 역문·첨부 지도 해설을 따랐어요.",
+        "en": "The original wording is “Takeshima and one other island”. Modern names follow ROK MOFA’s published translation and commentary on the attached map."
+      },
+      "goal": {
+        "ko": "1877년 일본이 울릉도·독도를 일본과 관계없다고 한 문서는 무엇인가요? 정답 대상: 태정관지령",
+        "en": "Which 1877 Japanese document said Ulleungdo and Dokdo had nothing to do with Japan? Answer target: The Dajokan directive"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "dajokan",
+          "locator": "행정 질의·지령, 다케시마 외 일도; 현대 지명 식별은 외교부 해설",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "dajokan-analysis",
+          "locator": "지령 배경, 첨부 지도, 외 1도=독도 해설과 역문",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920221,
+    "before": {
+      "id": 920221,
+      "replaces": 910221,
+      "unit": 12,
+      "stage": 4,
+      "difficulty": 1,
+      "cognitive": 1,
+      "familyId": "dk-weather-access",
+      "conceptId": "weather-access",
+      "sourceIds": [
+        "visit"
+      ],
+      "topic": {
+        "ko": "독도 입도와 바다 상태",
+        "en": "Landing on Dokdo and sea conditions"
+      },
+      "stem": {
+        "ko": "독도 배가 선착장에 닿기 어려워지는 바다 상태는 무엇인가요?",
+        "en": "Which sea condition can make docking at Dokdo difficult?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "파도가 높게 이는 상태",
+            "en": "High waves"
+          },
+          "feedback": {
+            "ko": "높은 파도는 선박의 안전한 접안과 하선에 영향을 줄 수 있어요.",
+            "en": "High waves can interfere with safe docking and disembarkation."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "바람이 약하고 파도가 잔잔한 상태",
+            "en": "Light wind and calm waves"
+          },
+          "feedback": {
+            "ko": "이 조건은 높은 파도에 비해 접안에 유리하지만 실제 결정은 운항 안내를 따라요.",
+            "en": "These conditions are more favourable than high waves, though actual decisions follow operator guidance."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "파도가 거의 없는 상태",
+            "en": "Almost no waves"
+          },
+          "feedback": {
+            "ko": "파도가 거의 없다는 것 자체는 높은 파도로 인한 접안 곤란의 원인이 아니에요.",
+            "en": "Almost no wave action is not the high-wave condition described."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "독도 입도 여부는 기상과 바다 상태 등에 따라 달라져, 배표가 있어도 상륙이 보장되지는 않아요.",
+        "en": "Landing on Dokdo depends on weather and sea conditions; a ferry ticket does not guarantee disembarkation."
+      },
+      "scope": {
+        "ko": "실제 방문은 최신 선사·관할 기관 안내를 확인해야 해요. 이 수업은 실시간 운항 안내가 아니에요.",
+        "en": "Actual visits require current operator and authority guidance. This lesson is not live service information."
+      },
+      "goal": {
+        "ko": "독도 배가 선착장에 닿기 어려워지는 바다 상태는 무엇인가요? 정답 대상: 파도가 높게 이는 상태",
+        "en": "Which sea condition can make docking at Dokdo difficult? Answer target: High waves"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "visit",
+          "locator": "입도 유의사항·동도 선착장 관람 / 2026년 7월 기준 표기. 실제 방문 전 최신 안내 확인",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920221,
+      "replaces": 910221,
+      "unit": 12,
+      "stage": 4,
+      "difficulty": 1,
+      "cognitive": 1,
+      "familyId": "dk-weather-access",
+      "conceptId": "weather-access",
+      "sourceIds": [
+        "visit"
+      ],
+      "topic": {
+        "ko": "독도 입도와 바다 상태",
+        "en": "Landing on Dokdo and sea conditions"
+      },
+      "stem": {
+        "ko": "독도 배가 접안하기 어려워지는 바다 상태는 무엇인가요?",
+        "en": "Which sea condition makes docking at Dokdo difficult?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "파도가 높게 이는 상태",
+            "en": "High waves"
+          },
+          "feedback": {
+            "ko": "높은 파도는 선박의 안전한 접안과 하선에 영향을 줄 수 있어요.",
+            "en": "High waves can interfere with safe docking and disembarkation."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "바람이 약하고 수면이 잔잔한 상태",
+            "en": "Light wind and calm water"
+          },
+          "feedback": {
+            "ko": "이 조건은 높은 파도에 비해 접안에 유리하지만 실제 결정은 운항 안내를 따라요.",
+            "en": "These conditions are more favourable than high waves, though actual decisions follow operator guidance."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "파도가 거의 없는 상태",
+            "en": "Almost no waves"
+          },
+          "feedback": {
+            "ko": "파도가 거의 없다는 것 자체는 높은 파도로 인한 접안 곤란의 원인이 아니에요.",
+            "en": "Almost no wave action is not the high-wave condition described."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "독도 입도 여부는 기상과 바다 상태 등에 따라 달라져, 배표가 있어도 상륙이 보장되지는 않아요.",
+        "en": "Landing on Dokdo depends on weather and sea conditions; a ferry ticket does not guarantee disembarkation."
+      },
+      "scope": {
+        "ko": "실제 방문은 최신 선사·관할 기관 안내를 확인해야 해요. 이 수업은 실시간 운항 안내가 아니에요.",
+        "en": "Actual visits require current operator and authority guidance. This lesson is not live service information."
+      },
+      "goal": {
+        "ko": "독도 배가 접안하기 어려워지는 바다 상태는 무엇인가요? 정답 대상: 파도가 높게 이는 상태",
+        "en": "Which sea condition makes docking at Dokdo difficult? Answer target: High waves"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "visit",
+          "locator": "입도 유의사항·동도 선착장 관람 / 2026년 7월 기준 표기. 실제 방문 전 최신 안내 확인",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920234,
+    "before": {
+      "id": 920234,
+      "replaces": 910234,
+      "unit": 12,
+      "stage": 4,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-visiting-scope",
+      "conceptId": "visiting-scope",
+      "sourceIds": [
+        "visit"
+      ],
+      "topic": {
+        "ko": "독도 탐방의 범위",
+        "en": "The scope of an ordinary Dokdo visit"
+      },
+      "stem": {
+        "ko": "독도 배표가 있다는 것과 섬의 모든 구역에 들어갈 수 있다는 것은 같은 뜻인가요?",
+        "en": "Does having a Dokdo ferry ticket mean access to every part of the islands?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "아니요, 관람 구역과 출입 조건은 따로 확인해요",
+            "en": "No; viewing areas and access conditions must be checked separately"
+          },
+          "feedback": {
+            "ko": "승선과 특정 구역 출입은 다른 절차이므로 허가된 범위를 따라야 해요.",
+            "en": "Boarding and area access are distinct; visitors must follow permitted limits."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "네, 표만 있으면 모든 시설에 들어가요",
+            "en": "Yes; a ticket permits entry to every facility"
+          },
+          "feedback": {
+            "ko": "일반 탐방은 지정된 관람 범위가 있으므로 모든 시설 출입이 허용되지는 않아요.",
+            "en": "Ordinary visits have designated limits and do not allow entry everywhere."
+          },
+          "id": "b"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "일반 탐방의 기본 관람 구역은 동도 선착장이며 다른 구역 방문은 별도 안내와 허가를 확인해야 해요.",
+        "en": "Ordinary visits focus on Dongdo’s dock; access to other areas requires checking separate guidance and permissions."
+      },
+      "scope": {
+        "ko": "출입 조건은 바뀔 수 있어 실제 방문 전 최신 안내를 확인해야 해요.",
+        "en": "Access conditions can change; consult current guidance before an actual visit."
+      },
+      "goal": {
+        "ko": "독도 배표가 있다는 것과 섬의 모든 구역에 들어갈 수 있다는 것은 같은 뜻인가요? 정답 대상: 아니요, 관람 구역과 출입 조건은 따로 확인해요",
+        "en": "Does having a Dokdo ferry ticket mean access to every part of the islands? Answer target: No; viewing areas and access conditions must be checked separately"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "visit",
+          "locator": "입도 유의사항·동도 선착장 관람 / 2026년 7월 기준 표기. 실제 방문 전 최신 안내 확인",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920234,
+      "replaces": 910234,
+      "unit": 12,
+      "stage": 4,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-visiting-scope",
+      "conceptId": "visiting-scope",
+      "sourceIds": [
+        "visit"
+      ],
+      "topic": {
+        "ko": "독도 탐방의 범위",
+        "en": "The scope of an ordinary Dokdo visit"
+      },
+      "stem": {
+        "ko": "독도 배표만 있으면 섬의 모든 곳에 들어갈 수 있나요?",
+        "en": "Does a ferry ticket allow entry everywhere on Dokdo?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "아니요, 허용 구역을 확인해야 해요",
+            "en": "No. Check the permitted areas."
+          },
+          "feedback": {
+            "ko": "승선과 특정 구역 출입은 다른 절차이므로 허가된 범위를 따라야 해요.",
+            "en": "Boarding and area access are distinct; visitors must follow permitted limits."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "네, 모든 구역에 들어갈 수 있어요",
+            "en": "Yes. It allows entry to every area."
+          },
+          "feedback": {
+            "ko": "일반 탐방은 지정된 관람 범위가 있으므로 모든 시설 출입이 허용되지는 않아요.",
+            "en": "Ordinary visits have designated limits and do not allow entry everywhere."
+          },
+          "id": "b"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "일반 탐방의 기본 관람 구역은 동도 선착장이며 다른 구역 방문은 별도 안내와 허가를 확인해야 해요.",
+        "en": "Ordinary visits focus on Dongdo’s dock; access to other areas requires checking separate guidance and permissions."
+      },
+      "scope": {
+        "ko": "출입 조건은 바뀔 수 있어 실제 방문 전 최신 안내를 확인해야 해요.",
+        "en": "Access conditions can change; consult current guidance before an actual visit."
+      },
+      "goal": {
+        "ko": "독도 배표만 있으면 섬의 모든 곳에 들어갈 수 있나요? 정답 대상: 아니요, 허용 구역을 확인해야 해요",
+        "en": "Does a ferry ticket allow entry everywhere on Dokdo? Answer target: No. Check the permitted areas."
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "visit",
+          "locator": "입도 유의사항·동도 선착장 관람 / 2026년 7월 기준 표기. 실제 방문 전 최신 안내 확인",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920066,
+    "before": {
+      "id": 920066,
+      "replaces": 910066,
+      "unit": 4,
+      "stage": 2,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-breeding-birds",
+      "conceptId": "breeding-birds",
+      "sourceIds": [
+        "reserve",
+        "nature"
+      ],
+      "topic": {
+        "ko": "독도에서 번식하는 바닷새",
+        "en": "Seabirds breeding on Dokdo"
+      },
+      "stem": {
+        "ko": "‘괭이갈매기가 독도에서 번식한다’는 말은 무엇을 뜻하나요?",
+        "en": "What does it mean that black-tailed gulls breed on Dokdo?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "알을 낳고 새끼를 기른다",
+            "en": "They lay eggs and raise young"
+          },
+          "feedback": {
+            "ko": "번식은 새끼를 낳거나 알에서 부화시켜 다음 세대를 이어가는 일이에요.",
+            "en": "Breeding produces the next generation, including laying eggs and raising chicks."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "먼 길을 가다가 잠깐 쉬기만 한다",
+            "en": "They only rest briefly during migration"
+          },
+          "feedback": {
+            "ko": "잠깐 쉬는 기착과 새끼를 기르는 번식은 다른 활동이에요.",
+            "en": "A brief stopover and breeding are different activities."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "먹이를 찾으러 날기만 한다",
+            "en": "They only fly in search of food"
+          },
+          "feedback": {
+            "ko": "먹이 활동은 번식 중에도 할 수 있지만 번식의 뜻은 새끼를 기르는 것과 연결돼요.",
+            "en": "Feeding may occur during breeding, but does not by itself define breeding."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "괭이갈매기·바다제비·슴새는 독도에서 번식하는 바닷새로 소개돼요.",
+        "en": "Black-tailed gulls, storm petrels and streaked shearwaters are recorded as breeding seabirds on Dokdo."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "‘괭이갈매기가 독도에서 번식한다’는 말은 무엇을 뜻하나요? 정답 대상: 알을 낳고 새끼를 기른다",
+        "en": "What does it mean that black-tailed gulls breed on Dokdo? Answer target: They lay eggs and raise young"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "reserve",
+          "locator": "해안지형·조류 번식지·식생 보호; 지정 날짜를 묻는 문항은 제외",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "nature",
+          "locator": "독도 식물·조류·해양생물 / 철새 이동경로의 휴식처",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920066,
+      "replaces": 910066,
+      "unit": 4,
+      "stage": 2,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-breeding-birds",
+      "conceptId": "breeding-birds",
+      "sourceIds": [
+        "reserve",
+        "nature"
+      ],
+      "topic": {
+        "ko": "독도에서 번식하는 바닷새",
+        "en": "Seabirds breeding on Dokdo"
+      },
+      "stem": {
+        "ko": "괭이갈매기가 독도에서 번식한다는 뜻은 무엇인가요?",
+        "en": "What does it mean that black-tailed gulls breed on Dokdo?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "알을 낳고 새끼를 기른다",
+            "en": "They lay eggs and raise chicks."
+          },
+          "feedback": {
+            "ko": "번식은 새끼를 낳거나 알에서 부화시켜 다음 세대를 이어가는 일이에요.",
+            "en": "Breeding produces the next generation, including laying eggs and raising chicks."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "잠시 쉬었다가 떠나기만 한다",
+            "en": "They only stop to rest and leave."
+          },
+          "feedback": {
+            "ko": "잠깐 쉬는 기착과 새끼를 기르는 번식은 다른 활동이에요.",
+            "en": "A brief stopover and breeding are different activities."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "먹이만 찾고 떠난다",
+            "en": "They only look for food and leave."
+          },
+          "feedback": {
+            "ko": "먹이 활동은 번식 중에도 할 수 있지만 번식의 뜻은 새끼를 기르는 것과 연결돼요.",
+            "en": "Feeding may occur during breeding, but does not by itself define breeding."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "괭이갈매기·바다제비·슴새는 독도에서 번식하는 바닷새로 소개돼요.",
+        "en": "Black-tailed gulls, storm petrels and streaked shearwaters are recorded as breeding seabirds on Dokdo."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "괭이갈매기가 독도에서 번식한다는 뜻은 무엇인가요? 정답 대상: 알을 낳고 새끼를 기른다",
+        "en": "What does it mean that black-tailed gulls breed on Dokdo? Answer target: They lay eggs and raise chicks."
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "reserve",
+          "locator": "해안지형·조류 번식지·식생 보호; 지정 날짜를 묻는 문항은 제외",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "nature",
+          "locator": "독도 식물·조류·해양생물 / 철새 이동경로의 휴식처",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920070,
+    "before": {
+      "id": 920070,
+      "replaces": 910070,
+      "unit": 4,
+      "stage": 2,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-birds-and-seaweed",
+      "conceptId": "birds-and-seaweed",
+      "sourceIds": [
+        "nature",
+        "reserve"
+      ],
+      "topic": {
+        "ko": "바닷새와 바닷말",
+        "en": "Seabirds and seaweeds"
+      },
+      "stem": {
+        "ko": "독도의 괭이갈매기와 미역을 바르게 나눈 것은 무엇인가요?",
+        "en": "Which classification of black-tailed gulls and wakame on Dokdo is correct?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "괭이갈매기: 바닷새 / 미역: 바닷말",
+            "en": "Black-tailed gull: seabird / wakame: seaweed"
+          },
+          "feedback": {
+            "ko": "괭이갈매기는 새이고 미역은 바닷속에서 자라는 해조류예요.",
+            "en": "The gull is a bird; wakame is a seaweed."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "괭이갈매기: 바닷말 / 미역: 바닷새",
+            "en": "Black-tailed gull: seaweed / wakame: seabird"
+          },
+          "feedback": {
+            "ko": "두 생물의 분류를 뒤바꿨어요.",
+            "en": "The classifications have been reversed."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "둘 다 바닷새",
+            "en": "Both are seabirds"
+          },
+          "feedback": {
+            "ko": "미역은 새가 아니라 바닷말이에요.",
+            "en": "Wakame is seaweed, not a bird."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "독도에는 하늘을 나는 바닷새와 바닷속에 자라는 바닷말이 함께 있어요.",
+        "en": "Dokdo supports both seabirds and underwater seaweeds."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "독도의 괭이갈매기와 미역을 바르게 나눈 것은 무엇인가요? 정답 대상: 괭이갈매기: 바닷새 / 미역: 바닷말",
+        "en": "Which classification of black-tailed gulls and wakame on Dokdo is correct? Answer target: Black-tailed gull: seabird / wakame: seaweed"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "nature",
+          "locator": "독도 식물·조류·해양생물 / 철새 이동경로의 휴식처",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "reserve",
+          "locator": "해안지형·조류 번식지·식생 보호; 지정 날짜를 묻는 문항은 제외",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920070,
+      "replaces": 910070,
+      "unit": 4,
+      "stage": 2,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-birds-and-seaweed",
+      "conceptId": "birds-and-seaweed",
+      "sourceIds": [
+        "nature",
+        "reserve"
+      ],
+      "topic": {
+        "ko": "바닷새와 바닷말",
+        "en": "Seabirds and seaweeds"
+      },
+      "stem": {
+        "ko": "독도의 괭이갈매기와 미역을 종류별로 짝지으면 무엇인가요?",
+        "en": "How are Dokdo’s black-tailed gull and wakame classified?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "바닷새 / 바닷말",
+            "en": "Seabird / seaweed"
+          },
+          "feedback": {
+            "ko": "괭이갈매기는 새이고 미역은 바닷속에서 자라는 해조류예요.",
+            "en": "The gull is a bird; wakame is a seaweed."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "바닷말 / 바닷새",
+            "en": "Seaweed / seabird"
+          },
+          "feedback": {
+            "ko": "두 생물의 분류를 뒤바꿨어요.",
+            "en": "The classifications have been reversed."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "바닷새 / 바닷새",
+            "en": "Seabird / seabird"
+          },
+          "feedback": {
+            "ko": "미역은 새가 아니라 바닷말이에요.",
+            "en": "Wakame is seaweed, not a bird."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "독도에는 하늘을 나는 바닷새와 바닷속에 자라는 바닷말이 함께 있어요.",
+        "en": "Dokdo supports both seabirds and underwater seaweeds."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "독도의 괭이갈매기와 미역을 종류별로 짝지으면 무엇인가요? 정답 대상: 바닷새 / 바닷말",
+        "en": "How are Dokdo’s black-tailed gull and wakame classified? Answer target: Seabird / seaweed"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "nature",
+          "locator": "독도 식물·조류·해양생물 / 철새 이동경로의 휴식처",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "reserve",
+          "locator": "해안지형·조류 번식지·식생 보호; 지정 날짜를 묻는 문항은 제외",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920078,
+    "before": {
+      "id": 920078,
+      "replaces": 910078,
+      "unit": 4,
+      "stage": 2,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-reserve-scope",
+      "conceptId": "reserve-scope",
+      "sourceIds": [
+        "reserve",
+        "nature"
+      ],
+      "topic": {
+        "ko": "독도 천연보호구역",
+        "en": "Dokdo Natural Reserve"
+      },
+      "stem": {
+        "ko": "독도 해안 절벽을 보호하는 까닭으로 알맞은 것은 무엇인가요?",
+        "en": "Why is protecting Dokdo’s coastal cliffs important?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "화산섬의 형성과 침식 흔적을 보여 주기 때문",
+            "en": "They show volcanic formation and erosion"
+          },
+          "feedback": {
+            "ko": "독도 절벽의 암석과 형태에서 섬이 만들어지고 깎인 과정을 살펴볼 수 있어요.",
+            "en": "Rock and cliff forms help reveal the island’s construction and erosion."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "강 하구의 모래 삼각주가 보존되어 있기 때문",
+            "en": "They preserve a river-mouth sand delta"
+          },
+          "feedback": {
+            "ko": "독도 절벽은 해저 화산에서 기원한 암석 지형이며 강 하구 삼각주와 달라요.",
+            "en": "Dokdo’s rocky volcanic cliffs are not a river-mouth delta."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "빙하가 만든 계곡만 남아 있기 때문",
+            "en": "They preserve only glacial valleys"
+          },
+          "feedback": {
+            "ko": "공식 지형 설명은 화산과 해안 침식이며 빙하 계곡만 남았다고 하지 않아요.",
+            "en": "The relevant account concerns volcanism and coastal erosion, not only glacial valleys."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "독도는 바닷새의 번식지뿐 아니라 식물과 화산 지형 등의 가치도 함께 보호하는 곳이에요.",
+        "en": "Dokdo conservation includes breeding seabirds, plants and volcanic landforms."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "독도 해안 절벽을 보호하는 까닭으로 알맞은 것은 무엇인가요? 정답 대상: 화산섬의 형성과 침식 흔적을 보여 주기 때문",
+        "en": "Why is protecting Dokdo’s coastal cliffs important? Answer target: They show volcanic formation and erosion"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "reserve",
+          "locator": "해안지형·조류 번식지·식생 보호; 지정 날짜를 묻는 문항은 제외",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "nature",
+          "locator": "독도 식물·조류·해양생물 / 철새 이동경로의 휴식처",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920078,
+      "replaces": 910078,
+      "unit": 4,
+      "stage": 2,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-reserve-scope",
+      "conceptId": "reserve-scope",
+      "sourceIds": [
+        "reserve",
+        "nature"
+      ],
+      "topic": {
+        "ko": "독도 천연보호구역",
+        "en": "Dokdo Natural Reserve"
+      },
+      "stem": {
+        "ko": "독도 해안 절벽에 남아 있는 자연의 흔적은 무엇인가요?",
+        "en": "What natural processes are recorded in Dokdo’s coastal cliffs?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "화산 형성과 침식",
+            "en": "Volcanic formation and erosion"
+          },
+          "feedback": {
+            "ko": "독도 절벽의 암석과 형태에서 섬이 만들어지고 깎인 과정을 살펴볼 수 있어요.",
+            "en": "Rock and cliff forms help reveal the island’s construction and erosion."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "빙하가 만든 계곡",
+            "en": "A valley carved by a glacier"
+          },
+          "feedback": {
+            "ko": "독도 절벽은 해저 화산에서 기원한 암석 지형이며 강 하구 삼각주와 달라요.",
+            "en": "Dokdo’s rocky volcanic cliffs are not a river-mouth delta."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "강 하구의 모래 퇴적",
+            "en": "River-mouth sand deposition"
+          },
+          "feedback": {
+            "ko": "공식 지형 설명은 화산과 해안 침식이며 빙하 계곡만 남았다고 하지 않아요.",
+            "en": "The relevant account concerns volcanism and coastal erosion, not only glacial valleys."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "독도는 바닷새의 번식지뿐 아니라 식물과 화산 지형 등의 가치도 함께 보호하는 곳이에요.",
+        "en": "Dokdo conservation includes breeding seabirds, plants and volcanic landforms."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "독도 해안 절벽에 남아 있는 자연의 흔적은 무엇인가요? 정답 대상: 화산 형성과 침식",
+        "en": "What natural processes are recorded in Dokdo’s coastal cliffs? Answer target: Volcanic formation and erosion"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "reserve",
+          "locator": "해안지형·조류 번식지·식생 보호; 지정 날짜를 묻는 문항은 제외",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "nature",
+          "locator": "독도 식물·조류·해양생물 / 철새 이동경로의 휴식처",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920094,
+    "before": {
+      "id": 920094,
+      "replaces": 910094,
+      "unit": 5,
+      "stage": 2,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-gangchi-history",
+      "conceptId": "gangchi-history",
+      "sourceIds": [
+        "gangchi",
+        "gangchi-paper"
+      ],
+      "topic": {
+        "ko": "독도 강치의 역사",
+        "en": "The history of Dokdo’s sea lions"
+      },
+      "stem": {
+        "ko": "독도 강치가 크게 줄어든 원인으로 연구가 지적한 인간 활동은 무엇인가요?",
+        "en": "Which human activity does research identify as a major cause of Dokdo sea lion decline?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "지나치게 많은 포획",
+            "en": "Excessive hunting"
+          },
+          "feedback": {
+            "ko": "남아 있는 포획 기록을 이용한 연구는 강한 포획 압력이 감소에 크게 작용했음을 설명해요.",
+            "en": "Research using catch records identifies heavy hunting pressure as a major cause."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "섬의 농경지 확대",
+            "en": "Expansion of farmland on the islands"
+          },
+          "feedback": {
+            "ko": "해당 연구가 강치 감소의 핵심 인간 활동으로 지목한 것은 포획이에요.",
+            "en": "The study identifies hunting, not farmland expansion, as the central human pressure."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "바다숲 채집만",
+            "en": "Seaweed harvesting alone"
+          },
+          "feedback": {
+            "ko": "연구는 강치를 직접 잡은 포획 압력의 영향을 다뤄요.",
+            "en": "The research examines direct hunting of sea lions rather than seaweed harvesting alone."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "독도에는 강치가 살았으며, 지나친 포획은 강치의 감소와 멸종에 큰 영향을 주었어요.",
+        "en": "Sea lions once lived on Dokdo, and excessive hunting contributed greatly to their decline and extinction."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "독도 강치가 크게 줄어든 원인으로 연구가 지적한 인간 활동은 무엇인가요? 정답 대상: 지나치게 많은 포획",
+        "en": "Which human activity does research identify as a major cause of Dokdo sea lion decline? Answer target: Excessive hunting"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "gangchi",
+          "locator": "포획 자료 기반 개체군 추정과 남획의 영향; 모델과 직접 관측 구분",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "gangchi-paper",
+          "locator": "Abstract 및 Discussion / 포획 압력·모델 가정과 환경 변화 미포함의 한계; CC BY 4.0",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920094,
+      "replaces": 910094,
+      "unit": 5,
+      "stage": 2,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-gangchi-history",
+      "conceptId": "gangchi-history",
+      "sourceIds": [
+        "gangchi",
+        "gangchi-paper"
+      ],
+      "topic": {
+        "ko": "독도 강치의 역사",
+        "en": "The history of Dokdo’s sea lions"
+      },
+      "stem": {
+        "ko": "독도 강치를 크게 줄어들게 한 인간 활동은 무엇인가요?",
+        "en": "Which human activity contributed greatly to Dokdo sea lions’ decline?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "지나치게 많은 포획",
+            "en": "Excessive hunting"
+          },
+          "feedback": {
+            "ko": "남아 있는 포획 기록을 이용한 연구는 강한 포획 압력이 감소에 크게 작용했음을 설명해요.",
+            "en": "Research using catch records identifies heavy hunting pressure as a major cause."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "섬의 농경지 확대",
+            "en": "Expansion of farmland on the islands"
+          },
+          "feedback": {
+            "ko": "해당 연구가 강치 감소의 핵심 인간 활동으로 지목한 것은 포획이에요.",
+            "en": "The study identifies hunting, not farmland expansion, as the central human pressure."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "바다숲 채집만",
+            "en": "Seaweed harvesting alone"
+          },
+          "feedback": {
+            "ko": "연구는 강치를 직접 잡은 포획 압력의 영향을 다뤄요.",
+            "en": "The research examines direct hunting of sea lions rather than seaweed harvesting alone."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "독도에는 강치가 살았으며, 지나친 포획은 강치의 감소와 멸종에 큰 영향을 주었어요.",
+        "en": "Sea lions once lived on Dokdo, and excessive hunting contributed greatly to their decline and extinction."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "독도 강치를 크게 줄어들게 한 인간 활동은 무엇인가요? 정답 대상: 지나치게 많은 포획",
+        "en": "Which human activity contributed greatly to Dokdo sea lions’ decline? Answer target: Excessive hunting"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "gangchi",
+          "locator": "포획 자료 기반 개체군 추정과 남획의 영향; 모델과 직접 관측 구분",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "gangchi-paper",
+          "locator": "Abstract 및 Discussion / 포획 압력·모델 가정과 환경 변화 미포함의 한계; CC BY 4.0",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920174,
+    "before": {
+      "id": 920174,
+      "replaces": 910174,
+      "unit": 9,
+      "stage": 3,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-order-response",
+      "conceptId": "order-response",
+      "sourceIds": [
+        "order"
+      ],
+      "topic": {
+        "ko": "1906년 지령 제3호",
+        "en": "Directive No. 3 of 1906"
+      },
+      "stem": {
+        "ko": "지령 제3호는 일본이 독도를 자기 영토라 한 주장을 어떻게 대했나요?",
+        "en": "How did Directive No. 3 respond to Japan’s claim to Dokdo?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "사실이 아니라고 부인했다",
+            "en": "It rejected the claim as unfounded"
+          },
+          "feedback": {
+            "ko": "역문은 일본 영토라는 주장을 받아들이지 않는 내용을 담고 있어요.",
+            "en": "The translated directive rejects the assertion of Japanese territory."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "그대로 인정했다",
+            "en": "It accepted it without qualification"
+          },
+          "feedback": {
+            "ko": "지령은 주장 부인과 조사를 지시하므로 인정했다는 설명과 반대예요.",
+            "en": "Rejection and investigation are the opposite of unqualified acceptance."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "아무 보고도 받지 않았다고 했다",
+            "en": "It stated that no report had been received"
+          },
+          "feedback": {
+            "ko": "지령은 받은 보고에 대한 답으로 제시돼요.",
+            "en": "The directive is presented as a response to the report."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "1906년 대한제국 지령 제3호는 일본의 독도 주장을 부인하고 상황을 더 조사해 보고하도록 했어요.",
+        "en": "Korean Empire Directive No. 3 of 1906 rejected Japan’s Dokdo claim and ordered further investigation and reporting."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "지령 제3호는 일본이 독도를 자기 영토라 한 주장을 어떻게 대했나요? 정답 대상: 사실이 아니라고 부인했다",
+        "en": "How did Directive No. 3 respond to Japan’s claim to Dokdo? Answer target: It rejected the claim as unfounded"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "order",
+          "locator": "일본 주장 부인과 형편·행동 재조사 지시",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920174,
+      "replaces": 910174,
+      "unit": 9,
+      "stage": 3,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-order-response",
+      "conceptId": "order-response",
+      "sourceIds": [
+        "order"
+      ],
+      "topic": {
+        "ko": "1906년 지령 제3호",
+        "en": "Directive No. 3 of 1906"
+      },
+      "stem": {
+        "ko": "지령 제3호는 일본의 독도 소속 주장을 어떻게 대했나요?",
+        "en": "How did Directive No. 3 respond to Japan’s claim that Dokdo was Japanese?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "사실이 아니라고 부인했다",
+            "en": "It rejected the claim as false."
+          },
+          "feedback": {
+            "ko": "역문은 일본 영토라는 주장을 받아들이지 않는 내용을 담고 있어요.",
+            "en": "The translated directive rejects the assertion of Japanese territory."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "그대로 인정했다",
+            "en": "It accepted the claim."
+          },
+          "feedback": {
+            "ko": "지령은 주장 부인과 조사를 지시하므로 인정했다는 설명과 반대예요.",
+            "en": "Rejection and investigation are the opposite of unqualified acceptance."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "보고를 받지 않았다고 했다",
+            "en": "It said no report had been received."
+          },
+          "feedback": {
+            "ko": "지령은 받은 보고에 대한 답으로 제시돼요.",
+            "en": "The directive is presented as a response to the report."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "1906년 대한제국 지령 제3호는 일본의 독도 주장을 부인하고 상황을 더 조사해 보고하도록 했어요.",
+        "en": "Korean Empire Directive No. 3 of 1906 rejected Japan’s Dokdo claim and ordered further investigation and reporting."
+      },
+      "scope": {
+        "ko": "",
+        "en": ""
+      },
+      "goal": {
+        "ko": "지령 제3호는 일본의 독도 소속 주장을 어떻게 대했나요? 정답 대상: 사실이 아니라고 부인했다",
+        "en": "How did Directive No. 3 respond to Japan’s claim that Dokdo was Japanese? Answer target: It rejected the claim as false."
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "order",
+          "locator": "일본 주장 부인과 형편·행동 재조사 지시",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920202,
+    "before": {
+      "id": 920202,
+      "replaces": 910202,
+      "unit": 11,
+      "stage": 4,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-dajokan-type",
+      "conceptId": "dajokan-type",
+      "sourceIds": [
+        "dajokan",
+        "dajokan-analysis"
+      ],
+      "topic": {
+        "ko": "1877년 태정관지령",
+        "en": "The Dajokan directive of 1877"
+      },
+      "stem": {
+        "ko": "1877년 일본 태정관은 울릉도와 독도에 관해 어떤 지시를 내렸나요?",
+        "en": "What did Japan’s Dajokan instruct about Ulleungdo and Dokdo in 1877?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "일본과 관계없는 것으로 알아두라",
+            "en": "Understand them as having no relation to Japan"
+          },
+          "feedback": {
+            "ko": "역문의 핵심 지시는 두 섬을 일본과 관계없는 것으로 알아두라는 내용이에요.",
+            "en": "That is the central instruction in the published translation."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "두 섬을 모두 일본 소속으로 편입하라",
+            "en": "Incorporate both islands into Japan"
+          },
+          "feedback": {
+            "ko": "일본과 관계없다는 지시와 반대되는 내용이에요.",
+            "en": "This reverses the instruction that they had no relation to Japan."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "독도만 일본 소속으로 다루라",
+            "en": "Treat only Dokdo as Japanese territory"
+          },
+          "feedback": {
+            "ko": "지명 해설에서 두 섬을 함께 대상으로 풀이하며 독도만 예외로 하지 않아요.",
+            "en": "The commentary identifies both islands as covered, without such an exception."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "1877년 일본 태정관은 울릉도와 독도를 일본과 관계없는 것으로 알아두라고 내무성에 지시했어요.",
+        "en": "In 1877 Japan’s Dajokan instructed the Home Ministry to understand Ulleungdo and Dokdo as having no relation to Japan."
+      },
+      "scope": {
+        "ko": "원문은 ‘다케시마 외 1도’예요. 울릉도·독도라는 현대 지명 풀이는 대한민국 외교부가 공개한 역문·첨부 지도 해설을 따랐어요.",
+        "en": "The original wording is “Takeshima and one other island”. Modern names follow ROK MOFA’s published translation and commentary on the attached map."
+      },
+      "goal": {
+        "ko": "1877년 일본 태정관은 울릉도와 독도에 관해 어떤 지시를 내렸나요? 정답 대상: 일본과 관계없는 것으로 알아두라",
+        "en": "What did Japan’s Dajokan instruct about Ulleungdo and Dokdo in 1877? Answer target: Understand them as having no relation to Japan"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "dajokan",
+          "locator": "행정 질의·지령, 다케시마 외 일도; 현대 지명 식별은 외교부 해설",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "dajokan-analysis",
+          "locator": "지령 배경, 첨부 지도, 외 1도=독도 해설과 역문",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920202,
+      "replaces": 910202,
+      "unit": 11,
+      "stage": 4,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-dajokan-type",
+      "conceptId": "dajokan-type",
+      "sourceIds": [
+        "dajokan",
+        "dajokan-analysis"
+      ],
+      "topic": {
+        "ko": "1877년 태정관지령",
+        "en": "The Dajokan directive of 1877"
+      },
+      "stem": {
+        "ko": "일본 태정관은 1877년 울릉도·독도를 어떻게 판단했나요?",
+        "en": "How did Japan’s Dajokan regard Ulleungdo and Dokdo in 1877?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "일본과 관계없는 섬",
+            "en": "Islands having nothing to do with Japan"
+          },
+          "feedback": {
+            "ko": "역문의 핵심 지시는 두 섬을 일본과 관계없는 것으로 알아두라는 내용이에요.",
+            "en": "That is the central instruction in the published translation."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "모두 일본 소속인 섬",
+            "en": "Both islands belonging to Japan"
+          },
+          "feedback": {
+            "ko": "일본과 관계없다는 지시와 반대되는 내용이에요.",
+            "en": "This reverses the instruction that they had no relation to Japan."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "독도만 일본 소속인 섬",
+            "en": "Only Dokdo belonging to Japan"
+          },
+          "feedback": {
+            "ko": "지명 해설에서 두 섬을 함께 대상으로 풀이하며 독도만 예외로 하지 않아요.",
+            "en": "The commentary identifies both islands as covered, without such an exception."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "1877년 일본 태정관은 울릉도와 독도를 일본과 관계없는 것으로 알아두라고 내무성에 지시했어요.",
+        "en": "In 1877 Japan’s Dajokan instructed the Home Ministry to understand Ulleungdo and Dokdo as having no relation to Japan."
+      },
+      "scope": {
+        "ko": "원문은 ‘다케시마 외 1도’예요. 울릉도·독도라는 현대 지명 풀이는 대한민국 외교부가 공개한 역문·첨부 지도 해설을 따랐어요.",
+        "en": "The original wording is “Takeshima and one other island”. Modern names follow ROK MOFA’s published translation and commentary on the attached map."
+      },
+      "goal": {
+        "ko": "일본 태정관은 1877년 울릉도·독도를 어떻게 판단했나요? 정답 대상: 일본과 관계없는 섬",
+        "en": "How did Japan’s Dajokan regard Ulleungdo and Dokdo in 1877? Answer target: Islands having nothing to do with Japan"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "dajokan",
+          "locator": "행정 질의·지령, 다케시마 외 일도; 현대 지명 식별은 외교부 해설",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        },
+        {
+          "sourceId": "dajokan-analysis",
+          "locator": "지령 배경, 첨부 지도, 외 1도=독도 해설과 역문",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  },
+  {
+    "id": 920222,
+    "before": {
+      "id": 920222,
+      "replaces": 910222,
+      "unit": 12,
+      "stage": 4,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-weather-access",
+      "conceptId": "weather-access",
+      "sourceIds": [
+        "visit"
+      ],
+      "topic": {
+        "ko": "독도 입도와 바다 상태",
+        "en": "Landing on Dokdo and sea conditions"
+      },
+      "stem": {
+        "ko": "독도행 배표를 샀어도 상륙하지 못할 수 있는 까닭은 무엇인가요?",
+        "en": "Why might a ticket holder still be unable to land on Dokdo?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "날씨와 파도 때문에 안전한 접안이 어려울 수 있어서",
+            "en": "Weather and waves may prevent safe docking"
+          },
+          "feedback": {
+            "ko": "승선권 보유와 당일 접안 안전 판단은 별개예요.",
+            "en": "Having a ticket and having safe docking conditions are separate."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "선착장 도착이 곧 무조건 하선을 뜻해서",
+            "en": "Arrival always means passengers must disembark"
+          },
+          "feedback": {
+            "ko": "도착해도 안전 조건에 따라 하선이 제한될 수 있어요.",
+            "en": "Disembarkation can still be restricted after arrival."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "전날 입도했다면 오늘도 반드시 가능해서",
+            "en": "Landing yesterday guarantees landing today"
+          },
+          "feedback": {
+            "ko": "바다 상태는 날마다 달라질 수 있어 오늘 조건을 확인해야 해요.",
+            "en": "Conditions may change, so today’s situation must be checked."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "독도 입도 여부는 기상과 바다 상태 등에 따라 달라져, 배표가 있어도 상륙이 보장되지는 않아요.",
+        "en": "Landing on Dokdo depends on weather and sea conditions; a ferry ticket does not guarantee disembarkation."
+      },
+      "scope": {
+        "ko": "실제 방문은 최신 선사·관할 기관 안내를 확인해야 해요. 이 수업은 실시간 운항 안내가 아니에요.",
+        "en": "Actual visits require current operator and authority guidance. This lesson is not live service information."
+      },
+      "goal": {
+        "ko": "독도행 배표를 샀어도 상륙하지 못할 수 있는 까닭은 무엇인가요? 정답 대상: 날씨와 파도 때문에 안전한 접안이 어려울 수 있어서",
+        "en": "Why might a ticket holder still be unable to land on Dokdo? Answer target: Weather and waves may prevent safe docking"
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "visit",
+          "locator": "입도 유의사항·동도 선착장 관람 / 2026년 7월 기준 표기. 실제 방문 전 최신 안내 확인",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "after": {
+      "id": 920222,
+      "replaces": 910222,
+      "unit": 12,
+      "stage": 4,
+      "difficulty": 2,
+      "cognitive": 2,
+      "familyId": "dk-weather-access",
+      "conceptId": "weather-access",
+      "sourceIds": [
+        "visit"
+      ],
+      "topic": {
+        "ko": "독도 입도와 바다 상태",
+        "en": "Landing on Dokdo and sea conditions"
+      },
+      "stem": {
+        "ko": "독도 배표가 있어도 상륙하지 못할 수 있는 까닭은 무엇인가요?",
+        "en": "Why might someone with a Dokdo ferry ticket still be unable to land?"
+      },
+      "options": [
+        {
+          "text": {
+            "ko": "날씨와 파도로 접안이 어려울 수 있어서",
+            "en": "Weather and waves can prevent docking."
+          },
+          "feedback": {
+            "ko": "승선권 보유와 당일 접안 안전 판단은 별개예요.",
+            "en": "Having a ticket and having safe docking conditions are separate."
+          },
+          "id": "a"
+        },
+        {
+          "text": {
+            "ko": "도착하면 하선이 늘 보장되기 때문에",
+            "en": "Arrival always guarantees disembarkation."
+          },
+          "feedback": {
+            "ko": "도착해도 안전 조건에 따라 하선이 제한될 수 있어요.",
+            "en": "Disembarkation can still be restricted after arrival."
+          },
+          "id": "b"
+        },
+        {
+          "text": {
+            "ko": "전날 입도 여부가 오늘을 보장하기 때문에",
+            "en": "Yesterday’s landing guarantees today’s."
+          },
+          "feedback": {
+            "ko": "바다 상태는 날마다 달라질 수 있어 오늘 조건을 확인해야 해요.",
+            "en": "Conditions may change, so today’s situation must be checked."
+          },
+          "id": "c"
+        }
+      ],
+      "correctOptionId": "a",
+      "material": {
+        "ko": "",
+        "en": ""
+      },
+      "requiresMaterial": false,
+      "context": {
+        "ko": "",
+        "en": ""
+      },
+      "takeaway": {
+        "ko": "독도 입도 여부는 기상과 바다 상태 등에 따라 달라져, 배표가 있어도 상륙이 보장되지는 않아요.",
+        "en": "Landing on Dokdo depends on weather and sea conditions; a ferry ticket does not guarantee disembarkation."
+      },
+      "scope": {
+        "ko": "실제 방문은 최신 선사·관할 기관 안내를 확인해야 해요. 이 수업은 실시간 운항 안내가 아니에요.",
+        "en": "Actual visits require current operator and authority guidance. This lesson is not live service information."
+      },
+      "goal": {
+        "ko": "독도 배표가 있어도 상륙하지 못할 수 있는 까닭은 무엇인가요? 정답 대상: 날씨와 파도로 접안이 어려울 수 있어서",
+        "en": "Why might someone with a Dokdo ferry ticket still be unable to land? Answer target: Weather and waves can prevent docking."
+      },
+      "review": {
+        "definition": "one-clear-target-v1",
+        "authorReview": "self-reviewed",
+        "independentReview": "pending",
+        "learnerTest": "pending",
+        "gradeNote": "",
+        "wordingReview": "author-reviewed; not independent",
+        "countryAndScopeReview": "author-reviewed against cited sources",
+        "answerabilityReview": "requires displayed evidence where marked",
+        "limitations": [
+          "same-author review",
+          "no independent teacher sign-off",
+          "no child-user test"
+        ]
+      },
+      "evidence": [
+        {
+          "sourceId": "visit",
+          "locator": "입도 유의사항·동도 선착장 관람 / 2026년 7월 기준 표기. 실제 방문 전 최신 안내 확인",
+          "kind": "paraphrase-or-stated-derived-exercise"
+        }
+      ]
+    },
+    "reason": "Shorter direct target; no deletion of necessary historical actors or source scope."
+  }
+]

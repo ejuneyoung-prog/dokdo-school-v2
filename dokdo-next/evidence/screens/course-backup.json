@@ -1,0 +1,175 @@
+{
+  "format": "dokdo-school-backup",
+  "version": 1,
+  "exportedAt": "2026-09-11T15:39:39.559Z",
+  "language": "ko",
+  "state": {
+    "name": "",
+    "nick": "",
+    "flag": "KR",
+    "school": "",
+    "grade": "K",
+    "xp": 60,
+    "streak": 1,
+    "gcHit": 6,
+    "run": 0,
+    "best": 0,
+    "started": true,
+    "passed": [],
+    "badgesEver": [],
+    "recent": [
+      920158,
+      920155,
+      920149,
+      920146,
+      920143,
+      920205
+    ],
+    "recentG": [],
+    "lastDay": "2026-09-12",
+    "m": {
+      "920143": {
+        "lv": 1,
+        "cor": 1,
+        "att": 1,
+        "seen": 1,
+        "earned": 10,
+        "lastAdvancedDay": "2026-09-12",
+        "due": "2026-09-13",
+        "lastAnsweredAt": "2026-09-11T15:39:38.834Z",
+        "lightBest": 1,
+        "courseLearned": true,
+        "courseFirstDay": "2026-09-12",
+        "courseRewardDay": "2026-09-12"
+      },
+      "920146": {
+        "lv": 1,
+        "cor": 1,
+        "att": 1,
+        "seen": 1,
+        "earned": 10,
+        "lastAdvancedDay": "2026-09-12",
+        "due": "2026-09-13",
+        "lastAnsweredAt": "2026-09-11T15:39:38.887Z",
+        "lightBest": 1,
+        "courseLearned": true,
+        "courseFirstDay": "2026-09-12",
+        "courseRewardDay": "2026-09-12"
+      },
+      "920149": {
+        "lv": 1,
+        "cor": 1,
+        "att": 1,
+        "seen": 1,
+        "earned": 10,
+        "lastAdvancedDay": "2026-09-12",
+        "due": "2026-09-13",
+        "lastAnsweredAt": "2026-09-11T15:39:38.999Z",
+        "lightBest": 1,
+        "courseLearned": true,
+        "courseFirstDay": "2026-09-12",
+        "courseRewardDay": "2026-09-12"
+      },
+      "920155": {
+        "lv": 1,
+        "cor": 1,
+        "att": 1,
+        "seen": 1,
+        "earned": 10,
+        "lastAdvancedDay": "2026-09-12",
+        "due": "2026-09-13",
+        "lastAnsweredAt": "2026-09-11T15:39:39.047Z",
+        "lightBest": 1,
+        "courseLearned": true,
+        "courseFirstDay": "2026-09-12",
+        "courseRewardDay": "2026-09-12"
+      },
+      "920158": {
+        "lv": 1,
+        "cor": 1,
+        "att": 1,
+        "seen": 1,
+        "earned": 10,
+        "lastAdvancedDay": "2026-09-12",
+        "due": "2026-09-13",
+        "lastAnsweredAt": "2026-09-11T15:39:39.260Z",
+        "lightBest": 1,
+        "courseLearned": true,
+        "courseFirstDay": "2026-09-12",
+        "courseRewardDay": "2026-09-12"
+      },
+      "920205": {
+        "lv": 1,
+        "cor": 1,
+        "att": 1,
+        "seen": 1,
+        "earned": 10,
+        "lastAdvancedDay": "2026-09-12",
+        "due": "2026-09-13",
+        "lastAnsweredAt": "2026-09-11T15:39:34.970Z",
+        "lightBest": 1,
+        "courseLearned": true,
+        "courseFirstDay": "2026-09-12",
+        "courseRewardDay": "2026-09-12"
+      }
+    },
+    "schemaVersion": 3,
+    "scene": {
+      "version": 1,
+      "order": [
+        920205,
+        920143,
+        920146,
+        920149,
+        920155,
+        920158
+      ],
+      "beaconSlots": {},
+      "timeSec": 0.4499999999999992
+    },
+    "gangchiVisits": [],
+    "weekly": {
+      "key": "2026-09-07",
+      "correct": 6,
+      "eligible": 6,
+      "credits": {
+        "2026-09-12:dk-historic-name-context": true,
+        "2026-09-12:dk-decree-name": true,
+        "2026-09-12:dk-county-head": true,
+        "2026-09-12:dk-territory": true,
+        "2026-09-12:dk-gazette-date": true,
+        "2026-09-12:dk-proposal-order": true
+      },
+      "history": [],
+      "since": "2026-09-11T15:39:29.467Z",
+      "partial": true
+    },
+    "visual": {
+      "version": 1,
+      "unlocks": {},
+      "birdVisit": null,
+      "birdsEnabled": true,
+      "reduceMotion": false,
+      "language": "ko",
+      "geometry": "art-v1"
+    },
+    "learningProfile": {
+      "version": 1,
+      "ageBand": "14-16",
+      "easy": false,
+      "stage": 2,
+      "readingMax": 4,
+      "completed": {},
+      "placement": null,
+      "course": {
+        "version": 2,
+        "track": "middle",
+        "unit": 9,
+        "completed": {
+          "middle:8": "2026-09-11T15:39:39.287Z"
+        }
+      },
+      "practiceStage": 2
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "checks": [
+    {
+      "name": "Standalone preview uses isolated memory",
+      "pass": true
+    },
+    {
+      "name": "All 240 revised questions are embedded",
+      "pass": true
+    },
+    {
+      "name": "Age selection blocks first lesson",
+      "pass": true
+    },
+    {
+      "name": "Age dialog is required",
+      "pass": true
+    },
+    {
+      "name": "Middle-school lesson is an actual Dokdo history unit",
+      "pass": true
+    },
+    {
+      "name": "Material and choices are visible",
+      "pass": true
+    },
+    {
+      "name": "Heavy-user sample is explicit, with 1,513 old records",
+      "pass": true
+    },
+    {
+      "name": "Reference map has loaded",
+      "pass": true
+    },
+    {
+      "name": "Current scene exports as a real PNG",
+      "pass": true
+    },
+    {
+      "name": "Backup preserves all old question records",
+      "pass": true
+    },
+    {
+      "name": "No uncaught preview errors",
+      "pass": true
+    }
+  ],
+  "passed": 11,
+  "failed": 0,
+  "errors": [],
+  "storage": "isolated memory; no access to real account"
+}

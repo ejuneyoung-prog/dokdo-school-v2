@@ -1,0 +1,10 @@
+{
+  "sheets": 9,
+  "questions": 240,
+  "feedbackRows": 711,
+  "formulaCells": 259,
+  "cachedValuesVerified": true,
+  "errorCells": 0,
+  "render": "cell previews; native renderer service failed to start",
+  "xlsx": "/mnt/data/dokdo-questions-240-v1.2.xlsx"
+}

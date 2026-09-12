@@ -1,0 +1,172 @@
+{
+  "mode": "inline",
+  "phase": "flow",
+  "storage": "controlled adapter",
+  "landscapeAnimation": "native requestAnimationFrame; reduced-motion preference",
+  "checks": [
+    {
+      "name": "live starts with zero question rewards",
+      "pass": true
+    },
+    {
+      "name": "age gate remains mandatory",
+      "pass": true
+    },
+    {
+      "name": "u7 routes to intended unit",
+      "pass": true
+    },
+    {
+      "name": "u7 has five distinct concepts",
+      "pass": true
+    },
+    {
+      "name": "u7 source shown before answering",
+      "pass": true
+    },
+    {
+      "name": "u7 wrong answer cannot advance",
+      "pass": true
+    },
+    {
+      "name": "u7 correction permits next with specific reason",
+      "pass": true
+    },
+    {
+      "name": "8-9 routes to intended unit",
+      "pass": true
+    },
+    {
+      "name": "8-9 has five distinct concepts",
+      "pass": true
+    },
+    {
+      "name": "8-9 source shown before answering",
+      "pass": true
+    },
+    {
+      "name": "8-9 wrong answer cannot advance",
+      "pass": true
+    },
+    {
+      "name": "8-9 correction permits next with specific reason",
+      "pass": true
+    },
+    {
+      "name": "10-11 routes to intended unit",
+      "pass": true
+    },
+    {
+      "name": "10-11 has five distinct concepts",
+      "pass": true
+    },
+    {
+      "name": "10-11 source shown before answering",
+      "pass": true
+    },
+    {
+      "name": "10-11 wrong answer cannot advance",
+      "pass": true
+    },
+    {
+      "name": "10-11 correction permits next with specific reason",
+      "pass": true
+    },
+    {
+      "name": "12-13 routes to intended unit",
+      "pass": true
+    },
+    {
+      "name": "12-13 has five distinct concepts",
+      "pass": true
+    },
+    {
+      "name": "12-13 source shown before answering",
+      "pass": true
+    },
+    {
+      "name": "12-13 wrong answer cannot advance",
+      "pass": true
+    },
+    {
+      "name": "12-13 correction permits next with specific reason",
+      "pass": true
+    },
+    {
+      "name": "14-16 routes to intended unit",
+      "pass": true
+    },
+    {
+      "name": "14-16 has five distinct concepts",
+      "pass": true
+    },
+    {
+      "name": "14-16 source shown before answering",
+      "pass": true
+    },
+    {
+      "name": "14-16 wrong answer cannot advance",
+      "pass": true
+    },
+    {
+      "name": "14-16 correction permits next with specific reason",
+      "pass": true
+    },
+    {
+      "name": "17-19 routes to intended unit",
+      "pass": true
+    },
+    {
+      "name": "17-19 has five distinct concepts",
+      "pass": true
+    },
+    {
+      "name": "17-19 source shown before answering",
+      "pass": true
+    },
+    {
+      "name": "17-19 wrong answer cannot advance",
+      "pass": true
+    },
+    {
+      "name": "17-19 correction permits next with specific reason",
+      "pass": true
+    },
+    {
+      "name": "20+ routes to intended unit",
+      "pass": true
+    },
+    {
+      "name": "20+ has five distinct concepts",
+      "pass": true
+    },
+    {
+      "name": "20+ source shown before answering",
+      "pass": true
+    },
+    {
+      "name": "20+ wrong answer cannot advance",
+      "pass": true
+    },
+    {
+      "name": "20+ correction permits next with specific reason",
+      "pass": true
+    },
+    {
+      "name": "no uncaught script errors",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "no production requests",
+      "pass": true,
+      "detail": []
+    }
+  ],
+  "pass": 39,
+  "fail": 0,
+  "questionRenderPaths": 0,
+  "paths": [],
+  "errors": [],
+  "requests": []
+}

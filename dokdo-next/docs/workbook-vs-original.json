@@ -1,0 +1,38 @@
+{
+  "questionRows": 1513,
+  "sameQuestionText": 1513,
+  "changedQuestionText": 0,
+  "sheets": [
+    "요약",
+    "문항",
+    "우선재작성",
+    "정답중복",
+    "형제묶음",
+    "기준"
+  ],
+  "columns": [
+    "id",
+    "학년",
+    "학교급",
+    "분야",
+    "atype",
+    "묶음(group)",
+    "단계",
+    "단계명",
+    "읽기부담",
+    "부담상한",
+    "남는것(0~3)",
+    "도감인용",
+    "단계미달",
+    "단계과잉",
+    "도감초중등",
+    "부담초과",
+    "남는것부족",
+    "오답해설없음",
+    "우선순위",
+    "주된 사유",
+    "질문"
+  ],
+  "originalVersion": "2026-09-08.S1.1513",
+  "conclusion": "Diagnostic workbook, not rewritten questions. No changed answer or explanation columns."
+}

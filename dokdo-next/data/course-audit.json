@@ -1,0 +1,187 @@
+{
+  "version": "2026-09-12-course-v3-clear",
+  "questions": 240,
+  "families": 60,
+  "bilingualPairs": 240,
+  "optionFeedbackPairs": 711,
+  "questionContextCount": 82,
+  "requiredMaterialCount": 121,
+  "distinctStemCount": 240,
+  "distinctFeedbackCount": 710,
+  "cognitiveCounts": {
+    "1": 69,
+    "2": 52,
+    "3": 104,
+    "4": 15
+  },
+  "tracks": {
+    "early": {
+      "cognitiveCounts": [
+        45,
+        15,
+        0,
+        0
+      ],
+      "difficultyCounts": [
+        42,
+        18,
+        0,
+        0
+      ]
+    },
+    "primary": {
+      "cognitiveCounts": [
+        26,
+        34,
+        0,
+        0
+      ],
+      "difficultyCounts": [
+        20,
+        40,
+        0,
+        0
+      ]
+    },
+    "upper": {
+      "cognitiveCounts": [
+        33,
+        21,
+        6,
+        0
+      ],
+      "difficultyCounts": [
+        30,
+        24,
+        6,
+        0
+      ]
+    },
+    "middle": {
+      "cognitiveCounts": [
+        17,
+        19,
+        22,
+        2
+      ],
+      "difficultyCounts": [
+        15,
+        21,
+        18,
+        6
+      ]
+    },
+    "high": {
+      "cognitiveCounts": [
+        11,
+        13,
+        34,
+        2
+      ],
+      "difficultyCounts": [
+        9,
+        15,
+        21,
+        15
+      ]
+    },
+    "adult": {
+      "cognitiveCounts": [
+        7,
+        12,
+        36,
+        5
+      ],
+      "difficultyCounts": [
+        6,
+        12,
+        18,
+        24
+      ]
+    }
+  },
+  "choiceCounts": {
+    "2": 27,
+    "3": 195,
+    "4": 18
+  },
+  "correctPositionByChoiceCount": {
+    "2": {
+      "1": 14,
+      "2": 13
+    },
+    "3": {
+      "1": 65,
+      "2": 65,
+      "3": 65
+    },
+    "4": {
+      "1": 5,
+      "2": 5,
+      "3": 4,
+      "4": 4
+    }
+  },
+  "missingSources": [],
+  "reviewStatus": "author self-review; independent educational and learner validation pending",
+  "liveAccessLimitedSources": [
+    "geology",
+    "forest",
+    "arch",
+    "cave",
+    "reserve",
+    "gangchi",
+    "effect",
+    "gangchi-paper",
+    "names",
+    "sutdol",
+    "size"
+  ],
+  "readingReview": [
+    {
+      "track": "early",
+      "id": 920201,
+      "stemAndLongestChoice": 52,
+      "guideline": 48,
+      "fullTextLength": 101,
+      "status": "flagged-not-truncated; learner review required"
+    },
+    {
+      "track": "early",
+      "id": 920234,
+      "stemAndLongestChoice": 49,
+      "guideline": 48,
+      "fullTextLength": 49,
+      "status": "flagged-not-truncated; learner review required"
+    },
+    {
+      "track": "primary",
+      "id": 920205,
+      "stemAndLongestChoice": 57,
+      "guideline": 48,
+      "fullTextLength": 142,
+      "status": "flagged-not-truncated; learner review required"
+    },
+    {
+      "track": "primary",
+      "id": 920222,
+      "stemAndLongestChoice": 56,
+      "guideline": 48,
+      "fullTextLength": 56,
+      "status": "flagged-not-truncated; learner review required"
+    },
+    {
+      "track": "primary",
+      "id": 920234,
+      "stemAndLongestChoice": 49,
+      "guideline": 48,
+      "fullTextLength": 49,
+      "status": "flagged-not-truncated; learner review required"
+    }
+  ],
+  "nonGoals": [
+    "no 1513-item rewrite",
+    "no geometry modification",
+    "no operational server change"
+  ]
+}

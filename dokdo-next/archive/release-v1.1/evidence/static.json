@@ -1,0 +1,234 @@
+{
+  "checks": [
+    {
+      "name": "index.html has unique element IDs",
+      "pass": true
+    },
+    {
+      "name": "index.html has no inline event handlers",
+      "pass": true
+    },
+    {
+      "name": "index.html local asset ./assets/icon.svg",
+      "pass": true
+    },
+    {
+      "name": "index.html local asset ./assets/app.css",
+      "pass": true
+    },
+    {
+      "name": "index.html local asset ./assets/dokdo-core.js",
+      "pass": true
+    },
+    {
+      "name": "index.html local asset ./assets/course-data.js",
+      "pass": true
+    },
+    {
+      "name": "index.html local asset ./assets/starter-course.js",
+      "pass": true
+    },
+    {
+      "name": "index.html local asset ./assets/art-geometry.js",
+      "pass": true
+    },
+    {
+      "name": "index.html local asset ./assets/outline-data.js",
+      "pass": true
+    },
+    {
+      "name": "index.html local asset ./assets/app-model.js",
+      "pass": true
+    },
+    {
+      "name": "index.html local asset ./assets/scene.js",
+      "pass": true
+    },
+    {
+      "name": "index.html local asset ./assets/app.js",
+      "pass": true
+    },
+    {
+      "name": "index.html blocks operational API traffic",
+      "pass": true
+    },
+    {
+      "name": "index.html restricts executable scripts to local files",
+      "pass": true
+    },
+    {
+      "name": "demo.html has unique element IDs",
+      "pass": true
+    },
+    {
+      "name": "demo.html has no inline event handlers",
+      "pass": true
+    },
+    {
+      "name": "demo.html local asset ./assets/icon.svg",
+      "pass": true
+    },
+    {
+      "name": "demo.html local asset ./assets/app.css",
+      "pass": true
+    },
+    {
+      "name": "demo.html local asset ./assets/dokdo-core.js",
+      "pass": true
+    },
+    {
+      "name": "demo.html local asset ./assets/course-data.js",
+      "pass": true
+    },
+    {
+      "name": "demo.html local asset ./assets/starter-course.js",
+      "pass": true
+    },
+    {
+      "name": "demo.html local asset ./assets/art-geometry.js",
+      "pass": true
+    },
+    {
+      "name": "demo.html local asset ./assets/outline-data.js",
+      "pass": true
+    },
+    {
+      "name": "demo.html local asset ./assets/app-model.js",
+      "pass": true
+    },
+    {
+      "name": "demo.html local asset ./assets/scene.js",
+      "pass": true
+    },
+    {
+      "name": "demo.html local asset ./assets/demo-ids.js",
+      "pass": true
+    },
+    {
+      "name": "demo.html local asset ./assets/app.js",
+      "pass": true
+    },
+    {
+      "name": "demo.html blocks operational API traffic",
+      "pass": true
+    },
+    {
+      "name": "demo.html restricts executable scripts to local files",
+      "pass": true
+    },
+    {
+      "name": "app-model.js JavaScript syntax",
+      "pass": true
+    },
+    {
+      "name": "app.js JavaScript syntax",
+      "pass": true
+    },
+    {
+      "name": "art-geometry.js JavaScript syntax",
+      "pass": true
+    },
+    {
+      "name": "course-data.js JavaScript syntax",
+      "pass": true
+    },
+    {
+      "name": "demo-ids.js JavaScript syntax",
+      "pass": true
+    },
+    {
+      "name": "dokdo-core.js JavaScript syntax",
+      "pass": true
+    },
+    {
+      "name": "outline-data.js JavaScript syntax",
+      "pass": true
+    },
+    {
+      "name": "scene.js JavaScript syntax",
+      "pass": true
+    },
+    {
+      "name": "starter-course.js JavaScript syntax",
+      "pass": true
+    },
+    {
+      "name": "terrain-geometry.js JavaScript syntax",
+      "pass": true
+    },
+    {
+      "name": "No hardcoded legacy Apps Script endpoints",
+      "pass": true
+    },
+    {
+      "name": "No common embedded credential patterns",
+      "pass": true
+    },
+    {
+      "name": "No eval or dynamic Function constructor",
+      "pass": true
+    },
+    {
+      "name": "No font binaries distributed",
+      "pass": true
+    },
+    {
+      "name": "No service worker with unknown stale caches",
+      "pass": true
+    },
+    {
+      "name": "Default page is not a synthetic demo",
+      "pass": true
+    },
+    {
+      "name": "Demo has a distinct route",
+      "pass": true
+    },
+    {
+      "name": "Artwork exists and has reasonable size",
+      "pass": true
+    },
+    {
+      "name": "Media asset has a valid RIFF/WAVE header",
+      "pass": true
+    },
+    {
+      "name": "Active curriculum explicitly excludes legacy routing",
+      "pass": true
+    },
+    {
+      "name": "Active curriculum has exactly 240 stable unique IDs",
+      "pass": true
+    },
+    {
+      "name": "Outline data does not claim georeferencing",
+      "pass": true
+    },
+    {
+      "name": "Course data loads before the course engine",
+      "pass": true
+    },
+    {
+      "name": "Retired content is not loaded by HTML",
+      "pass": true
+    },
+    {
+      "name": "Runtime asset ./assets/dokdo-terrain.webp",
+      "pass": true
+    },
+    {
+      "name": "Runtime asset ./assets/ambient.wav",
+      "pass": true
+    },
+    {
+      "name": "Runtime asset ./assets/sea-texture.webp",
+      "pass": true
+    },
+    {
+      "name": "Runtime asset ./assets/dokdo-islands.webp",
+      "pass": true
+    }
+  ],
+  "passed": 57,
+  "failed": 0
+}

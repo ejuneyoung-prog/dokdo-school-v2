@@ -1,0 +1,1454 @@
+{
+  "version": "2026-09-12-course-v3-clear",
+  "preserveOriginalRecordIds": true,
+  "automaticNewMasteryCredit": false,
+  "replacements": [
+    {
+      "oldId": 910001,
+      "newId": 920001,
+      "familyId": "dk-composition",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910002,
+      "newId": 920002,
+      "familyId": "dk-composition",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910003,
+      "newId": 920003,
+      "familyId": "dk-composition",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910004,
+      "newId": 920004,
+      "familyId": "dk-composition",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910005,
+      "newId": 920005,
+      "familyId": "dk-relative-location",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910006,
+      "newId": 920006,
+      "familyId": "dk-relative-location",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910007,
+      "newId": 920007,
+      "familyId": "dk-relative-location",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910008,
+      "newId": 920008,
+      "familyId": "dk-relative-location",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910009,
+      "newId": 920009,
+      "familyId": "dk-orientation",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910010,
+      "newId": 920010,
+      "familyId": "dk-orientation",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910011,
+      "newId": 920011,
+      "familyId": "dk-orientation",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910012,
+      "newId": 920012,
+      "familyId": "dk-orientation",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910013,
+      "newId": 920013,
+      "familyId": "dk-visibility",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910014,
+      "newId": 920014,
+      "familyId": "dk-visibility",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910015,
+      "newId": 920015,
+      "familyId": "dk-visibility",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910016,
+      "newId": 920016,
+      "familyId": "dk-visibility",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910017,
+      "newId": 920017,
+      "familyId": "dk-islet-count",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910018,
+      "newId": 920018,
+      "familyId": "dk-islet-count",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910019,
+      "newId": 920019,
+      "familyId": "dk-islet-count",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910020,
+      "newId": 920020,
+      "familyId": "dk-islet-count",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910021,
+      "newId": 920021,
+      "familyId": "dk-heights",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910022,
+      "newId": 920022,
+      "familyId": "dk-heights",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910023,
+      "newId": 920023,
+      "familyId": "dk-heights",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910024,
+      "newId": 920024,
+      "familyId": "dk-heights",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910025,
+      "newId": 920025,
+      "familyId": "dk-area",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910026,
+      "newId": 920026,
+      "familyId": "dk-area",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910027,
+      "newId": 920027,
+      "familyId": "dk-area",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910028,
+      "newId": 920028,
+      "familyId": "dk-area",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910029,
+      "newId": 920029,
+      "familyId": "dk-shore-gap",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910030,
+      "newId": 920030,
+      "familyId": "dk-shore-gap",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910031,
+      "newId": 920031,
+      "familyId": "dk-shore-gap",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910032,
+      "newId": 920032,
+      "familyId": "dk-shore-gap",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910033,
+      "newId": 920033,
+      "familyId": "dk-terrain-contrast",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910034,
+      "newId": 920034,
+      "familyId": "dk-terrain-contrast",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910035,
+      "newId": 920035,
+      "familyId": "dk-terrain-contrast",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910036,
+      "newId": 920036,
+      "familyId": "dk-terrain-contrast",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910037,
+      "newId": 920037,
+      "familyId": "dk-above-below",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910038,
+      "newId": 920038,
+      "familyId": "dk-above-below",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910039,
+      "newId": 920039,
+      "familyId": "dk-above-below",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910040,
+      "newId": 920040,
+      "familyId": "dk-above-below",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910041,
+      "newId": 920041,
+      "familyId": "dk-volcano",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910042,
+      "newId": 920042,
+      "familyId": "dk-volcano",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910043,
+      "newId": 920043,
+      "familyId": "dk-volcano",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910044,
+      "newId": 920044,
+      "familyId": "dk-volcano",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910045,
+      "newId": 920045,
+      "familyId": "dk-formation-time",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910046,
+      "newId": 920046,
+      "familyId": "dk-formation-time",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910047,
+      "newId": 920047,
+      "familyId": "dk-formation-time",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910048,
+      "newId": 920048,
+      "familyId": "dk-formation-time",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910049,
+      "newId": 920049,
+      "familyId": "dk-wave-erosion",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910050,
+      "newId": 920050,
+      "familyId": "dk-wave-erosion",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910051,
+      "newId": 920051,
+      "familyId": "dk-wave-erosion",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910052,
+      "newId": 920052,
+      "familyId": "dk-wave-erosion",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910053,
+      "newId": 920053,
+      "familyId": "dk-weathering",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910054,
+      "newId": 920054,
+      "familyId": "dk-weathering",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910055,
+      "newId": 920055,
+      "familyId": "dk-weathering",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910056,
+      "newId": 920056,
+      "familyId": "dk-weathering",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910057,
+      "newId": 920057,
+      "familyId": "dk-mulgol",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910058,
+      "newId": 920058,
+      "familyId": "dk-mulgol",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910059,
+      "newId": 920059,
+      "familyId": "dk-mulgol",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910060,
+      "newId": 920060,
+      "familyId": "dk-mulgol",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910061,
+      "newId": 920061,
+      "familyId": "dk-migratory-stopover",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910062,
+      "newId": 920062,
+      "familyId": "dk-migratory-stopover",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910063,
+      "newId": 920063,
+      "familyId": "dk-migratory-stopover",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910064,
+      "newId": 920064,
+      "familyId": "dk-migratory-stopover",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910065,
+      "newId": 920065,
+      "familyId": "dk-breeding-birds",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910066,
+      "newId": 920066,
+      "familyId": "dk-breeding-birds",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910067,
+      "newId": 920067,
+      "familyId": "dk-breeding-birds",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910068,
+      "newId": 920068,
+      "familyId": "dk-breeding-birds",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910069,
+      "newId": 920069,
+      "familyId": "dk-birds-and-seaweed",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910070,
+      "newId": 920070,
+      "familyId": "dk-birds-and-seaweed",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910071,
+      "newId": 920071,
+      "familyId": "dk-birds-and-seaweed",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910072,
+      "newId": 920072,
+      "familyId": "dk-birds-and-seaweed",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910073,
+      "newId": 920073,
+      "familyId": "dk-coastal-plants",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910074,
+      "newId": 920074,
+      "familyId": "dk-coastal-plants",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910075,
+      "newId": 920075,
+      "familyId": "dk-coastal-plants",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910076,
+      "newId": 920076,
+      "familyId": "dk-coastal-plants",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910077,
+      "newId": 920077,
+      "familyId": "dk-reserve-scope",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910078,
+      "newId": 920078,
+      "familyId": "dk-reserve-scope",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910079,
+      "newId": 920079,
+      "familyId": "dk-reserve-scope",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910080,
+      "newId": 920080,
+      "familyId": "dk-reserve-scope",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910081,
+      "newId": 920081,
+      "familyId": "dk-sea-forest",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910082,
+      "newId": 920082,
+      "familyId": "dk-sea-forest",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910083,
+      "newId": 920083,
+      "familyId": "dk-sea-forest",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910084,
+      "newId": 920084,
+      "familyId": "dk-sea-forest",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910085,
+      "newId": 920085,
+      "familyId": "dk-water-mixing",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910086,
+      "newId": 920086,
+      "familyId": "dk-water-mixing",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910087,
+      "newId": 920087,
+      "familyId": "dk-water-mixing",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910088,
+      "newId": 920088,
+      "familyId": "dk-water-mixing",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910089,
+      "newId": 920089,
+      "familyId": "dk-food-links",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910090,
+      "newId": 920090,
+      "familyId": "dk-food-links",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910091,
+      "newId": 920091,
+      "familyId": "dk-food-links",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910092,
+      "newId": 920092,
+      "familyId": "dk-food-links",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910093,
+      "newId": 920093,
+      "familyId": "dk-gangchi-history",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910094,
+      "newId": 920094,
+      "familyId": "dk-gangchi-history",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910095,
+      "newId": 920095,
+      "familyId": "dk-gangchi-history",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910096,
+      "newId": 920096,
+      "familyId": "dk-gangchi-history",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910097,
+      "newId": 920097,
+      "familyId": "dk-model-evidence",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910098,
+      "newId": 920098,
+      "familyId": "dk-model-evidence",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910099,
+      "newId": 920099,
+      "familyId": "dk-model-evidence",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910100,
+      "newId": 920100,
+      "familyId": "dk-model-evidence",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910101,
+      "newId": 920101,
+      "familyId": "dk-lighthouse",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910102,
+      "newId": 920102,
+      "familyId": "dk-lighthouse",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910103,
+      "newId": 920103,
+      "familyId": "dk-lighthouse",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910104,
+      "newId": 920104,
+      "familyId": "dk-lighthouse",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910105,
+      "newId": 920105,
+      "familyId": "dk-dock",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910106,
+      "newId": 920106,
+      "familyId": "dk-dock",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910107,
+      "newId": 920107,
+      "familyId": "dk-dock",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910108,
+      "newId": 920108,
+      "familyId": "dk-dock",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910109,
+      "newId": 920109,
+      "familyId": "dk-residence",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910110,
+      "newId": 920110,
+      "familyId": "dk-residence",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910111,
+      "newId": 920111,
+      "familyId": "dk-residence",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910112,
+      "newId": 920112,
+      "familyId": "dk-residence",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910113,
+      "newId": 920113,
+      "familyId": "dk-freshwater",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910114,
+      "newId": 920114,
+      "familyId": "dk-freshwater",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910115,
+      "newId": 920115,
+      "familyId": "dk-freshwater",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910116,
+      "newId": 920116,
+      "familyId": "dk-freshwater",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910117,
+      "newId": 920117,
+      "familyId": "dk-routes",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910118,
+      "newId": 920118,
+      "familyId": "dk-routes",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910119,
+      "newId": 920119,
+      "familyId": "dk-routes",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910120,
+      "newId": 920120,
+      "familyId": "dk-routes",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910121,
+      "newId": 920121,
+      "familyId": "dk-sejong-record",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910122,
+      "newId": 920122,
+      "familyId": "dk-sejong-record",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910123,
+      "newId": 920123,
+      "familyId": "dk-sejong-record",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910124,
+      "newId": 920124,
+      "familyId": "dk-sejong-record",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910125,
+      "newId": 920125,
+      "familyId": "dk-official-geography",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910126,
+      "newId": 920126,
+      "familyId": "dk-official-geography",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910127,
+      "newId": 920127,
+      "familyId": "dk-official-geography",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910128,
+      "newId": 920128,
+      "familyId": "dk-official-geography",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910129,
+      "newId": 920129,
+      "familyId": "dk-an-1693",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910130,
+      "newId": 920130,
+      "familyId": "dk-an-1693",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910131,
+      "newId": 920131,
+      "familyId": "dk-an-1693",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910132,
+      "newId": 920132,
+      "familyId": "dk-an-1693",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910133,
+      "newId": 920133,
+      "familyId": "dk-an-records",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910134,
+      "newId": 920134,
+      "familyId": "dk-an-records",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910135,
+      "newId": 920135,
+      "familyId": "dk-an-records",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910136,
+      "newId": 920136,
+      "familyId": "dk-an-records",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910137,
+      "newId": 920137,
+      "familyId": "dk-an-chronology",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910138,
+      "newId": 920138,
+      "familyId": "dk-an-chronology",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910139,
+      "newId": 920139,
+      "familyId": "dk-an-chronology",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910140,
+      "newId": 920140,
+      "familyId": "dk-an-chronology",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910141,
+      "newId": 920141,
+      "familyId": "dk-decree-name",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910142,
+      "newId": 920142,
+      "familyId": "dk-decree-name",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910143,
+      "newId": 920143,
+      "familyId": "dk-decree-name",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910144,
+      "newId": 920144,
+      "familyId": "dk-decree-name",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910145,
+      "newId": 920145,
+      "familyId": "dk-county-head",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910146,
+      "newId": 920146,
+      "familyId": "dk-county-head",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910147,
+      "newId": 920147,
+      "familyId": "dk-county-head",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910148,
+      "newId": 920148,
+      "familyId": "dk-county-head",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910149,
+      "newId": 920149,
+      "familyId": "dk-territory",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910150,
+      "newId": 920150,
+      "familyId": "dk-territory",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910151,
+      "newId": 920151,
+      "familyId": "dk-territory",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910152,
+      "newId": 920152,
+      "familyId": "dk-territory",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910153,
+      "newId": 920153,
+      "familyId": "dk-gazette-date",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910154,
+      "newId": 920154,
+      "familyId": "dk-gazette-date",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910155,
+      "newId": 920155,
+      "familyId": "dk-gazette-date",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910156,
+      "newId": 920156,
+      "familyId": "dk-gazette-date",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910157,
+      "newId": 920157,
+      "familyId": "dk-proposal-order",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910158,
+      "newId": 920158,
+      "familyId": "dk-proposal-order",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910159,
+      "newId": 920159,
+      "familyId": "dk-proposal-order",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910160,
+      "newId": 920160,
+      "familyId": "dk-proposal-order",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910161,
+      "newId": 920161,
+      "familyId": "dk-shim-role",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910162,
+      "newId": 920162,
+      "familyId": "dk-shim-role",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910163,
+      "newId": 920163,
+      "familyId": "dk-shim-role",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910164,
+      "newId": 920164,
+      "familyId": "dk-shim-role",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910165,
+      "newId": 920165,
+      "familyId": "dk-county-affiliation",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910166,
+      "newId": 920166,
+      "familyId": "dk-county-affiliation",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910167,
+      "newId": 920167,
+      "familyId": "dk-county-affiliation",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910168,
+      "newId": 920168,
+      "familyId": "dk-county-affiliation",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910169,
+      "newId": 920169,
+      "familyId": "dk-reported-speech",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910170,
+      "newId": 920170,
+      "familyId": "dk-reported-speech",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910171,
+      "newId": 920171,
+      "familyId": "dk-reported-speech",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910172,
+      "newId": 920172,
+      "familyId": "dk-reported-speech",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910173,
+      "newId": 920173,
+      "familyId": "dk-order-response",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910174,
+      "newId": 920174,
+      "familyId": "dk-order-response",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910175,
+      "newId": 920175,
+      "familyId": "dk-order-response",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910176,
+      "newId": 920176,
+      "familyId": "dk-order-response",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910177,
+      "newId": 920177,
+      "familyId": "dk-1900-1906",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910178,
+      "newId": 920178,
+      "familyId": "dk-1900-1906",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910179,
+      "newId": 920179,
+      "familyId": "dk-1900-1906",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910180,
+      "newId": 920180,
+      "familyId": "dk-1900-1906",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910181,
+      "newId": 920181,
+      "familyId": "dk-cheonjang",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910182,
+      "newId": 920182,
+      "familyId": "dk-cheonjang",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910183,
+      "newId": 920183,
+      "familyId": "dk-cheonjang",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910184,
+      "newId": 920184,
+      "familyId": "dk-cheonjang",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910185,
+      "newId": 920185,
+      "familyId": "dk-dongnim-arch",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910186,
+      "newId": 920186,
+      "familyId": "dk-dongnim-arch",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910187,
+      "newId": 920187,
+      "familyId": "dk-dongnim-arch",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910188,
+      "newId": 920188,
+      "familyId": "dk-dongnim-arch",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910189,
+      "newId": 920189,
+      "familyId": "dk-sutdol",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910190,
+      "newId": 920190,
+      "familyId": "dk-sutdol",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910191,
+      "newId": 920191,
+      "familyId": "dk-sutdol",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910192,
+      "newId": 920192,
+      "familyId": "dk-sutdol",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910193,
+      "newId": 920193,
+      "familyId": "dk-gaje-name",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910194,
+      "newId": 920194,
+      "familyId": "dk-gaje-name",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910195,
+      "newId": 920195,
+      "familyId": "dk-gaje-name",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910196,
+      "newId": 920196,
+      "familyId": "dk-gaje-name",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910197,
+      "newId": 920197,
+      "familyId": "dk-tanggeon",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910198,
+      "newId": 920198,
+      "familyId": "dk-tanggeon",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910199,
+      "newId": 920199,
+      "familyId": "dk-tanggeon",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910200,
+      "newId": 920200,
+      "familyId": "dk-tanggeon",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910201,
+      "newId": 920201,
+      "familyId": "dk-dajokan-type",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910202,
+      "newId": 920202,
+      "familyId": "dk-dajokan-type",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910203,
+      "newId": 920203,
+      "familyId": "dk-dajokan-type",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910204,
+      "newId": 920204,
+      "familyId": "dk-dajokan-type",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910205,
+      "newId": 920205,
+      "familyId": "dk-historic-name-context",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910206,
+      "newId": 920206,
+      "familyId": "dk-historic-name-context",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910207,
+      "newId": 920207,
+      "familyId": "dk-historic-name-context",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910208,
+      "newId": 920208,
+      "familyId": "dk-historic-name-context",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910209,
+      "newId": 920209,
+      "familyId": "dk-map-and-document",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910210,
+      "newId": 920210,
+      "familyId": "dk-map-and-document",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910211,
+      "newId": 920211,
+      "familyId": "dk-map-and-document",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910212,
+      "newId": 920212,
+      "familyId": "dk-map-and-document",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910213,
+      "newId": 920213,
+      "familyId": "dk-record-types",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910214,
+      "newId": 920214,
+      "familyId": "dk-record-types",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910215,
+      "newId": 920215,
+      "familyId": "dk-record-types",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910216,
+      "newId": 920216,
+      "familyId": "dk-record-types",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910217,
+      "newId": 920217,
+      "familyId": "dk-authority-and-interpretation",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910218,
+      "newId": 920218,
+      "familyId": "dk-authority-and-interpretation",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910219,
+      "newId": 920219,
+      "familyId": "dk-authority-and-interpretation",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910220,
+      "newId": 920220,
+      "familyId": "dk-authority-and-interpretation",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910221,
+      "newId": 920221,
+      "familyId": "dk-weather-access",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910222,
+      "newId": 920222,
+      "familyId": "dk-weather-access",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910223,
+      "newId": 920223,
+      "familyId": "dk-weather-access",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910224,
+      "newId": 920224,
+      "familyId": "dk-weather-access",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910225,
+      "newId": 920225,
+      "familyId": "dk-maritime-climate",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910226,
+      "newId": 920226,
+      "familyId": "dk-maritime-climate",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910227,
+      "newId": 920227,
+      "familyId": "dk-maritime-climate",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910228,
+      "newId": 920228,
+      "familyId": "dk-maritime-climate",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910229,
+      "newId": 920229,
+      "familyId": "dk-admin-address",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910230,
+      "newId": 920230,
+      "familyId": "dk-admin-address",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910231,
+      "newId": 920231,
+      "familyId": "dk-admin-address",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910232,
+      "newId": 920232,
+      "familyId": "dk-admin-address",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910233,
+      "newId": 920233,
+      "familyId": "dk-visiting-scope",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910234,
+      "newId": 920234,
+      "familyId": "dk-visiting-scope",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910235,
+      "newId": 920235,
+      "familyId": "dk-visiting-scope",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910236,
+      "newId": 920236,
+      "familyId": "dk-visiting-scope",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910237,
+      "newId": 920237,
+      "familyId": "dk-whole-dokdo",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910238,
+      "newId": 920238,
+      "familyId": "dk-whole-dokdo",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910239,
+      "newId": 920239,
+      "familyId": "dk-whole-dokdo",
+      "policy": "retire-content-only; keep records and earned lights"
+    },
+    {
+      "oldId": 910240,
+      "newId": 920240,
+      "familyId": "dk-whole-dokdo",
+      "policy": "retire-content-only; keep records and earned lights"
+    }
+  ],
+  "nonDeployedDraftIds": [
+    912001,
+    912002,
+    912003,
+    912004,
+    912005
+  ]
+}

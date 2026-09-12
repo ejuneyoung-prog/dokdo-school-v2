@@ -1,0 +1,646 @@
+TAP version 13
+# Subtest: All 240 active questions use new IDs, with no reuse of 1.1 correctness
+ok 1 - All 240 active questions use new IDs, with no reuse of 1.1 correctness
+  ---
+  duration_ms: 6.242161
+  type: 'test'
+  ...
+# Subtest: The compiled correct answer and individual reasons match canonical authoring in both languages
+ok 2 - The compiled correct answer and individual reasons match canonical authoring in both languages
+  ---
+  duration_ms: 44.3337
+  type: 'test'
+  ...
+# Subtest: Shuffling every question for 20 seeds preserves correct IDs and feedback association
+ok 3 - Shuffling every question for 20 seeds preserves correct IDs and feedback association
+  ---
+  duration_ms: 213.073107
+  type: 'test'
+  ...
+# Subtest: Correct authored positions are balanced for each choice count before runtime shuffling
+ok 4 - Correct authored positions are balanced for each choice count before runtime shuffling
+  ---
+  duration_ms: 1.339406
+  type: 'test'
+  ...
+# Subtest: Sources state publisher country and historical creator separately
+ok 5 - Sources state publisher country and historical creator separately
+  ---
+  duration_ms: 1.499193
+  type: 'test'
+  ...
+# Subtest: Named-command question has only comparable historical-document alternatives
+ok 6 - Named-command question has only comparable historical-document alternatives
+  ---
+  duration_ms: 0.635663
+  type: 'test'
+  ...
+# Subtest: Winter question is direct, with four short weather alternatives and scope outside the stem
+ok 7 - Winter question is direct, with four short weather alternatives and scope outside the stem
+  ---
+  duration_ms: 0.63449
+  type: 'test'
+  ...
+# Subtest: Current instruction and every curriculum difficulty preserve supplied evidence
+ok 8 - Current instruction and every curriculum difficulty preserve supplied evidence
+  ---
+  duration_ms: 1.866171
+  type: 'test'
+  ...
+# Subtest: All old 240 learned records, locations and awards survive learning one new item
+ok 9 - All old 240 learned records, locations and awards survive learning one new item
+  ---
+  duration_ms: 94.8019
+  type: 'test'
+  ...
+# Subtest: Old course records remain visible awards but cannot fabricate mastery of rewritten questions
+ok 10 - Old course records remain visible awards but cannot fabricate mastery of rewritten questions
+  ---
+  duration_ms: 5.42279
+  type: 'test'
+  ...
+# Subtest: Source metadata is a footer element, not a wrapper inserted into question text
+ok 11 - Source metadata is a footer element, not a wrapper inserted into question text
+  ---
+  duration_ms: 1.321382
+  type: 'test'
+  ...
+# Subtest: New release contains 240 bilingual tasks, 60 stable families, 12 coherent units
+ok 12 - New release contains 240 bilingual tasks, 60 stable families, 12 coherent units
+  ---
+  duration_ms: 16.519271
+  type: 'test'
+  ...
+# Subtest: Old original IDs and 48 demonstration IDs cannot re-enter ordinary selection
+ok 13 - Old original IDs and 48 demonstration IDs cannot re-enter ordinary selection
+  ---
+  duration_ms: 49.407535
+  type: 'test'
+  ...
+# Subtest: Korean and English tasks agree on identity, correct answer and family
+ok 14 - Korean and English tasks agree on identity, correct answer and family
+  ---
+  duration_ms: 9.506502
+  type: 'test'
+  ...
+# Subtest: All tasks carry direct source locators and explanation for each option
+ok 15 - All tasks carry direct source locators and explanation for each option
+  ---
+  duration_ms: 10.32173
+  type: 'test'
+  ...
+# Subtest: Every evidence-reading/judgment item supplies evidence, not an invisible photograph
+ok 16 - Every evidence-reading/judgment item supplies evidence, not an invisible photograph
+  ---
+  duration_ms: 10.400974
+  type: 'test'
+  ...
+# Subtest: Difficulty allocation and actual cognitive annotations are separate and counted honestly
+ok 17 - Difficulty allocation and actual cognitive annotations are separate and counted honestly
+  ---
+  duration_ms: 6.572309
+  type: 'test'
+  ...
+# Subtest: Middle, high and adult start with real Dokdo records, not generic nature manners
+ok 18 - Middle, high and adult start with real Dokdo records, not generic nature manners
+  ---
+  duration_ms: 4.391252
+  type: 'test'
+  ...
+# Subtest: Ages are required; malformed selections fail closed
+ok 19 - Ages are required; malformed selections fail closed
+  ---
+  duration_ms: 1.564207
+  type: 'test'
+  ...
+# Subtest: All 224 age/answer-pattern placements stay in age track and use five distinct families
+ok 20 - All 224 age/answer-pattern placements stay in age track and use five distinct families
+  ---
+  duration_ms: 100.78116
+  type: 'test'
+  ...
+# Subtest: A wrong middle-school placement response cannot fall into a kindergarten question pool
+ok 21 - A wrong middle-school placement response cannot fall into a kindergarten question pool
+  ---
+  duration_ms: 9.331852
+  type: 'test'
+  ...
+# Subtest: Placement is diagnostic only: no light, XP, weekly score or invitation is invented
+ok 22 - Placement is diagnostic only: no light, XP, weekly score or invitation is invented
+  ---
+  duration_ms: 3.901022
+  type: 'test'
+  ...
+# Subtest: All six tracks can finish 12 coherent units without falling back to the old bank
+ok 23 - All six tracks can finish 12 coherent units without falling back to the old bank
+  ---
+  duration_ms: 933.043337
+  type: 'test'
+  ...
+# Subtest: Repeating an equivalent concept on the same day does not duplicate reward or ranking credit
+ok 24 - Repeating an equivalent concept on the same day does not duplicate reward or ranking credit
+  ---
+  duration_ms: 8.425311
+  type: 'test'
+  ...
+# Subtest: Same-day review after seeing the teaching is not counted as delayed independent mastery
+ok 25 - Same-day review after seeing the teaching is not counted as delayed independent mastery
+  ---
+  duration_ms: 1.214367
+  type: 'test'
+  ...
+# Subtest: Two variants reviewed on one later day still count as one concept-day
+ok 26 - Two variants reviewed on one later day still count as one concept-day
+  ---
+  duration_ms: 3.791452
+  type: 'test'
+  ...
+# Subtest: Two due reviews on different later days produce one mastered concept, not two questions
+ok 27 - Two due reviews on different later days produce one mastered concept, not two questions
+  ---
+  duration_ms: 1.766219
+  type: 'test'
+  ...
+# Subtest: Retry cannot create an unseen question record
+ok 28 - Retry cannot create an unseen question record
+  ---
+  duration_ms: 0.829117
+  type: 'test'
+  ...
+# Subtest: A wrong answer followed by correction permits learning without pretending it was first-attempt recall
+ok 29 - A wrong answer followed by correction permits learning without pretending it was first-attempt recall
+  ---
+  duration_ms: 1.308511
+  type: 'test'
+  ...
+# Subtest: Unit completion rejects missing, repeated, cross-unit and unlearned questions
+ok 30 - Unit completion rejects missing, repeated, cross-unit and unlearned questions
+  ---
+  duration_ms: 7.252737
+  type: 'test'
+  ...
+# Subtest: Unit completion does not trust fabricated family/unit metadata attached to a valid ID
+ok 31 - Unit completion does not trust fabricated family/unit metadata attached to a valid ID
+  ---
+  duration_ms: 2.919665
+  type: 'test'
+  ...
+# Subtest: Finishing an already completed unit does not create a second bird achievement
+ok 32 - Finishing an already completed unit does not create a second bird achievement
+  ---
+  duration_ms: 3.004405
+  type: 'test'
+  ...
+# Subtest: Completing classes alone does not falsely certify mastery or automatically change actual age
+ok 33 - Completing classes alone does not falsely certify mastery or automatically change actual age
+  ---
+  duration_ms: 138.783691
+  type: 'test'
+  ...
+# Subtest: Explicit deeper study is available after 12 units and 12 mastered concept families
+ok 34 - Explicit deeper study is available after 12 units and 12 mastered concept families
+  ---
+  duration_ms: 123.083395
+  type: 'test'
+  ...
+# Subtest: Changing reading route never erases previously completed units or the old game rank
+ok 35 - Changing reading route never erases previously completed units or the old game rank
+  ---
+  duration_ms: 224.084822
+  type: 'test'
+  ...
+# Subtest: Legacy 1,513 items and 48 previous demonstration records remain unchanged when starting the new course
+ok 36 - Legacy 1,513 items and 48 previous demonstration records remain unchanged when starting the new course
+  ---
+  duration_ms: 203.669146
+  type: 'test'
+  ...
+# Subtest: Learning-profile migration preserves old placement and accomplishment evidence
+ok 37 - Learning-profile migration preserves old placement and accomplishment evidence
+  ---
+  duration_ms: 21.24516
+  type: 'test'
+  ...
+# Subtest: Course completions, family reviews and previous question rewards survive exact backup round trip
+ok 38 - Course completions, family reviews and previous question rewards survive exact backup round trip
+  ---
+  duration_ms: 240.393428
+  type: 'test'
+  ...
+# Subtest: An otherwise similar backup that drops a completed unit is rejected
+ok 39 - An otherwise similar backup that drops a completed unit is rejected
+  ---
+  duration_ms: 6.878745
+  type: 'test'
+  ...
+# Subtest: An otherwise similar backup that drops a delayed group review is rejected
+ok 40 - An otherwise similar backup that drops a delayed group review is rejected
+  ---
+  duration_ms: 3.665008
+  type: 'test'
+  ...
+# Subtest: Impossible dates and malformed course completion keys fail validation
+ok 41 - Impossible dates and malformed course completion keys fail validation
+  ---
+  duration_ms: 2.789828
+  type: 'test'
+  ...
+# Subtest: Weekly rollover retains concept mastery, rank, lights, beacons and completed courses
+ok 42 - Weekly rollover retains concept mastery, rank, lights, beacons and completed courses
+  ---
+  duration_ms: 271.565091
+  type: 'test'
+  ...
+# Subtest: Invalid or inactive retired content cannot be resurrected by review selection
+ok 43 - Invalid or inactive retired content cannot be resurrected by review selection
+  ---
+  duration_ms: 1.57635
+  type: 'test'
+  ...
+# Subtest: Building the content is deterministic and audit metadata agrees with the loaded runtime
+ok 44 - Building the content is deterministic and audit metadata agrees with the loaded runtime
+  ---
+  duration_ms: 6.98993
+  type: 'test'
+  ...
+# Subtest: Opening help during a later review does not certify an independent recall day
+ok 45 - Opening help during a later review does not certify an independent recall day
+  ---
+  duration_ms: 5.649819
+  type: 'test'
+  ...
+# Subtest: A real first visit starts at zero, never with a seeded animal or light
+ok 46 - A real first visit starts at zero, never with a seeded animal or light
+  ---
+  duration_ms: 26.551124
+  type: 'test'
+  ...
+# Subtest: Unrewarded invite creates nothing and spends nothing
+ok 47 - Unrewarded invite creates nothing and spends nothing
+  ---
+  duration_ms: 2.468553
+  type: 'test'
+  ...
+# Subtest: Five earned credits create one 60-second visitor
+ok 48 - Five earned credits create one 60-second visitor
+  ---
+  duration_ms: 24.716283
+  type: 'test'
+  ...
+# Subtest: Duplicate same-day answers cannot farm XP or invitation credits
+ok 49 - Duplicate same-day answers cannot farm XP or invitation credits
+  ---
+  duration_ms: 3.769579
+  type: 'test'
+  ...
+# Subtest: Correction records understanding but no duplicate score or independent recall
+ok 50 - Correction records understanding but no duplicate score or independent recall
+  ---
+  duration_ms: 4.789952
+  type: 'test'
+  ...
+# Subtest: An error preserves an already earned light
+ok 51 - An error preserves an already earned light
+  ---
+  duration_ms: 2.972937
+  type: 'test'
+  ...
+# Subtest: Placement has no invitation or XP payout
+ok 52 - Placement has no invitation or XP payout
+  ---
+  duration_ms: 1.936187
+  type: 'test'
+  ...
+# Subtest: An explicit requested visitor count is respected
+ok 53 - An explicit requested visitor count is respected
+  ---
+  duration_ms: 81.012555
+  type: 'test'
+  ...
+# Subtest: Ten visitors are allowed and an eleventh consumes no credit
+ok 54 - Ten visitors are allowed and an eleventh consumes no credit
+  ---
+  duration_ms: 66.854785
+  type: 'test'
+  ...
+# Subtest: Invalid invite counts are not coerced into free or negative awards
+ok 55 - Invalid invite counts are not coerced into free or negative awards
+  ---
+  duration_ms: 61.090292
+  type: 'test'
+  ...
+# Subtest: New visits end at sixty seconds, not at ten minutes
+ok 56 - New visits end at sixty seconds, not at ten minutes
+  ---
+  duration_ms: 47.343675
+  type: 'test'
+  ...
+# Subtest: Hidden scenes and inactive windows do not spend remaining time
+ok 57 - Hidden scenes and inactive windows do not spend remaining time
+  ---
+  duration_ms: 33.048976
+  type: 'test'
+  ...
+# Subtest: Previously saved ten-minute visitor time is never reduced by the visual update
+ok 58 - Previously saved ten-minute visitor time is never reduced by the visual update
+  ---
+  duration_ms: 1.492511
+  type: 'test'
+  ...
+# Subtest: Week boundary resets only the weekly tally and archives the previous week
+ok 59 - Week boundary resets only the weekly tally and archives the previous week
+  ---
+  duration_ms: 19.485023
+  type: 'test'
+  ...
+# Subtest: Clock rollback cannot erase a later week
+ok 60 - Clock rollback cannot erase a later week
+  ---
+  duration_ms: 28.257688
+  type: 'test'
+  ...
+# Subtest: A 1,513-question backup preserves all counters and beacon records
+ok 61 - A 1,513-question backup preserves all counters and beacon records
+  ---
+  duration_ms: 146.275896
+  type: 'test'
+  ...
+# Subtest: Restoring a lower-score backup is refused
+ok 62 - Restoring a lower-score backup is refused
+  ---
+  duration_ms: 94.69327
+  type: 'test'
+  ...
+# Subtest: A same-score backup cannot drop an individual question
+ok 63 - A same-score backup cannot drop an individual question
+  ---
+  duration_ms: 102.087422
+  type: 'test'
+  ...
+# Subtest: A same-score backup cannot spend saved invitation credits
+ok 64 - A same-score backup cannot spend saved invitation credits
+  ---
+  duration_ms: 181.789963
+  type: 'test'
+  ...
+# Subtest: A chosen beacon slot cannot silently move during backup restore
+ok 65 - A chosen beacon slot cannot silently move during backup restore
+  ---
+  duration_ms: 175.089517
+  type: 'test'
+  ...
+# Subtest: Different names are not silently treated as the same profile
+ok 66 - Different names are not silently treated as the same profile
+  ---
+  duration_ms: 51.360593
+  type: 'test'
+  ...
+# Subtest: Unknown future schemas are rejected rather than reset
+ok 67 - Unknown future schemas are rejected rather than reset
+  ---
+  duration_ms: 0.954185
+  type: 'test'
+  ...
+# Subtest: Prototype pollution fields in JSON are rejected
+ok 68 - Prototype pollution fields in JSON are rejected
+  ---
+  duration_ms: 0.861882
+  type: 'test'
+  ...
+# Subtest: Invalid bird records are rejected
+ok 69 - Invalid bird records are rejected
+  ---
+  duration_ms: 0.874364
+  type: 'test'
+  ...
+# Subtest: An oversized backup is refused before deserializing
+ok 70 - An oversized backup is refused before deserializing
+  ---
+  duration_ms: 0.397248
+  type: 'test'
+  ...
+# Subtest: Unreadable persisted JSON is preserved and the editor becomes blocked
+ok 71 - Unreadable persisted JSON is preserved and the editor becomes blocked
+  ---
+  duration_ms: 1.543267
+  type: 'test'
+  ...
+# Subtest: Quota failure cannot replace a good profile with a fresh one
+ok 72 - Quota failure cannot replace a good profile with a fresh one
+  ---
+  duration_ms: 58.015055
+  type: 'test'
+  ...
+# Subtest: Two stale tabs cannot overwrite a newer saved record
+ok 73 - Two stale tabs cannot overwrite a newer saved record
+  ---
+  duration_ms: 1.417007
+  type: 'test'
+  ...
+# Subtest: Legacy detection is read-only
+ok 74 - Legacy detection is read-only
+  ---
+  duration_ms: 36.370586
+  type: 'test'
+  ...
+# Subtest: Explicit legacy import stores a separate copy without changing the original
+ok 75 - Explicit legacy import stores a separate copy without changing the original
+  ---
+  duration_ms: 101.223701
+  type: 'test'
+  ...
+# Subtest: A failed source snapshot aborts import before any profile replacement
+ok 76 - A failed source snapshot aborts import before any profile replacement
+  ---
+  duration_ms: 30.630519
+  type: 'test'
+  ...
+# Subtest: Age selection is mandatory before diagnostic routing
+ok 77 - Age selection is mandatory before diagnostic routing
+  ---
+  duration_ms: 1.699024
+  type: 'test'
+  ...
+# Subtest: Every low-primary diagnostic question is from the allowlisted easy pool
+ok 78 - Every low-primary diagnostic question is from the allowlisted easy pool
+  ---
+  duration_ms: 6.771635
+  type: 'test'
+  ...
+# Subtest: Age edits preserve both past game grades and new learned stages
+ok 79 - Age edits preserve both past game grades and new learned stages
+  ---
+  duration_ms: 11.978302
+  type: 'test'
+  ...
+# Subtest: The new 240-question course is distinct from the unchanged original 1,513
+ok 80 - The new 240-question course is distinct from the unchanged original 1,513
+  ---
+  duration_ms: 0.900404
+  type: 'test'
+  ...
+# Subtest: Three completed units earn a progress celebration, not a new school grade
+ok 81 - Three completed units earn a progress celebration, not a new school grade
+  ---
+  duration_ms: 309.326159
+  type: 'test'
+  ...
+# Subtest: An ordinary lesson does not invent a bird reward
+ok 82 - An ordinary lesson does not invent a bird reward
+  ---
+  duration_ms: 0.787711
+  type: 'test'
+  ...
+# Subtest: A bird encounter unlock is idempotent and replay adds no new achievement
+ok 83 - A bird encounter unlock is idempotent and replay adds no new achievement
+  ---
+  duration_ms: 1.073082
+  type: 'test'
+  ...
+# Subtest: Bird visit is 24 seconds and journal discovery remains afterwards
+ok 84 - Bird visit is 24 seconds and journal discovery remains afterwards
+  ---
+  duration_ms: 0.585959
+  type: 'test'
+  ...
+# Subtest: Undiscovered birds cannot be replayed
+ok 85 - Undiscovered birds cannot be replayed
+  ---
+  duration_ms: 0.541952
+  type: 'test'
+  ...
+# Subtest: Untrusted profile text remains data, not executable content
+ok 86 - Untrusted profile text remains data, not executable content
+  ---
+  duration_ms: 0.873544
+  type: 'test'
+  ...
+# Subtest: All 1,513 lights have positions; no 240-light display cap
+ok 87 - All 1,513 lights have positions; no 240-light display cap
+  ---
+  duration_ms: 46.068825
+  type: 'test'
+  ...
+# Subtest: Appending a new light never reorders prior positions
+ok 88 - Appending a new light never reorders prior positions
+  ---
+  duration_ms: 85.289675
+  type: 'test'
+  ...
+# Subtest: Light anchors stay within their artwork island silhouettes
+ok 89 - Light anchors stay within their artwork island silhouettes
+  ---
+  duration_ms: 28.546177
+  type: 'test'
+  ...
+# Subtest: All ten visitors use the inter-island channel and avoid land with body clearance
+ok 90 - All ten visitors use the inter-island channel and avoid land with body clearance
+  ---
+  duration_ms: 823.818619
+  type: 'test'
+  ...
+# Subtest: No birds or seals are drawn as live rewards for a new profile
+ok 91 - No birds or seals are drawn as live rewards for a new profile
+  ---
+  duration_ms: 1.60221
+  type: 'test'
+  ...
+# Subtest: Deployed module exactly matches the newly authored JSON, not the old pilot
+ok 92 - Deployed module exactly matches the newly authored JSON, not the old pilot
+  ---
+  duration_ms: 92.552953
+  type: 'test'
+  ...
+# Subtest: Attendance shelter from the previous app is preserved and used
+ok 93 - Attendance shelter from the previous app is preserved and used
+  ---
+  duration_ms: 1.549248
+  type: 'test'
+  ...
+# Subtest: A missing legacy attendance date does not erase the stored streak
+ok 94 - A missing legacy attendance date does not erase the stored streak
+  ---
+  duration_ms: 52.209103
+  type: 'test'
+  ...
+# Subtest: Explicit recovery preserves unreadable original bytes before restoring a valid backup
+ok 95 - Explicit recovery preserves unreadable original bytes before restoring a valid backup
+  ---
+  duration_ms: 56.733608
+  type: 'test'
+  ...
+# Subtest: Recovery cannot be used to bypass a valid competing tab
+ok 96 - Recovery cannot be used to bypass a valid competing tab
+  ---
+  duration_ms: 43.057738
+  type: 'test'
+  ...
+# Subtest: A previous different recovery snapshot is never silently overwritten
+ok 97 - A previous different recovery snapshot is never silently overwritten
+  ---
+  duration_ms: 18.172698
+  type: 'test'
+  ...
+# Subtest: Reduced-motion bird positions stay fixed while the viewing budget changes
+ok 98 - Reduced-motion bird positions stay fixed while the viewing budget changes
+  ---
+  duration_ms: 1.784606
+  type: 'test'
+  ...
+# Subtest: An old English backup keeps its UI language in the shared new client
+ok 99 - An old English backup keeps its UI language in the shared new client
+  ---
+  duration_ms: 64.357462
+  type: 'test'
+  ...
+# Subtest: Gangchi do not visibly teleport at coastline avoidance boundaries
+ok 100 - Gangchi do not visibly teleport at coastline avoidance boundaries
+  ---
+  duration_ms: 2750.784305
+  type: 'test'
+  ...
+# Subtest: Easy practice is separate from the preserved earned stage
+ok 101 - Easy practice is separate from the preserved earned stage
+  ---
+  duration_ms: 0.529112
+  type: 'test'
+  ...
+# Subtest: An invalid practice route is rejected on import
+ok 102 - An invalid practice route is rejected on import
+  ---
+  duration_ms: 0.353646
+  type: 'test'
+  ...
+# Subtest: Malformed review-day data cannot break course rendering after import
+ok 103 - Malformed review-day data cannot break course rendering after import
+  ---
+  duration_ms: 0.447102
+  type: 'test'
+  ...
+# Subtest: Non-string due dates cannot break review sorting
+ok 104 - Non-string due dates cannot break review sorting
+  ---
+  duration_ms: 0.721175
+  type: 'test'
+  ...
+# Subtest: A completed-course string is rejected instead of failing after the last answer
+ok 105 - A completed-course string is rejected instead of failing after the last answer
+  ---
+  duration_ms: 0.538956
+  type: 'test'
+  ...
+# Subtest: An animation cannot claim an unrecorded bird event
+ok 106 - An animation cannot claim an unrecorded bird event
+  ---
+  duration_ms: 0.363341
+  type: 'test'
+  ...
+1..106
+# tests 106
+# suites 0
+# pass 106
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7238.406218
