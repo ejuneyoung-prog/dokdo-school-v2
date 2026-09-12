@@ -14,6 +14,11 @@ p.add_argument('--output',default=str(ROOT/'test-results/browser'));p.add_argume
 args=p.parse_args();OUT=Path(args.output);OUT.mkdir(parents=True,exist_ok=True)
 KEY='dokdo-korea-school-cinematic-v1';OLD='dokdo-korea-school-v2'
 checks=[];errors=[];requests=[]
+# The channel intro opens once a day over the home view and swallows every
+# click underneath it. It can open after the page has settled -- webkit was
+# slower here than chromium -- so dismissing it once at startup was not
+# enough. Close it whenever it appears, as a visitor would.
+INTRO_WATCH="if(!window.__introWatch)window.__introWatch=setInterval(()=>{const d=document.getElementById('youtube-intro-dialog');if(d&&d.open)d.close();},50);"
 def unconfigured(src=None):
     """site-config.js with no backend or analytics id, so nothing is called out to.
 
@@ -85,6 +90,7 @@ try:
         ctx=browser.new_context(viewport={'width':width,'height':1000},device_scale_factor=1,accept_downloads=True)
         page=ctx.new_page();page.set_default_timeout(8000);page.on('pageerror',lambda e:errors.append(str(e)))
         # Only optional fonts are blocked for deterministic screenshots.
+        ctx.add_init_script(INTRO_WATCH)
         ctx.route('https://cdn.jsdelivr.net/**',lambda r:r.abort())
         # A test must never reach the operator's live sheet: CI runs were
         # appending rows to the real activity log.
@@ -100,7 +106,7 @@ try:
         wait_until(page,'!!window.DokdoApp')
         # The channel intro opens once a day over the home view and swallows
         # every click underneath it, so dismiss it as a visitor would.
-        page.evaluate("()=>{const d=document.getElementById('youtube-intro-dialog');if(d&&d.open)d.close();}")
+        page.evaluate('()=>{'+INTRO_WATCH+'}')
         page.evaluate('DokdoApp.assetsReady')
         page.wait_for_timeout(100)
         if lang=='en':page.click('#language');wait_until(page,'document.documentElement.lang==="en"')

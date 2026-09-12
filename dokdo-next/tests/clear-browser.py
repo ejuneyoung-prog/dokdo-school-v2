@@ -9,6 +9,11 @@ from playwright.sync_api import sync_playwright
 A=Path(__file__).resolve().parents[1]
 ap=argparse.ArgumentParser();ap.add_argument('--mode',choices=['inline','http'],default='http');ap.add_argument('--browser',default=os.environ.get('CHROMIUM_EXECUTABLE'));ap.add_argument('--engine',choices=['chromium','webkit'],default='chromium');ap.add_argument('--output',default=str(A/'test-results/clear-browser'));ap.add_argument('--phase',choices=['flow','matrix','screens','all'],default='all');args=ap.parse_args();OUT=Path(args.output);OUT.mkdir(parents=True,exist_ok=True)
 checks=[];errors=[];requests=[];rows=[]
+# The channel intro opens once a day over the home view and swallows every
+# click underneath it. It can open after the page has settled -- webkit was
+# slower here than chromium -- so dismissing it once at startup was not
+# enough. Close it whenever it appears, as a visitor would.
+INTRO_WATCH="if(!window.__introWatch)window.__introWatch=setInterval(()=>{const d=document.getElementById('youtube-intro-dialog');if(d&&d.open)d.close();},50);"
 def unconfigured(src=None):
  """site-config.js with no backend or analytics id, so nothing is called out to.
 
@@ -55,7 +60,7 @@ try:
   launch={'headless':True}
   if args.engine=='chromium':launch['args']=['--no-sandbox']
   if args.browser:launch['executable_path']=args.browser
-  browser=getattr(pw,args.engine).launch(**launch);ctx=browser.new_context(viewport={'width':1440,'height':1100},reduced_motion='reduce',accept_downloads=True);ctx.route('https://cdn.jsdelivr.net/**',lambda r:r.abort());ctx.route('**/assets/site-config.js',lambda r:r.fulfill(status=200,content_type='application/javascript',body=unconfigured()));p=ctx.new_page();p.set_default_timeout(6000);p.on('dialog',lambda d:d.accept());p.on('pageerror',lambda e:errors.append(str(e)));p.on('request',lambda r:requests.append(r.url) if r.url.startswith('http') and not any(x in r.url for x in ['127.0.0.1','cdn.jsdelivr.net','i.ytimg.com']) else None)
+  browser=getattr(pw,args.engine).launch(**launch);ctx=browser.new_context(viewport={'width':1440,'height':1100},reduced_motion='reduce',accept_downloads=True);ctx.add_init_script(INTRO_WATCH);ctx.route('https://cdn.jsdelivr.net/**',lambda r:r.abort());ctx.route('**/assets/site-config.js',lambda r:r.fulfill(status=200,content_type='application/javascript',body=unconfigured()));p=ctx.new_page();p.set_default_timeout(6000);p.on('dialog',lambda d:d.accept());p.on('pageerror',lambda e:errors.append(str(e)));p.on('request',lambda r:requests.append(r.url) if r.url.startswith('http') and not any(x in r.url for x in ['127.0.0.1','cdn.jsdelivr.net','i.ytimg.com']) else None)
   if args.mode=='inline':
    p.evaluate("()=>{const m=new Map();Object.defineProperty(window,'localStorage',{value:{getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k)}});}")
    p.set_content(inline(),wait_until='domcontentloaded')
@@ -63,7 +68,7 @@ try:
   p.wait_for_function('!!window.DokdoApp');p.evaluate('DokdoApp.assetsReady')
   # The channel intro opens once a day over the home view and swallows every
   # click underneath it, so dismiss it as a visitor would.
-  p.evaluate("()=>{const d=document.getElementById('youtube-intro-dialog');if(d&&d.open)d.close();}")
+  p.evaluate('()=>{'+INTRO_WATCH+'}')
   ck('live starts with zero question rewards',p.evaluate('Object.keys(DokdoApp.state.m).length===0 && DokdoApp.state.xp===0'))
   if args.phase in ['flow','all']:
    p.eval_on_selector('#start-lesson','e=>e.click()');p.eval_on_selector('#age-form button[type=submit]','e=>e.click()');ck('age gate remains mandatory',p.evaluate('DokdoApp.lesson===null'))

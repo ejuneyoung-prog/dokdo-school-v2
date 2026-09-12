@@ -2,6 +2,13 @@
 'use strict';
 (function(){
 const M=DokdoAppModel,C=M.Course,Core=M.Core,V=DokdoVisualScene,$=id=>document.getElementById(id);
+/* demo.html deliberately ships a subset of index.html's markup, so some of the
+ * controls wired below are absent there. Attaching a handler to a missing one
+ * threw while this file was still executing, leaving the whole demo page dead
+ * -- no DokdoApp at all -- instead of merely short one button. Wiring through
+ * these two costs an absent control only its own handler. */
+const wire=(id,prop,fn)=>{const el=$(id);if(el)el[prop]=fn;};
+const listen=(id,type,fn,opts)=>{const el=$(id);if(el)el.addEventListener(type,fn,opts);};
 const ko={};document.querySelectorAll('[data-i18n]').forEach(el=>ko[el.dataset.i18n]=el.textContent);
 const en={
  facilityTitle:'Places and facilities',facilitySource:'Official facility information ↗',
@@ -268,7 +275,7 @@ function renderVisitors(){
  // gcHit only ever changes in +5 jumps (every 10 correct answers), so
  // gcHit%5 was always 0 and this gauge never visibly moved. The per-answer
  // counter is s.visual.journey.inviteRemainder (0..9, resets on the 10th).
- const toward=(s.visual&&s.visual.journey&&s.visual.journey.inviteRemainder)||0;$('gangchi-progress').value=toward;
+ const toward=(s.visual&&s.visual.journey&&s.visual.journey.inviteRemainder)||0;wire('gangchi-progress','value',toward);
  txt('gangchi-progress-label',tr(`정답 ${toward}/10 · 다음 강치까지`,`${toward}/10 correct · until the next gangchi`));
  const requested=+$('invite-count').value;
  $('invite').disabled=ready<1||vis.length>=10||store.blocked;
@@ -312,9 +319,10 @@ function flagEmoji(code){
 }
 function renderMotivationBanner(s,a,unit){
  const banner=$('motivation-banner');
+ if(!banner)return;
  if(!a.name){banner.hidden=true;return;}
  banner.hidden=false;
- $('motivation-flag').textContent=flagEmoji(s.flag)||'🏳️';
+ txt('motivation-flag',flagEmoji(s.flag)||'🏳️');
  const shownName=Array.from(a.name).length>20?Array.from(a.name).slice(0,20).join('')+'…':a.name;
  txt('motivation-name',shownName);
  txt('motivation-question',tr(`오늘의 문제 · ${unit[language]} · 매일 들르면 더 빨리 밝아져요`,`Today's question · ${unit['en']} · visit daily to light up faster`));
@@ -327,6 +335,7 @@ function pickRandomDistinct(arr,n){
 function renderYoutubeCard(){
  const yt=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.youtube)||{};
  const ids=Array.isArray(yt.videoIds)?yt.videoIds:[];
+ if(!$('youtube-card'))return;
  $('youtube-card').hidden=!ids.length;
  if(!ids.length)return;
  if(!homeVideoIds)homeVideoIds=pickRandomDistinct(ids,3);
@@ -349,7 +358,7 @@ function maybeShowIntro(){
  showDialog('youtube-intro-dialog');
  mutate(s2=>{s2.introDay=today;}).catch(()=>{});
 }
-$('youtube-intro-dialog').addEventListener('close',()=>{
+listen('youtube-intro-dialog','close',()=>{
  stopAllYoutubeEmbeds();
  if($('intro-off').checked)mutate(s=>{s.introOff=true;}).catch(()=>{});
 });
@@ -392,7 +401,7 @@ function setupAge(callback,force=false){
  $('school-cat').value=getS().schoolCat||'';$('school-name').value=getS().school||'';
  txt('age-error','');showDialog('age-dialog');$('age-band').focus();
 }
-$('flag-select').onchange=()=>{$('flag-other-row').hidden=$('flag-select').value!=='OTHER';};
+wire('flag-select','onchange',()=>{$('flag-other-row').hidden=$('flag-select').value!=='OTHER';});
 /* School name suggestions. Names come from real data only -- the operator's
  * optional ./data/schools.json export and the school names the hall of fame
  * already returns -- so nothing here invents an institution that doesn't exist. */
@@ -461,10 +470,10 @@ function moveSchoolPick(step){
  options.forEach((el,i)=>el.classList.toggle('active',i===schoolPick));
  options[schoolPick].scrollIntoView({block:'nearest'});
 }
-$('school-name').addEventListener('focus',loadSchoolList,{once:true});
-$('school-name').addEventListener('input',()=>{loadSchoolList();renderSchoolSuggest();});
-$('school-name').addEventListener('blur',()=>setTimeout(closeSchoolSuggest,120));
-$('school-name').addEventListener('keydown',event=>{
+listen('school-name','focus',loadSchoolList,{once:true});
+listen('school-name','input',()=>{loadSchoolList();renderSchoolSuggest();});
+listen('school-name','blur',()=>setTimeout(closeSchoolSuggest,120));
+listen('school-name','keydown',event=>{
  if($('school-suggest').hidden)return;
  const options=[...$('school-suggest').querySelectorAll('.suggest-item')];
  if(event.key==='ArrowDown'){event.preventDefault();moveSchoolPick(1);}
@@ -848,14 +857,14 @@ async function copyPlainText(text){
   const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.append(ta);ta.focus();ta.select();document.execCommand('copy');ta.remove();return true;
  }catch(e){return false;}
 }
-$('cloud-key-copy').onclick=async()=>{
+wire('cloud-key-copy','onclick',async()=>{
  const s=getS();if(!s)return;
  const nick=(s.name||'').trim().normalize('NFC');if(!nick)return;
  const ok=await copyPlainText(nick);
  toast(ok?tr('별명을 복사했습니다. 다른 기기의 입력칸에 그대로 붙여넣으세요.','Nickname copied. Paste it exactly into the field on the other device.'):tr('복사하지 못했습니다.','Could not copy.'));
-};
+});
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
-$('cloud-save').onclick=async()=>{
+wire('cloud-save','onclick',async()=>{
  const s=getS();if(!s)return;
  const nick=(s.name||'').trim().normalize('NFC');
  if(!nick){txt('cloud-save-status',tr('별명을 먼저 설정해 주세요.','Set a nickname first.'));return;}
@@ -883,8 +892,8 @@ $('cloud-save').onclick=async()=>{
  else if(res.state==='not_configured')txt('cloud-save-status',tr('서버가 연결되지 않았습니다.','No server is configured.'));
  else txt('cloud-save-status',tr('전송하지 못했습니다: ','Could not send: ')+(res.error||''));
  $('cloud-save').disabled=false;
-};
-$('cloud-load').onclick=async()=>{
+});
+wire('cloud-load','onclick',async()=>{
  const nick=$('cloud-load-nick').value.trim().normalize('NFC');
  if(!nick){txt('cloud-load-status',tr('불러올 별명을 입력해 주세요.','Enter the nickname to load.'));return;}
  if(store.blocked&&getS()!==null){guarded();return;}
@@ -904,7 +913,7 @@ $('cloud-load').onclick=async()=>{
  else if(res.state==='not_configured')txt('cloud-load-status',tr('서버가 연결되지 않았습니다.','No server is configured.'));
  else txt('cloud-load-status',tr('불러오지 못했습니다: ','Could not load: ')+(res.error||''));
  $('cloud-load').disabled=false;
-};
+});
 function renderWeeks(s){
  $('weekly-history').replaceChildren();const table=document.createElement('table'),thead=document.createElement('thead'),hr=document.createElement('tr');
  [tr('시작 날짜 (한국 시간)','Week starting (Korea)'),tr('정답','Correct'),tr('집계 기준','Scope')].forEach(t=>{const th=document.createElement('th');th.scope='col';th.textContent=t;hr.append(th);});
@@ -962,7 +971,7 @@ $('import-file').onchange=async event=>{
  try{const raw=await file.text();importCandidate=M.parseImport(raw,getS());importOriginal=raw;showImport();}
  catch(e){toast(tr('형식이 다르거나 현재 성취를 잃는 파일입니다. 덮어쓰지 않았습니다.','This file is invalid or would lose achievements. Nothing was overwritten.'));}
 };
-$('reset-record').onclick=async()=>{
+wire('reset-record','onclick',async()=>{
  if(!getS()||busy)return;
  if(!confirm(tr('이 기기의 모든 기록을 지우고 빈 상태로 시작합니다. 직전 기록은 이 브라우저에 한 번 더 보관되지만, 화면에서는 되돌릴 수 없습니다. 백업 파일을 저장했거나 별명을 알고 계신가요? 계속할까요?','This clears every record on this device and starts empty. The previous record is kept once more in this browser, but there is no undo button here. Have you saved a backup, or do you know your nickname? Continue?')))return;
  busy=true;
@@ -972,7 +981,7 @@ $('reset-record').onclick=async()=>{
   toast(tr('기록을 초기화했습니다. 필요하면 내 기록에서 다른 기기 기록 불러오기로 되돌릴 수 있습니다.','Record reset. If needed, use "Load a record from another device" in My records to bring it back.'));
  }catch(e){toast(tr('초기화하지 못했습니다.','Could not reset the record.'));updateStorageStatus();}
  finally{busy=false;}
-};
+});
 $('export-records').onclick=()=>{const text=store.blocked?store.recovery():M.backupText(getS());download(text,'dokdo-learning-'+Core.dayKey()+'.json','application/json');toast(tr('기록 파일을 만들었습니다. 다운로드 위치를 확인해 주세요.','Backup created. Check your download folder.'));};
 function sources(){
  const wrap=$('source-content');wrap.replaceChildren();
@@ -1088,14 +1097,14 @@ $('weather-refresh').onclick=async()=>{if(!weatherClient.enabled){toast(tr('배�
 if(weatherClient.enabled){weatherClient.refresh().then(()=>{updateEnvironment();paint();});setInterval(()=>{if(!document.hidden)weatherClient.refresh().then(updateEnvironment);},300000);}
 async function updateKhoaObservation(){
  const wc=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.weather)||{};
- if(!wc.khoaViaAppsScript||!window.DokdoLeaderboard||!DokdoLeaderboard.isConfigured()){$('khoa-observation').hidden=true;return;}
+ if(!wc.khoaViaAppsScript||!window.DokdoLeaderboard||!DokdoLeaderboard.isConfigured()){wire('khoa-observation','hidden',true);return;}
  const res=await DokdoLeaderboard.fetchKhoaWeather();
- if(res.state!=='ok'){$('khoa-observation').hidden=true;return;}
- const d=res.data;$('khoa-observation').hidden=false;
+ if(res.state!=='ok'){wire('khoa-observation','hidden',true);return;}
+ const d=res.data;wire('khoa-observation','hidden',false);
  txt('khoa-observation',tr(`${d.station} 실측 기온 · ${d.temperature}°C (참고값)`,`${d.station} observed · ${d.temperature}°C (reference only)`));
 }
 updateKhoaObservation();setInterval(()=>{if(!document.hidden)updateKhoaObservation();},1800000);
-$('hall-retry').onclick=()=>renderHall();
+wire('hall-retry','onclick',()=>renderHall());
 
 const musicList=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.music)||[];
 let trackIndex=0;
@@ -1196,22 +1205,22 @@ document.querySelectorAll('[data-island]').forEach(b=>b.onclick=()=>mapFacts(b.d
 $('brand-home').onclick=()=>toggleMap(false);$('nav-map').onclick=()=>toggleMap(!mapOpen);$('close-map').onclick=()=>toggleMap(false);
 $('start-lesson').onclick=()=>start('daily');$('start-review').onclick=()=>start('review');
 $('leave-lesson').onclick=()=>view('home');$('open-settings').onclick=settings;$('change-age').onclick=()=>{closeDialog('settings-dialog');setupAge(renderHome,true);};
-$('age-recover-link').onclick=()=>{closeDialog('age-dialog');ageNext=null;view('records');$('cloud-load-nick')?.focus();};
+wire('age-recover-link','onclick',()=>{closeDialog('age-dialog');ageNext=null;view('records');$('cloud-load-nick')?.focus();});
 $('open-sources').onclick=sources;$('footer-sources').onclick=sources;$('arrange-beacon').onclick=beaconDialog;
 (function(){
  const yt=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.youtube)||{};
- $('support-link').href=yt.membershipUrl||yt.channelUrl||'#';
- $('header-live-link').href=yt.liveUrl||yt.channelUrl||'#';
- $('header-channel-link').href=yt.channelUrl||'#';
- if(!yt.liveUrl&&!yt.channelUrl)$('header-live-link').hidden=true;
- if(!yt.channelUrl)$('header-channel-link').hidden=true;
+ wire('support-link','href',yt.membershipUrl||yt.channelUrl||'#');
+ wire('header-live-link','href',yt.liveUrl||yt.channelUrl||'#');
+ wire('header-channel-link','href',yt.channelUrl||'#');
+ if(!yt.liveUrl&&!yt.channelUrl)wire('header-live-link','hidden',true);
+ if(!yt.channelUrl)wire('header-channel-link','hidden',true);
 })();
-$('open-tourism-info').onclick=()=>showDialog('tourism-dialog');
-$('open-tourism-info-home').onclick=()=>showDialog('tourism-dialog');
-$('open-channel-info').onclick=()=>showDialog('channel-info-dialog');
+wire('open-tourism-info','onclick',()=>showDialog('tourism-dialog'));
+wire('open-tourism-info-home','onclick',()=>showDialog('tourism-dialog'));
+wire('open-channel-info','onclick',()=>showDialog('channel-info-dialog'));
 let disputeItem=null;
 function openDispute(item){disputeItem=item;$('dispute-reason').value='';showDialog('dispute-dialog');}
-$('dispute-send').onclick=()=>{
+wire('dispute-send','onclick',()=>{
  if(!disputeItem)return;
  const item=disputeItem,reason=$('dispute-reason').value.trim();
  const subject=encodeURIComponent('[독도 코리아 스쿨] 문제 이의제기 - 문항 '+item.id);
@@ -1219,11 +1228,11 @@ $('dispute-send').onclick=()=>{
  location.href='mailto:officialdokdokorea@gmail.com?subject='+subject+'&body='+body;
  closeDialog('dispute-dialog');
  toast(tr('이메일 앱을 열었습니다. 내용을 확인하고 보내주세요.','Opened your email app. Please review and send it.'));
-};
-$('tourism-go').onclick=()=>toast(tr('현재 준비 중입니다.','This is being prepared right now.'));
+});
+wire('tourism-go','onclick',()=>toast(tr('현재 준비 중입니다.','This is being prepared right now.')));
 $('sound').onclick=toggleSound;$('save-image').onclick=saveImage;
-$('grade-share').onclick=()=>{shareTrack('grade_badge');saveImage();};
-$('music-prev').onclick=()=>musicSkip(-1);$('music-next').onclick=()=>musicSkip(1);
+wire('grade-share','onclick',()=>{shareTrack('grade_badge');saveImage();});
+wire('music-prev','onclick',()=>musicSkip(-1));wire('music-next','onclick',()=>musicSkip(1));
 $('zoom').onclick=()=>{const on=$('canvas-shell').classList.toggle('zoomed');$('zoom').setAttribute('aria-pressed',String(on));txt('zoom',on?tr('전체 보기','Fit'):tr('확대','Zoom'));if(on)$('canvas-shell').scrollLeft=$('canvas-shell').scrollWidth*.22;};
 $('invite-count').onchange=renderVisitors;
 $('invite').onclick=async()=>{if(busy||!guarded())return;busy=true;try{
