@@ -396,8 +396,17 @@ $('flag-select').onchange=()=>{$('flag-other-row').hidden=$('flag-select').value
 /* School name suggestions. Names come from real data only -- the operator's
  * optional ./data/schools.json export and the school names the hall of fame
  * already returns -- so nothing here invents an institution that doesn't exist. */
-const schoolNames=new Set();
-function addSchoolNames(list){for(const v of list||[]){const t=String(v||'').trim();if(t)schoolNames.add(t);}}
+/* Each entry is {name, region, cat}. The region is shown because 11 schools
+ * are called 금성초등학교 and a name-only picker cannot be used; only the name
+ * is written into the field, since the hall of fame aggregates by name. */
+const schoolList=[];
+const schoolSeen=new Set();
+function addSchoolEntry(name,region,cat){
+ const t=String(name||'').trim();if(!t)return;
+ const key=t+'|'+(region||'');if(schoolSeen.has(key))return;
+ schoolSeen.add(key);schoolList.push({name:t,region:region||'',cat:cat||''});
+}
+function addSchoolNames(list){for(const v of list||[])addSchoolEntry(v,'','');}
 // The national list is a large file, so it is fetched the first time someone
 // actually uses the school field -- never on page load, and never for a
 // visitor who only plays.
@@ -405,8 +414,13 @@ let schoolListLoad=null;
 function loadSchoolList(){
  if(schoolListLoad)return schoolListLoad;
  schoolListLoad=fetch('./data/schools.json').then(r=>r.ok?r.json():null).then(d=>{
-  const rows=Array.isArray(d)?d:(d&&Array.isArray(d.schools)?d.schools:[]);
-  addSchoolNames(rows.map(x=>typeof x==='string'?x:x&&(x.name||x.n)));
+  if(!d)return;
+  const regions=Array.isArray(d.regions)?d.regions:[];
+  for(const row of d.schools||[]){
+   if(Array.isArray(row))addSchoolEntry(row[0],regions[row[1]]||'',row[2]||'');
+   else if(typeof row==='string')addSchoolEntry(row,'','');
+   else if(row)addSchoolEntry(row.name,row.region,row.cat);
+  }
   if(document.activeElement===$('school-name'))renderSchoolSuggest();
  }).catch(()=>{});
  return schoolListLoad;
@@ -414,9 +428,17 @@ function loadSchoolList(){
 let schoolPick=-1;
 function schoolMatches(query){
  const q=query.trim().toLowerCase();if(q.length<2)return [];
- const all=[...schoolNames];
- const starts=all.filter(n=>n.toLowerCase().startsWith(q));
- const rest=all.filter(n=>!n.toLowerCase().startsWith(q)&&n.toLowerCase().includes(q));
+ const cat=$('school-cat').value;
+ // A chosen school level narrows the list; entries with no level (names that
+ // came from the hall of fame) always stay visible.
+ const pool=schoolList.filter(x=>!cat||!x.cat||x.cat===cat);
+ const starts=[],rest=[];
+ for(const item of pool){
+  const n=item.name.toLowerCase();
+  if(n.startsWith(q))starts.push(item);
+  else if(n.includes(q))rest.push(item);
+  if(starts.length>=8)break;
+ }
  return starts.concat(rest).slice(0,8);
 }
 function closeSchoolSuggest(){const box=$('school-suggest');box.hidden=true;box.replaceChildren();schoolPick=-1;$('school-name').setAttribute('aria-expanded','false');}
@@ -424,9 +446,11 @@ function renderSchoolSuggest(){
  const box=$('school-suggest'),items=schoolMatches($('school-name').value);
  box.replaceChildren();schoolPick=-1;
  if(!items.length){closeSchoolSuggest();return;}
- items.forEach((name,i)=>{
-  const b=document.createElement('button');b.type='button';b.className='suggest-item';b.setAttribute('role','option');b.dataset.index=i;b.textContent=name;
-  b.onmousedown=event=>{event.preventDefault();$('school-name').value=name;closeSchoolSuggest();};
+ items.forEach((item,i)=>{
+  const b=document.createElement('button');b.type='button';b.className='suggest-item';b.setAttribute('role','option');b.dataset.index=i;b.dataset.name=item.name;
+  const n=document.createElement('span');n.textContent=item.name;b.append(n);
+  if(item.region){const r=document.createElement('small');r.textContent=item.region;b.append(r);}
+  b.onmousedown=event=>{event.preventDefault();$('school-name').value=item.name;closeSchoolSuggest();};
   box.append(b);
  });
  box.hidden=false;$('school-name').setAttribute('aria-expanded','true');
@@ -445,7 +469,7 @@ $('school-name').addEventListener('keydown',event=>{
  const options=[...$('school-suggest').querySelectorAll('.suggest-item')];
  if(event.key==='ArrowDown'){event.preventDefault();moveSchoolPick(1);}
  else if(event.key==='ArrowUp'){event.preventDefault();moveSchoolPick(-1);}
- else if(event.key==='Enter'&&schoolPick>=0){event.preventDefault();$('school-name').value=options[schoolPick].textContent;closeSchoolSuggest();}
+ else if(event.key==='Enter'&&schoolPick>=0){event.preventDefault();$('school-name').value=options[schoolPick].dataset.name;closeSchoolSuggest();}
  else if(event.key==='Escape')closeSchoolSuggest();
 });
 $('age-form').addEventListener('submit',async event=>{
