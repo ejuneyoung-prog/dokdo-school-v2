@@ -89,7 +89,7 @@ const en={
  tourismInfoBtn:'Ulleungdo·Dokdo travel info',
  promoTitle:'Dokdo Korea · Music & Social',
  visitCollabTitle:'Visit · Contact',
- gradeTab:'Grade',gradeLadderTitle:'Full grade ladder',materialTip:'TIP · Show question material',
+ gradeTab:'Grade',gradeLadderTitle:'Full grade ladder',materialTip:'TIP · Show question material',gradeShare:'Share ↗',
  gradeNote:'No placement test — everyone starts at Kindergarten. Correct answers auto-promote you to the next grade, and progress already earned carries forward.',
  resetRecord:'Reset this record',
  resetWarning:'Clears this device’s record and starts empty. Save a backup file above first, or remember your nickname so “Load a record from another device” can bring it back after resetting.',
@@ -241,9 +241,9 @@ function renderGradeLine(idPrefix,s,a){
  const gp=Core.gradeProgress(a.correct);
  if($(idPrefix+'-name'))txt(idPrefix+'-name',a.name);
  txt(idPrefix+'-badge','Lv.'+(gp.rank+1));
- txt(idPrefix+'-stats',tr(`${gradeLabel(gp.grade)} · 정답 ${num(a.correct)} · XP ${num(a.xp)}`,`${gradeLabel(gp.grade)} · Correct ${num(a.correct)} · XP ${num(a.xp)}`));
+ txt(idPrefix+'-stats',tr(`정답 ${num(a.correct)} · XP ${num(a.xp)}`,`Correct ${num(a.correct)} · XP ${num(a.xp)}`));
  $(idPrefix+'-gauge').max=gp.need;$(idPrefix+'-gauge').value=gp.have;
- txt(idPrefix+'-gauge-label',gp.graduated?tr('최고 학년 달성','Top grade reached'):tr(`${gp.have}/${gp.need} · 다음 학년(${gradeLabel(Core.GRADES[gp.rank+1])})까지`,`${gp.have}/${gp.need} to ${gradeLabel(Core.GRADES[gp.rank+1])}`));
+ txt(idPrefix+'-gauge-label',gp.graduated?tr('최고 레벨 달성','Top level reached'):tr(`${gp.have}/${gp.need} · 다음 Lv.${gp.rank+2}까지`,`${gp.have}/${gp.need} to Lv.${gp.rank+2}`));
 }
 function renderGrade(){
  const s=getS();if(!s)return;
@@ -1042,7 +1042,7 @@ async function saveImage(){
  // the light-path/lap/beacon flavor text is real but secondary.
  x.fillStyle='#f5cd77';x.font='700 32px GmarketSans, sans-serif';
  const gp=Core.gradeProgress(a.correct);
- x.fillText(`Lv.${gp.rank+1} ${gradeLabel(gp.grade)} · ${tr('정답','Correct')} ${num(a.correct)} · XP ${num(a.xp)}`,48,847);
+ x.fillText(`Lv.${gp.rank+1} · ${tr('정답','Correct')} ${num(a.correct)} · XP ${num(a.xp)}`,48,847);
  x.fillStyle='#8fa7b2';x.font='16px SCoreDream, sans-serif';const jp=M.Journey.progress(s);
  x.fillText(tr(`빛의 길 ${jp.filled}/1,025 · ${jp.shownLap}바퀴 · 봉화 ${a.beacons}`,`Path ${jp.filled}/1,025 / circuit ${jp.shownLap} / beacons ${a.beacons}`),48,878);
  x.font='14px SCoreDream, sans-serif';x.fillStyle='#75909c';x.fillText(tr('학습 기록 기념사진 · 상상 풍경이며 실제 측량지도가 아닙니다.','A learning keepsake · imagined landscape, not a survey map.'),48,916);
@@ -1086,6 +1086,7 @@ $('dispute-send').onclick=()=>{
 };
 $('tourism-go').onclick=()=>toast(tr('현재 준비 중입니다.','This is being prepared right now.'));
 $('sound').onclick=toggleSound;$('save-image').onclick=saveImage;
+$('grade-share').onclick=()=>{shareTrack('grade_badge');saveImage();};
 $('music-prev').onclick=()=>musicSkip(-1);$('music-next').onclick=()=>musicSkip(1);
 $('zoom').onclick=()=>{const on=$('canvas-shell').classList.toggle('zoomed');$('zoom').setAttribute('aria-pressed',String(on));txt('zoom',on?tr('전체 보기','Fit'):tr('확대','Zoom'));if(on)$('canvas-shell').scrollLeft=$('canvas-shell').scrollWidth*.22;};
 $('invite-count').onchange=renderVisitors;

@@ -298,15 +298,28 @@ function weatherOverlay(x,weather,t,reduced){
  x.restore();
 }
 
-function background(x,texture){
- const g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#07243B');g.addColorStop(.48,'#073951');g.addColorStop(1,'#041B2D');x.fillStyle=g;x.fillRect(0,0,W,H);
- if(texture&&texture.complete&&texture.naturalWidth){x.save();x.globalAlpha=.11;x.fillStyle=x.createPattern(texture,'repeat');x.fillRect(0,0,W,H);x.restore();}
+function background(x,texture,t=0){
+ // A deeper, richer gradient plus a slow sparkle band reads as real water at
+ // a glance without a photographic texture, which would fight the dynamic
+ // overlays (fish, flags, gangchi, weather) drawn on top every frame.
+ const g=x.createLinearGradient(0,0,W,H);
+ g.addColorStop(0,'#0b2e46');g.addColorStop(.42,'#0a4060');g.addColorStop(.75,'#083550');g.addColorStop(1,'#051f30');
+ x.fillStyle=g;x.fillRect(0,0,W,H);
+ if(texture&&texture.complete&&texture.naturalWidth){x.save();x.globalAlpha=.22;x.fillStyle=x.createPattern(texture,'repeat');x.fillRect(0,0,W,H);x.restore();}
+ x.save();
+ const sway=Math.sin(t*.08)*40;
+ const sparkle=x.createLinearGradient(0,H*.28+sway,W,H*.52+sway);
+ sparkle.addColorStop(0,'rgba(255,255,255,0)');
+ sparkle.addColorStop(.5,'rgba(214,238,247,.06)');
+ sparkle.addColorStop(1,'rgba(255,255,255,0)');
+ x.fillStyle=sparkle;x.fillRect(0,0,W,H);
+ x.restore();
 }
 function render(ctx,s,t,options={}){
  const {islands,texture,reduced=false,labels=false,lightLayer=null}=options;
  const phase=options.phase||Solar.phase(options.now||Date.now());
- ctx.save();ctx.clearRect(0,0,W,H);background(ctx,texture);
  const clock=reduced?0:t;
+ ctx.save();ctx.clearRect(0,0,W,H);background(ctx,texture,clock);
  ctx.strokeStyle='rgba(67,150,165,.08)';ctx.lineWidth=1.4;
  for(let j=0;j<17;j++){ctx.beginPath();for(let i=0;i<=32;i++){const xx=i*48,yy=30+j*43+Math.sin(i*.38+j*.7+clock*.12)*6;i?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy);}ctx.stroke();}
  const density={calm:144,rich:288,full:384}[s.seaDensity]||288;
