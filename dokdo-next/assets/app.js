@@ -5,7 +5,7 @@ const M=DokdoAppModel,C=M.Course,Core=M.Core,V=DokdoVisualScene,$=id=>document.g
 const ko={};document.querySelectorAll('[data-i18n]').forEach(el=>ko[el.dataset.i18n]=el.textContent);
 const en={
  facilityTitle:'Places and facilities',facilitySource:'Official facility information ↗',
- skip:'Skip to content',brand:'Dokdo Korea School',tagline:'A little learning. A brighter Dokdo.',
+ skip:'Skip to content',brandMain:'Dokdo Korea',brandSub:'School',tagline:'A little learning. A brighter Dokdo.',
  demoBanner:'PREVIEW ONLY · reload resets this demo · no real accounts',demoReset:'Try an empty record',
  myDokdo:'My Dokdo',map:'Explore the map',learn:'Learn',journal:'Life journal',myRecords:'My records',
  oldFound:'A previous learning record exists in this browser.',oldCopy:'Keep the original and copy it into this new view.',checkRecords:'Check the record',
@@ -62,7 +62,7 @@ const en={
  flagOtherField:'Country code (ISO 2-letter, e.g. NZ)',
  schoolCatField:'School category (hall of fame section, optional)',
  schoolCatE:'Elementary school',schoolCatM:'Middle school',schoolCatH:'High school',schoolCatW:'Korean school abroad',
- schoolField:'School / organisation name (optional, free text)',
+ schoolField:'School / organisation name (optional — type two letters to search)',
  cloudBackupTitle:'Server backup · continue on another device',
  cloudBackupWarning:'Sending alone does not guarantee storage on this legacy server, so it is automatically double-checked for a few seconds after sending. You will be told if it could not be confirmed.',
  cloudSaveBtn:'Send a backup to the server',
@@ -79,7 +79,7 @@ const en={
  youtubeNote:'Shows 3 of the Dokdo Korea channel’s videos at random. Tap to play — nothing plays automatically.',
  channelInfoOpen:'About Dokdo Korea',channelInfoTitle:'About Dokdo Korea',
  channelContactTitle:'Contact',channelMusicTitle:'Music & Channel Links',channelCollabLink:'Collaboration & lecture inquiries (Linktree) ↗',
- support:'♥ Support Dokdo Korea',headerLive:'🔴 Watch Dokdo Live Now',headerChannel:'▶ YouTube\nDokdo Korea',headerCollab:'🤝 Collaborate',
+ support:'♥ Support Dokdo Korea',headerLive:'🔴 Dokdo Live',headerChannel:'▶ YouTube\nDokdo Korea',headerCollab:'Collaborate',
  youtubeChannel:'Dokdo Korea Instagram ↗',
  tourismInfoTitle:'Ulleungdo–Dokdo travel information',
  tourismInfoBody:'Basic visitor information about Dokdo (ferry access via Ulleungdo, weather-dependent sailings, and what to know before visiting).',
@@ -393,6 +393,48 @@ function setupAge(callback,force=false){
  txt('age-error','');showDialog('age-dialog');$('age-band').focus();
 }
 $('flag-select').onchange=()=>{$('flag-other-row').hidden=$('flag-select').value!=='OTHER';};
+/* School name suggestions. Names come from real data only -- the operator's
+ * optional ./data/schools.json export and the school names the hall of fame
+ * already returns -- so nothing here invents an institution that doesn't exist. */
+const schoolNames=new Set();
+function addSchoolNames(list){for(const v of list||[]){const t=String(v||'').trim();if(t)schoolNames.add(t);}}
+fetch('./data/schools.json').then(r=>r.ok?r.json():null).then(d=>{if(Array.isArray(d))addSchoolNames(d.map(x=>typeof x==='string'?x:x&&x.name));}).catch(()=>{});
+let schoolPick=-1;
+function schoolMatches(query){
+ const q=query.trim().toLowerCase();if(q.length<2)return [];
+ const all=[...schoolNames];
+ const starts=all.filter(n=>n.toLowerCase().startsWith(q));
+ const rest=all.filter(n=>!n.toLowerCase().startsWith(q)&&n.toLowerCase().includes(q));
+ return starts.concat(rest).slice(0,8);
+}
+function closeSchoolSuggest(){const box=$('school-suggest');box.hidden=true;box.replaceChildren();schoolPick=-1;$('school-name').setAttribute('aria-expanded','false');}
+function renderSchoolSuggest(){
+ const box=$('school-suggest'),items=schoolMatches($('school-name').value);
+ box.replaceChildren();schoolPick=-1;
+ if(!items.length){closeSchoolSuggest();return;}
+ items.forEach((name,i)=>{
+  const b=document.createElement('button');b.type='button';b.className='suggest-item';b.setAttribute('role','option');b.dataset.index=i;b.textContent=name;
+  b.onmousedown=event=>{event.preventDefault();$('school-name').value=name;closeSchoolSuggest();};
+  box.append(b);
+ });
+ box.hidden=false;$('school-name').setAttribute('aria-expanded','true');
+}
+function moveSchoolPick(step){
+ const options=[...$('school-suggest').querySelectorAll('.suggest-item')];if(!options.length)return;
+ schoolPick=(schoolPick+step+options.length)%options.length;
+ options.forEach((el,i)=>el.classList.toggle('active',i===schoolPick));
+ options[schoolPick].scrollIntoView({block:'nearest'});
+}
+$('school-name').addEventListener('input',renderSchoolSuggest);
+$('school-name').addEventListener('blur',()=>setTimeout(closeSchoolSuggest,120));
+$('school-name').addEventListener('keydown',event=>{
+ if($('school-suggest').hidden)return;
+ const options=[...$('school-suggest').querySelectorAll('.suggest-item')];
+ if(event.key==='ArrowDown'){event.preventDefault();moveSchoolPick(1);}
+ else if(event.key==='ArrowUp'){event.preventDefault();moveSchoolPick(-1);}
+ else if(event.key==='Enter'&&schoolPick>=0){event.preventDefault();$('school-name').value=options[schoolPick].textContent;closeSchoolSuggest();}
+ else if(event.key==='Escape')closeSchoolSuggest();
+});
 $('age-form').addEventListener('submit',async event=>{
  event.preventDefault();if(busy)return;
  if(!C.band($('age-band').value)){txt('age-error',tr('나이대를 먼저 골라 주세요.','Please select an age band.'));return;}
@@ -623,7 +665,39 @@ function renderJournal(){
  const s=getS();if(!s)return;
  const unlocked=Object.keys(s.visual.unlocks).length>0;txt('bird-unlocked',unlocked?tr('만남을 기록했어요','Encounter recorded'):tr('아직 만나기 전','Not encountered yet'));
  txt('bird-unlock-rule',unlocked?tr('성취는 도감에 남습니다. 다시 보기는 점수나 새 보상을 추가하지 않아요.','Your discovery stays. Replaying does not add points or awards.'):tr('독도 단원을 세 개 마치거나 생태 단원을 처음 완료하면 만날 수 있어요.','Meet this visitor after completing three Dokdo units or a first ecology unit.'));
- $('bird-replay').disabled=!unlocked||store.blocked;
+ // Left enabled when locked so the click explains how to unlock it instead of
+ // being a dimmed button that does nothing.
+ $('bird-replay').disabled=store.blocked;
+ renderJournalMore();
+}
+/* Every line here is the curriculum's own reviewed sentence for that species,
+ * shown with the same public source it was written from -- the journal never
+ * states an ecological claim the course data does not already carry. */
+const JOURNAL_SPECIES=[
+ {ko:'바다제비 · 슴새',en:'Storm petrel · Streaked shearwater',
+  textKo:'괭이갈매기·바다제비·슴새는 독도에서 번식하는 바닷새로 소개돼요.',
+  textEn:'Black-tailed gulls, storm petrels and streaked shearwaters are recorded as breeding seabirds on Dokdo.',src:'reserve'},
+ {ko:'해국 · 섬기린초 · 땅채송화',en:'Seaside daisy · Island stonecrop · Rock stonecrop',
+  textKo:'독도 땅에는 해국·섬기린초·땅채송화 같은 식물이 자라요.',
+  textEn:'Plants on Dokdo include seaside daisy, island stonecrop and rock stonecrop.',src:'nature'},
+ {ko:'강치',en:'Sea lion',
+  textKo:'독도에는 강치가 살았으며, 지나친 포획은 강치의 감소와 멸종에 큰 영향을 주었어요.',
+  textEn:'Sea lions once lived on Dokdo, and excessive hunting contributed greatly to their decline and extinction.',src:'gangchi'}
+];
+function renderJournalMore(){
+ const box=$('journal-more');if(!box)return;box.replaceChildren();
+ for(const entry of JOURNAL_SPECIES){
+  const source=C.DATA.sources[entry.src];
+  const card=document.createElement('article');card.className='journal-entry';
+  const name=document.createElement('h3');name.textContent=language==='en'?entry.en:entry.ko;
+  const text=document.createElement('p');text.textContent=language==='en'?entry.textEn:entry.textKo;
+  card.append(name,text);
+  if(source){
+   const link=document.createElement('a');link.className='source-link';link.href=source.url;link.target='_blank';link.rel='noopener noreferrer';
+   link.textContent=(language==='en'?source.titleEn||source.title:source.title)+' ↗';card.append(link);
+  }
+  box.append(card);
+ }
 }
 let hallSchoolFilter='E';
 function hallShow(which){
@@ -647,6 +721,8 @@ async function renderHall(){
  if(res.state==='error'){hallShow('hall-error');$('hall-error-text').textContent=tr('이번 주 기록을 불러오지 못했습니다: ','Could not load this week’s data: ')+res.error;return;}
  if(res.state==='not_configured'){hallShow('hall-not-configured');return;}
  const d=res.data||{};
+ // Real school names already entered by participants feed the setup-form search.
+ for(const rows of Object.values(d.schools||{}))addSchoolNames((rows||[]).map(r=>r&&r.name));
  hallShow('hall-content');
  $('hall-summary').replaceChildren();
  for(const [n,label] of [[d.today,tr('오늘 참여 시도','Attempts today')],[d.people,tr('오늘 참여자','Participants today')],[d.people_week,tr('이번 주(최대 60명)','This week (up to 60)')]]){
@@ -755,13 +831,16 @@ $('cloud-save').onclick=async()=>{
   // GET, so use it to confirm the save really landed instead of reporting
   // a blind "sent" that has caused real users to lose records silently.
   txt('cloud-save-status',tr('서버로 전송했습니다. 저장 확인 중…','Sent to the server. Confirming it was stored…'));
-  let confirmed=false;
+  let confirmed=false,unsupported=false;
   for(const delayMs of [1500,3000]){
    await sleep(delayMs);
    const check=await DokdoLeaderboard.loadProgress(key);
    if(check.state==='ok'){confirmed=true;break;}
+   if(check.state==='unsupported'){unsupported=true;break;}
   }
-  txt('cloud-save-status',confirmed?tr('서버에 저장이 확인되었습니다.','Confirmed: it was stored on the server.'):tr('서버에 전송은 했지만 저장이 아직 확인되지 않았습니다. 잠시 후 다시 시도해 주세요.','Sent, but storage could not be confirmed yet. Please try again in a moment.'));
+  txt('cloud-save-status',confirmed?tr('서버에 저장이 확인되었습니다.','Confirmed: it was stored on the server.')
+   :unsupported?tr('서버가 기록 저장·불러오기를 아직 지원하지 않습니다. 운영자 확인이 필요합니다.','The server does not support record storage yet.')
+   :tr('서버에 전송은 했지만 저장이 아직 확인되지 않았습니다. 잠시 후 다시 시도해 주세요.','Sent, but storage could not be confirmed yet. Please try again in a moment.'));
  }
  else if(res.state==='too_large')txt('cloud-save-status',tr(`기록이 너무 커서(${res.length}자) 보내지 않았습니다.`,`Not sent — the record is too large (${res.length} chars).`));
  else if(res.state==='not_configured')txt('cloud-save-status',tr('서버가 연결되지 않았습니다.','No server is configured.'));
@@ -784,6 +863,7 @@ $('cloud-load').onclick=async()=>{
    txt('cloud-load-status','');showImport();
   }catch(e){txt('cloud-load-status',tr('서버 기록의 구조를 확인할 수 없어 불러오지 않았습니다.','The server record could not be validated, so nothing was loaded.'));}
  }else if(res.state==='not_found')txt('cloud-load-status',tr('해당 별명으로 저장된 기록이 없습니다.','No record found for that nickname.'));
+ else if(res.state==='unsupported')txt('cloud-load-status',tr('서버가 기록 불러오기를 아직 지원하지 않습니다. (운영자 확인 필요)','The server does not support record loading yet.'));
  else if(res.state==='not_configured')txt('cloud-load-status',tr('서버가 연결되지 않았습니다.','No server is configured.'));
  else txt('cloud-load-status',tr('불러오지 못했습니다: ','Could not load: ')+(res.error||''));
  $('cloud-load').disabled=false;
@@ -1112,7 +1192,13 @@ $('invite-count').onchange=renderVisitors;
 $('invite').onclick=async()=>{if(busy||!guarded())return;busy=true;try{
  const n=await mutate(s=>Core.invite(s,Date.now(),+$('invite-count').value));renderHome();toast(n?tr(`${n}마리의 강치가 1분 동안 찾아왔어요.`,`${n} gangchi will visit for one minute.`):tr('부르기 보상이나 빈자리가 부족해요. 보상은 사용되지 않았습니다.','No invitation or free space. No credits were spent.'));
 }catch(e){}finally{busy=false;}};
-$('bird-replay').onclick=async()=>{try{await mutate(s=>M.replayBirds(s));toggleMap(false);}catch(e){}};
+$('bird-replay').onclick=async()=>{
+ // The visit is drawn on the home canvas, so replaying it from the journal
+ // looked like a dead button until the view followed the bird.
+ try{const ok=await mutate(s=>M.replayBirds(s));toggleMap(false);
+  if(ok){view('home');toast(tr('새가 다시 찾아왔어요. 바다를 보세요.','The visitor is back — watch the sea.'));}
+  else toast(tr('아직 만난 생명이 없어요. 한 단원을 마치면 찾아옵니다.','No encounter yet. Finish a unit and a visitor will come.'));
+ }catch(e){}};
 $('reduce-motion').onchange=async()=>{try{await mutate(s=>s.visual.reduceMotion=$('reduce-motion').checked);document.body.classList.toggle('motion-reduced',reduced());paint();}catch(e){}};
 $('enable-birds').onchange=async()=>{try{await mutate(s=>s.visual.birdsEnabled=$('enable-birds').checked);}catch(e){}};
 $('sea-density').onchange=async()=>{try{await mutate(s=>s.seaDensity=$('sea-density').value);paint();}catch(e){}};

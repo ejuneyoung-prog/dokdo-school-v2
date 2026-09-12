@@ -7320,7 +7320,7 @@
       "answer": 0,
       "correctOptionId": "a",
       "ko": {
-        "q": "독도의 두 새 관찰에서 ‘중간 기착’에 해당하는 것은 무엇인가요?",
+        "q": "철새 관찰 기록 A와 B 가운데 ‘중간 기착’에 해당하는 것은 무엇인가요?",
         "choices": [
           "A: 이동 중 잠시 쉬고 다른 곳으로 떠남",
           "B: 둥지에서 알을 품고 새끼를 기름"
@@ -7338,7 +7338,7 @@
         "topic": "철새가 쉬어 가는 독도"
       },
       "en": {
-        "q": "Which of the two bird observations on Dokdo describes a stopover?",
+        "q": "Between migratory-bird observations A and B, which one describes a stopover?",
         "choices": [
           "A: resting briefly and then continuing elsewhere",
           "B: incubating eggs and raising chicks at a nest"
@@ -20002,7 +20002,7 @@
       "answer": 1,
       "correctOptionId": "a",
       "ko": {
-        "q": "태정관지령의 ‘외 1도’는 현대 지명으로 어느 섬에 해당하나요?",
+        "q": "1877년 일본 태정관지령의 ‘외 1도’는 현대 지명으로 어느 섬에 해당하나요?",
         "choices": [
           "울릉도",
           "독도",
@@ -20022,7 +20022,7 @@
         "topic": "기죽도약도와 두 섬"
       },
       "en": {
-        "q": "Which modern island is identified as the directive’s “one other island”?",
+        "q": "In Japan’s 1877 Dajokan directive, which modern island is the “one other island”?",
         "choices": [
           "Ulleungdo",
           "Dokdo",
@@ -20893,7 +20893,7 @@
       "answer": 1,
       "correctOptionId": "a",
       "ko": {
-        "q": "자료 카드에서 현대의 역문·해설을 공개한 기관은 어디인가요?",
+        "q": "1877년 일본 태정관지령의 현대 한국어 역문·해설을 공개한 기관은 어디인가요?",
         "choices": [
           "1877년 일본 태정관",
           "대한민국 외교부",
@@ -20913,7 +20913,7 @@
         "topic": "원문 작성자와 오늘의 해설"
       },
       "en": {
-        "q": "Which institution published the modern translation and commentary in this source card?",
+        "q": "Which institution publishes the modern Korean translation and commentary of Japan’s 1877 Dajokan directive?",
         "choices": [
           "Japan’s Dajokan in 1877",
           "The ROK Ministry of Foreign Affairs",

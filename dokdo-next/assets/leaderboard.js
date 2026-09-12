@@ -60,7 +60,12 @@ async function loadProgress(key){
  if(!isConfigured())return{state:'not_configured'};
  try{
   const data=await getJSON(apiUrl()+'?load='+encodeURIComponent(key));
-  if(!data||data.found!==true)return{state:'not_found'};
+  // A server with no ?load= branch answers the weekly feed (or anything else)
+  // with no `found` field at all. That is not the same as "this nickname has
+  // no record", and reporting both as not_found made the real cause
+  // undiagnosable from the UI.
+  if(!data||typeof data.found==='undefined')return{state:'unsupported'};
+  if(data.found!==true)return{state:'not_found'};
   return{state:'ok',data};
  }catch(e){return{state:'error',error:String(e&&e.message||e)};}
 }

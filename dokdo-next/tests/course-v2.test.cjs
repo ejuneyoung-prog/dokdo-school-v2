@@ -47,6 +47,14 @@ test('Difficulty allocation and actual cognitive annotations are separate and co
 test('Middle, high and adult start with real Dokdo records, not generic nature manners',()=>{
  for(const [band,unit] of [['14-16',8],['17-19',9],['20+',11]]){const s=fresh(band),items=C.lesson(s.learningProfile);a.ok(items.every(q=>q.unit===unit));a.equal(new Set(items.map(q=>q.familyId)).size,5);a.ok(items.some(q=>q.cognitive>=3));}
 });
+test('A repeated unit keeps its five questions but not their order',()=>{
+ const s=fresh('10-11'),orders=new Set(),sets=new Set();
+ for(let i=0;i<40;i++){
+  const ids=C.lesson(s.learningProfile,s.m,'ko',5,Math.random,'daily').map(q=>q.id);
+  a.equal(ids.length,5);orders.add(ids.join(','));sets.add(ids.slice().sort().join(','));
+ }
+ a.equal(sets.size,1);a.ok(orders.size>1);
+});
 test('Ages are required; malformed selections fail closed',()=>{
  a.throws(()=>C.profile(''));a.throws(()=>C.createPlacement(null));a.throws(()=>C.lesson(null));a.throws(()=>C.profile('99'));
 });

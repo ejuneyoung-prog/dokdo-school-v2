@@ -61,7 +61,9 @@ function groupMastery(records,family){
 }
 function lesson(p,records={},lang='ko',n=5,rng=Math.random,mode='daily',now=Date.now()){
  ensureProfile(p);
- if(mode!=='review')return unitQuestions(p,p.course.unit,lang).slice(0,n);
+ // A unit is a fixed set of five concepts, but presenting them in data order
+// every time made a repeated unit feel like the same lesson replayed.
+ if(mode!=='review')return shuffled(unitQuestions(p,p.course.unit,lang),rng).slice(0,n);
  const selected=DATA.tracks[p.course.track].questionIds.map(id=>ids.get(id));
  const rows=selected.map(q=>({q,rs:groupRecords(records,q.familyId)})).filter(x=>x.rs.some(y=>y.r.courseLearned||y.r.cor>0));
  rows.sort((a,b)=>{
