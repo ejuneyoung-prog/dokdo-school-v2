@@ -20,9 +20,11 @@
 
 /* ===================== 설정 ===================== */
 
-// 활동기록이 쌓이는 시트 이름입니다. 지금 쓰시는 시트 이름과 다르면
-// 아래 따옴표 안만 실제 이름으로 바꿔 주세요.
-var LOG_SHEET  = '활동기록';
+// 활동기록 시트는 이름을 고정하지 않고 찾아 씁니다. 첫 칸(A1)이 '시각'인
+// 시트를 활동기록으로 봅니다. 이름을 잘못 적어 빈 시트를 새로 만들고 기존
+// 기록을 못 읽는 사고를 막기 위해서입니다. 찾지 못했을 때만 아래 이름으로
+// 새로 만듭니다.
+var LOG_SHEET  = '기록';
 
 // 아래 두 개는 없으면 자동으로 만들어집니다. 그대로 두셔도 됩니다.
 var SAVE_SHEET = 'saves';
@@ -63,7 +65,42 @@ function _sheet_(name, headers) {
   return sh;
 }
 
-function _logSheet_()  { return _sheet_(LOG_SHEET,  LOG_HEADERS); }
+// 첫 칸이 '시각'인 시트를 모두 찾습니다. 이름이 무엇이든 상관없고, 예전에
+// 다른 이름으로 쌓인 기록도 함께 읽히므로 한 줄도 잃지 않습니다.
+function _logSheets_() {
+  var all = SpreadsheetApp.getActiveSpreadsheet().getSheets();
+  var found = [];
+  for (var i = 0; i < all.length; i++) {
+    if (all[i].getLastRow() < 1) continue;
+    var head = String(all[i].getRange(1, 1).getValue() || '').trim();
+    if (head === '시각') found.push(all[i]);
+  }
+  if (!found.length) found.push(_sheet_(LOG_SHEET, LOG_HEADERS));
+  return found;
+}
+
+// 새 기록은 줄이 가장 많은 시트, 즉 지금까지 써 오던 시트에 이어 붙입니다.
+function _logSheet_() {
+  var sheets = _logSheets_(), best = sheets[0];
+  for (var i = 1; i < sheets.length; i++) {
+    if (sheets[i].getLastRow() > best.getLastRow()) best = sheets[i];
+  }
+  return best;
+}
+
+// 읽을 때는 찾은 시트를 모두 합칩니다. 오래된 줄은 주간 집계에 쓰이지 않으므로
+// 최근 것부터 일정 개수만 봅니다. 줄이 수만 개로 늘어나도 느려지지 않습니다.
+var SCAN_LIMIT = 8000;
+function _allLogRows_() {
+  var sheets = _logSheets_(), out = [];
+  for (var i = 0; i < sheets.length; i++) {
+    var sh = sheets[i], last = sh.getLastRow();
+    if (last < 2) continue;
+    var start = Math.max(2, last - SCAN_LIMIT + 1);
+    out = out.concat(sh.getRange(start, 1, last - start + 1, Math.max(12, sh.getLastColumn())).getValues());
+  }
+  return out;
+}
 function _saveSheet_() { return _sheet_(SAVE_SHEET, SAVE_HEADERS); }
 function _topSheet_()  { return _sheet_(TOP_SHEET,  TOP_HEADERS); }
 
@@ -78,14 +115,17 @@ function _time_(v) {
   return isNaN(d.getTime()) ? null : d;
 }
 
+// 줄마다 Utilities.formatDate를 부르면 수천 줄에서 몇 초씩 걸려 응답이 끊깁니다.
+// 한국 시간은 UTC+9로 고정이라 순수 계산으로 같은 값을 얻을 수 있습니다.
+var KST_MS = 9 * 3600000;
+function _dayOf_(d) { return new Date(d.getTime() + KST_MS).toISOString().slice(0, 10); }
+
 function _weekStart_() {
-  var now = new Date();
-  var day = Number(Utilities.formatDate(now, TZ, 'u')); // 월=1 … 일=7
-  var d = new Date(now.getTime() - (day - 1) * 86400000);
-  return Utilities.formatDate(d, TZ, 'yyyy-MM-dd');
+  var k = new Date(Date.now() + KST_MS);
+  var dow = (k.getUTCDay() + 6) % 7;   // 월요일=0
+  return new Date(k.getTime() - dow * 86400000).toISOString().slice(0, 10);
 }
 
-function _dayOf_(d) { return Utilities.formatDate(d, TZ, 'yyyy-MM-dd'); }
 
 /* ===================== 활동기록 쌓기 ===================== */
 
@@ -115,8 +155,14 @@ function handleEvent_(body) {
 /* ===================== 주간 명예의 전당 ===================== */
 
 // GET (기본) — 이번 주 별명별 정답수, 학교별 집계, 최근 참여자
+// 집계 결과를 60초 동안 보관해 두고 그 사이 요청은 그대로 돌려줍니다.
+// 여러 사람이 동시에 들어와도 시트를 매번 훑지 않아 응답이 끊기지 않습니다.
 function handleWeekly_() {
-  var rows = _rows_(_logSheet_());
+  var cache = CacheService.getScriptCache();
+  var hit = cache.get('weekly');
+  if (hit) return ContentService.createTextOutput(hit).setMimeType(ContentService.MimeType.JSON);
+
+  var rows = _allLogRows_();
   var weekStart = _weekStart_();
   var now = new Date();
 
@@ -184,13 +230,15 @@ function handleWeekly_() {
     if (recentOut.length >= 20) break;
   }
 
-  return _json_({ week: week, schools: schoolOut, recent: recentOut, weekStart: weekStart });
+  var payload = JSON.stringify({ week: week, schools: schoolOut, recent: recentOut, weekStart: weekStart });
+  try { cache.put('weekly', payload, 60); } catch (e) {}
+  return ContentService.createTextOutput(payload).setMimeType(ContentService.MimeType.JSON);
 }
 
 // GET ?live=1 — 최근 참여 흐름만
 function handleLive_(e) {
   if (!e || !e.parameter || e.parameter.live !== '1') return null;
-  var rows = _rows_(_logSheet_());
+  var rows = _allLogRows_();
   var now = new Date();
   var out = [], seen = {};
   for (var i = rows.length - 1; i >= 0 && out.length < 20; i--) {

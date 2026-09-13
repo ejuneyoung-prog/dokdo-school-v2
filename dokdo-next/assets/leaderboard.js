@@ -12,7 +12,9 @@ const cfg=()=>(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.leaderboard)||
 const apiUrl=()=>{const u=cfg().apiUrl;return typeof u==='string'&&/^https:\/\//.test(u)?u:'';};
 const isConfigured=()=>!!apiUrl();
 
-async function getJSON(url,timeoutMs=8000){
+/* Apps Script는 잠들어 있다 깨어날 때 첫 응답이 몇 초 늦습니다. 8초는 그때
+ * 모자라 명예의 전당과 기록 불러오기가 '중단됨'으로 끊겼습니다. */
+async function getJSON(url,timeoutMs=15000){
  const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),timeoutMs);
  try{
   const res=await fetch(url,{method:'GET',signal:ctrl.signal,credentials:'omit'});
