@@ -1229,8 +1229,10 @@ function drawMapReference(ctx){
  // starts right of x=360 because the 빛의 길 panel is pinned to the bottom-left
  // corner and was covering both the name and the height.
  ctx.textAlign='left';
- ctx.font='700 44px GmarketSans,sans-serif';ctx.fillStyle='#f6f7ec';ctx.shadowColor='#04202f';ctx.shadowBlur=12;ctx.fillText(tr('서도 · 더 높고 가파른 형태','Seodo · higher and steeper'),390,540);ctx.fillText(tr('동도 · 비교적 평탄한 상부','Dongdo · a more level upper area'),880,626);
- ctx.font='600 38px SCoreDream,sans-serif';ctx.fillStyle='#dff0f4';ctx.fillText('168.5 m',390,590);ctx.fillText('98.6 m',880,676);
+ // 설명 문장은 절반 크기로 낮추고 높이 숫자는 크게 둡니다. 읽어야 하는 값은
+ // 숫자이고 문장은 그 값을 풀어 주는 곁말입니다.
+ ctx.font='600 24px SCoreDream,sans-serif';ctx.fillStyle='#cfe2e6';ctx.shadowColor='#04202f';ctx.shadowBlur=10;ctx.fillText(tr('서도 · 더 높고 가파른 형태','Seodo · higher and steeper'),390,556);ctx.fillText(tr('동도 · 비교적 평탄한 상부','Dongdo · a more level upper area'),880,636);
+ ctx.font='700 40px GmarketSans,sans-serif';ctx.fillStyle='#f6f7ec';ctx.shadowBlur=12;ctx.fillText('168.5 m',390,600);ctx.fillText('98.6 m',880,680);
  // Sits to the right of the weather panel, which covers the top-left corner
  // on a desktop. At the foot of the plate it ran into the island captions.
  ctx.font='500 28px SCoreDream,sans-serif';ctx.fillStyle='#b7d2d9';ctx.shadowBlur=8;ctx.fillText(tr('형상 비교용 자체 도판 · 고도·시설 좌표를 측량한 모델이 아닙니다.','An authored shape comparison, not a surveyed elevation or facility model.'),520,58);ctx.restore();

@@ -392,7 +392,7 @@ function render(ctx,s,t,options={}){
   // bottom-left corner and was covering it.
   ctx.textAlign='center';ctx.shadowColor='#001322';
   ctx.font='700 54px GmarketSans, sans-serif';ctx.fillStyle='#F5F4E9';ctx.shadowBlur=14;
-  ctx.fillText('서도 · Seodo',612,505);ctx.fillText('동도 · Dongdo',1210,648);
+  ctx.fillText('서도 · Seodo',690,585);ctx.fillText('동도 · Dongdo',1210,648);
   // The coordinates are a caption, not a third island name: half the size of
   // the names and in the monospaced face, which reads as map data and cannot
   // be mistaken for one of the two labels it used to run into.
