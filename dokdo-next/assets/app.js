@@ -718,16 +718,37 @@ function renderResult(q,outcome){
  el.append(star,title,count,desc,note,facts,row,renderShareRow());el.focus();
 }
 function shareTrack(channel){if(window.DokdoAnalytics)DokdoAnalytics.track('share_click',{channel});}
-function shareButton(label,onClick){const b=document.createElement('button');b.className='button secondary';b.textContent=label;b.onclick=onClick;return b;}
+/* V1's share sheet was a full-width list -- icon, what it does, and one line
+ * saying what will happen. V2 had the same six actions squeezed into a row of
+ * small buttons with no explanation, which on a phone read as a jumble. Same
+ * actions, laid out so they can be read and hit with a thumb. */
+function shareButton(label,onClick,icon,hint){
+ const b=document.createElement('button');b.className='share-item';b.onclick=onClick;
+ const ic=document.createElement('span');ic.className='share-item-icon';ic.setAttribute('aria-hidden','true');ic.textContent=icon||'↗';
+ const box=document.createElement('span');box.className='share-item-text';
+ const t1=document.createElement('strong');t1.textContent=label;box.append(t1);
+ if(hint){const t2=document.createElement('small');t2.textContent=hint;box.append(t2);}
+ b.append(ic,box);return b;
+}
+/* What gets copied. V1 pasted a record someone would actually want to show;
+ * V2 pasted little more than a link. Built from the learner's own numbers. */
+function bragText(){
+ const s=getS();if(!s)return'';
+ const a=M.summary(s),gp=Core.gradeProgress(a.gradeScore);
+ const who=a.name||tr('독도 코리아 스쿨','Dokdo Korea School');
+ return tr(
+  `${who} · ${levelText(gp)} ${gradeLabel(gp.grade)} · 정답 ${num(a.correct)}문제 · 밝힌 불빛 ${num(a.lights)}개 · ${num(a.xp)} XP`,
+  `${who} · ${levelText(gp)} · ${num(a.correct)} correct · ${num(a.lights)} lights · ${num(a.xp)} XP`);
+}
 function renderShareRow(){
  const wrap=document.createElement('div');wrap.className='share-row';
  const label=document.createElement('p');label.className='fine';label.textContent=tr('독도 코리아 스쿨을 다른 사람에게 알려주세요. "라이브에 공유하기"만 내 별명과 기록이 포함되고, 나머지는 점수·이름이 포함되지 않습니다.','Tell someone else about Dokdo Korea School. Only "Share to the live chat" includes your nickname and record — the rest never include your score or name.');
- const row=document.createElement('div');row.className='button-row';
+ const row=document.createElement('div');row.className='share-list';
  row.append(shareButton(tr('링크 복사','Copy link'),async()=>{
   shareTrack('link');const res=await DokdoShare.copyLink();
   toast(res.state==='copied'?tr('링크를 복사했습니다.','Link copied.'):tr('복사하지 못했습니다.','Could not copy the link.'));
- }));
- row.append(shareButton(tr('결과 이미지 저장','Save an image'),()=>{shareTrack('card');saveImage();}));
+ },'🔗',tr('주소만 복사합니다','Copies the address only')));
+ row.append(shareButton(tr('결과 이미지 저장','Save an image'),()=>{shareTrack('card');saveImage();},'📸',tr('사진첩에 저장하거나 바로 공유합니다','Save to photos or share it straight away')));
  // The Kakao popup share flow only works reliably on mobile (where it
  // hands off to the KakaoTalk app); on desktop it opens an unauthenticated
  // blank popup, so the button is hidden there rather than shown broken.
@@ -735,19 +756,19 @@ function renderShareRow(){
  if(isMobileDevice&&window.DokdoShare&&DokdoShare.isKakaoConfigured()){
   row.append(shareButton(tr('카카오톡으로 보내기','Send via KakaoTalk'),async()=>{
    shareTrack('kakaotalk');const res=await DokdoShare.kakaoShare();
-   if(res.state==='error')toast(tr('카카오톡 공유를 열지 못했습니다.','Could not open KakaoTalk sharing.'));
-  }));
+   if(res.state==='error')toast(tr('카카오톡 공유를 열지 못했습니다. 이 주소가 카카오 개발자 콘솔에 등록돼 있어야 합니다.','Could not open KakaoTalk sharing. This address must be registered in the Kakao developer console.'));
+  },'💬',tr('대화방을 직접 엽니다','Opens a KakaoTalk chat directly')));
  }
  if(window.DokdoShare&&DokdoShare.nativeShareSupported()){
   row.append(shareButton(tr('다른 앱으로 공유','Share to another app'),async()=>{
    shareTrack('device');const res=await DokdoShare.nativeShare();
    if(res.state==='not_supported'||res.state==='error')toast(tr('이 기기에서는 공유창을 열 수 없습니다.','Sharing isn’t available on this device.'));
-  }));
+  },'📤',tr('기기 공유창을 엽니다','Opens your device share sheet')));
  }
  row.append(shareButton(tr('인스타그램에 올리기','Post to Instagram'),()=>{
   shareTrack('instagram');saveImage();
   toast(tr('이미지를 저장했습니다. 인스타그램을 열어 직접 올려 주세요.','The image was saved. Open Instagram to post it yourself.'));
- }));
+ },'📷',tr('이미지를 저장한 뒤 인스타를 엽니다','Saves the image, then opens Instagram')));
  const yt=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.youtube)||{};
  if(yt.liveUrl||yt.channelUrl){
   row.append(shareButton(tr('독도 코리아 라이브에 공유하기','Share to the Dokdo Korea live chat'),async()=>{
@@ -756,11 +777,10 @@ function renderShareRow(){
    // await -- Safari (and most browsers) silently block a popup opened
    // after an awaited promise, leaving a blank "about:blank" tab.
    window.open(yt.liveUrl||yt.channelUrl,'_blank','noopener');
-   const s=getS(),a=s?M.summary(s):null;
-   const brag=a?tr(`${a.name||tr('독도 코리아 스쿨','Dokdo Korea School')} · 정답 ${num(a.correct)}문제 · ${num(a.xp)} XP`,`${a.name||'Dokdo Korea School'} · ${num(a.correct)} correct · ${num(a.xp)} XP`):'';
+   const brag=bragText();
    const res=await DokdoShare.copyForChat(brag);
    toast(res.state==='copied'?tr('채팅용 한 줄을 복사했습니다. 라이브를 열어 붙여넣어 주세요.','Copied a one-line message for chat. Open the live stream and paste it there.'):tr('복사하지 못했습니다.','Could not copy the text.'));
-  }));
+  },'▶',tr('채팅용 한 줄로 복사하고 방송을 엽니다','Copies a one-line brag and opens the stream')));
  }
  wrap.append(label,row);return wrap;
 }
