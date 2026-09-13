@@ -622,7 +622,10 @@ function renderQuestionSources(item){
 function material(item){
  const context=$('question-context');context.replaceChildren();context.hidden=!item.context;
  if(item.context){const title=document.createElement('b');title.textContent=tr('알아두기','Background');const span=document.createElement('span');span.textContent=item.context;context.append(title,span);}
- const el=$('question-material'),body=$('question-material-body');body.replaceChildren();el.hidden=!item.material;el.open=false;
+ const el=$('question-material'),body=$('question-material-body');body.replaceChildren();el.hidden=!item.material;
+ // 자료를 봐야 풀 수 있는 문항은 접어 두면 안 됩니다. 접혀 있으면 자료가 있는
+ // 줄도 모른 채 보기만 보고 찍게 됩니다.
+ el.open=!!item.requiresMaterial;
  if(item.requiresMaterial&&!item.material)throw Error('Required question evidence is missing.');
  if(item.material){const p=document.createElement('p');p.textContent=item.material;body.append(p);}
  renderQuestionSources(item);
@@ -943,6 +946,18 @@ wire('cloud-save','onclick',async()=>{
  else txt('cloud-save-status',tr('전송하지 못했습니다: ','Could not send: ')+(res.error||''));
  $('cloud-save').disabled=false;
 });
+/* 주소에 ?기록=별명 이 붙어 있으면 입력칸을 채우고 바로 불러옵니다. 직접
+ * 입력하기 어려운 분께 링크 하나만 보내면 되도록 두었습니다. 영어 load= 도
+ * 같이 받습니다. */
+function autoLoadFromLink(){
+ let nick='';
+ try{const q=new URLSearchParams(location.search);nick=(q.get('기록')||q.get('load')||'').trim();}catch(e){}
+ if(!nick)return;
+ const field=$('cloud-load-nick');if(!field)return;
+ field.value=nick.normalize('NFC');
+ view('records');
+ setTimeout(()=>{const b=$('cloud-load');if(b&&!b.disabled)b.click();},400);
+}
 wire('cloud-load','onclick',async()=>{
  const nick=$('cloud-load-nick').value.trim().normalize('NFC');
  if(!nick){txt('cloud-load-status',tr('불러올 별명을 입력해 주세요.','Enter the nickname to load.'));return;}
@@ -1141,7 +1156,7 @@ function frame(now){
  requestAnimationFrame(frame);
 }
 if('IntersectionObserver' in window)new IntersectionObserver(entries=>{sceneVisible=!!entries[0]?.isIntersecting;frameLast=0;},{threshold:.05}).observe(canvas);
-assetsReady.then(()=>{updateEnvironment();paint();requestAnimationFrame(frame);maybeShowIntro();});
+assetsReady.then(()=>{updateEnvironment();paint();requestAnimationFrame(frame);maybeShowIntro();autoLoadFromLink();});
 $('time-mode').onchange=()=>{timeMode=$('time-mode').value;updateEnvironment();paint();};
 $('weather-refresh').onclick=async()=>{if(!weatherClient.enabled){toast(tr('배포자가 assets/site-config.js에서 비상업용 조건을 확인한 뒤 날씨를 연결합니다. 낮밤 전환은 계속 작동합니다.','Weather requires the operator to confirm its non-commercial terms in assets/site-config.js. Day/night still works.'));return;}await weatherClient.refresh(true);updateEnvironment();paint();};
 if(weatherClient.enabled){weatherClient.refresh().then(()=>{updateEnvironment();paint();});setInterval(()=>{if(!document.hidden)weatherClient.refresh().then(updateEnvironment);},300000);}
