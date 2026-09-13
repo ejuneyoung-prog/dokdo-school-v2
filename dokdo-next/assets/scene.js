@@ -243,7 +243,11 @@ function taegeukgi(x,px,py,size){
  x.fillStyle='#0047a0';x.beginPath();x.arc(0,0,4.5,0,Math.PI);x.fill();
  x.fillStyle='#cd2e3a';x.beginPath();x.arc(-2.25,0,2.25,0,Math.PI*2);x.fill();
  x.fillStyle='#0047a0';x.beginPath();x.arc(2.25,0,2.25,0,Math.PI*2);x.fill();x.restore();
- const corners=[[-7,-5,-.55,[1,1,1]],[7,5,-.55,[0,0,0]],[7,-5,.55,[0,1,0]],[-7,5,.55,[1,0,1]]];
+ // 건곤감리는 네 귀퉁이에서 중심을 향해 놓입니다. 괘의 세 막대가 쌓이는 방향이
+ // 중심을 잇는 대각선과 같아야 합니다. ±0.55는 그 대각선(35.5°)보다 23° 얕아
+ // 국기와 달라 보였습니다. 0.951 = 90° - 35.5°.
+ const TRI=.951;
+ const corners=[[-7,-5,-TRI,[1,1,1]],[7,5,-TRI,[0,0,0]],[7,-5,TRI,[0,1,0]],[-7,5,TRI,[1,0,1]]];
  for(const [a,b,r,bars] of corners){x.save();x.translate(13.5+a,-16+b);x.rotate(r);x.fillStyle='#15232a';bars.forEach((solid,i)=>{if(solid)x.fillRect(-2.3,-1.5+i*1.3,4.6,.8);else{x.fillRect(-2.3,-1.5+i*1.3,1.85,.8);x.fillRect(.45,-1.5+i*1.3,1.85,.8);}});x.restore();}x.restore();
 }
 function drawJourneyRaw(x,s,{darkness=0,width=W}={}){
