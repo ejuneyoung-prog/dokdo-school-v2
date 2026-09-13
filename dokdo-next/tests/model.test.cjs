@@ -20,7 +20,7 @@ test('Correction records understanding but no duplicate score or independent rec
  const s=fresh(),q=C.pool(1)[0];M.answer(s,q,false,{now:NOW});
  M.answer(s,q,true,{retry:true,now:NOW});const r=s.m[q.id];
  assert.equal(s.xp,0);assert.equal(s.gcHit,0);assert.equal(r.cor,0);assert.equal(r.att,1);
- assert.equal(Core.visualLevel(r),0);
+ assert.equal(Core.visualLevel(r),1);
  assert.equal(r.courseLearned,true);assert.equal((r.courseIndependentDays||[]).length,0);
  const before=JSON.stringify(s);M.answer(s,q,true,{retry:true,now:NOW});assert.equal(JSON.stringify(s),before);
 });

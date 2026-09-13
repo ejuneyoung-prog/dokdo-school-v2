@@ -104,7 +104,7 @@ test('Two due reviews on different later days produce one mastered concept, not 
 test('Retry cannot create an unseen question record',()=>{a.throws(()=>M.answer(fresh(),C.getQuestion(920001),true,{retry:true,now:NOW}));});
 test('A wrong answer followed by correction permits learning without pretending it was first-attempt recall',()=>{
  const s=fresh(),q=C.getQuestion(920001);M.answer(s,q,false,{now:NOW});M.answer(s,q,true,{retry:true,now:NOW});
- const r=s.m[q.id];a.equal(r.att,1);a.equal(r.cor,0);a.equal(s.xp,0);a.equal(s.gcHit,0);a.equal(s.weekly.correct,0);a.equal(r.courseLearned,true);a.equal(Core.visualLevel(r),0);
+ const r=s.m[q.id];a.equal(r.att,1);a.equal(r.cor,0);a.equal(s.xp,0);a.equal(s.gcHit,0);a.equal(s.weekly.correct,0);a.equal(r.courseLearned,true);a.equal(Core.visualLevel(r),1);
 });
 test('Unit completion rejects missing, repeated, cross-unit and unlearned questions',()=>{
  const s=fresh(),items=sample(s,8);a.throws(()=>M.finish(s,NOW,items));items.forEach(q=>M.answer(s,q,true,{now:NOW}));

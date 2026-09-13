@@ -378,13 +378,18 @@ function render(ctx,s,t,options={}){
  for(const b of birdPositions(s,clock,reduced)){ctx.save();ctx.globalAlpha=b.fade;bird(ctx,b,clock);ctx.restore();}
  lighthouse(ctx,LIGHTHOUSE[0],LIGHTHOUSE[1],phase.darkness,clock);
  if(labels){
-  // The island names shrink to nothing on a phone, and the coordinates were
-  // half the size again -- on the screen the app is actually used on, neither
-  // could be read. Both are set at a size that survives the scale-down.
-  ctx.font='700 40px GmarketSans, sans-serif';ctx.fillStyle='#F5F4E9';ctx.shadowColor='#001322';ctx.shadowBlur=12;
-  ctx.fillText('서도 · Seodo',300,535);ctx.fillText('동도 · Dongdo',1160,674);
-  ctx.textAlign='center';ctx.font='600 34px SCoreDream, sans-serif';ctx.fillStyle='rgba(245,244,233,.82)';ctx.shadowBlur=10;
-  ctx.fillText('37°14′N 131°52′E',W/2,H-22);ctx.textAlign='left';ctx.shadowBlur=0;
+  // The 1536px plate is drawn onto a ~450px phone, so everything here is
+  // about a third of the size it reads at. The island names were lost at
+  // that scale and the coordinates were smaller again; both are now set to
+  // the same size, large enough to survive the scale-down. The names are
+  // centred on their island so the bigger type cannot run off the edge.
+  ctx.textAlign='center';ctx.shadowColor='#001322';
+  ctx.font='700 54px GmarketSans, sans-serif';ctx.fillStyle='#F5F4E9';ctx.shadowBlur=14;
+  // 동도 sits well right of centre so it clears the coordinates, which are
+  // on the same line: at this size the two ran into each other.
+  ctx.fillText('서도 · Seodo',400,545);ctx.fillText('동도 · Dongdo',1210,670);
+  ctx.font='700 54px SCoreDream, sans-serif';ctx.fillStyle='rgba(245,244,233,.86)';ctx.shadowBlur=12;
+  ctx.fillText('37°14′N 131°52′E',W/2,H-24);ctx.textAlign='left';ctx.shadowBlur=0;
  }
  ctx.restore();
 }

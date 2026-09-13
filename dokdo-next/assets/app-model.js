@@ -88,10 +88,10 @@ function answer(s,item,ok,{mode='daily',retry=false,skipped=false,helped=false,n
  const prior=Course.groupRecords(s.m,family);
  if(retry){
   const r=s.m[item.id];if(!r||!r.att)throw Error('A correction requires an earlier attempt.');
-  // 해설을 읽고 고쳐 맞힌 답은 점수도 불빛도 주지 않습니다. 이해했다는
-  // 표시만 남기고, 불빛은 다음에 처음부터 맞혔을 때 켜집니다. 이미 켜 둔
-  // 불빛은 그대로 둡니다.
-  if(ok){r.courseLearned=true;r.courseFirstDay=r.courseFirstDay||day;Core.ensure(s,now);}
+  // 해설을 읽고 고쳐 맞힌 답은 점수(XP·누적 정답·부르기 보상)를 주지
+  // 않습니다. 다만 불빛 하나는 그대로 켭니다. 배운 것은 배운 것이고,
+  // 불빛을 없애면 틀린 아이에게 남는 것이 아무것도 없습니다.
+  if(ok){r.courseLearned=true;r.courseFirstDay=r.courseFirstDay||day;r.lightBest=Math.max(1,r.lightBest||0);Core.ensure(s,now);}
   return {xp:0,independent:false};
  }
  const due=prior.some(({r})=>r.courseLearned&&r.courseFirstDay<day&&(!r.due||r.due<=day));

@@ -674,7 +674,7 @@ async function choose(pick,skip=false){
   $('dont-know').hidden=true;$('question-feedback').hidden=false;$('question-feedback').classList.toggle('bad',!ok);$('question-feedback').replaceChildren();
   const head=document.createElement('h3');head.textContent=(ok?'💡 ':'🤔 ')+(ok?(retry?tr('이제 이해했어요','Now you have it'):tr('잘 찾았어요','Well spotted')):tr('괜찮아요. 함께 다시 알아봐요.','That is okay. Let us work it out.'));
   const text=document.createElement('p');text.textContent=!ok&&!skip?q.item.wrong[q.order[pick]]:q.item.explain;
-  const note=document.createElement('small');note.textContent=q.mode==='placement'?tr('시작점 확인은 이어갑니다. 틀린 뒤에는 같은 단계나 더 쉬운 문제를 살펴봅니다.','The starting check continues, at the same or an easier level after a mistake.'):retry?tr('해설을 보고 고친 답은 점수도 불빛도 주지 않아요. 다음에 처음부터 맞히면 불빛이 켜집니다.','A corrected answer earns no points and no light. Get it right first try next time and the light comes on.'):tr('불빛은 남습니다. 오래 기억했는지는 다른 날 복습으로 확인해요.','Your earned lights remain. Later review checks lasting recall.');
+  const note=document.createElement('small');note.textContent=q.mode==='placement'?tr('시작점 확인은 이어갑니다. 틀린 뒤에는 같은 단계나 더 쉬운 문제를 살펴봅니다.','The starting check continues, at the same or an easier level after a mistake.'):retry?tr('불빛은 켜집니다. 다만 점수는 처음부터 맞혔을 때만 쌓여요.','The light still comes on. Points, though, count only a first-try answer.'):tr('불빛은 남습니다. 오래 기억했는지는 다른 날 복습으로 확인해요.','Your earned lights remain. Later review checks lasting recall.');
   const correctLine=document.createElement('p');correctLine.className='feedback-answer';correctLine.textContent=tr('정답: ','Answer: ')+q.item.choices[q.item.answer];
   const takeaway=document.createElement('p');takeaway.className='feedback-takeaway';takeaway.textContent=tr('기억할 독도 한 가지 · ','One Dokdo fact to remember · ')+q.item.fact;
   const report=document.createElement('button');report.type='button';report.className='text-button dispute-button';report.textContent=tr('이 문제가 이상한가요? 이의제기','Something wrong with this question?');
@@ -1203,10 +1203,13 @@ function drawMapReference(ctx){
   const rim=terrainOutline();
   if(rim){ctx.save();ctx.shadowColor='rgba(255,214,122,.55)';ctx.shadowBlur=16;ctx.drawImage(rim,0,0);ctx.restore();}
  }
- ctx.font='500 28px GmarketSans,sans-serif';ctx.fillStyle='#f6f7ec';ctx.shadowColor='#04202f';ctx.shadowBlur=10;ctx.fillText(tr('서도 · 더 높고 가파른 형태','Seodo · higher and steeper'),190,568);ctx.fillText(tr('동도 · 비교적 평탄한 상부','Dongdo · a more level upper area'),925,626);
- ctx.font='22px SCoreDream,sans-serif';ctx.fillStyle='#d6e9ed';ctx.fillText('168.5 m',190,603);ctx.fillText('98.6 m',925,660);
- // Moved to the foot of the plate: at the top it sat under the weather panel.
- ctx.font='19px SCoreDream,sans-serif';ctx.fillStyle='#a9c6cd';ctx.shadowBlur=8;ctx.fillText(tr('형상 비교용 자체 도판 · 고도·시설 좌표를 측량한 모델이 아닙니다.','An authored shape comparison, not a surveyed elevation or facility model.'),50,V.H-22);ctx.restore();
+ // Same scale problem as the main plate: this is a 1536px drawing shown on a
+ // phone, so anything under ~40px here is unreadable there.
+ ctx.font='700 44px GmarketSans,sans-serif';ctx.fillStyle='#f6f7ec';ctx.shadowColor='#04202f';ctx.shadowBlur=12;ctx.fillText(tr('서도 · 더 높고 가파른 형태','Seodo · higher and steeper'),150,556);ctx.fillText(tr('동도 · 비교적 평탄한 상부','Dongdo · a more level upper area'),880,620);
+ ctx.font='600 38px SCoreDream,sans-serif';ctx.fillStyle='#dff0f4';ctx.fillText('168.5 m',150,606);ctx.fillText('98.6 m',880,670);
+ // Sits to the right of the weather panel, which covers the top-left corner
+ // on a desktop. At the foot of the plate it ran into the island captions.
+ ctx.font='500 28px SCoreDream,sans-serif';ctx.fillStyle='#b7d2d9';ctx.shadowBlur=8;ctx.fillText(tr('형상 비교용 자체 도판 · 고도·시설 좌표를 측량한 모델이 아닙니다.','An authored shape comparison, not a surveyed elevation or facility model.'),520,58);ctx.restore();
 }
 function environmentOptions(){return {phase:DokdoSolar.phase(Date.now(),timeMode),weather:weatherClient.current,width:canvas.getBoundingClientRect().width||V.W};}
 function updateEnvironment(){
