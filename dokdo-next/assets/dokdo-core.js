@@ -149,6 +149,16 @@
     return Math.min(MAX_LIGHT, Math.max(number(r && r.lightBest), number(r && r.lv), number(r && r.cor) > 0 ? 1 : 0));
   }
   function correctCount(s) {return Object.values(s.m).reduce((a,r)=>a+number(r.cor),0);}
+  // 레벨이 오르는 기준. 같은 문항을 다시 맞힌 것은 절반만 칩니다. 총 정답
+  // 횟수를 그대로 쓰면 한 문항을 반복해 푸는 것만으로 단계가 오르고, 실제로
+  // 배운 양보다 레벨이 크게 부풀어 올랐습니다. 화면의 '누적 정답'은 실제
+  // 횟수 그대로 두고, 레벨 계산에만 이 점수를 씁니다.
+  var REPEAT_WEIGHT = 0.5;
+  function gradeScore(s) {
+    var first = 0, total = 0;
+    for (const r of Object.values(s.m)) {const c = number(r.cor); total += c; if (c > 0) first++;}
+    return first + (total - first) * REPEAT_WEIGHT;
+  }
   // Grade is derived from lifetime correct answers, not stored/advanced by
   // hand: the placement test is gone, everyone starts at K (rank 0), and
   // each tier needs 5 more correct than the last to graduate (K needs 5,
@@ -282,5 +292,5 @@
   }
   return {VERSION, VISIT_MS, MAX_VISITORS, dayKey, weekKey, addDays, validateState, ensure, rollover, visualLevel,
     correctCount, registerAnswer, advanceLearning, invite, tickVisits, envelope, readBackup, clone,
-    GRADES, GRADE_ALIASES, gradeRank, gradeProgress, DOKKOMIN_LEVELS, DOKKOMIN_FROM};
+    GRADES, GRADE_ALIASES, gradeRank, gradeProgress, gradeScore, REPEAT_WEIGHT, DOKKOMIN_LEVELS, DOKKOMIN_FROM};
 });

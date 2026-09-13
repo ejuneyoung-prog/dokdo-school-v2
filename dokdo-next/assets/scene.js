@@ -272,8 +272,11 @@ function drawJourneyRaw(x,s,{darkness=0,width=W}={}){
   x.shadowBlur=0;x.globalAlpha=1;
   // One flag per 5 correct answers (a filled line-segment is 10), so flags
   // are the marker that stays legible even when the glow above is subtle.
-  const flags=completed?100:Math.floor((island===1?p.east:p.west)/5),stride=width<520?5:width<900?2:1;
-  for(let k=0;k<flags;k++)if(k%stride===0||k===flags-1){const a=path[Math.min(k*5+4,499)];taegeukgi(x,a[0],a[1],.66*ui);}
+  // 좁은 화면에서 국기를 크게 그리면 서로 겹쳐 한쪽에 뭉쳐 보입니다. 선 굵기는
+ // 그대로 두고 국기만 작게 그려, 넓은 화면처럼 섬을 빙 둘러싸게 합니다.
+ const flagUi=Math.min(1.2,Math.max(.85,W/Math.max(320,width)*.45));
+ const flags=completed?100:Math.floor((island===1?p.east:p.west)/5),stride=width<520?2:1;
+  for(let k=0;k<flags;k++)if(k%stride===0||k===flags-1){const a=path[Math.min(k*5+4,499)];taegeukgi(x,a[0],a[1],.66*flagUi);}
  }
  x.shadowBlur=0;
  for(let i=0;i<25;i++){

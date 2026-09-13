@@ -231,7 +231,7 @@ function view(id,force=false){
 function renderLevelBanner(s,a){
  const box=$('level-banner'),track=$('level-banner-track');
  if(!box||!track)return;
- const gp=Core.gradeProgress(a.correct),reached=gp.rank+1,seen=Number(s.seenLevel||0);
+ const gp=Core.gradeProgress(a.gradeScore),reached=gp.rank+1,seen=Number(s.seenLevel||0);
  if(!a.name||reached<=seen){box.hidden=true;return;}
  const name=levelText(gp),top=gp.graduated;
  const line=top
@@ -295,20 +295,24 @@ function renderHome(){
 function renderGradeLine(idPrefix,s,a){
  const el=$(idPrefix+'-line');if(!el)return;
  el.hidden=!a.name;if(!a.name)return;
- const gp=Core.gradeProgress(a.correct);
+ const gp=Core.gradeProgress(a.gradeScore);
  if($(idPrefix+'-name'))txt(idPrefix+'-name',a.name);
  txt(idPrefix+'-badge',levelText(gp));
  txt(idPrefix+'-stats',tr(`정답 ${num(a.correct)} · XP ${num(a.xp)}`,`Correct ${num(a.correct)} · XP ${num(a.xp)}`));
- $(idPrefix+'-gauge').max=gp.need;$(idPrefix+'-gauge').value=gp.have;
- txt(idPrefix+'-gauge-label',gp.graduated?tr('최고 레벨 달성','Top level reached'):tr(`${gp.have}/${gp.need} · 다음 ${nextLevelText(gp)}까지`,`${gp.have}/${gp.need} to ${nextLevelText(gp)}`));
+ // 복습을 절반으로 세면 점수에 소수점이 생깁니다. 게이지 숫자는 올림해
+ // '2.5/45' 같은 표시가 보이지 않게 합니다.
+ $(idPrefix+'-gauge').max=gp.need;$(idPrefix+'-gauge').value=Math.ceil(gp.have);
+ txt(idPrefix+'-gauge-label',gp.graduated?tr('최고 레벨 달성','Top level reached'):tr(`${Math.ceil(gp.have)}/${gp.need} · 다음 ${nextLevelText(gp)}까지`,`${Math.ceil(gp.have)}/${gp.need} to ${nextLevelText(gp)}`));
 }
 function renderGrade(){
  const s=getS();if(!s)return;
- const a=M.summary(s),gp=Core.gradeProgress(a.correct);
+ const a=M.summary(s),gp=Core.gradeProgress(a.gradeScore);
  txt('grade-view-current',gp.rank>=Core.DOKKOMIN_FROM?gradeLabel(gp.grade):'Lv.'+(gp.rank+1)+' · '+gradeLabel(gp.grade));
- txt('grade-view-stats',tr(`정답 ${num(a.correct)} · XP ${num(a.xp)}`,`Correct ${num(a.correct)} · XP ${num(a.xp)}`));
- $('grade-view-gauge').max=gp.need;$('grade-view-gauge').value=gp.have;
- txt('grade-view-gauge-label',gp.graduated?tr('최고 단계 달성','Top level reached'):tr(`${gp.have}/${gp.need} · 다음 단계(${gradeLabel(Core.GRADES[gp.rank+1])})까지`,`${gp.have}/${gp.need} to ${gradeLabel(Core.GRADES[gp.rank+1])}`));
+ // 누적 정답은 실제로 맞힌 횟수 그대로, 레벨은 복습을 절반으로 센 점수.
+ // 두 숫자가 다른 뜻이라는 걸 화면에서 밝혀 둡니다.
+ txt('grade-view-stats',tr(`정답 ${num(a.correct)} · XP ${num(a.xp)} · 레벨은 같은 문항을 다시 맞힌 것을 절반으로 셉니다`,`Correct ${num(a.correct)} · XP ${num(a.xp)} · levels count a repeated question as half`));
+ $('grade-view-gauge').max=gp.need;$('grade-view-gauge').value=Math.ceil(gp.have);
+ txt('grade-view-gauge-label',gp.graduated?tr('최고 단계 달성','Top level reached'):tr(`${Math.ceil(gp.have)}/${gp.need} · 다음 단계(${gradeLabel(Core.GRADES[gp.rank+1])})까지`,`${Math.ceil(gp.have)}/${gp.need} to ${gradeLabel(Core.GRADES[gp.rank+1])}`));
  const ladder=$('grade-ladder');ladder.replaceChildren();
  Core.GRADES.forEach((code,i)=>{
   const row=document.createElement('div');row.className='grade-row'+(i===gp.rank?' current':i<gp.rank?' done':'');
@@ -871,7 +875,7 @@ function renderRecords(){
   }
   renderWeeks(s);
   const legacy=document.createElement('p');legacy.className='fine';legacy.style.gridColumn='1 / -1';
-  legacy.textContent=tr(`학년: ${gradeLabel(Core.gradeProgress(a.correct).grade)} · 연속 출석 ${s.streak||0}일 (주간 집계와 별도)`,`Grade: ${gradeLabel(Core.gradeProgress(a.correct).grade)} · Attendance streak: ${s.streak||0} (separate from weekly totals)`);
+  legacy.textContent=tr(`학년: ${gradeLabel(Core.gradeProgress(a.gradeScore).grade)} · 연속 출석 ${s.streak||0}일 (주간 집계와 별도)`,`Grade: ${gradeLabel(Core.gradeProgress(a.gradeScore).grade)} · Attendance streak: ${s.streak||0} (separate from weekly totals)`);
   $('record-summary').append(legacy);
  }
  renderLegacy();updateStorageStatus();renderCloudPanel(s);renderBadges(s);
@@ -1251,7 +1255,7 @@ async function saveImage(){
  // What actually matters -- grade, XP, lifetime correct -- gets top billing;
  // the light-path/lap/beacon flavor text is real but secondary.
  x.fillStyle='#f5cd77';x.font='700 32px GmarketSans, sans-serif';
- const gp=Core.gradeProgress(a.correct);
+ const gp=Core.gradeProgress(a.gradeScore);
  x.fillText(`${levelText(gp)} · ${tr('정답','Correct')} ${num(a.correct)} · XP ${num(a.xp)}`,48,847);
  x.fillStyle='#8fa7b2';x.font='16px SCoreDream, sans-serif';const jp=M.Journey.progress(s);
  x.fillText(tr(`빛의 길 ${jp.filled}/1,025 · ${jp.shownLap}바퀴 · 봉화 ${a.beacons}`,`Path ${jp.filled}/1,025 / circuit ${jp.shownLap} / beacons ${a.beacons}`),48,878);

@@ -23,7 +23,7 @@ function ensure(s,now=Date.now()){
  /* Highest level already celebrated. An existing record starts at the level it
   * is already on, so nobody is congratulated on a promotion they earned long
   * ago the first time they open the new build. */
- if(!Number.isSafeInteger(s.seenLevel)||s.seenLevel<0)s.seenLevel=Core.gradeProgress(Core.correctCount(s)).rank+1;
+ if(!Number.isSafeInteger(s.seenLevel)||s.seenLevel<0)s.seenLevel=Core.gradeProgress(Core.gradeScore(s)).rank+1;
  if(typeof s.topReported!=='boolean')s.topReported=false;
  if(s.learningProfile && s.learningProfile.completed==null)s.learningProfile.completed={};
  if(s.learningProfile)Course.ensureProfile(s.learningProfile);
@@ -57,7 +57,7 @@ function validate(s){
  return true;
 }
 function summary(s){
- return {name:s.name||s.nick||'',questions:Object.keys(s.m).length,correct:Core.correctCount(s),
+ return {name:s.name||s.nick||'',questions:Object.keys(s.m).length,correct:Core.correctCount(s),gradeScore:Core.gradeScore(s),
    xp:s.xp||0,lights:Object.values(s.m).filter(r=>Core.visualLevel(r)>0).length,
    beacons:Object.values(s.m).filter(r=>Core.visualLevel(r)===4).length,
    credits:Math.floor((s.gcHit||0)/5),visitors:(s.gangchiVisits||[]).length,gcSummons:s.gcSummons||0,streak:s.streak||0,
@@ -370,7 +370,7 @@ const BADGES=[
   * that celebrates nothing. */
  ...Array.from({length:Core.DOKKOMIN_LEVELS},(_,i)=>({
   id:'dk'+(i+1),icon:'🪸',ko:'독코민 Lv.'+(i+1),en:'Dokkomin Lv.'+(i+1),
-  need:a=>Core.gradeProgress(a.correct).rank>=Core.DOKKOMIN_FROM+i}))
+  need:a=>Core.gradeProgress(a.gradeScore).rank>=Core.DOKKOMIN_FROM+i}))
 ];
 function computeBadges(s){
  const a=summary(s);
