@@ -352,16 +352,24 @@ function render(ctx,s,t,options={}){
   cetacean(xx,yy,1,.19);
   cetacean(xx-95,yy+26,.42,.15);   // 아기 고래가 어미 뒤를 따라갑니다
  }
+ // 한 덩어리로 움직이는 떼입니다. 예전에는 세 줄로 흩어진 채 0.55초씩
+ // 벌어져 최대 8초 길이로 늘어졌고, 화면을 17초에 가로질러 너무 빨랐습니다.
+ // 이제 30초에 걸쳐 건너가므로 고래(60초)보다는 두 배 빠르되 눈으로 따라갈
+ // 수 있고, 섬을 가로지르지 않도록 앞쪽 열린 바다로만 지나갑니다.
  const pod=Math.max(3,Math.min(14,options.pod|0||3));
- const dcycle=clock%42;            // 고래(190)보다 훨씬 자주 옵니다
- if(!reduced&&dcycle<17){
+ const CROSS=30,dcycle=clock%64;   // 고래(190)보다 훨씬 자주 옵니다
+ if(!reduced&&dcycle<CROSS){
+  const head=dcycle/CROSS*(W+420)-210;
   for(let i=0;i<pod;i++){
-   const lane=i%3,lead=(dcycle-i*.55)/17;
-   if(lead<0||lead>1)continue;
-   const xx=lead*(W+300)-150,yy=470+lane*78+Math.sin(clock*1.6+i)*13;
-   ctx.save();ctx.translate(xx,yy);ctx.globalAlpha=.26;ctx.fillStyle='#BEE0E6';
-   ctx.beginPath();ctx.ellipse(0,0,23,5.5,-.14,0,Math.PI*2);ctx.fill();
-   ctx.beginPath();ctx.moveTo(-20,0);ctx.lineTo(-33,-7);ctx.lineTo(-28,0);ctx.lineTo(-33,6);ctx.closePath();ctx.fill();
+   const col=Math.floor(i/3),row=i%3;
+   const xx=head-col*44-(row&1)*17,yy=608+row*18+Math.sin(clock*1.5+i)*5;
+   if(xx<-60||xx>W+60)continue;
+   // 물고기 떼와 섞여 보이지 않는다는 지적을 받아, 등지느러미를 세우고
+   // 더 밝고 진하게 그립니다. 크기는 요청대로 예전의 1.5분의 1입니다.
+   ctx.save();ctx.translate(xx,yy);ctx.globalAlpha=.62;ctx.fillStyle='#EAF7F9';
+   ctx.beginPath();ctx.ellipse(0,0,15,3.8,-.12,0,Math.PI*2);ctx.fill();
+   ctx.beginPath();ctx.moveTo(2,-2);ctx.lineTo(-4,-11);ctx.lineTo(-7,-1);ctx.closePath();ctx.fill();
+   ctx.beginPath();ctx.moveTo(-13,0);ctx.lineTo(-23,-5);ctx.lineTo(-19,0);ctx.lineTo(-23,5);ctx.closePath();ctx.fill();
    ctx.restore();
   }
  }
@@ -378,18 +386,18 @@ function render(ctx,s,t,options={}){
  for(const b of birdPositions(s,clock,reduced)){ctx.save();ctx.globalAlpha=b.fade;bird(ctx,b,clock);ctx.restore();}
  lighthouse(ctx,LIGHTHOUSE[0],LIGHTHOUSE[1],phase.darkness,clock);
  if(labels){
-  // The 1536px plate is drawn onto a ~450px phone, so everything here is
-  // about a third of the size it reads at. The island names were lost at
-  // that scale and the coordinates were smaller again; both are now set to
-  // the same size, large enough to survive the scale-down. The names are
-  // centred on their island so the bigger type cannot run off the edge.
+  // The 1536px plate is drawn onto a ~450px phone, so everything here reads
+  // at about a third of its size. The island names are set large enough to
+  // survive that. 서도 sits clear of the 빛의 길 panel, which is pinned to the
+  // bottom-left corner and was covering it.
   ctx.textAlign='center';ctx.shadowColor='#001322';
   ctx.font='700 54px GmarketSans, sans-serif';ctx.fillStyle='#F5F4E9';ctx.shadowBlur=14;
-  // 동도 sits well right of centre so it clears the coordinates, which are
-  // on the same line: at this size the two ran into each other.
-  ctx.fillText('서도 · Seodo',400,545);ctx.fillText('동도 · Dongdo',1210,670);
-  ctx.font='700 54px SCoreDream, sans-serif';ctx.fillStyle='rgba(245,244,233,.86)';ctx.shadowBlur=12;
-  ctx.fillText('37°14′N 131°52′E',W/2,H-24);ctx.textAlign='left';ctx.shadowBlur=0;
+  ctx.fillText('서도 · Seodo',612,505);ctx.fillText('동도 · Dongdo',1210,648);
+  // The coordinates are a caption, not a third island name: half the size of
+  // the names and in the monospaced face, which reads as map data and cannot
+  // be mistaken for one of the two labels it used to run into.
+  ctx.font='600 28px "IBM Plex Mono", monospace';ctx.fillStyle='rgba(230,240,242,.8)';ctx.shadowBlur=10;
+  ctx.fillText('37°14′N 131°52′E',W/2,H-22);ctx.textAlign='left';ctx.shadowBlur=0;
  }
  ctx.restore();
 }
