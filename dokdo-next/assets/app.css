@@ -144,7 +144,18 @@ main{max-width:1530px;padding:30px 36px 36px;margin:auto;min-height:70vh}.sectio
 .share-item-text small{font-size:12px;color:var(--muted);line-height:1.5;word-break:keep-all}
 /* 결과 공유 입구는 화면 폭을 다 쓰는 버튼이어야 한다. 작은 글자 링크는
    있는 줄도 모르고 지나친다. */
-.grade-line #grade-share{width:100%;justify-content:center;border:1px solid var(--line);border-radius:12px;min-height:48px;font-size:14px;margin-top:8px;text-decoration:none}
+/* 결과 공유는 이 앱에서 가장 자주 누르는 버튼입니다. 작은 글자 링크로 두면
+   있는 줄도 모르고 지나칩니다. 두툼하게, 굵게, 눌리는 느낌이 나도록. */
+.grade-line #grade-share{width:100%;justify-content:center;border:0;border-radius:14px;min-height:56px;
+ font:800 17px var(--heading);color:#142329;margin-top:10px;text-decoration:none;
+ background:linear-gradient(115deg,#f5d789,#eabb61);box-shadow:0 4px 0 #b8892c,0 10px 22px -8px rgba(0,0,0,.6)}
+.grade-line #grade-share:active{transform:translateY(3px);box-shadow:0 1px 0 #b8892c,0 6px 14px -8px rgba(0,0,0,.6)}
+/* 휴대폰에서는 화면 아래에 붙여 둡니다. 스크롤을 어디까지 내렸든 손가락이
+   닿는 자리에 있어야 합니다. */
+@media(max-width:520px){
+ .grade-line #grade-share{position:fixed;left:14px;right:14px;bottom:14px;width:auto;z-index:40;margin:0;min-height:58px;font-size:17px}
+ body{padding-bottom:80px}
+}
 .badge-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;aspect-ratio:1;border:1px solid var(--line);border-radius:22px;padding:10px;text-align:center;background:#0a1e2c;transition:transform .15s}
 .badge-tile .badge-icon{font-size:34px;line-height:1;filter:grayscale(1);opacity:.32}
 .badge-tile b{display:block;font-size:12px;font-weight:600;line-height:1.3;color:#7f97a2;max-width:100%}

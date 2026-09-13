@@ -1337,7 +1337,15 @@ wire('dispute-send','onclick',()=>{
 });
 wire('tourism-go','onclick',()=>toast(tr('현재 준비 중입니다.','This is being prepared right now.')));
 $('sound').onclick=toggleSound;$('save-image').onclick=saveImage;
-wire('grade-share','onclick',()=>{shareTrack('grade_badge');saveImage();});
+/* This used to save an image and nothing else, so the one button labelled
+ * 공유하기 never showed the six things you could actually do with a result.
+ * It opens the sheet; saving an image is one row inside it. */
+wire('grade-share','onclick',()=>{
+ shareTrack('grade_badge');
+ const body=$('share-dialog-body');
+ if(body){body.replaceChildren(renderShareRow());showDialog('share-dialog');}
+ else saveImage();
+});
 wire('music-prev','onclick',()=>musicSkip(-1));wire('music-next','onclick',()=>musicSkip(1));
 $('zoom').onclick=()=>{const on=$('canvas-shell').classList.toggle('zoomed');$('zoom').setAttribute('aria-pressed',String(on));txt('zoom',on?tr('전체 보기','Fit'):tr('확대','Zoom'));if(on)$('canvas-shell').scrollLeft=$('canvas-shell').scrollWidth*.22;};
 $('invite-count').onchange=renderVisitors;
