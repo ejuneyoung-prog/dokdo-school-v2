@@ -166,9 +166,11 @@ function handleWeekly_() {
   var weekStart = _weekStart_();
   var now = new Date();
 
+  var today = _dayOf_(new Date());
   var people = {};   // 별명 → {nick, school, correct, days:{}}
   var schools = {};  // 학교부문 → 학교이름 → {name, correct, people:{}}
   var recent = [];
+  var todayTries = 0, todayWho = {};   // 화면 위쪽 세 칸에 쓰입니다
 
   for (var i = 0; i < rows.length; i++) {
     var r = rows[i];
@@ -180,6 +182,8 @@ function handleWeekly_() {
     var school = String(r[9] || '').trim();
     var cat = String(r[11] || '').trim().toUpperCase();
     var day = _dayOf_(at);
+
+    if (day === today) { todayTries++; todayWho[_norm_(nick)] = true; }
 
     if (day >= weekStart) {
       var key = _norm_(nick);
@@ -230,7 +234,11 @@ function handleWeekly_() {
     if (recentOut.length >= 20) break;
   }
 
-  var payload = JSON.stringify({ week: week, schools: schoolOut, recent: recentOut, weekStart: weekStart });
+  var payload = JSON.stringify({
+    today: todayTries,                       // 오늘 문제를 푼 횟수
+    people: Object.keys(todayWho).length,    // 오늘 참여한 사람 수
+    people_week: Object.keys(people).length, // 이번 주 참여한 사람 수
+    week: week, schools: schoolOut, recent: recentOut, weekStart: weekStart });
   try { cache.put('weekly', payload, 60); } catch (e) {}
   return ContentService.createTextOutput(payload).setMimeType(ContentService.MimeType.JSON);
 }
