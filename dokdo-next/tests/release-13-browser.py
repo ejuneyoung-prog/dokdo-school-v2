@@ -91,7 +91,8 @@ try:
   # Perceived contrast is inspected via saved images; this assertion checks actual raster change only.
   check('Day and night render differently',(OUT/'day-1500.png').read_bytes()!=(OUT/'night-1500.png').read_bytes())
   check('Weather setup does not block automatic sunset calculation',page.locator('#dokdo-sun').inner_text().find(':')>=0)
-  page.select_option('#invite-count','10');page.click('#invite')
+  # The count slot is gone: the button now invites every gangchi it can.
+  page.click('#invite')
   # Inviting saves before the visitors appear, so this reads them once stored.
   wait_until(page,'DokdoApp.state.gangchiVisits.length===10')
   check('Ten earned visitors can coexist',page.evaluate('DokdoApp.state.gangchiVisits.length===10'))

@@ -17,7 +17,7 @@ const en={
  myDokdo:'My Dokdo',map:'Explore the map',learn:'Learn',journal:'Life journal',myRecords:'My records',
  oldFound:'A previous learning record exists in this browser.',oldCopy:'Keep the original and copy it into this new view.',checkRecords:'Check the record',
  landscape:'My island landscape',soundOff:'♫ Sound off',zoom:'Zoom',saveImage:'Save image',firstLight:'Your first lesson becomes your first light.',
- birdsHere:'Birds are visiting Dokdo',birdsHereSub:'Congratulations on new learning',
+ birdsHere:'Birds are visiting Dokdo',birdsHereSub:'🦭 A gangchi stays with them for one minute',
  artNote:'An imagined landscape based on the approved artwork · not a survey map',sources:'Artwork & sources',
  todayStep:'TODAY’S SMALL STEP',fiveQuestions:'5 questions',gentleLearning:'Learn with explanations',startLesson:'Start a little learning',
  review:'Recall · review',placement:'Choose age · find a starting point',pilotNote:'12 Dokdo units · 60 concepts · 240 rewritten question pairs. Cognitive demand and difficulty are separately reviewed.',
@@ -27,7 +27,7 @@ const en={
  west:'Seodo',east:'Dongdo',distanceMeaning:'The shortest distance between the shores, not the centres of the drawings.',
  officialMap:'See the official island outlines ↗',topographic:'Open the National Atlas map ↗',
  myLights:'Lights I have earned',lifetime:'Lifetime correct',discoveries:'Encounters with life',gullJournal:'Black-tailed gull journal',
- placeBeacons:'Place beacons',openJournal:'Open journal',journey:'My learning journey',seaVisitors:'A brief visit from the sea',
+ placeBeacons:'Place beacons',openJournal:'Open journal',journey:'🗺️ My learning journey',seaVisitors:'🦭 Call the legendary gangchi',
  visitRule:'Earn invitations through correct answers. Gangchi then visit the water between the islands for one minute.',
  visitCount:'Number of gangchi to invite',invite:'Invite gangchi',backHome:'Back to my Dokdo',
  dailyTitle:'Learn a little',dailyDesc:'Read a short explanation, then try the questions. Revisit mistakes with help.',
@@ -39,7 +39,7 @@ const en={
  gull:'Black-tailed gull',gullText:'This bird appears in the Ministry of Foreign Affairs’ Dokdo nature information. Dokdo also offers a resting place for migratory birds.',
  birdReplay:'Replay the bird visit',ecologySource:'Read about Dokdo’s natural environment ↗',
  wildlifeNote:'Gangchi and bird visits are imaginary learning celebrations. They do not represent real sightings, restoration or population counts.',
- badgesTitle:'Achievement Badges',
+ badgesTitle:'🏅 Achievement Badges',
  backupTitle:'Keep and restore your record',localOnly:'The new view saves in this browser. It does not sync with a cloud account. Keep a private backup file, too.',
  backupFile:'Save learning backup',importFile:'Open a backup file',
  backupWarning:'A saved image is not a learning backup. Backup files may contain a name, school, old recovery code and learning history. Keep them private.',
@@ -80,7 +80,7 @@ const en={
  introNote:'One of the Dokdo Korea channel’s videos. Tap to play — nothing plays automatically.',
  introOff:'Don’t show this again',
  introClose:'Close',
- youtubeTitle:'Dokdo Korea videos',
+ youtubeTitle:'🎬 Dokdo Korea videos',
  youtubeLive:'Watch the live stream ↗',
  youtubeWatchOn:'Open on YouTube ↗',
  youtubeNote:'Shows 3 of the Dokdo Korea channel’s videos at random. Tap to play — nothing plays automatically.',
@@ -88,14 +88,21 @@ const en={
  channelContactTitle:'Contact',channelMusicTitle:'Music & Channel Links',channelCollabLink:'Collaboration & lecture inquiries (Linktree) ↗',
  support:'♥ Support Dokdo Korea',headerLive:'🔴 Dokdo Live',headerChannel:'▶ YouTube\nDokdo Korea',headerCollab:'Collaborate',
  youtubeChannel:'Dokdo Korea Instagram ↗',
- tourismInfoTitle:'Ulleungdo–Dokdo travel information',
+ tourismInfoTitle:'🚢 Ulleungdo–Dokdo travel information',
  tourismInfoBody:'Basic visitor information about Dokdo (ferry access via Ulleungdo, weather-dependent sailings, and what to know before visiting).',
- tourismInfoLink:'Book / continue ↗',
- tourismComingSoon:'This is being prepared right now.',
+ tourismInfoLink:'🎫 Booking',
+ tourismProducts:'🧳 Tour packages',
+ tourismCall:'☎️ Call us',
+ tourismSoonNote:'The phone line is being set up. Please use the collaboration contact below for now.',
+ tourismComingSoon:'🛠️ Booking and tour information are being prepared. They will appear here as soon as they are ready.',
  contactCollab:'Contact / Collaborate ↗',
  tourismInfoBtn:'Ulleungdo·Dokdo travel info',
- promoTitle:'Dokdo Korea · Music & Social',
- visitCollabTitle:'Visit · Contact',
+ footerLearn:'About Dokdo',footerQuestions:'Browse the 240 questions',footerTogether:'Take part',
+ footerSupport:'♥ Support',footerOpenChat:'KakaoTalk open chat ↗',footerGoods:'Merchandise (coming soon)',
+ footerChannel:'Dokdo Korea',footerYoutube:'Dokdo Korea Label ↗',footerVisit:'Visiting',
+ footerVisitNote:'Booking and tour information are being prepared.',
+ promoTitle:'🎵 Dokdo Korea · Music & Social',
+ visitCollabTitle:'🧭 Visit · Contact',
  gradeTab:'Grade',gradeLadderTitle:'Full grade ladder',materialTip:'TIP · Show question material',gradeShare:'Share ↗',
  gradeNote:'No placement test — everyone starts at Kindergarten. Correct answers auto-promote you to the next grade, and progress already earned carries forward.',
  resetRecord:'Reset this record',
@@ -331,9 +338,11 @@ function renderVisitors(){
  // counter is s.visual.journey.inviteRemainder (0..9, resets on the 10th).
  const toward=(s.visual&&s.visual.journey&&s.visual.journey.inviteRemainder)||0;wire('gangchi-progress','value',toward);
  txt('gangchi-progress-label',tr(`정답 ${toward}/10 · 다음 강치까지`,`${toward}/10 correct · until the next gangchi`));
- const requested=+$('invite-count').value;
+ // The count slot is gone: nobody would ever ask for fewer gangchi than they
+ // have, so the button always invites every one it can.
+ const callable=Math.min(ready,10-vis.length);
  $('invite').disabled=ready<1||vis.length>=10||store.blocked;
- txt('invite',vis.length>=10?tr('10마리와 함께하는 중','10 visitors here'):ready?tr(`강치 ${Math.min(requested,ready,10-vis.length)}마리 부르기`,`Invite ${Math.min(requested,ready,10-vis.length)} gangchi`):tr('인정 정답 10개로 첫 만남','First visit after 10 credits'));
+ txt('invite',vis.length>=10?tr('10마리와 함께하는 중','10 visitors here'):ready?tr(`강치 ${callable}마리 부르기`,`Invite ${callable} gangchi`):tr('인정 정답 10개로 첫 만남','First visit after 10 credits'));
  $('bird-toast').hidden=!s.visual.birdVisit||!s.visual.birdsEnabled;
 }
 let activeYoutube=null;
@@ -438,7 +447,10 @@ function mapFacts(which='west'){
 }
 function toggleMap(on){
  const previous=mapOpen;mapOpen=on;if(!view('home')){mapOpen=previous;return false;}$('stage-grid').classList.toggle('map-open',on);$('map-card').hidden=!on;$('today-card').hidden=on;
- renderOutlines();mapFacts();paint();txt('art-note',on?tr('지형 구조 비교 · 실측지도 아님','Landform comparison · not a survey'):tr('승인 일러스트의 상상 풍경 · 실제 지형은 지도 보기에서 비교','Approved imaginary landscape · compare actual landforms in Map'));
+ renderOutlines();mapFacts();paint();
+ // 그림 출처는 지도 살펴보기에서만 보입니다. 거기가 그림과 실제 지형을
+ // 견주어 보는 자리라, 출처가 필요한 유일한 화면입니다.
+ if($('scene-bottom'))$('scene-bottom').hidden=!on;
  txt('save-image',on?tr('지도 저장','Save map'):tr('이미지 저장','Save image'));
 }
 function setupAge(callback,force=false){
@@ -662,7 +674,7 @@ async function choose(pick,skip=false){
   $('dont-know').hidden=true;$('question-feedback').hidden=false;$('question-feedback').classList.toggle('bad',!ok);$('question-feedback').replaceChildren();
   const head=document.createElement('h3');head.textContent=(ok?'💡 ':'🤔 ')+(ok?(retry?tr('이제 이해했어요','Now you have it'):tr('잘 찾았어요','Well spotted')):tr('괜찮아요. 함께 다시 알아봐요.','That is okay. Let us work it out.'));
   const text=document.createElement('p');text.textContent=!ok&&!skip?q.item.wrong[q.order[pick]]:q.item.explain;
-  const note=document.createElement('small');note.textContent=q.mode==='placement'?tr('시작점 확인은 이어갑니다. 틀린 뒤에는 같은 단계나 더 쉬운 문제를 살펴봅니다.','The starting check continues, at the same or an easier level after a mistake.'):retry?tr('다시 확인한 정답은 점수나 숙달 증거로 중복 계산하지 않습니다.','Immediate corrections do not add duplicate points or mastery evidence.'):tr('불빛은 남습니다. 오래 기억했는지는 다른 날 복습으로 확인해요.','Your earned lights remain. Later review checks lasting recall.');
+  const note=document.createElement('small');note.textContent=q.mode==='placement'?tr('시작점 확인은 이어갑니다. 틀린 뒤에는 같은 단계나 더 쉬운 문제를 살펴봅니다.','The starting check continues, at the same or an easier level after a mistake.'):retry?tr('불빛은 켜집니다. 다만 점수는 처음부터 맞혔을 때만 쌓여요.','The light still comes on. Points, though, count only a first-try answer.'):tr('불빛은 남습니다. 오래 기억했는지는 다른 날 복습으로 확인해요.','Your earned lights remain. Later review checks lasting recall.');
   const correctLine=document.createElement('p');correctLine.className='feedback-answer';correctLine.textContent=tr('정답: ','Answer: ')+q.item.choices[q.item.answer];
   const takeaway=document.createElement('p');takeaway.className='feedback-takeaway';takeaway.textContent=tr('기억할 독도 한 가지 · ','One Dokdo fact to remember · ')+q.item.fact;
   const report=document.createElement('button');report.type='button';report.className='text-button dispute-button';report.textContent=tr('이 문제가 이상한가요? 이의제기','Something wrong with this question?');
@@ -834,7 +846,15 @@ function hallRenderList(container,rows,cols){
  for(const c of cols){const th=document.createElement('th');th.textContent=c.label;htr.append(th);}
  thead.append(htr);table.append(thead);
  const tbody=document.createElement('tbody');
- for(const row of rows){const tr2=document.createElement('tr');for(const c of cols){const td=document.createElement('td');td.textContent=row[c.key]??'';tr2.append(td);}tbody.append(tr2);}
+ for(const row of rows){const tr2=document.createElement('tr');for(const c of cols){
+  const td=document.createElement('td');const v=row[c.key];
+  // Anyone who actually typed a school gets it shown brightly; a blank one
+  // stays dim so the two are told apart at a glance on a projector.
+  if(c.key==='school'||c.key==='name'){
+   const has=v!=null&&String(v).trim()!=='';
+   td.textContent=has?String(v):'—';td.className=has?'hall-affil':'hall-affil-none';
+  }else td.textContent=v??'';
+  tr2.append(td);}tbody.append(tr2);}
  table.append(tbody);container.append(table);
 }
 async function renderHall(){
@@ -1157,13 +1177,39 @@ const assetsReady=Promise.all([image('./assets/dokdo-islands.webp'),image('./ass
 });
 const reduced=()=>!!getS()?.visual?.reduceMotion||matchMedia('(prefers-reduced-motion: reduce)').matches;
 function visible(){return currentView==='home'&&!mapOpen&&!document.hidden&&sceneVisible&&!document.querySelector('dialog[open]');}
+// The gold rim is grown from the terrain image's own alpha channel rather
+// than from the traced ART polygons: the polygons follow the illustration,
+// not this comparison plate, so an outline drawn from them would sit beside
+// the island instead of on it.
+let terrainRim=null;
+function terrainOutline(){
+ if(terrainRim)return terrainRim;
+ if(!(terrain?.complete&&terrain.naturalWidth))return null;
+ const c=document.createElement('canvas');c.width=V.W;c.height=V.H;const g=c.getContext('2d');
+ for(let i=0;i<24;i++){const a=i/24*Math.PI*2;g.drawImage(terrain,Math.cos(a)*5,Math.sin(a)*5,V.W,V.H);}
+ g.globalCompositeOperation='source-in';
+ const gold=g.createLinearGradient(0,0,V.W,V.H);gold.addColorStop(0,'#ffe9a8');gold.addColorStop(.5,'#e8c266');gold.addColorStop(1,'#c9a14a');
+ g.fillStyle=gold;g.fillRect(0,0,V.W,V.H);
+ g.globalCompositeOperation='destination-out';g.drawImage(terrain,0,0,V.W,V.H);
+ terrainRim=c;return c;
+}
 function drawMapReference(ctx){
  ctx.save();ctx.clearRect(0,0,V.W,V.H);
- const g=ctx.createLinearGradient(0,0,V.W,V.H);g.addColorStop(0,'#062637');g.addColorStop(1,'#071c2b');ctx.fillStyle=g;ctx.fillRect(0,0,V.W,V.H);
- if(terrain?.complete&&terrain.naturalWidth)ctx.drawImage(terrain,0,0,V.W,V.H);
- ctx.font='500 28px GmarketSans,sans-serif';ctx.fillStyle='#edf3df';ctx.fillText(tr('서도 · 더 높고 가파른 형태','Seodo · higher and steeper'),190,568);ctx.fillText(tr('동도 · 비교적 평탄한 상부','Dongdo · a more level upper area'),925,626);
- ctx.font='22px SCoreDream,sans-serif';ctx.fillStyle='#b5d1d6';ctx.fillText('168.5 m',190,603);ctx.fillText('98.6 m',925,660);
- ctx.font='19px SCoreDream,sans-serif';ctx.fillStyle='#8cabb3';ctx.fillText(tr('형상 비교용 자체 도판 · 고도·시설 좌표를 측량한 모델이 아닙니다.','An authored shape comparison, not a surveyed elevation or facility model.'),50,45);ctx.restore();
+ const g=ctx.createLinearGradient(0,0,V.W,V.H);g.addColorStop(0,'#10425c');g.addColorStop(1,'#0b2b41');ctx.fillStyle=g;ctx.fillRect(0,0,V.W,V.H);
+ if(terrain?.complete&&terrain.naturalWidth){
+  ctx.drawImage(terrain,0,0,V.W,V.H);
+  // The plate reads too dark on a phone, so the land is lifted once more.
+  ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.3;ctx.drawImage(terrain,0,0,V.W,V.H);ctx.restore();
+  const rim=terrainOutline();
+  if(rim){ctx.save();ctx.shadowColor='rgba(255,214,122,.55)';ctx.shadowBlur=16;ctx.drawImage(rim,0,0);ctx.restore();}
+ }
+ // Same scale problem as the main plate: this is a 1536px drawing shown on a
+ // phone, so anything under ~40px here is unreadable there.
+ ctx.font='700 44px GmarketSans,sans-serif';ctx.fillStyle='#f6f7ec';ctx.shadowColor='#04202f';ctx.shadowBlur=12;ctx.fillText(tr('서도 · 더 높고 가파른 형태','Seodo · higher and steeper'),150,556);ctx.fillText(tr('동도 · 비교적 평탄한 상부','Dongdo · a more level upper area'),880,620);
+ ctx.font='600 38px SCoreDream,sans-serif';ctx.fillStyle='#dff0f4';ctx.fillText('168.5 m',150,606);ctx.fillText('98.6 m',880,670);
+ // Sits to the right of the weather panel, which covers the top-left corner
+ // on a desktop. At the foot of the plate it ran into the island captions.
+ ctx.font='500 28px SCoreDream,sans-serif';ctx.fillStyle='#b7d2d9';ctx.shadowBlur=8;ctx.fillText(tr('형상 비교용 자체 도판 · 고도·시설 좌표를 측량한 모델이 아닙니다.','An authored shape comparison, not a surveyed elevation or facility model.'),520,58);ctx.restore();
 }
 function environmentOptions(){return {phase:DokdoSolar.phase(Date.now(),timeMode),weather:weatherClient.current,width:canvas.getBoundingClientRect().width||V.W};}
 function updateEnvironment(){
@@ -1182,7 +1228,8 @@ function paint(){
  const s=getS();if(!s)return;
  if(Date.now()-lastEnvironmentUpdate>1000){lastEnvironmentUpdate=Date.now();updateEnvironment();}
  if(lightDirty){lightLayer=document.createElement('canvas');lightLayer.width=V.W;lightLayer.height=V.H;V.drawLights(lightLayer.getContext('2d'),s);lightDirty=false;}
- if(mapOpen)drawMapReference(ctx);else V.render(ctx,s,sceneTime,{islands,texture,reduced:reduced(),labels:true,lightLayer,...environmentOptions()});
+ if(mapOpen)drawMapReference(ctx);else // 돌고래 떼·새 떼는 레벨만큼 늘어납니다. 오래 배운 사람의 바다가 더 붐빕니다.
+  V.render(ctx,s,sceneTime,{islands,texture,reduced:reduced(),labels:true,lightLayer,pod:Core.gradeProgress(M.summary(s).gradeScore).rank+1,...environmentOptions()});
 }
 function frame(now){
  const dt=frameLast?Math.min(1000,Math.max(0,now-frameLast)):0;frameLast=now;
@@ -1312,10 +1359,11 @@ $('brand-home').onclick=()=>toggleMap(false);$('nav-map').onclick=()=>toggleMap(
 $('start-lesson').onclick=()=>start('daily');$('start-review').onclick=()=>start('review');
 $('leave-lesson').onclick=()=>view('home');$('open-settings').onclick=settings;$('change-age').onclick=()=>{closeDialog('settings-dialog');setupAge(renderHome,true);};
 wire('age-recover-link','onclick',()=>{closeDialog('age-dialog');ageNext=null;view('records');$('cloud-load-nick')?.focus();});
-$('open-sources').onclick=sources;$('footer-sources').onclick=sources;$('arrange-beacon').onclick=beaconDialog;
+$('open-sources').onclick=sources;wire('footer-sources','onclick',sources);$('arrange-beacon').onclick=beaconDialog;
 (function(){
  const yt=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.youtube)||{};
  wire('support-link','href',yt.membershipUrl||yt.channelUrl||'#');
+ wire('footer-support-link','href',yt.membershipUrl||yt.channelUrl||'#');
  wire('header-live-link','href',yt.liveUrl||yt.channelUrl||'#');
  wire('header-channel-link','href',yt.channelUrl||'#');
  if(!yt.liveUrl&&!yt.channelUrl)wire('header-live-link','hidden',true);
@@ -1324,6 +1372,8 @@ $('open-sources').onclick=sources;$('footer-sources').onclick=sources;$('arrange
 wire('open-tourism-info','onclick',()=>showDialog('tourism-dialog'));
 wire('open-tourism-info-home','onclick',()=>showDialog('tourism-dialog'));
 wire('open-channel-info','onclick',()=>showDialog('channel-info-dialog'));
+wire('footer-channel-info','onclick',()=>showDialog('channel-info-dialog'));
+wire('footer-goods','onclick',()=>toast(tr('굿즈는 준비 중입니다. 준비되는 대로 여기에서 안내합니다.','Merchandise is being prepared. It will be announced here.')));
 let disputeItem=null;
 function openDispute(item){disputeItem=item;$('dispute-reason').value='';showDialog('dispute-dialog');}
 wire('dispute-send','onclick',()=>{
@@ -1335,7 +1385,11 @@ wire('dispute-send','onclick',()=>{
  closeDialog('dispute-dialog');
  toast(tr('이메일 앱을 열었습니다. 내용을 확인하고 보내주세요.','Opened your email app. Please review and send it.'));
 });
-wire('tourism-go','onclick',()=>toast(tr('현재 준비 중입니다.','This is being prepared right now.')));
+// The standing "being prepared" line now lives at the top of the dialog
+// (item 11), so these buttons only confirm what the reader already sees.
+wire('tourism-go','onclick',()=>toast(tr('예약 창구는 준비 중입니다. 열리는 대로 이 화면에서 바로 안내합니다.','Booking is being prepared. It will open right here.')));
+wire('tourism-products','onclick',()=>toast(tr('울릉도·독도 상품 소개는 곧 게시됩니다.','Tour packages will be posted here soon.')));
+wire('tourism-call','onclick',()=>toast(tr('전화번호는 개설 중입니다. 문의 · 협업 링크로 먼저 보내 주세요.','The phone line is being set up. Please use the collaboration link for now.')));
 $('sound').onclick=toggleSound;$('save-image').onclick=saveImage;
 /* This used to save an image and nothing else, so the one button labelled
  * 공유하기 never showed the six things you could actually do with a result.
@@ -1348,9 +1402,8 @@ wire('grade-share','onclick',()=>{
 });
 wire('music-prev','onclick',()=>musicSkip(-1));wire('music-next','onclick',()=>musicSkip(1));
 $('zoom').onclick=()=>{const on=$('canvas-shell').classList.toggle('zoomed');$('zoom').setAttribute('aria-pressed',String(on));txt('zoom',on?tr('전체 보기','Fit'):tr('확대','Zoom'));if(on)$('canvas-shell').scrollLeft=$('canvas-shell').scrollWidth*.22;};
-$('invite-count').onchange=renderVisitors;
 $('invite').onclick=async()=>{if(busy||!guarded())return;busy=true;try{
- const n=await mutate(s=>Core.invite(s,Date.now(),+$('invite-count').value));renderHome();toast(n?tr(`${n}마리의 강치가 1분 동안 찾아왔어요.`,`${n} gangchi will visit for one minute.`):tr('부르기 보상이나 빈자리가 부족해요. 보상은 사용되지 않았습니다.','No invitation or free space. No credits were spent.'));
+ const n=await mutate(s=>Core.invite(s,Date.now()));renderHome();toast(n?tr(`${n}마리의 강치가 1분 동안 찾아왔어요.`,`${n} gangchi will visit for one minute.`):tr('부르기 보상이나 빈자리가 부족해요. 보상은 사용되지 않았습니다.','No invitation or free space. No credits were spent.'));
 }catch(e){}finally{busy=false;}};
 $('bird-replay').onclick=async()=>{
  // The visit is drawn on the home canvas, so replaying it from the journal

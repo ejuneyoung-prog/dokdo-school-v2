@@ -31,6 +31,8 @@ function ensure(s,now=Date.now()){
  if(s.visual.language!=='en')s.visual.language='ko';
  if(s.visual.birdsEnabled===undefined)s.visual.birdsEnabled=true;
  if(s.visual.reduceMotion===undefined)s.visual.reduceMotion=false;
+ // 새 떼·돌고래 떼는 레벨만큼 커집니다. visual이 준비된 뒤에 채웁니다.
+ s.visual.birdFlock=Core.gradeProgress(Core.gradeScore(s)).rank+1;
  Journey.ensure(s);validate(s);return s;
 }
 function strictDate(d){return typeof d==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d)&&Number.isFinite(Date.parse(d+'T00:00:00Z'))&&new Date(d+'T00:00:00Z').toISOString().slice(0,10)===d;}
@@ -52,7 +54,7 @@ function validate(s){
   for(const [k,r] of Object.entries(v.unlocks)){
    if(!/^(stage-[1-4]|ecology-1)$/.test(k)||!r||typeof r.at!=='string'||r.species!=='black-tailed-gull')throw Error('Invalid bird journal.');
   }
-  if(v.birdVisit!=null&&(!Number.isFinite(v.birdVisit.remainingMs)||v.birdVisit.remainingMs<=0||v.birdVisit.remainingMs>24000||typeof v.birdVisit.event!=='string'||!v.unlocks[v.birdVisit.event]))throw Error('Invalid bird visit.');
+  if(v.birdVisit!=null&&(!Number.isFinite(v.birdVisit.remainingMs)||v.birdVisit.remainingMs<=0||v.birdVisit.remainingMs>60000||typeof v.birdVisit.event!=='string'||!v.unlocks[v.birdVisit.event]))throw Error('Invalid bird visit.');
  }
  return true;
 }
@@ -86,6 +88,9 @@ function answer(s,item,ok,{mode='daily',retry=false,skipped=false,helped=false,n
  const prior=Course.groupRecords(s.m,family);
  if(retry){
   const r=s.m[item.id];if(!r||!r.att)throw Error('A correction requires an earlier attempt.');
+  // 해설을 읽고 고쳐 맞힌 답은 점수(XP·누적 정답·부르기 보상)를 주지
+  // 않습니다. 다만 불빛 하나는 그대로 켭니다. 배운 것은 배운 것이고,
+  // 불빛을 없애면 틀린 아이에게 남는 것이 아무것도 없습니다.
   if(ok){r.courseLearned=true;r.courseFirstDay=r.courseFirstDay||day;r.lightBest=Math.max(1,r.lightBest||0);Core.ensure(s,now);}
   return {xp:0,independent:false};
  }
@@ -109,7 +114,8 @@ function unlock(s,key,now=Date.now()){
  if(!/^(stage-[1-4]|ecology-1)$/.test(key))throw Error('Invalid achievement.');
  if(s.visual.unlocks[key])return false;
  s.visual.unlocks[key]={at:new Date(now).toISOString(),species:'black-tailed-gull'};
- if(s.visual.birdsEnabled)s.visual.birdVisit={event:key,remainingMs:24000};
+ if(s.visual.birdsEnabled)s.visual.birdVisit={event:key,remainingMs:60000};
+ Core.celebrateVisit(s,now);
  return true;
 }
 function finish(s,now=Date.now(),items=[]){
@@ -137,7 +143,7 @@ function tick(s,ms,visible){
 }
 function replayBirds(s){
  if(!Object.keys(s.visual.unlocks).length)return false;
- s.visual.birdsEnabled=true;s.visual.birdVisit={event:Object.keys(s.visual.unlocks)[0],remainingMs:24000};return true;
+ s.visual.birdsEnabled=true;s.visual.birdVisit={event:Object.keys(s.visual.unlocks)[0],remainingMs:60000};return true;
 }
 function backupText(s,lang=s.visual.language,now=Date.now()){
  validate(s);return JSON.stringify(Core.envelope(s,lang,now),null,2);

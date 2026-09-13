@@ -4,6 +4,10 @@ import argparse,base64,functools,http.server,json,os,re,threading
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
+INTRO_WATCH="if(!window.__introWatch)window.__introWatch=setInterval(()=>{const d=document.getElementById('youtube-intro-dialog');if(d&&d.open)d.close();},50);"
+def unconfigured():
+ """site-config.js with no backend or analytics id, so nothing is called out to."""
+ return re.sub(r"(apiUrl|gaId):'[^']*'",lambda m:m.group(1)+":''",(ROOT/'assets/site-config.js').read_text(encoding='utf-8'))
 p=argparse.ArgumentParser();p.add_argument('--mode',choices=['inline','http'],default='http');p.add_argument('--engine',choices=['chromium','webkit'],default='chromium');p.add_argument('--browser',default=os.environ.get('CHROMIUM_EXECUTABLE'));p.add_argument('--output',default=str(ROOT/'test-results/course-browser'));a=p.parse_args();OUT=Path(a.output);OUT.mkdir(parents=True,exist_ok=True)
 checks=[];errors=[];requests=[]
 def check(name,ok,detail=None):
@@ -39,9 +43,15 @@ try:
   browser=getattr(pw,a.engine).launch(**opts)
   def open_page(width,lang):
    ctx=browser.new_context(viewport={'width':width,'height':980},accept_downloads=True,reduced_motion='reduce')
+   # The intro dialog re-opens on its own and swallowed every click here.
+   ctx.add_init_script(INTRO_WATCH)
    ctx.route('https://cdn.jsdelivr.net/**',lambda r:r.abort())
+   # A test must never reach the operator's live sheet or analytics.
+   ctx.route('**/assets/site-config.js',lambda r:r.fulfill(status=200,content_type='application/javascript',body=unconfigured()))
    page=ctx.new_page();page.set_default_timeout(7000);page._accept_dialog=lambda d:d.accept();page.on('dialog',page._accept_dialog);page.on('pageerror',lambda e:errors.append(str(e)))
-   page.on('request',lambda r:requests.append(r.url) if r.url.startswith('http') and '127.0.0.1' not in r.url and 'cdn.jsdelivr.net' not in r.url else None)
+   # Third-party asset hosts the site embeds by design are excluded (fonts,
+   # YouTube thumbnails) -- the guard is for backend and tracking calls.
+   page.on('request',lambda r:requests.append(r.url) if r.url.startswith('http') and not any(x in r.url for x in ['127.0.0.1','cdn.jsdelivr.net','i.ytimg.com']) else None)
    if a.mode=='inline':page.evaluate(INIT);page.evaluate('window.requestAnimationFrame=()=>0');page.set_content(INLINE,wait_until='domcontentloaded')
    else:page.goto(base+'index.html',wait_until='domcontentloaded')
    page.wait_for_function('!!window.DokdoApp');page.evaluate('DokdoApp.assetsReady')

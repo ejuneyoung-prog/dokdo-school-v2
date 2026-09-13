@@ -192,9 +192,15 @@ function pierBoat(x,t,reduced){
 }
 function birdPositions(s,t,stationary=false){
  if(!s.visual?.birdsEnabled||!s.visual.birdVisit)return [];
- const elapsed=stationary?12:24-s.visual.birdVisit.remainingMs/1000,u=elapsed/24,fade=Math.min(1,u*6,(1-u)*6);
- return Array.from({length:5},(_,i)=>{
-  const a=u*Math.PI*2-.8+i*.18;
+ // The visit runs for a minute so the celebration is actually noticed, but
+ // the flock keeps its old 24-second orbit instead of drifting in slow motion.
+ const BIRD_SEC=60;
+ const elapsed=stationary?12:BIRD_SEC-s.visual.birdVisit.remainingMs/1000,u=Math.max(0,Math.min(1,elapsed/BIRD_SEC)),fade=Math.min(1,u*(BIRD_SEC/4),(1-u)*(BIRD_SEC/4));
+ // 새 떼도 레벨만큼 늘어납니다. 처음 오는 사람에게도 최소 세 마리는 보이고,
+ // 화면이 새로 덮이지 않게 위로는 열두 마리에서 멈춥니다.
+ const flock=Math.max(3,Math.min(12,(s.visual.birdFlock|0)||5));
+ return Array.from({length:flock},(_,i)=>{
+  const a=(elapsed/24)*Math.PI*2-.8+i*.18;
   return {x:760+490*Math.cos(a)+(i-2)*20,y:215+150*Math.sin(a)+(i%2)*18,
     angle:Math.atan2(150*Math.cos(a),-490*Math.sin(a)),phase:i*1.7,scale:.65+(i%3)*.14,fade};
  });
@@ -331,13 +337,33 @@ function render(ctx,s,t,options={}){
  for(let j=0;j<17;j++){ctx.beginPath();for(let i=0;i<=32;i++){const xx=i*48,yy=30+j*43+Math.sin(i*.38+j*.7+clock*.12)*6;i?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy);}ctx.stroke();}
  const density={calm:144,rich:288,full:384}[s.seaDensity]||288;
  for(let i=0;i<density;i++)fish(ctx,fishPosition(i,clock),clock);
- // A distant, infrequent whale is clearly larger than the small gangchi.
+ // A mother whale with her calf alongside, and a pod of dolphins that comes
+ // round far more often and moves faster. The pod grows with the learner's
+ // level, so a longer record has more to watch.
+ function cetacean(x,y,size,alpha){
+  ctx.save();ctx.translate(x,y);ctx.globalAlpha=alpha;ctx.fillStyle='#99C1CB';
+  ctx.beginPath();ctx.ellipse(0,0,76*size,15*size,-.02,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.moveTo(-66*size,0);ctx.lineTo(-110*size,-20*size);ctx.lineTo(-97*size,0);ctx.lineTo(-110*size,18*size);ctx.closePath();ctx.fill();
+  ctx.restore();
+ }
  const cycle=clock%190;
  if(!reduced&&cycle>45&&cycle<105){
   const xx=(cycle-45)/60*(W+240)-120,yy=648+Math.sin(cycle/20)*8;
-  ctx.save();ctx.translate(xx,yy);ctx.globalAlpha=.19;ctx.fillStyle='#99C1CB';
-  ctx.beginPath();ctx.ellipse(0,0,76,15,-.02,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.moveTo(-66,0);ctx.lineTo(-110,-20);ctx.lineTo(-97,0);ctx.lineTo(-110,18);ctx.closePath();ctx.fill();ctx.restore();
+  cetacean(xx,yy,1,.19);
+  cetacean(xx-95,yy+26,.42,.15);   // 아기 고래가 어미 뒤를 따라갑니다
+ }
+ const pod=Math.max(3,Math.min(14,options.pod|0||3));
+ const dcycle=clock%42;            // 고래(190)보다 훨씬 자주 옵니다
+ if(!reduced&&dcycle<17){
+  for(let i=0;i<pod;i++){
+   const lane=i%3,lead=(dcycle-i*.55)/17;
+   if(lead<0||lead>1)continue;
+   const xx=lead*(W+300)-150,yy=470+lane*78+Math.sin(clock*1.6+i)*13;
+   ctx.save();ctx.translate(xx,yy);ctx.globalAlpha=.26;ctx.fillStyle='#BEE0E6';
+   ctx.beginPath();ctx.ellipse(0,0,23,5.5,-.14,0,Math.PI*2);ctx.fill();
+   ctx.beginPath();ctx.moveTo(-20,0);ctx.lineTo(-33,-7);ctx.lineTo(-28,0);ctx.lineTo(-33,6);ctx.closePath();ctx.fill();
+   ctx.restore();
+  }
  }
  for(const g of gangchiPositions(s,clock))seal(ctx,g,clock);
  pierBoat(ctx,clock,reduced);
@@ -352,11 +378,18 @@ function render(ctx,s,t,options={}){
  for(const b of birdPositions(s,clock,reduced)){ctx.save();ctx.globalAlpha=b.fade;bird(ctx,b,clock);ctx.restore();}
  lighthouse(ctx,LIGHTHOUSE[0],LIGHTHOUSE[1],phase.darkness,clock);
  if(labels){
-  ctx.font='500 27px GmarketSans, sans-serif';ctx.fillStyle='#F5F4E9';ctx.shadowColor='#001322';ctx.shadowBlur=10;
-  ctx.fillText('서도 · Seodo',300,535);ctx.fillText('동도 · Dongdo',1160,674);
-  // Same coordinate pair already used for real sunrise/sunset math (see solar.js), just displayed here.
-  ctx.textAlign='center';ctx.font='500 15px SCoreDream, sans-serif';ctx.fillStyle='rgba(245,244,233,.6)';ctx.shadowBlur=6;
-  ctx.fillText('37°14′N 131°52′E',W/2,H-16);ctx.textAlign='left';ctx.shadowBlur=0;
+  // The 1536px plate is drawn onto a ~450px phone, so everything here is
+  // about a third of the size it reads at. The island names were lost at
+  // that scale and the coordinates were smaller again; both are now set to
+  // the same size, large enough to survive the scale-down. The names are
+  // centred on their island so the bigger type cannot run off the edge.
+  ctx.textAlign='center';ctx.shadowColor='#001322';
+  ctx.font='700 54px GmarketSans, sans-serif';ctx.fillStyle='#F5F4E9';ctx.shadowBlur=14;
+  // 동도 sits well right of centre so it clears the coordinates, which are
+  // on the same line: at this size the two ran into each other.
+  ctx.fillText('서도 · Seodo',400,545);ctx.fillText('동도 · Dongdo',1210,670);
+  ctx.font='700 54px SCoreDream, sans-serif';ctx.fillStyle='rgba(245,244,233,.86)';ctx.shadowBlur=12;
+  ctx.fillText('37°14′N 131°52′E',W/2,H-24);ctx.textAlign='left';ctx.shadowBlur=0;
  }
  ctx.restore();
 }
