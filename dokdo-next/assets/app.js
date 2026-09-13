@@ -880,18 +880,35 @@ function renderRecords(){
  }
  renderLegacy();updateStorageStatus();renderCloudPanel(s);renderBadges(s);
 }
+function badgeTile(b){
+ const tile=document.createElement('div');tile.className='badge-tile'+(b.earned?' earned':'');tile.dataset.group=b.group;
+ const icon=document.createElement('span');icon.className='badge-icon';icon.setAttribute('aria-hidden','true');icon.textContent=b.icon;
+ const name=document.createElement('b');name.textContent=tr(b.ko,b.en);
+ tile.append(icon,name);return tile;
+}
+/* Received badges first; the rest folded away behind a summary. There are 57
+ * of them now, and showing every unearned one turned a phone screen into a
+ * wall of grey tiles that said nothing about what the learner had done. The
+ * fold keeps the next goal one tap away instead of deleting it. */
 function renderBadgesInto(s,gridId,countId){
  const grid=$(gridId);if(!grid)return;
  grid.replaceChildren();
+ const old=$(gridId+'-more');if(old)old.remove();
  if(!s){if($(countId))$(countId).textContent='';return;}
- const badges=M.computeBadges(s),earned=badges.filter(b=>b.earned).length;
- if($(countId))txt(countId,earned+' / '+badges.length);
- for(const b of badges){
-  const tile=document.createElement('div');tile.className='badge-tile'+(b.earned?' earned':'');tile.dataset.group=b.group;
-  const icon=document.createElement('span');icon.className='badge-icon';icon.setAttribute('aria-hidden','true');icon.textContent=b.icon;
-  const name=document.createElement('b');name.textContent=tr(b.ko,b.en);
-  tile.append(icon,name);grid.append(tile);
- }
+ const badges=M.computeBadges(s);
+ const got=badges.filter(b=>b.earned),left=badges.filter(b=>!b.earned);
+ if($(countId))txt(countId,got.length+' / '+badges.length);
+ if(got.length)for(const b of got)grid.append(badgeTile(b));
+ else{const p=document.createElement('p');p.className='badges-empty';
+  p.textContent=tr('아직 받은 배지가 없어요. 한 문제만 맞혀도 첫 배지가 열립니다.','No badges yet. One correct answer opens the first.');
+  grid.append(p);}
+ if(!left.length)return;
+ const box=document.createElement('details');box.className='badges-more';box.id=gridId+'-more';
+ const sum=document.createElement('summary');
+ sum.textContent=tr(`아직 못 받은 배지 ${left.length}개`,`${left.length} still to earn`);
+ const inner=document.createElement('div');inner.className='badges-grid';
+ for(const b of left)inner.append(badgeTile(b));
+ box.append(sum,inner);grid.after(box);
 }
 function renderBadges(s){
  renderBadgesInto(s,'badges-grid','badges-count');
