@@ -179,9 +179,13 @@ try:
             wait_until(page,'DokdoApp.state.visual.reduceMotion===true')
             check(prefix+' reduced motion is saved',page.evaluate('DokdoApp.state.visual.reduceMotion'))
             page.click('[data-close=settings-dialog]')
+            # The credits button now lives with the map plate, so the map has
+            # to be open before it can be reached.
+            page.click('#nav-map');page.wait_for_selector('#open-sources',state='visible')
             page.click('#open-sources')
             check(prefix+' art/source limitations are visible',page.locator('#sources-dialog').is_visible())
             page.click('[data-close=sources-dialog]')
+            page.click('#nav-map');page.wait_for_selector('#open-sources',state='hidden')
             if lang=='ko' and width==390:page.screenshot(path=str(OUT/'mobile-learning-progress.png'),full_page=True)
             check(prefix+' translated main page after completion',page.evaluate('document.documentElement.lang')==lang)
         except Exception as e:check(prefix+' flow completed',False,str(e))
@@ -202,7 +206,7 @@ try:
         exported=json.loads(downloaded.read_text())
         check('real Blob download contains all 1513 records',len(exported['state']['m'])==1513)
         page.evaluate('DokdoApp.view("home")')
-        page.select_option('#invite-count','10');page.click('#invite')
+        page.click('#invite')
         wait_until(page,'DokdoApp.state.gangchiVisits.length===10')
         check('ten visible visitors have one-minute budgets',page.evaluate('DokdoApp.state.gangchiVisits.every(v=>v.remainingMs<=60000&&v.remainingMs>50000)'))
         check('three beacons and 1513 lights are reflected by UI',page.locator('#beacon-count').inner_text().endswith('3') and page.locator('#lights-count').inner_text()=='1,513')
@@ -226,7 +230,9 @@ try:
         page.evaluate('DokdoApp.mutate(s=>DokdoAppModel.unlock(s,"stage-1"))')
         check('duplicate bird achievement gives no duplicate discovery',page.evaluate('Object.keys(DokdoApp.state.visual.unlocks).length===1'))
         page.screenshot(path=str(OUT/'birds-desktop.png'),full_page=True)
-        page.evaluate('DokdoApp.tick(24000,true)')
+        # The celebration lasts a minute now, and brings one gangchi with it.
+        check('a promotion brings a gangchi without spending credits',page.evaluate('DokdoApp.state.gangchiVisits.length===1 && DokdoApp.state.gcHit===0'))
+        page.evaluate('DokdoApp.tick(60000,true)')
         check('bird journal remains after animation finishes',page.evaluate('DokdoApp.state.visual.birdVisit===null && Object.keys(DokdoApp.state.visual.unlocks).length===1'))
     except Exception as e:check('migration/landscape flow completed',False,str(e))
     finally:ctx.close()

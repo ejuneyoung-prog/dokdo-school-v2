@@ -20,6 +20,7 @@ test('Correction records understanding but no duplicate score or independent rec
  const s=fresh(),q=C.pool(1)[0];M.answer(s,q,false,{now:NOW});
  M.answer(s,q,true,{retry:true,now:NOW});const r=s.m[q.id];
  assert.equal(s.xp,0);assert.equal(s.gcHit,0);assert.equal(r.cor,0);assert.equal(r.att,1);
+ assert.equal(Core.visualLevel(r),0);
  assert.equal(r.courseLearned,true);assert.equal((r.courseIndependentDays||[]).length,0);
  const before=JSON.stringify(s);M.answer(s,q,true,{retry:true,now:NOW});assert.equal(JSON.stringify(s),before);
 });
@@ -149,8 +150,18 @@ test('A bird encounter unlock is idempotent and replay adds no new achievement',
  const s=fresh();assert.equal(M.unlock(s,'stage-1',NOW),true);assert.equal(M.unlock(s,'stage-1',NOW+1),false);
  const before=JSON.stringify(s.visual.unlocks);assert.equal(M.replayBirds(s),true);assert.equal(JSON.stringify(s.visual.unlocks),before);
 });
-test('Bird visit is 24 seconds and journal discovery remains afterwards',()=>{
- const s=fresh();M.unlock(s,'stage-1',NOW);M.tick(s,24000,true);assert.equal(s.visual.birdVisit,null);assert.equal(Object.keys(s.visual.unlocks).length,1);
+test('Bird visit is one minute and journal discovery remains afterwards',()=>{
+ const s=fresh();M.unlock(s,'stage-1',NOW);M.tick(s,59000,true);assert.ok(s.visual.birdVisit);
+ M.tick(s,1000,true);assert.equal(s.visual.birdVisit,null);assert.equal(Object.keys(s.visual.unlocks).length,1);
+});
+test('A promotion brings one gangchi along without spending invitation credits',()=>{
+ const s=fresh();const credits=s.gcHit,summons=s.gcSummons;
+ M.unlock(s,'stage-1',NOW);
+ assert.equal(s.gangchiVisits.length,1);
+ assert.equal(s.gangchiVisits[0].remainingMs,60000);
+ assert.equal(s.gcHit,credits);assert.equal(s.gcSummons,summons);
+ M.validate(s);
+ M.tick(s,60000,true);assert.equal(s.gangchiVisits.length,0);
 });
 test('Undiscovered birds cannot be replayed',()=>assert.equal(M.replayBirds(fresh()),false));
 test('Untrusted profile text remains data, not executable content',()=>{

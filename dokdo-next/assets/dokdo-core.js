@@ -218,6 +218,17 @@
     s.gcSummons = number(s.gcSummons) + n;
     return n;
   }
+  // A promotion brings a gangchi along with the birds. It is a gift, so it
+  // spends no invitation credits and is not counted as a summons -- otherwise
+  // the celebration would quietly inflate the gangchi badges.
+  function celebrateVisit(s, now = Date.now()) {
+    ensure(s, now);
+    if (s.gangchiVisits.length >= MAX_VISITORS) return false;
+    const occupied = new Set(s.gangchiVisits.map(v=>v.seat));
+    const seat = Array.from({length:MAX_VISITORS},(_,j)=>j).find(j=>!occupied.has(j));
+    s.gangchiVisits.push({id: 'celebrate-' + now + '-' + seat, remainingMs: VISIT_MS, seat});
+    return true;
+  }
   function tickVisits(s, dtMs, active) {
     if (!active || !Number.isFinite(dtMs) || dtMs <= 0) return;
     for (const v of s.gangchiVisits || []) v.remainingMs = Math.max(0, v.remainingMs - dtMs);
@@ -291,6 +302,6 @@
     return incoming;
   }
   return {VERSION, VISIT_MS, MAX_VISITORS, dayKey, weekKey, addDays, validateState, ensure, rollover, visualLevel,
-    correctCount, registerAnswer, advanceLearning, invite, tickVisits, envelope, readBackup, clone,
+    correctCount, registerAnswer, advanceLearning, invite, celebrateVisit, tickVisits, envelope, readBackup, clone,
     GRADES, GRADE_ALIASES, gradeRank, gradeProgress, gradeScore, REPEAT_WEIGHT, DOKKOMIN_LEVELS, DOKKOMIN_FROM};
 });
