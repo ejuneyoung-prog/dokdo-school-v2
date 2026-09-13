@@ -33,7 +33,11 @@ var TZ = 'Asia/Seoul';
 // 활동기록 시트의 열 순서입니다. 지금 시트와 같습니다.
 var LOG_HEADERS = ['시각','별명','국가','학년','문항번호','정답','연속','최고연속','모드','학교','학교코드','학교부문'];
 var TOP_HEADERS = ['별명','단계','정답수','도달시각','승인','승인시각'];
-var SAVE_HEADERS = ['key','nick','grade','payload','updatedAt'];
+// payload2~4는 긴 기록용 이어쓰기 칸입니다. 구글 시트는 한 칸에 5만 자까지만
+// 담을 수 있어서, 그보다 긴 기록은 나누어 저장하고 읽을 때 다시 이어 붙입니다.
+var SAVE_HEADERS = ['key','nick','grade','payload','updatedAt','payload2','payload3','payload4'];
+var CELL_LIMIT = 45000;   // 한 칸에 담는 최대 글자 수 (시트 한도 5만 자보다 여유 있게)
+var SAVE_COLS = 8;
 
 /* ===================== 공통 도구 ===================== */
 
@@ -217,12 +221,14 @@ function handleLoad_(e) {
     if (!best || String(rows[i][4]) > String(best[4])) best = rows[i];
   }
   if (!best) return _json_({ found: false });
+  var payload = String(best[3] || '')
+    + String(best[5] || '') + String(best[6] || '') + String(best[7] || '');
   return _json_({
     found: true,
     key: String(best[0]),
     nick: String(best[1]),
     grade: String(best[2]),
-    payload: String(best[3]),
+    payload: payload,
     updatedAt: String(best[4])
   });
 }
@@ -233,7 +239,7 @@ function handleSave_(body) {
   var nick = String(body.nick || body.key || '').trim().normalize('NFC');
   var payload = String(body.payload || '');
   if (!nick || !payload) return _json_({ ok: false });
-  if (payload.length > 60000) return _json_({ ok: false, reason: 'too_large' });
+  if (payload.length > CELL_LIMIT * 4) return _json_({ ok: false, reason: 'too_large' });
 
   var sh = _saveSheet_();
   var want = _norm_(nick);
@@ -245,10 +251,17 @@ function handleSave_(body) {
       if (_norm_(keys[i][0]) === want) { rowIndex = i + 2; break; }
     }
   }
-  var row = [nick, nick, String(body.grade || ''), payload, new Date().toISOString()];
-  if (rowIndex) sh.getRange(rowIndex, 1, 1, 5).setValues([row]);
+  // 한 칸에 다 들어가지 않는 기록은 payload / payload2 / payload3 / payload4로
+  // 잘라 담습니다. 불러올 때 순서대로 다시 이어 붙입니다.
+  var parts = [];
+  for (var c = 0; c < payload.length; c += CELL_LIMIT) parts.push(payload.substr(c, CELL_LIMIT));
+  while (parts.length < 4) parts.push('');
+
+  var row = [nick, nick, String(body.grade || ''), parts[0], new Date().toISOString(),
+             parts[1], parts[2], parts[3]];
+  if (rowIndex) sh.getRange(rowIndex, 1, 1, SAVE_COLS).setValues([row]);
   else sh.appendRow(row);
-  return _json_({ ok: true });
+  return _json_({ ok: true, parts: parts.filter(function (p) { return p; }).length });
 }
 
 /* ===================== 최고 단계 도달자 ===================== */
