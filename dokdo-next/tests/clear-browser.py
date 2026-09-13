@@ -87,6 +87,10 @@ try:
     if p.evaluate('document.documentElement.lang')!=lang:p.eval_on_selector('#language','e=>e.click()')
     p.evaluate("DokdoApp.start('daily')")
     if p.locator('#age-dialog').is_visible():p.select_option('#age-band','14-16');p.eval_on_selector('#age-form button[type=submit]','e=>e.click()')
+    # Same race the flow phase already guards against: submitting the age form
+    # saves before it starts the lesson, so the lesson lands a tick later. On
+    # webkit the save is slow enough that reading it straight away got null.
+    wait_until(p,'!!(window.DokdoApp&&DokdoApp.lesson&&DokdoApp.lesson.item)')
     # Start uses the current unit; force nextItem by putting index=-1 then using the normal next handler.
     p.evaluate("()=>{const l=DokdoApp.lesson;l.items=DokdoStarter.DATA.questions.map(q=>DokdoStarter.getQuestion(q.id,document.documentElement.lang));l.total=l.items.length;l.index=-1;l.answered=true;l.needsRetry=false;}")
     p.evaluate('DokdoApp.next()')
