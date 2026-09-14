@@ -167,7 +167,10 @@ function handleWeekly_() {
   var now = new Date();
 
   var today = _dayOf_(new Date());
-  var people = {};   // 별명 → {nick, school, correct, days:{}}
+  // flag(국기)는 V1의 송출 화면(hall.html)이 이름 앞에 그려 쓰는 값입니다.
+  // 이 화면과 V2가 같은 배포 주소를 함께 쓰므로 여기서 빠지면 방송에서
+  // 국기가 사라집니다.
+  var people = {};   // 별명 → {nick, flag, school, correct, days:{}}
   var schools = {};  // 학교부문 → 학교이름 → {name, correct, people:{}}
   var recent = [];
   var todayTries = 0, todayWho = {};   // 화면 위쪽 세 칸에 쓰입니다
@@ -187,7 +190,9 @@ function handleWeekly_() {
 
     if (day >= weekStart) {
       var key = _norm_(nick);
-      if (!people[key]) people[key] = { nick: nick, school: school, correct: 0, days: {} };
+      if (!people[key]) people[key] = { nick: nick, flag: '', school: school, correct: 0, days: {} };
+      var fg = String(r[2] || '').trim();
+      if (fg) people[key].flag = fg;
       if (school) people[key].school = school;
       people[key].correct += ok;
       people[key].days[day] = true;
@@ -209,6 +214,7 @@ function handleWeekly_() {
   var week = Object.keys(people).map(function (k) {
     return {
       nick: people[k].nick,
+      flag: people[k].flag,
       school: people[k].school,
       correct: people[k].correct,
       days: Object.keys(people[k].days).length
@@ -238,7 +244,10 @@ function handleWeekly_() {
     today: todayTries,                       // 오늘 문제를 푼 횟수
     people: Object.keys(todayWho).length,    // 오늘 참여한 사람 수
     people_week: Object.keys(people).length, // 이번 주 참여한 사람 수
-    week: week, schools: schoolOut, recent: recentOut, weekStart: weekStart });
+    // weekStart는 V2가, weekOf는 V1 송출 화면이 읽습니다. 같은 값을 두 이름으로
+    // 함께 내보내 두 화면 모두 깨지지 않게 합니다.
+    week: week, schools: schoolOut, recent: recentOut,
+    weekStart: weekStart, weekOf: weekStart });
   try { cache.put('weekly', payload, 60); } catch (e) {}
   return ContentService.createTextOutput(payload).setMimeType(ContentService.MimeType.JSON);
 }
