@@ -162,13 +162,6 @@ Dokdo Korea</a><a id="header-collab-link" class="button primary small-button hea
   <section class="journey-card"><div class="card-heading"><h2 data-i18n="journey"><span class="card-emoji" aria-hidden="true">🗺️</span> 나의 배움 여정</h2><span id="xp-label" class="mono">0 XP</span></div><div id="journey-steps" class="journey-steps"></div><p id="journey-note" class="fine"></p></section>
   <section class="life-card"><div class="card-heading"><h2 data-i18n="seaVisitors"><span class="card-emoji" aria-hidden="true">🦭</span> 전설의 강치 부르기</h2><span id="visitor-status">0 / 10</span></div><p data-i18n="visitRule">정답 보상을 모아 강치를 부르면, 두 섬 사이에서 1분 동안 함께해요.</p><div class="gangchi-gauge"><progress id="gangchi-progress" value="0" max="10"></progress><small id="gangchi-progress-label"></small></div><div class="invite-row"><button id="invite" class="button secondary invite-button" data-i18n="invite">강치 부르기</button><small id="invite-credit"></small></div></section>
  </div>
- <section class="record-panel">
-  <div class="card-heading"><h2 data-i18n="visitCollabTitle"><span class="card-emoji" aria-hidden="true">🧭</span> 방문 안내</h2></div>
-  <div class="button-row">
-   <button type="button" id="open-tourism-info-home" class="button secondary" data-i18n="tourismInfoBtn">🚢 울릉도·독도 관광 안내</button>
-  </div>
-  <p class="fine" data-i18n="footerVisitNote">예약·상품 안내는 준비 중입니다.</p>
- </section>
  <section class="record-panel home-badges"><div class="card-heading"><h2 data-i18n="badgesTitle"><span class="card-emoji" aria-hidden="true">🏅</span> 성취 배지</h2><span id="home-badges-count" class="fine"></span></div><div id="home-badges-grid" class="badges-grid"></div></section>
  <section class="record-panel">
   <div class="card-heading"><h2 data-i18n="promoTitle"><span class="card-emoji" aria-hidden="true">🎵</span> 독도코리아 · 음원과 SNS</h2></div>
@@ -185,6 +178,35 @@ Dokdo Korea</a><a id="header-collab-link" class="button primary small-button hea
    <a href="https://www.youtube.com/@독도코리아레이블" target="_blank" rel="noopener noreferrer">독도코리아레이블</a>
    <a href="https://open.kakao.com/o/pFAjzXXh" target="_blank" rel="noopener noreferrer">카카오 오픈채팅</a>
   </div>
+ </section>
+ <section class="offer-block" id="offer-block">
+  <div class="offer-head">
+   <h2 data-i18n="offerTitle"><span class="card-emoji" aria-hidden="true">🤲</span> 독도와 함께하기</h2>
+   <p data-i18n="offerLead">배움에서 끝나지 않도록, 독도를 직접 만나고 거드는 길을 모았습니다.</p>
+  </div>
+  <div class="offer-grid">
+   <button type="button" class="offer-tile" id="offer-tour">
+    <span class="offer-icon" aria-hidden="true">🚢</span>
+    <strong data-i18n="offerTour">울릉도·독도 관광 상품</strong>
+    <small data-i18n="offerTourSub">예약과 상품 안내 · 준비 중</small>
+   </button>
+   <a class="offer-tile offer-strong" id="offer-support" href="#" target="_blank" rel="noopener noreferrer">
+    <span class="offer-icon" aria-hidden="true">💛</span>
+    <strong data-i18n="offerSupport">독도 코리아 후원하기</strong>
+    <small data-i18n="offerSupportSub">배움과 창작을 이어가는 힘</small>
+   </a>
+   <a class="offer-tile" href="https://linktr.ee/DokdoKorea" target="_blank" rel="noopener noreferrer">
+    <span class="offer-icon" aria-hidden="true">🤝</span>
+    <strong data-i18n="offerCollab">협업 · 강의 문의</strong>
+    <small data-i18n="offerCollabSub">학교·기관·기업 모두 환영합니다</small>
+   </a>
+   <button type="button" class="offer-tile" id="offer-goods">
+    <span class="offer-icon" aria-hidden="true">🎁</span>
+    <strong data-i18n="offerGoods">독도 굿즈</strong>
+    <small data-i18n="offerGoodsSub">준비 중 · 곧 공개합니다</small>
+   </button>
+  </div>
+  <a class="offer-chat" href="https://open.kakao.com/o/pFAjzXXh" target="_blank" rel="noopener noreferrer" data-i18n="offerChat">💬 카카오 오픈채팅으로 바로 묻기 ↗</a>
  </section>
  <section class="youtube-card" id="youtube-card" hidden>
   <div class="card-heading"><h2 data-i18n="youtubeTitle"><span class="card-emoji" aria-hidden="true">🎬</span> 독도코리아 영상</h2><a id="youtube-live-link" class="text-button" href="#" target="_blank" rel="noopener noreferrer" data-i18n="youtubeLive">실시간 라이브 보러가기 ↗</a></div>
@@ -244,6 +266,15 @@ Dokdo Korea</a><a id="header-collab-link" class="button primary small-button hea
   <section class="record-panel"><h2 data-i18n="hallSchool">학교 부문 순위</h2><div class="island-facts" id="hall-school-tabs"></div><div id="hall-school-list"></div></section>
   <section class="record-panel"><h2 data-i18n="hallRecent">최근 참여</h2><div id="hall-recent-list"></div></section>
  </div>
+ <!-- 배지는 내 기기의 기록이라 서버 연결과 무관합니다. 그래서 hall-content
+      바깥에 두어, 집계 서버가 답하지 않아도 항상 보입니다. -->
+ <section class="record-panel hall-badges">
+  <div class="card-heading"><h2 data-i18n="badgesTitle"><span class="card-emoji" aria-hidden="true">🏅</span> 성취 배지</h2><span id="hall-badges-count" class="fine"></span></div>
+  <h3 class="badges-subhead" data-i18n="badgesEarned">받은 배지</h3>
+  <div id="hall-badges-grid" class="badges-grid"></div>
+  <h3 class="badges-subhead" data-i18n="badgesLeft">아직 받지 않은 배지</h3>
+  <div id="hall-badges-left" class="badges-grid"></div>
+ </section>
 </section>
 
 <section id="view-grade" class="view narrow" hidden>
@@ -286,20 +317,11 @@ Dokdo Korea</a><a id="header-collab-link" class="button primary small-button hea
    <a href="./question-review.html" data-i18n="footerQuestions">240문항 살펴보기</a>
    <a href="./demo.html" data-i18n="demoLink">분리된 시연</a>
   </section>
-  <section><h3><span aria-hidden="true">🤝</span> <span data-i18n="footerTogether">함께하기</span></h3>
-   <a id="footer-support-link" href="#" target="_blank" rel="noopener noreferrer" data-i18n="footerSupport">♥ 후원하기</a>
-   <a id="contact-link" href="https://linktr.ee/DokdoKorea" target="_blank" rel="noopener noreferrer" data-i18n="contactCollab">문의 · 협업 ↗</a>
-   <a href="https://open.kakao.com/o/pFAjzXXh" target="_blank" rel="noopener noreferrer" data-i18n="footerOpenChat">카카오 오픈채팅 ↗</a>
-   <button class="text-button" id="footer-goods" data-i18n="footerGoods">굿즈 (준비 중)</button>
-  </section>
   <section><h3><span aria-hidden="true">🎵</span> <span data-i18n="footerChannel">독도 코리아</span></h3>
    <button class="text-button" id="footer-channel-info" data-i18n="channelInfoOpen">독도코리아 소개</button>
    <a href="https://instagram.com/dokdokorea_815" target="_blank" rel="noopener noreferrer">Instagram ↗</a>
    <a href="https://www.youtube.com/@독도코리아레이블" target="_blank" rel="noopener noreferrer" data-i18n="footerYoutube">독도코리아레이블 ↗</a>
-  </section>
-  <section><h3><span aria-hidden="true">🧭</span> <span data-i18n="footerVisit">방문 안내</span></h3>
-   <button class="text-button" id="open-tourism-info" data-i18n="tourismInfoBtn">🚢 울릉도·독도 관광 안내</button>
-   <span class="fine" data-i18n="footerVisitNote">예약·상품 안내는 준비 중입니다.</span>
+   <a id="contact-link" href="https://linktr.ee/DokdoKorea" target="_blank" rel="noopener noreferrer" data-i18n="contactCollab">문의 · 협업 ↗</a>
   </section>
  </div>
  <div class="footer-base"><span data-i18n="footer">작은 배움이 모여, 독도가 더 빛납니다.</span><span>v1.3 · LOCAL</span></div>

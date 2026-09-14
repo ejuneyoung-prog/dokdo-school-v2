@@ -97,10 +97,16 @@ const en={
  tourismComingSoon:'🛠️ Booking and tour information are being prepared. They will appear here as soon as they are ready.',
  contactCollab:'Contact / Collaborate ↗',
  tourismInfoBtn:'Ulleungdo·Dokdo travel info',
- footerLearn:'About Dokdo',footerQuestions:'Browse the 240 questions',footerTogether:'Take part',
- footerSupport:'♥ Support',footerOpenChat:'KakaoTalk open chat ↗',footerGoods:'Merchandise (coming soon)',
- footerChannel:'Dokdo Korea',footerYoutube:'Dokdo Korea Label ↗',footerVisit:'Visiting',
- footerVisitNote:'Booking and tour information are being prepared.',
+ badgesEarned:'Badges earned',badgesLeft:'Still to earn',
+ footerLearn:'About Dokdo',footerQuestions:'Browse the 240 questions',
+ footerChannel:'Dokdo Korea',footerYoutube:'Dokdo Korea Label ↗',
+ offerTitle:'🤲 Take part in Dokdo',
+ offerLead:'Ways to meet Dokdo and lend a hand, so the learning does not stop at the screen.',
+ offerTour:'Ulleungdo·Dokdo tours',offerTourSub:'Booking and packages · being prepared',
+ offerSupport:'Support Dokdo Korea',offerSupportSub:'What keeps the learning and the music going',
+ offerCollab:'Collaboration · talks',offerCollabSub:'Schools, institutions and companies all welcome',
+ offerGoods:'Dokdo merchandise',offerGoodsSub:'Being prepared · coming soon',
+ offerChat:'💬 Ask us on KakaoTalk open chat ↗',
  promoTitle:'🎵 Dokdo Korea · Music & Social',
  visitCollabTitle:'🧭 Visit · Contact',
  gradeTab:'Grade',gradeLadderTitle:'Full grade ladder',materialTip:'TIP · Show question material',gradeShare:'Share ↗',
@@ -950,9 +956,24 @@ function renderBadgesInto(s,gridId,countId){
  for(const b of left)inner.append(badgeTile(b));
  box.append(sum,inner);grid.after(box);
 }
+// 명예의 전당에서는 접지 않고 두 줄로 모두 펼칩니다. 홈은 화면이 좁아
+// 못 받은 배지를 접어 두지만, 여기서는 무엇이 남았는지 한눈에 봅니다.
+function renderBadgeList(s,earnedId,leftId,countId){
+ const got=$(earnedId),left=$(leftId);if(!got||!left)return;
+ got.replaceChildren();left.replaceChildren();
+ if(!s){if($(countId))$(countId).textContent='';return;}
+ const badges=M.computeBadges(s),earned=badges.filter(b=>b.earned),rest=badges.filter(b=>!b.earned);
+ if($(countId))txt(countId,earned.length+' / '+badges.length);
+ if(earned.length)for(const b of earned)got.append(badgeTile(b));
+ else{const p=document.createElement('p');p.className='badges-empty';
+  p.textContent=tr('아직 받은 배지가 없어요. 한 문제만 맞혀도 첫 배지가 열립니다.','No badges yet. One correct answer opens the first.');
+  got.append(p);}
+ for(const b of rest)left.append(badgeTile(b));
+}
 function renderBadges(s){
  renderBadgesInto(s,'badges-grid','badges-count');
  renderBadgesInto(s,'home-badges-grid','home-badges-count');
+ renderBadgeList(s,'hall-badges-grid','hall-badges-left','hall-badges-count');
 }
 function renderCloudPanel(s){
  const configured=!!(window.DokdoLeaderboard&&DokdoLeaderboard.isConfigured());
@@ -1204,9 +1225,14 @@ function drawMapReference(ctx){
   if(rim){ctx.save();ctx.shadowColor='rgba(255,214,122,.55)';ctx.shadowBlur=16;ctx.drawImage(rim,0,0);ctx.restore();}
  }
  // Same scale problem as the main plate: this is a 1536px drawing shown on a
- // phone, so anything under ~40px here is unreadable there.
- ctx.font='700 44px GmarketSans,sans-serif';ctx.fillStyle='#f6f7ec';ctx.shadowColor='#04202f';ctx.shadowBlur=12;ctx.fillText(tr('서도 · 더 높고 가파른 형태','Seodo · higher and steeper'),150,556);ctx.fillText(tr('동도 · 비교적 평탄한 상부','Dongdo · a more level upper area'),880,620);
- ctx.font='600 38px SCoreDream,sans-serif';ctx.fillStyle='#dff0f4';ctx.fillText('168.5 m',150,606);ctx.fillText('98.6 m',880,670);
+ // phone, so anything under ~40px here is unreadable there. The 서도 caption
+ // starts right of x=360 because the 빛의 길 panel is pinned to the bottom-left
+ // corner and was covering both the name and the height.
+ ctx.textAlign='left';
+ // 설명 문장은 절반 크기로 낮추고 높이 숫자는 크게 둡니다. 읽어야 하는 값은
+ // 숫자이고 문장은 그 값을 풀어 주는 곁말입니다.
+ ctx.font='600 24px SCoreDream,sans-serif';ctx.fillStyle='#cfe2e6';ctx.shadowColor='#04202f';ctx.shadowBlur=10;ctx.fillText(tr('서도 · 더 높고 가파른 형태','Seodo · higher and steeper'),390,556);ctx.fillText(tr('동도 · 비교적 평탄한 상부','Dongdo · a more level upper area'),880,636);
+ ctx.font='700 40px GmarketSans,sans-serif';ctx.fillStyle='#f6f7ec';ctx.shadowBlur=12;ctx.fillText('168.5 m',390,600);ctx.fillText('98.6 m',880,680);
  // Sits to the right of the weather panel, which covers the top-left corner
  // on a desktop. At the foot of the plate it ran into the island captions.
  ctx.font='500 28px SCoreDream,sans-serif';ctx.fillStyle='#b7d2d9';ctx.shadowBlur=8;ctx.fillText(tr('형상 비교용 자체 도판 · 고도·시설 좌표를 측량한 모델이 아닙니다.','An authored shape comparison, not a surveyed elevation or facility model.'),520,58);ctx.restore();
@@ -1363,17 +1389,19 @@ $('open-sources').onclick=sources;wire('footer-sources','onclick',sources);$('ar
 (function(){
  const yt=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.youtube)||{};
  wire('support-link','href',yt.membershipUrl||yt.channelUrl||'#');
- wire('footer-support-link','href',yt.membershipUrl||yt.channelUrl||'#');
+ wire('offer-support','href',yt.membershipUrl||yt.channelUrl||'#');
  wire('header-live-link','href',yt.liveUrl||yt.channelUrl||'#');
  wire('header-channel-link','href',yt.channelUrl||'#');
  if(!yt.liveUrl&&!yt.channelUrl)wire('header-live-link','hidden',true);
  if(!yt.channelUrl)wire('header-channel-link','hidden',true);
 })();
-wire('open-tourism-info','onclick',()=>showDialog('tourism-dialog'));
-wire('open-tourism-info-home','onclick',()=>showDialog('tourism-dialog'));
+// 관광·굿즈는 홈의 큰 블록에서 엽니다. 바닥글에 있던 작은 링크는 이 블록과
+// 겹쳐서 없앴습니다.
+wire('offer-tour','onclick',()=>showDialog('tourism-dialog'));
+wire('offer-goods','onclick',()=>toast(tr('굿즈는 준비 중입니다. 준비되는 대로 여기에서 안내합니다.','Merchandise is being prepared. It will be announced here.')));
 wire('open-channel-info','onclick',()=>showDialog('channel-info-dialog'));
 wire('footer-channel-info','onclick',()=>showDialog('channel-info-dialog'));
-wire('footer-goods','onclick',()=>toast(tr('굿즈는 준비 중입니다. 준비되는 대로 여기에서 안내합니다.','Merchandise is being prepared. It will be announced here.')));
+
 let disputeItem=null;
 function openDispute(item){disputeItem=item;$('dispute-reason').value='';showDialog('dispute-dialog');}
 wire('dispute-send','onclick',()=>{
