@@ -85,7 +85,7 @@ const en={
  youtubeWatchOn:'Open on YouTube ↗',
  youtubeNote:'Shows 3 of the Dokdo Korea channel’s videos at random. Tap to play — nothing plays automatically.',
  channelInfoOpen:'About Dokdo Korea',channelInfoTitle:'About Dokdo Korea',
- channelContactTitle:'Contact',channelMusicTitle:'Music & Channel Links',channelCollabLink:'Collaboration & lecture inquiries (Linktree) ↗',
+ channelContactTitle:'Contact',channelMusicTitle:'Music & Channel Links',channelCollabLink:'Collaboration & lecture inquiries (form) ↗',
  support:'♥ Support Dokdo Korea',headerLive:'🔴 Dokdo Live',headerChannel:'▶ YouTube\nDokdo Korea',headerCollab:'Collaborate',
  youtubeChannel:'Dokdo Korea Instagram ↗',
  tourismInfoTitle:'🚢 Ulleungdo–Dokdo travel information',
