@@ -123,6 +123,7 @@ main{max-width:1530px;padding:30px 36px 36px;margin:auto;min-height:70vh}.sectio
 .offer-strong:hover{background:linear-gradient(165deg,#463819,#2b2612)}
 .offer-chat{display:block;margin-top:16px;padding:14px;border:1px dashed #4a7a72;border-radius:14px;text-align:center;font:600 15px var(--heading);color:#9fe0cd}
 .offer-chat:hover{background:#0d2a2a;text-decoration:none}
+.course-done{margin:14px 0 0;padding:14px 16px;border:1px solid #6f8f52;border-radius:13px;background:#16301f;color:#dff0c9;font-size:13px;line-height:1.85;text-align:left}
 .badges-subhead{font:600 14px var(--heading);color:#cfe0e7;margin:18px 0 11px}
 .badges-subhead:first-of-type{margin-top:4px}
 .hall-badges .badges-grid+.badges-subhead{margin-top:22px}
