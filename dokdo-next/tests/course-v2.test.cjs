@@ -119,14 +119,32 @@ test('Finishing an already completed unit does not create a second bird achievem
  const s=fresh(),items=sample(s,4);learn(s,items);const before=JSON.stringify(s.visual.unlocks);
  M.finish(s,NOW,items);a.equal(JSON.stringify(s.visual.unlocks),before);a.equal(C.courseEvidence(s.learningProfile,s.m).completed,1);
 });
-test('Completing classes alone does not falsely certify mastery or automatically change actual age',()=>{
+test('Completing classes does not falsely certify mastery or change actual age',()=>{
+ // 단원을 끝냈다고 숙달로 치지 않습니다. 나이대도 저절로 바뀌지 않습니다.
  const s=fresh('8-9');for(let u=1;u<=12;u++)learn(s,sample(s,u));
- a.equal(C.advanceTrack(s.learningProfile,s.m),false);a.equal(s.learningProfile.ageBand,'8-9');a.equal(s.learningProfile.course.track,'early');
+ const e=C.courseEvidence(s.learningProfile,s.m);
+ a.equal(e.completed,12);a.equal(e.mastered,false);a.equal(e.count,0);
+ a.equal(C.advanceTrack(s.learningProfile,s.m),true);
+ a.equal(s.learningProfile.ageBand,'8-9');
 });
-test('Explicit deeper study is available after 12 units and 12 mastered concept families',()=>{
- const s=fresh('8-9');for(let u=1;u<=12;u++)learn(s,sample(s,u));
- const ids=C.DATA.tracks.early.questionIds.slice(0,12);for(const id of ids){const q=C.getQuestion(id);M.answer(s,q,true,{mode:'review',now:day(2)});M.answer(s,q,true,{mode:'review',now:day(8)});}
- a.equal(C.advanceTrack(s.learningProfile,s.m),true);a.equal(s.learningProfile.course.track,'primary');a.equal(s.learningProfile.ageBand,'8-9');a.equal(Object.keys(s.learningProfile.course.completed).length,12);
+test('The next pathway opens once all 12 units are done',()=>{
+ // 예전에는 복습으로 개념 열두 개를 다져야 열렸습니다. 그래서 단원을 모두
+ // 끝낸 사람이 갈 곳 없이 같은 다섯 문제에 갇혔습니다.
+ const s=fresh('8-9');
+ for(let u=1;u<12;u++)learn(s,sample(s,u));
+ a.equal(C.courseEvidence(s.learningProfile,s.m).ready,false);
+ learn(s,sample(s,12));
+ a.equal(C.courseEvidence(s.learningProfile,s.m).ready,true);
+ a.equal(C.advanceTrack(s.learningProfile,s.m),true);
+ a.equal(s.learningProfile.course.track,'primary');
+ a.equal(s.learningProfile.ageBand,'8-9');
+ // 올라가도 이전 과정의 완료 기록은 남습니다.
+ a.equal(Object.keys(s.learningProfile.course.completed).filter(k=>k.startsWith('early:')).length,12);
+});
+test('The deepest pathway has nowhere further to go',()=>{
+ const s=fresh('20+');for(let u=1;u<=12;u++)learn(s,sample(s,u));
+ a.equal(s.learningProfile.course.track,'adult');
+ a.equal(C.advanceTrack(s.learningProfile,s.m),false);
 });
 test('Changing reading route never erases previously completed units or the old game rank',()=>{
  const s=seeded();learn(s,sample(s,8));const before=clone(s.learningProfile.course.completed);M.selectProfile(s,'8-9',true);

@@ -95,7 +95,11 @@ function courseEvidence(p,records,today){
  ensureProfile(p);const groups=DATA.tracks[p.course.track].questionIds.map(id=>ids.get(id).familyId);
  const count=groups.filter(g=>groupMastery(records,g).mastered).length;
  const completed=Object.keys(p.course.completed).filter(k=>k.startsWith(p.course.track+':')).length;
- return {count,concepts:count,total:groups.length,completed,ready:completed===12&&count>=12};
+ // 다음 과정은 열두 단원을 마치면 열립니다. 예전에는 복습으로 개념 열두 개까지
+ // 다져야 열렸는데, 그러면 단원을 다 끝낸 사람이 갈 곳이 없어 같은 문제만
+ // 되풀이하게 됐습니다. 숙달(count)은 그대로 세어 화면에 보여 주되, 다음
+ // 과정을 막는 조건으로는 쓰지 않습니다.
+ return {count,concepts:count,total:groups.length,completed,mastered:count>=12,ready:completed>=12};
 }
 function completeUnit(p,unit,now=Date.now()){
  ensureProfile(p);if(!unitInfo(unit))throw Error('Unknown unit.');const key=p.course.track+':'+unit,first=!p.course.completed[key];

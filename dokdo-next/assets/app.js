@@ -592,17 +592,14 @@ function renderCatalog(){
   const n=document.createElement('span');n.textContent=String(u.id).padStart(2,'0');const title=document.createElement('b');title.textContent=u[language];const note=document.createElement('small');note.textContent=done?tr('배움 완료 · 다시 배우기','Completed · learn again'):tr(u.category+' · 5개념','5 connected concepts');b.append(n,title,note);
   b.onclick=()=>setupAge(async()=>{try{await mutate(st=>{C.ensureProfile(st.learningProfile);st.learningProfile.course.unit=u.id;});begin('daily');}catch(e){}});list.append(b);
  }
- // 예전에는 열 수 없으면 버튼째 숨겨서, 열두 단원을 다 마친 사람이 무엇을
- // 더 해야 하는지 알 길이 없었습니다. 이제 이유와 함께 보여 줍니다.
+ // 열두 단원을 마치면 다음 과정이 열립니다. 예전에는 버튼째 숨겨서, 단원을
+ // 다 끝낸 사람이 다음 과정이 있다는 사실조차 알 수 없었습니다.
  const e=p?C.courseEvidence(p,s.m):null;
- const adult=p?.course?.track==='adult';
+ const last=p?.course?.track==='adult';
  const btn=$('deeper-course');
  if(btn){
-  const show=!!e&&!adult&&(e.ready||e.completed>=12);
-  btn.hidden=!show;btn.disabled=!!e&&!e.ready;
-  const left=e?Math.max(0,12-e.concepts):0;
-  btn.textContent=!e||e.ready?tr('다음 깊이의 과정 열기','Open a deeper pathway')
-   :tr(`더 깊은 과정까지 개념 ${left}개 · 복습으로 다질 수 있어요`,`${left} concepts to go · secure them with review`);
+  btn.hidden=!(e&&e.ready&&!last);btn.disabled=false;
+  btn.textContent=tr('다음 깊이의 과정 열기','Open a deeper pathway');
  }
 }
 $('catalog-age').onclick=()=>setupAge(()=>{renderCatalog();renderHome();},true);
@@ -743,18 +740,23 @@ function renderResult(q,outcome){
  const facts=document.createElement('div');facts.className='lesson-takeaway';const h=document.createElement('h3');h.textContent=tr('이번에 알게 된 독도','Dokdo knowledge to take away');const para=document.createElement('p');para.textContent=(q.mode==='placement'?q.diagnostic.answers.map(a=>C.getQuestion(a.id,language)):q.items).map(it=>it.fact).join(' ');facts.append(h,para);
  // 열두 단원을 다 마치면 예전에는 아무 말 없이 같은 단원만 되풀이됐습니다.
  // 무슨 일이 일어났는지, 다음에 무엇을 하면 되는지 여기서 알려 줍니다.
- let done=null;
+ let done=null,openDeeper=false;
  if(q.mode!=='placement'&&outcome.evidence&&outcome.evidence.completed>=12){
+  const s2=getS(),last=s2?.learningProfile?.course?.track==='adult';
   done=document.createElement('p');done.className='course-done';
-  const left=Math.max(0,12-(outcome.evidence.concepts||0));
-  done.textContent=left
-   ?tr(`이 과정의 열두 단원을 모두 마쳤어요. 이제 배운 문제가 다시 돌아옵니다. ‘기억 꺼내기 · 복습’을 서로 다른 이틀에 해서 개념 ${left}개를 더 다지면 더 깊은 과정이 열려요.`,`You have finished all twelve units. Learned questions now come back around. Review on two separate days to secure ${left} more concepts, and a deeper pathway opens.`)
-   :tr('이 과정의 열두 단원을 모두 마쳤어요. 학습하기에서 더 깊은 과정을 열 수 있습니다.','You have finished all twelve units. Open a deeper pathway from the learning menu.');
+  openDeeper=!last;
+  done.textContent=last
+   ?tr('가장 깊은 과정의 열두 단원을 모두 마쳤어요. 여기서부터는 배운 문제가 다시 돌아옵니다.','You have finished all twelve units of the deepest pathway. From here the questions come back around.')
+   :tr('열두 단원을 모두 마쳤어요. 다음 단계가 열렸습니다. 같은 개념을 한 걸음 더 깊은 문제로 만나요.','All twelve units are done. The next stage is open: the same concepts, asked a step deeper.');
  }
  const row=document.createElement('div');row.className='button-row';
  const home=document.createElement('button');home.className='button primary';home.textContent=tr('내 독도로 돌아가기','Back to my Dokdo');home.onclick=()=>view('home');
  const more=document.createElement('button');more.className='button secondary';more.textContent=tr('한 번 더 배우기','Learn a little more');more.onclick=()=>start('daily');row.append(home,more);
- if(done){const go=document.createElement('button');go.className='button secondary';go.textContent=tr('과정 목록 보기','Open the course list');go.onclick=()=>{view('learn');renderCatalog();};row.append(go);}
+ if(done&&openDeeper){
+  const up=document.createElement('button');up.className='button primary';up.textContent=tr('다음 단계로 올라가기','Move up to the next stage');
+  up.onclick=async()=>{try{await mutate(st=>{if(!C.advanceTrack(st.learningProfile,st.m))throw Error('No deeper pathway.');});renderHome();start('daily');}catch(err){toast(tr('다음 과정을 열지 못했어요.','Could not open the next pathway.'));}};
+  row.replaceChildren(up,home,more);
+ }else if(done){const go=document.createElement('button');go.className='button secondary';go.textContent=tr('과정 목록 보기','Open the course list');go.onclick=()=>{view('learn');renderCatalog();};row.append(go);}
  el.append(star,title,count,desc,note,...(done?[done]:[]),facts,row,renderShareRow());el.focus();
 }
 function shareTrack(channel){if(window.DokdoAnalytics)DokdoAnalytics.track('share_click',{channel});}
