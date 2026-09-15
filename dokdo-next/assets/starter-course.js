@@ -100,7 +100,12 @@ function courseEvidence(p,records,today){
 function completeUnit(p,unit,now=Date.now()){
  ensureProfile(p);if(!unitInfo(unit))throw Error('Unknown unit.');const key=p.course.track+':'+unit,first=!p.course.completed[key];
  p.course.completed[key]=p.course.completed[key]||new Date(now).toISOString();
- let next=unit;for(let step=1;step<=12;step++){const u=(unit-1+step)%12+1;if(!p.course.completed[p.course.track+':'+u]){next=u;break;}}
+ // 아직 마치지 않은 단원을 먼저 찾습니다.
+ let next=null;for(let step=1;step<=12;step++){const u=(unit-1+step)%12+1;if(!p.course.completed[p.course.track+':'+u]){next=u;break;}}
+ // 열두 단원을 모두 마친 사람은 예전에 이 자리에서 제자리에 묶였습니다. 다음
+ // 단원이 없다고 같은 단원을 계속 돌려주면, 매번 똑같은 다섯 문제만 나오고
+ // 앱 안에서 빠져나갈 길이 없었습니다. 다 마쳤으면 다음 단원으로 돌립니다.
+ if(next===null)next=unit%12+1;
  p.course.unit=next;return first;
 }
 function advanceTrack(p,records){

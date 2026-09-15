@@ -171,3 +171,20 @@ test('Opening help during a later review does not certify an independent recall 
  M.answer(s,q,true,{mode:'review',now:day(8)});
  a.equal((s.m[q.id].courseIndependentDays||[]).length,1);
 });
+test('A finished track keeps moving instead of pinning the learner to one unit',()=>{
+ // 열두 단원을 모두 마친 학습자가 같은 다섯 문제에 갇히던 문제입니다.
+ const s=fresh(),p=s.learningProfile=C.profile('8-9');C.ensureProfile(p);
+ let when=NOW;
+ const seen=[];
+ for(let i=0;i<16;i++){
+  const items=C.lesson(p,s.m,'ko',5,Math.random,'daily');
+  seen.push(items.map(q=>q.id).sort().join(','));
+  items.forEach(it=>M.answer(s,it,true,{mode:'daily',now:when}));
+  M.finish(s,when,items);
+  when+=86400000;
+ }
+ a.equal(Object.keys(p.course.completed).length,12);
+ // 열두 단원을 다 마친 뒤에도 단원이 계속 바뀌어야 합니다.
+ const after=seen.slice(12);
+ a.equal(new Set(after).size,after.length);
+});
