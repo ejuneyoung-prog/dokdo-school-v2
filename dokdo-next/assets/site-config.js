@@ -45,7 +45,7 @@ window.DOKDO_SITE_CONFIG=Object.freeze({
    * explicit choice: this particular stream stays live for a month or
    * more at a time, and they will send an updated one if/when it changes.
    * If this ever goes stale, swap it back to `channelUrl + '/live'`. */
-  liveUrl:'https://www.youtube.com/watch?v=wytHepZ1fcs',
+  liveUrl:'https://www.youtube.com/@독도코리아/live',
   membershipUrl:'https://www.youtube.com/@독도코리아/join',
   videoIds:Object.freeze(['Yt59g3GKH58','qIPzX4Pv_pw','M7FvE6fxUVw','FopCZvMGvRQ','rots70BT7S4','4z2lzU7ZYGk','GKNV0UX3dIU','xBd6QDlTLpE','7QRtHpzAgeA','qHACSY2wNn4','AheUe-8-sDY','sgzS66CXiew','ogh--u-5xQg'])
  })
