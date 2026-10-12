@@ -4,7 +4,7 @@
   "private": true,
   "description": "Dokdo core curriculum, visual learning, local records and explicit source boundaries.",
   "scripts": {
-    "test": "node --test tests/model.test.cjs tests/course-v2.test.cjs tests/clear-questions.test.cjs tests/release-13.test.cjs",
+    "test": "node --test tests/model.test.cjs tests/course-v2.test.cjs tests/clear-questions.test.cjs tests/release-13.test.cjs tests/share-utm.test.cjs",
     "check": "python tools/check_site.py",
     "test:browser": "python tests/release-13-browser.py --mode http && python tests/browser.py --mode http && python tests/clear-browser.py --phase flow --mode http && python tests/clear-browser.py --phase matrix --mode http && python tests/clear-browser.py --phase screens --mode http",
     "preview:build": "python tools/build_preview.py preview.html",
