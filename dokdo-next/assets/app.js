@@ -746,8 +746,10 @@ function renderResult(q,outcome){
  let done=null;
  if(q.mode!=='placement'&&outcome.evidence&&outcome.evidence.completed>=12){
   done=document.createElement('p');done.className='course-done';
-  const left=Math.max(0,12-(outcome.evidence.concepts||0));
-  done.textContent=left
+  const left=Math.max(0,12-(outcome.evidence.concepts||0)),last=getS()?.learningProfile?.course?.track==='adult';
+  done.textContent=last
+   ?tr('가장 깊은 과정의 열두 단원을 모두 마쳤어요. 여기서부터는 배운 문제가 단원 순서대로 다시 돌아옵니다.','You have finished all twelve units of the deepest pathway. From here the questions come back around, unit by unit.')
+   :left
    ?tr(`이 과정의 열두 단원을 모두 마쳤어요. 이제 배운 문제가 다시 돌아옵니다. ‘기억 꺼내기 · 복습’을 서로 다른 이틀에 해서 개념 ${left}개를 더 다지면 더 깊은 과정이 열려요.`,`You have finished all twelve units. Learned questions now come back around. Review on two separate days to secure ${left} more concepts, and a deeper pathway opens.`)
    :tr('이 과정의 열두 단원을 모두 마쳤어요. 학습하기에서 더 깊은 과정을 열 수 있습니다.','You have finished all twelve units. Open a deeper pathway from the learning menu.');
  }

@@ -188,3 +188,11 @@ test('A finished track keeps moving instead of pinning the learner to one unit',
  const after=seen.slice(12);
  a.equal(new Set(after).size,after.length);
 });
+test('An adult who finished all twelve units keeps rotating and stays on the adult track',()=>{
+ const s=fresh('20+'),p=s.learningProfile;C.ensureProfile(p);a.equal(p.course.track,'adult');
+ let when=NOW;const seen=[];
+ for(let i=0;i<16;i++){const items=C.lesson(p,s.m,'ko',5,Math.random,'daily');seen.push(items.map(q=>q.id).sort().join(','));items.forEach(it=>M.answer(s,it,true,{mode:'daily',now:when}));M.finish(s,when,items);when+=86400000;}
+ a.equal(Object.keys(p.course.completed).filter(k=>k.startsWith('adult:')).length,12);
+ const after=seen.slice(12);a.equal(new Set(after).size,after.length);
+ a.equal(C.advanceTrack(p,s.m),false);a.equal(p.course.track,'adult');
+});
