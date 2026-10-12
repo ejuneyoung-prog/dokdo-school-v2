@@ -48,7 +48,7 @@ const en={
  footer:'Small moments of learning make Dokdo shine.',demoLink:'Separate demo',ageTitle:'Where shall we begin together?',
  ageDesc:'Your age band helps us choose explanations. We do not ask for a birth date.',
  ageRecoverLink:'Already have a nickname? Load your record here ↗',
- nickname:'Nickname (optional)',nicknamePublic:'This nickname appears in the Hall of Fame. Do not use your real name or phone number.',schoolPublic:'Your school name appears in the school ranking.',ageBand:'Age band',
+ nickname:'Nickname (needed to keep your record)',nicknamePublic:'This nickname appears in the Hall of Fame. Do not use your real name or phone number.',schoolPublic:'Your school name appears in the school ranking.',ageBand:'Age band',
  selectAge:'Select your age band',easyStart:'Start with very simple language, regardless of age.',continue:'Continue',
  agePreserve:'Existing game grades and records are not reduced.',settings:'Settings',reduceMotion:'Reduce motion',
  enableBirds:'Show birds after achievements',seaDensity:'Life in the sea',calm:'Calm',rich:'Lively',full:'More lively',
@@ -765,7 +765,10 @@ function renderResult(q,outcome){
  const more=document.createElement('button');more.className='button secondary';more.textContent=tr('한 번 더 배우기','Learn a little more');more.onclick=()=>start('daily');row.append(home,more);
  if(done&&getS()?.learningProfile?.course?.track==='adult'){const go=document.createElement('button');go.className='button secondary';go.textContent=tr('복습으로 계속하기','Keep going with review');go.onclick=()=>start('review');row.append(go);}
  else if(done){const go=document.createElement('button');go.className='button secondary';go.textContent=tr('과정 목록 보기','Open the course list');go.onclick=()=>{view('learn');renderCatalog();};row.append(go);}
- el.append(star,title,count,desc,note,...(done?[done]:[]),facts,row,renderShareRow());el.focus();
+ // 별명이 비어 있으면 서버가 풀이 기록을 받지 않습니다(Code.gs handleEvent_). 그 사실을 여기서만 알립니다.
+ let noNick=null;
+ if(!(getS()?.name||'').trim()){noNick=document.createElement('p');noNick.className='fine';noNick.textContent=tr('별명이 없어 명예의 전당 기록에는 남지 않아요. 이 기기에는 저장돼요.','No nickname, so this is not added to the Hall of Fame. It is still saved on this device.');}
+ el.append(star,title,count,desc,note,...(noNick?[noNick]:[]),...(done?[done]:[]),facts,row,renderShareRow());el.focus();
 }
 function shareTrack(channel){if(window.DokdoAnalytics)DokdoAnalytics.track('share_click',{channel});}
 /* V1's share sheet was a full-width list -- icon, what it does, and one line
