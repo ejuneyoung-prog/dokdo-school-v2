@@ -128,6 +128,8 @@ let storage;
 try{storage=isolated?new M.MemoryStorage():window.localStorage;}catch(e){storage={getItem(){throw e;},setItem(){throw e;}};}
 const store=new M.Store(storage);
 let state=store.load(),language=state?.visual?.language||'ko',currentView='home',mapOpen=false,lesson=null,ageNext=null;
+// 오늘 마친 수업의 결과 줄(🟩🟥)과 단원 이름. 라이브 채팅 공유 한 줄에 씁니다(규격서 v1 공유 규격).
+let todayShare=null;
 let busy=false,sceneTime=state?.scene?.timeSec||0,frameLast=0,drawAt=0,saveAt=0,sceneVisible=true,lightDirty=true,lightLayer=null,dirty=false,homeVideoIds=null;
 let soundOn=false,audioToken=0,audio=null,importCandidate=null,importOriginal=null,assetError=false;
 let writeQueue=Promise.resolve();
@@ -687,6 +689,7 @@ async function choose(pick,skip=false){
   }).catch(()=>{});}
   if(window.DokdoAnalytics)DokdoAnalytics.track('question_answered',{qid:q.item.id,correct:ok?1:0,qtype:q.item.atype||q.mode,grade:getS().grade||'K',retry:retry?1:0});
   q.answered=true;q.needsRetry=q.mode!=='placement'&&!ok;
+  if(q.mode!=='placement'&&!retry){q.marks=q.marks||[];q.marks[q.index]=ok?'🟩':'🟥';}
   {const s2=getS();if(s2)renderGradeLine('lesson-grade',s2,M.summary(s2));}
   if(q.mode==='placement'){C.recordPlacement(q.diagnostic,q.item,ok,skip);if(ok)q.first++;}
   else if(!retry){if(ok)q.first++;q.xp+=awarded.xp;}
@@ -736,6 +739,7 @@ async function next(){
     if(outcome.advanced)DokdoAnalytics.track('grade_up',{grade:gradeNow,by:'lesson'});
    }
   }
+  if(q.mode!=='placement'&&q.marks&&q.items&&q.items.length){const u=C.unitInfo(q.items[0].unit);todayShare={day:Core.dayKey(),marks:q.items.map((_,i)=>q.marks[i]||'⬜').join(''),topic:u?u[language]:''};}
   $('lesson').hidden=true;$('lesson-result').hidden=false;renderResult(q,outcome);lesson=null;lightDirty=true;
  }catch(e){}finally{busy=false;}
 }
@@ -801,12 +805,13 @@ function shareButton(label,onClick,icon,hint){
 /* What gets copied. V1 pasted a record someone would actually want to show;
  * V2 pasted little more than a link. Built from the learner's own numbers. */
 function bragText(){
+ // 워들식 한 줄: 정답은 가리고 결과(🟩🟥)와 오늘 배운 단원만 보여 줘서 채팅에서 이야기가 이어지게 합니다.
+ // 학년 이름·XP 같은 성적 나열은 넣지 않습니다. 별명은 적어 둔 사람만 끝에 붙습니다(라이브 공유 전용).
  const s=getS();if(!s)return'';
- const a=M.summary(s),gp=Core.gradeProgress(a.gradeScore);
- const who=a.name||tr('독도 코리아 스쿨','Dokdo Korea School');
- return tr(
-  `${who} · ${levelText(gp)} ${gradeLabel(gp.grade)} · 정답 ${num(a.correct)}문제 · 밝힌 불빛 ${num(a.lights)}개 · ${num(a.xp)} XP`,
-  `${who} · ${levelText(gp)} · ${num(a.correct)} correct · ${num(a.lights)} lights · ${num(a.xp)} XP`);
+ const name=(s.name||'').trim(),today=Core.dayKey(),md=+today.slice(5,7)+'/'+(+today.slice(8,10));
+ const tail=name?' · '+name:'';
+ if(todayShare&&todayShare.day===today)return tr(`독도 퀴즈 ${md} ${todayShare.marks}`+(todayShare.topic?` · 오늘 배운 것: ${todayShare.topic}`:'')+tail,`Dokdo quiz ${md} ${todayShare.marks}`+(todayShare.topic?` · Learned today: ${todayShare.topic}`:'')+tail);
+ return tr('독도 퀴즈 · 오늘의 독도 5문제'+tail,'Dokdo quiz · five Dokdo questions today'+tail);
 }
 function renderShareRow(){
  const wrap=document.createElement('div');wrap.className='share-row';
