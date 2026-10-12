@@ -770,6 +770,12 @@ function renderResult(q,outcome){
  if(!(getS()?.name||'').trim()){noNick=document.createElement('p');noNick.className='fine';noNick.textContent=tr('별명이 없어 명예의 전당 기록에는 남지 않아요. 이 기기에는 저장돼요.','No nickname, so this is not added to the Hall of Fame. It is still saved on this device.');}
  el.append(star,title,count,desc,note,...(noNick?[noNick]:[]),...(done?[done]:[]),facts,row,renderShareRow());el.focus();
 }
+// 복사가 막히는 기기(권한, 앱 내부 브라우저)에서는 문구를 직접 보여 줘서 손으로 복사할 수 있게 합니다.
+function copyFallback(res,okMsg){
+ if(res.state==='copied'){toast(okMsg);return;}
+ if(res.text)window.prompt(tr('자동 복사가 안 됐어요. 아래 글을 길게 눌러 복사해 주세요.','Automatic copy did not work. Press and hold to copy the text below.'),res.text);
+ else toast(tr('복사하지 못했습니다.','Could not copy the text.'));
+}
 function shareTrack(channel){if(window.DokdoAnalytics)DokdoAnalytics.track('share_click',{channel});}
 /* V1's share sheet was a full-width list -- icon, what it does, and one line
  * saying what will happen. V2 had the same six actions squeezed into a row of
@@ -799,7 +805,7 @@ function renderShareRow(){
  const row=document.createElement('div');row.className='share-list';
  row.append(shareButton(tr('링크 복사','Copy link'),async()=>{
   shareTrack('link');const res=await DokdoShare.copyLink();
-  toast(res.state==='copied'?tr('링크를 복사했습니다.','Link copied.'):tr('복사하지 못했습니다.','Could not copy the link.'));
+  copyFallback(res,tr('링크를 복사했습니다.','Link copied.'));
  },'🔗',tr('주소만 복사합니다','Copies the address only')));
  row.append(shareButton(tr('결과 이미지 저장','Save an image'),()=>{shareTrack('card');saveImage();},'📸',tr('사진첩에 저장하거나 바로 공유합니다','Save to photos or share it straight away')));
  // The Kakao popup share flow only works reliably on mobile (where it
@@ -829,10 +835,12 @@ function renderShareRow(){
    // window.open must run synchronously in the click handler, before any
    // await -- Safari (and most browsers) silently block a popup opened
    // after an awaited promise, leaving a blank "about:blank" tab.
+   // The copy is started first, while this page still has focus: opening the
+   // stream first moved focus to the new tab and the first copy failed.
+   const copying=DokdoShare.copyForChat(bragText());
    window.open(yt.liveUrl||yt.channelUrl,'_blank','noopener');
-   const brag=bragText();
-   const res=await DokdoShare.copyForChat(brag);
-   toast(res.state==='copied'?tr('채팅용 한 줄을 복사했습니다. 라이브를 열어 붙여넣어 주세요.','Copied a one-line message for chat. Open the live stream and paste it there.'):tr('복사하지 못했습니다.','Could not copy the text.'));
+   const res=await copying;
+   copyFallback(res,tr('채팅용 한 줄을 복사했습니다. 라이브를 열어 붙여넣어 주세요.','Copied a one-line message for chat. Open the live stream and paste it there.'));
   },'▶',tr('채팅용 한 줄로 복사하고 방송을 엽니다','Copies a one-line brag and opens the stream')));
  }
  wrap.append(label,row);return wrap;

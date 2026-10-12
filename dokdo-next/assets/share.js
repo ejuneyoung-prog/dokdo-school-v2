@@ -34,8 +34,8 @@ async function copyText(text){
    const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
    document.body.append(ta);ta.focus();ta.select();document.execCommand('copy');ta.remove();
   }
-  return{state:'copied'};
- }catch(e){return{state:'error',error:String(e&&e.message||e)};}
+  return{state:'copied',text};
+ }catch(e){return{state:'error',text,error:String(e&&e.message||e)};}
 }
 async function copyLink(){const m=shareMeta();return copyText(m.title+'\n'+withUtm(m.url,'link'));}
 /* Live chat text must stay on one line -- YouTube Live chat strips
