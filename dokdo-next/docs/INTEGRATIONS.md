@@ -467,9 +467,9 @@ reference material, in one batch (their own "이전 수정 내용까지 다 포�
   file integrity (readable duration/bitrate via `mutagen`) and the click-to-play code path were
   both checked directly.
 - **Top nav: 4 buttons + live link (TESTED_MOCK, local):** 후원하기 (given `youtube.membershipUrl`),
-  My YouTube channel link, live-link now pointed at the operator's explicit
-  `watch?v=wytHepZ1fcs` URL (not `/live`, per their instruction that this one stays live for a
-  month-plus and they'll resend if it changes), 문의(협업) in the footer next to a new
+  My YouTube channel link, live-link at the channel's fixed `@독도코리아/live` address (it first
+  pointed at a single video's watch URL; since 2026-10-11, commit 4fe833e, it is the channel
+  /live address so it never goes stale between broadcasts), 문의(협업) in the footer next to a new
   "울릉도·독도 관광 안내" dialog (placeholder content — no real tourism copy/link was supplied,
   flagged rather than invented). **Open item, not silently assumed:** 문의(협업) reuses the
   existing `mailto:ejuneyoung2@gmail.com` from the answer-dispute contact — never separately
