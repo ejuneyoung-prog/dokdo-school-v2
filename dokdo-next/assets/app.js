@@ -739,7 +739,7 @@ async function next(){
     if(outcome.advanced)DokdoAnalytics.track('grade_up',{grade:gradeNow,by:'lesson'});
    }
   }
-  if(q.mode!=='placement'&&q.marks&&q.items&&q.items.length){const u=C.unitInfo(q.items[0].unit);todayShare={day:Core.dayKey(),marks:q.items.map((_,i)=>q.marks[i]||'⬜').join(''),topic:u?u[language]:''};}
+  if(q.mode!=='placement'&&q.marks&&q.items&&q.items.length){const u=C.unitInfo(q.items[0].unit);todayShare={day:Core.dayKey(),marks:q.items.map((_,i)=>q.marks[i]||'⬜').join(''),unit:q.mode==='review'?'review':(u?u.id:0)};}
   $('lesson').hidden=true;$('lesson-result').hidden=false;renderResult(q,outcome);lesson=null;lightDirty=true;
  }catch(e){}finally{busy=false;}
 }
@@ -802,16 +802,24 @@ function shareButton(label,onClick,icon,hint){
  if(hint){const t2=document.createElement('small');t2.textContent=hint;box.append(t2);}
  b.append(ic,box);return b;
 }
-/* What gets copied. V1 pasted a record someone would actually want to show;
- * V2 pasted little more than a link. Built from the learner's own numbers. */
+/* What gets copied to the live chat: today's first-try result row and the
+ * unit learned, not a score list (규격서 v1 공유 규격). */
 function bragText(){
  // 워들식 한 줄: 정답은 가리고 결과(🟩🟥)와 오늘 배운 단원만 보여 줘서 채팅에서 이야기가 이어지게 합니다.
  // 학년 이름·XP 같은 성적 나열은 넣지 않습니다. 별명은 적어 둔 사람만 끝에 붙습니다(라이브 공유 전용).
+ // 유튜브 채팅은 200자까지라, 뒤에 붙는 제목·링크(약 116자)를 빼고 이 한 줄은 80자 안으로 줄입니다.
  const s=getS();if(!s)return'';
- const name=(s.name||'').trim(),today=Core.dayKey(),md=+today.slice(5,7)+'/'+(+today.slice(8,10));
+ const len=t=>Array.from(t).length,cut=(t,n)=>Array.from(t).slice(0,n).join('');
+ const name=cut((s.name||'').trim(),12),today=Core.dayKey(),md=+today.slice(5,7)+'/'+(+today.slice(8,10));
  const tail=name?' · '+name:'';
- if(todayShare&&todayShare.day===today)return tr(`독도 퀴즈 ${md} ${todayShare.marks}`+(todayShare.topic?` · 오늘 배운 것: ${todayShare.topic}`:'')+tail,`Dokdo quiz ${md} ${todayShare.marks}`+(todayShare.topic?` · Learned today: ${todayShare.topic}`:'')+tail);
- return tr('독도 퀴즈 · 오늘의 독도 5문제'+tail,'Dokdo quiz · five Dokdo questions today'+tail);
+ if(todayShare&&todayShare.day===today){
+  const head=tr(`독도 퀴즈 ${md} ${todayShare.marks}`,`Dokdo quiz ${md} ${todayShare.marks}`);
+  const u=todayShare.unit&&todayShare.unit!=='review'?C.unitInfo(todayShare.unit):null,title=u&&u[language]?u[language]:'';
+  const topic=todayShare.unit==='review'?tr(' · 오늘 복습',' · Review today'):title?tr(' · 오늘 배운 것: ',' · Learned today: ')+title:'';
+  for(const line of [head+topic+tail,head+tail,head])if(len(line)<=80)return line;
+  return head;
+ }
+ return tr('독도 퀴즈 · 오늘의 독도 5문제','Dokdo quiz · five Dokdo questions today')+tail;
 }
 function renderShareRow(){
  const wrap=document.createElement('div');wrap.className='share-row';
