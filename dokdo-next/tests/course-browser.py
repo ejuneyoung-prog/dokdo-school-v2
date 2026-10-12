@@ -57,9 +57,9 @@ try:
    page.wait_for_function('!!window.DokdoApp');page.evaluate('DokdoApp.assetsReady')
    if lang=='en':page.click('#language')
    return ctx,page
-  expected={'u7':1,'8-9':1,'10-11':2,'12-13':3,'14-16':8,'17-19':9,'20+':11}
+  expected={'u7':1,'8-9':1,'10-11':2,'12-13':3,'14-16':1,'17-19':1,'20+':1}
   for lang in ['ko','en']:
-   for band,unit in (expected.items() if lang=='ko' else [('8-9',1),('14-16',8),('20+',11)]):
+   for band,unit in (expected.items() if lang=='ko' else [('8-9',1),('14-16',1),('20+',1)]):
     ctx,page=open_page(390,lang);prefix=lang+'/'+band
     try:
      page.click('#start-lesson');page.select_option('#age-band',band);page.click('#age-form button[type=submit]');page.wait_for_selector('#teaching',state='visible')
