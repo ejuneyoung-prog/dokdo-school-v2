@@ -702,7 +702,7 @@ async function choose(pick,skip=false){
   const report=document.createElement('button');report.type='button';report.className='text-button dispute-button';report.textContent=tr('이 문제가 이상한가요? 이의제기','Something wrong with this question?');
   report.onclick=()=>openDispute(q.item);
   $('question-feedback').append(head,correctLine,text,takeaway,note,report);
-  $('retry-question').hidden=!q.needsRetry;$('next-question').hidden=q.needsRetry;
+  $('retry-question').hidden=!q.needsRetry;$('next-question').hidden=false;
   txt('next-question',q.index+1===q.total?tr('결과 보기','See results'):tr('다음으로','Continue'));
   $('question-feedback').scrollIntoView({block:'nearest',behavior:'smooth'});
  }catch(e){}finally{busy=false;}
@@ -712,7 +712,7 @@ $('retry-question').onclick=()=>{if(!lesson?.needsRetry||busy)return;lesson.retr
 $('dont-know').onclick=()=>choose(-1,true);
 $('word-help')?.addEventListener('toggle',()=>{if(lesson&&$('word-help').open)lesson.usedHelp=true;});
 async function next(){
- if(!lesson||busy||!lesson.answered||lesson.needsRetry)return;
+ if(!lesson||busy||!lesson.answered)return;
  if(lesson.index+1<lesson.total){lesson.index++;nextItem();$('lesson').scrollIntoView({block:'start',behavior:'instant'});return;}
  busy=true;
  try{
@@ -768,7 +768,10 @@ function renderResult(q,outcome){
  // 별명이 비어 있으면 서버가 풀이 기록을 받지 않습니다(Code.gs handleEvent_). 그 사실을 여기서만 알립니다.
  let noNick=null;
  if(!(getS()?.name||'').trim()){noNick=document.createElement('p');noNick.className='fine';noNick.textContent=tr('별명이 없어 명예의 전당 기록에는 남지 않아요. 이 기기에는 저장돼요.','No nickname, so this is not added to the Hall of Fame. It is still saved on this device.');}
- el.append(star,title,count,desc,note,...(noNick?[noNick]:[]),...(done?[done]:[]),facts,row,renderShareRow());el.focus();
+ // 틀린 문제를 넘기면 단원이 끝나지 않고 같은 단원이 다시 나옵니다. 이유를 말없이 되풀이하지 않게 여기서 알립니다.
+ let open=null;
+ if(q.mode==='daily'&&outcome&&outcome.completed===false&&q.items.some(it=>!getS()?.m?.[it.id]?.courseLearned)){open=document.createElement('p');open.className='fine unit-open';open.textContent=tr('틀린 문제는 다음 수업에 다시 나와요. 그 문제까지 맞히면 이 단원을 마쳐요.','The questions you missed come back next lesson. Get those right too and this unit is done.');}
+ el.append(star,title,count,desc,note,...(open?[open]:[]),...(noNick?[noNick]:[]),...(done?[done]:[]),facts,row,renderShareRow());el.focus();
 }
 function shareTrack(channel){if(window.DokdoAnalytics)DokdoAnalytics.track('share_click',{channel});}
 /* V1's share sheet was a full-width list -- icon, what it does, and one line
