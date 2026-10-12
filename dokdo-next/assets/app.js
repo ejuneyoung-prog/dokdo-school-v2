@@ -773,11 +773,15 @@ function renderResult(q,outcome){
  if(q.mode==='daily'&&outcome&&outcome.completed===false&&q.items.some(it=>!getS()?.m?.[it.id]?.courseLearned)){open=document.createElement('p');open.className='fine unit-open';open.textContent=tr('틀린 문제는 다음 수업에 다시 나와요. 그 문제까지 맞히면 이 단원을 마쳐요.','The questions you missed come back next lesson. Get those right too and this unit is done.');}
  el.append(star,title,count,desc,note,...(open?[open]:[]),...(noNick?[noNick]:[]),...(done?[done]:[]),facts,row,renderShareRow());el.focus();
 }
-// 복사가 막히는 기기(권한, 앱 내부 브라우저)에서는 문구를 직접 보여 줘서 손으로 복사할 수 있게 합니다.
-function copyFallback(res,okMsg){
+// 복사가 막히는 기기(권한, 앱 내부 브라우저)에서는 공유 목록 안에 문구 칸을 띄워 손으로 복사하게 합니다.
+// 창(prompt)은 새로 연 방송 탭 뒤에 숨거나 앱 내부 브라우저에서 무시될 수 있어 쓰지 않습니다.
+function copyFallback(res,okMsg,host){
  if(res.state==='copied'){toast(okMsg);return;}
- if(res.text)window.prompt(tr('자동 복사가 안 됐어요. 아래 글을 길게 눌러 복사해 주세요.','Automatic copy did not work. Press and hold to copy the text below.'),res.text);
- else toast(tr('복사하지 못했습니다.','Could not copy the text.'));
+ toast(tr('자동 복사가 안 됐어요. 공유 목록 아래 칸의 글을 길게 눌러 복사해 주세요.','Automatic copy did not work. Press and hold the text under the share list to copy it.'));
+ if(!res.text||!host)return;
+ let box=host.querySelector('.manual-copy');
+ if(!box){box=document.createElement('textarea');box.className='manual-copy';box.readOnly=true;box.rows=3;box.setAttribute('aria-label',tr('직접 복사할 글','Text to copy by hand'));box.style.width='100%';host.append(box);}
+ box.value=res.text;box.focus();box.select();
 }
 function shareTrack(channel){if(window.DokdoAnalytics)DokdoAnalytics.track('share_click',{channel});}
 /* V1's share sheet was a full-width list -- icon, what it does, and one line
@@ -808,7 +812,7 @@ function renderShareRow(){
  const row=document.createElement('div');row.className='share-list';
  row.append(shareButton(tr('링크 복사','Copy link'),async()=>{
   shareTrack('link');const res=await DokdoShare.copyLink();
-  copyFallback(res,tr('링크를 복사했습니다.','Link copied.'));
+  copyFallback(res,tr('링크를 복사했습니다.','Link copied.'),wrap);
  },'🔗',tr('주소만 복사합니다','Copies the address only')));
  row.append(shareButton(tr('결과 이미지 저장','Save an image'),()=>{shareTrack('card');saveImage();},'📸',tr('사진첩에 저장하거나 바로 공유합니다','Save to photos or share it straight away')));
  // The Kakao popup share flow only works reliably on mobile (where it
@@ -843,7 +847,7 @@ function renderShareRow(){
    const copying=DokdoShare.copyForChat(bragText());
    window.open(yt.liveUrl||yt.channelUrl,'_blank','noopener');
    const res=await copying;
-   copyFallback(res,tr('채팅용 한 줄을 복사했습니다. 라이브를 열어 붙여넣어 주세요.','Copied a one-line message for chat. Open the live stream and paste it there.'));
+   copyFallback(res,tr('채팅용 한 줄을 복사했습니다. 라이브를 열어 붙여넣어 주세요.','Copied a one-line message for chat. Open the live stream and paste it there.'),wrap);
   },'▶',tr('채팅용 한 줄로 복사하고 방송을 엽니다','Copies a one-line brag and opens the stream')));
  }
  wrap.append(label,row);return wrap;
