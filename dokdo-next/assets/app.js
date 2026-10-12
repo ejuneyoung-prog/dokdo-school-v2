@@ -598,15 +598,20 @@ function renderCatalog(){
  const adult=p?.course?.track==='adult';
  const btn=$('deeper-course');
  if(btn){
-  const show=!!e&&!adult&&(e.ready||e.completed>=12);
-  btn.hidden=!show;btn.disabled=!!e&&!e.ready;
+  // 가장 깊은 과정(adult)은 위로 갈 곳이 없으니, 다 마치면 복습으로 이어 갑니다.
+  const review=!!e&&adult&&e.completed>=12;btn.dataset.review=review?'1':'';
+  const show=!!e&&(review||(!adult&&(e.ready||e.completed>=12)));
+  btn.hidden=!show;btn.disabled=!review&&!!e&&!e.ready;
   const left=e?Math.max(0,12-e.concepts):0;
-  btn.textContent=!e||e.ready?tr('다음 깊이의 과정 열기','Open a deeper pathway')
+  btn.textContent=review?tr('복습으로 계속하기','Keep going with review')
+   :!e||e.ready?tr('다음 깊이의 과정 열기','Open a deeper pathway')
    :tr(`더 깊은 과정까지 개념 ${left}개 · 복습으로 다질 수 있어요`,`${left} concepts to go · secure them with review`);
  }
+ // 열두 단원을 다 마친 과정은 과정 이름 옆에 완주를 표시합니다(이 기기 안에서만).
+ if(p&&e&&e.completed>=12)txt('path-name',C.trackName(p,language)+tr(' · 독도 과정 · 과정 완주 12/12',' · Dokdo course · Course complete 12/12'));
 }
 $('catalog-age').onclick=()=>setupAge(()=>{renderCatalog();renderHome();},true);
-$('deeper-course').onclick=async()=>{try{await mutate(s=>{if(!C.advanceTrack(s.learningProfile,s.m))throw Error('Review evidence is not ready.');});renderCatalog();renderHome();}catch(e){}};
+$('deeper-course').onclick=async()=>{if($('deeper-course').dataset.review==='1'){start('review');return;}try{await mutate(s=>{if(!C.advanceTrack(s.learningProfile,s.m))throw Error('Review evidence is not ready.');});renderCatalog();renderHome();}catch(e){}};
 function nextItem(){
  if(!lesson)return;
  lesson.item=lesson.mode==='placement'?C.pickPlacement(lesson.diagnostic,language):lesson.items[lesson.index];
@@ -744,6 +749,8 @@ function renderResult(q,outcome){
  // 열두 단원을 다 마치면 예전에는 아무 말 없이 같은 단원만 되풀이됐습니다.
  // 무슨 일이 일어났는지, 다음에 무엇을 하면 되는지 여기서 알려 줍니다.
  let done=null;
+ // 열두 번째 단원을 처음 마친 그 결과 화면에서만 제목을 '과정 완주!'로 바꿉니다.
+ if(q.mode!=='placement'&&outcome.completed&&outcome.evidence&&outcome.evidence.completed>=12)title.textContent=tr('과정 완주!','Course complete!');
  if(q.mode!=='placement'&&outcome.evidence&&outcome.evidence.completed>=12){
   done=document.createElement('p');done.className='course-done';
   const left=Math.max(0,12-(outcome.evidence.concepts||0)),last=getS()?.learningProfile?.course?.track==='adult';
@@ -756,7 +763,8 @@ function renderResult(q,outcome){
  const row=document.createElement('div');row.className='button-row';
  const home=document.createElement('button');home.className='button primary';home.textContent=tr('내 독도로 돌아가기','Back to my Dokdo');home.onclick=()=>view('home');
  const more=document.createElement('button');more.className='button secondary';more.textContent=tr('한 번 더 배우기','Learn a little more');more.onclick=()=>start('daily');row.append(home,more);
- if(done){const go=document.createElement('button');go.className='button secondary';go.textContent=tr('과정 목록 보기','Open the course list');go.onclick=()=>{view('learn');renderCatalog();};row.append(go);}
+ if(done&&getS()?.learningProfile?.course?.track==='adult'){const go=document.createElement('button');go.className='button secondary';go.textContent=tr('복습으로 계속하기','Keep going with review');go.onclick=()=>start('review');row.append(go);}
+ else if(done){const go=document.createElement('button');go.className='button secondary';go.textContent=tr('과정 목록 보기','Open the course list');go.onclick=()=>{view('learn');renderCatalog();};row.append(go);}
  el.append(star,title,count,desc,note,...(done?[done]:[]),facts,row,renderShareRow());el.focus();
 }
 function shareTrack(channel){if(window.DokdoAnalytics)DokdoAnalytics.track('share_click',{channel});}
