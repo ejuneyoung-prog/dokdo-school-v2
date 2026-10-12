@@ -420,7 +420,7 @@ function maybeShowIntro(){
  const ids=Array.isArray(yt.videoIds)?yt.videoIds:[];if(!ids.length)return;
  const s=getS();if(!s||s.introOff)return;
  // 처음 온 사람은 영상 창보다 첫 수업을 먼저 만납니다. 한 문제라도 풀어 본 뒤부터 보여 줍니다.
- if(!Object.values(s.m||{}).some(r=>r&&(r.att>0||r.courseLearned)))return;
+ if(!(s.xp>0)&&!Object.values(s.m||{}).some(r=>r&&(r.att>0||r.cor>0||r.seen>0||r.courseLearned)))return;
  const today=Core.dayKey();if(s.introDay===today)return;
  const id=ids[Math.floor(Math.random()*ids.length)];
  resetYoutubePlayer('intro-player',id);
