@@ -178,6 +178,7 @@ try:
                 page.wait_for_selector('#next-question',state='visible');page.click('#next-question')
             page.wait_for_selector('#lesson-result',state='visible')
             check(prefix+' full lesson completes',page.locator('#lesson-result').is_visible())
+            check(prefix+' skipped question keeps the unit open and says so',page.locator('#lesson-result .unit-open').is_visible())
             page.locator('#lesson-result .button.primary').click()
             check(prefix+' learned lights are visible',int(page.locator('#lights-count').inner_text().replace(',',''))>0)
             page.click('#open-settings');page.check('#reduce-motion')
