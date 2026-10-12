@@ -912,7 +912,7 @@
     "middle": {
       "ko": "중학생",
       "en": "Middle school",
-      "startUnit": 8,
+      "startUnit": 1,
       "levels": [
         2,
         3,
@@ -1054,7 +1054,7 @@
     "high": {
       "ko": "고등학생",
       "en": "High school",
-      "startUnit": 9,
+      "startUnit": 1,
       "levels": [
         3,
         4,
@@ -1196,7 +1196,7 @@
     "adult": {
       "ko": "성인",
       "en": "Adult",
-      "startUnit": 11,
+      "startUnit": 1,
       "levels": [
         4,
         3,
