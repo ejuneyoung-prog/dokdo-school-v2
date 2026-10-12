@@ -16,7 +16,7 @@ with sync_playwright() as pw:
  check('All 240 revised questions are embedded',page.evaluate('DokdoStarter.DATA.questions.length===240'))
  check('Age selection blocks first lesson',page.locator('#age-dialog').is_hidden())
  page.click('#start-lesson');check('Age dialog is required',page.locator('#age-dialog').is_visible());page.select_option('#age-band','14-16');page.click('#age-form button[type=submit]')
- check('Middle-school lesson is an actual Dokdo history unit',page.evaluate('DokdoApp.lesson.item.unit===8 && DokdoApp.lesson.item.id>=920001 && DokdoApp.lesson.item.id<=920240'))
+ check('Middle-school newcomer lesson is the first Dokdo unit',page.evaluate('DokdoApp.lesson.item.unit===1 && DokdoApp.lesson.item.id>=920001 && DokdoApp.lesson.item.id<=920240'))
  page.click('#read-done');check('Material and choices are visible',page.locator('#question-material').is_visible() and page.locator('.answer-option').count()==3)
  page.click('#leave-lesson');page.click('#demo-sample');check('Heavy-user sample is explicit, with 1,513 old records',page.evaluate('Object.keys(DokdoApp.state.m).length===1513'))
  page.click('#nav-map');check('Reference map has loaded',page.locator('#map-card').is_visible());page.click('#close-map')

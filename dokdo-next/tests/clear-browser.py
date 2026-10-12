@@ -72,7 +72,7 @@ try:
   ck('live starts with zero question rewards',p.evaluate('Object.keys(DokdoApp.state.m).length===0 && DokdoApp.state.xp===0'))
   if args.phase in ['flow','all']:
    p.eval_on_selector('#start-lesson','e=>e.click()');p.eval_on_selector('#age-form button[type=submit]','e=>e.click()');ck('age gate remains mandatory',p.evaluate('DokdoApp.lesson===null'))
-   expected={'u7':1,'8-9':1,'10-11':2,'12-13':3,'14-16':8,'17-19':9,'20+':11}
+   expected={'u7':1,'8-9':1,'10-11':2,'12-13':3,'14-16':1,'17-19':1,'20+':1}
    for band,unit in expected.items():
     p.evaluate("DokdoApp.start('daily',true)");p.select_option('#age-band',band);p.eval_on_selector('#age-form button[type=submit]','e=>e.click()')
     # Submitting the age form saves before it starts the lesson, so the lesson

@@ -44,8 +44,9 @@ test('Difficulty allocation and actual cognitive annotations are separate and co
  a.ok(C.DATA.questions.some(q=>q.difficulty!==q.cognitive));
  a.notDeepEqual(C.DATA.tracks.early.questionIds,C.DATA.tracks.primary.questionIds);
 });
-test('Middle, high and adult start with real Dokdo records, not generic nature manners',()=>{
- for(const [band,unit] of [['14-16',8],['17-19',9],['20+',11]]){const s=fresh(band),items=C.lesson(s.learningProfile);a.ok(items.every(q=>q.unit===unit));a.equal(new Set(items.map(q=>q.familyId)).size,5);a.ok(items.some(q=>q.cognitive>=3));}
+test('Middle, high and adult newcomers start at the first unit, like everyone else',()=>{
+ // 기획 운영회의(2026-10-13): 성인·중고생도 첫 수업은 입문 단원(독도는 어디에 있을까)부터.
+ for(const band of ['14-16','17-19','20+']){const s=fresh(band),items=C.lesson(s.learningProfile);a.ok(items.every(q=>q.unit===1));a.equal(new Set(items.map(q=>q.familyId)).size,5);a.ok(items.some(q=>q.cognitive>=3));}
 });
 test('A repeated unit keeps its five questions but not their order',()=>{
  const s=fresh('10-11'),orders=new Set(),sets=new Set();
