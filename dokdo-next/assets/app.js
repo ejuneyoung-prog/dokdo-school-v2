@@ -419,6 +419,8 @@ function maybeShowIntro(){
  const yt=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.youtube)||{};
  const ids=Array.isArray(yt.videoIds)?yt.videoIds:[];if(!ids.length)return;
  const s=getS();if(!s||s.introOff)return;
+ // 처음 온 사람은 영상 창보다 첫 수업을 먼저 만납니다. 한 문제라도 풀어 본 뒤부터 보여 줍니다.
+ if(!Object.values(s.m||{}).some(r=>r&&(r.att>0||r.courseLearned)))return;
  const today=Core.dayKey();if(s.introDay===today)return;
  const id=ids[Math.floor(Math.random()*ids.length)];
  resetYoutubePlayer('intro-player',id);
@@ -1279,7 +1281,9 @@ function updateEnvironment(){
  txt('dokdo-sun',tr('일출 ','Sunrise ')+DokdoSolar.clock(phase.sunrise)+tr(' · 일몰 ',' / sunset ')+DokdoSolar.clock(phase.sunset)+tr(' (계산값)',' (calculated)'));
  const w=weatherClient.current;
  const names={clear:['맑음','Clear'],cloud:['구름','Cloudy'],rain:['비','Rain'],snow:['눈','Snow'],fog:['안개','Fog']};
- txt('weather-status',w?tr(...names[w.kind])+' '+w.temperature.toFixed(1)+'°C · '+DokdoSolar.clock(w.at)+tr(' 예보',' forecast')+(weatherClient.status==='stale'?tr(' · 갱신 지연',' / delayed update'):''):weatherClient.status==='disabled'?tr('날씨: 배포자 이용조건 확인 필요','Weather: operator setup required'):weatherClient.status==='loading'?tr('날씨 불러오는 중','Loading weather'):tr('날씨 연결 지연','Weather unavailable'));
+ txt('weather-status',w?tr(...names[w.kind])+' '+w.temperature.toFixed(1)+'°C · '+DokdoSolar.clock(w.at)+tr(' 예보',' forecast')+(weatherClient.status==='stale'?tr(' · 갱신 지연',' / delayed update'):''):weatherClient.status==='disabled'?'':weatherClient.status==='loading'?tr('날씨 불러오는 중','Loading weather'):tr('날씨 연결 지연','Weather unavailable'));
+ // 날씨 연결을 켜지 않은 판에서는 날씨 줄을 통째로 숨깁니다(운영 메모가 학습자에게 보이지 않게).
+ $('weather-status').parentElement.hidden=!w&&weatherClient.status==='disabled';
  if(s){const p=M.Journey.progress(s);txt('route-title',tr(p.shownLap+'번째 빛의 길','Learning path - circuit '+p.shownLap));txt('route-count',p.filled+' / 1,025');$('route-progress').value=p.filled;
   txt('route-note',tr('동도 '+p.east+'/500 · 서도 '+p.west+'/500 · 기념 지점 '+p.markers+'/25 · 누적 인정 '+num(p.total)+'회','Dongdo '+p.east+'/500 / Seodo '+p.west+'/500 / commemorative markers '+p.markers+'/25 / '+num(p.total)+' lifetime credits')+(p.legacy?tr(' (이전 성취 '+num(p.legacy)+'포함)',' (including '+num(p.legacy)+' legacy credits)'):'')+tr(' · 25는 실제 섬 개수가 아닙니다.',' / 25 is not the actual islet count.'));}
  const sel=$('time-mode');for(const o of sel.options){const texts={auto:['독도 실제 시간','Dokdo time'],day:['낮 미리보기','Day preview'],sunset:['노을 미리보기','Sunset preview'],night:['야경 미리보기','Night preview']};o.textContent=tr(...texts[o.value]);}
