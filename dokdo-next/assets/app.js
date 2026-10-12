@@ -702,7 +702,7 @@ async function choose(pick,skip=false){
   const report=document.createElement('button');report.type='button';report.className='text-button dispute-button';report.textContent=tr('이 문제가 이상한가요? 이의제기','Something wrong with this question?');
   report.onclick=()=>openDispute(q.item);
   $('question-feedback').append(head,correctLine,text,takeaway,note,report);
-  $('retry-question').hidden=!q.needsRetry;$('next-question').hidden=q.needsRetry;
+  $('retry-question').hidden=!q.needsRetry;$('next-question').hidden=false;
   txt('next-question',q.index+1===q.total?tr('결과 보기','See results'):tr('다음으로','Continue'));
   $('question-feedback').scrollIntoView({block:'nearest',behavior:'smooth'});
  }catch(e){}finally{busy=false;}
@@ -712,7 +712,7 @@ $('retry-question').onclick=()=>{if(!lesson?.needsRetry||busy)return;lesson.retr
 $('dont-know').onclick=()=>choose(-1,true);
 $('word-help')?.addEventListener('toggle',()=>{if(lesson&&$('word-help').open)lesson.usedHelp=true;});
 async function next(){
- if(!lesson||busy||!lesson.answered||lesson.needsRetry)return;
+ if(!lesson||busy||!lesson.answered)return;
  if(lesson.index+1<lesson.total){lesson.index++;nextItem();$('lesson').scrollIntoView({block:'start',behavior:'instant'});return;}
  busy=true;
  try{
