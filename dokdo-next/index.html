@@ -331,7 +331,8 @@ Dokdo Korea</a><a id="header-collab-link" class="button primary small-button hea
 <dialog id="age-dialog" class="dialog">
  <form id="age-form"><div class="dialog-top"><span class="eyebrow">YOUR STARTING POINT</span><button type="button" class="icon-button" data-close="age-dialog" aria-label="닫기">×</button></div><h2 data-i18n="ageTitle">어디서부터 함께 배울까요?</h2><p data-i18n="ageDesc">나이대는 설명을 고르는 참고값이에요. 생년월일은 받지 않아요.</p>
  <button type="button" class="text-button" id="age-recover-link" data-i18n="ageRecoverLink">이미 별명이 있나요? 여기서 기록 불러오기 ↗</button>
- <label class="field"><span data-i18n="nickname">별명 (선택)</span><input id="nickname" maxlength="40" autocomplete="nickname" placeholder="독도 탐험가"></label>
+ <label class="field"><span data-i18n="nickname">별명 (기록을 이어가려면 적어 주세요)</span><input id="nickname" maxlength="40" autocomplete="nickname" placeholder="독도 탐험가"></label>
+ <p class="fine" data-i18n="nicknamePublic">이 별명은 명예의 전당에 공개돼요. 실명·전화번호는 쓰지 마세요.</p>
  <label class="field"><span data-i18n="flagField">국가 (명예의 전당 표시용, 선택)</span><select id="flag-select">
   <option value="KR">🇰🇷 대한민국</option><option value="US">🇺🇸 미국</option><option value="JP">🇯🇵 일본</option>
   <option value="CN">🇨🇳 중국</option><option value="GB">🇬🇧 영국</option><option value="CA">🇨🇦 캐나다</option>
@@ -347,6 +348,7 @@ Dokdo Korea</a><a id="header-collab-link" class="button primary small-button hea
   <option value="H" data-i18n="schoolCatH">고등학교</option><option value="W" data-i18n="schoolCatW">해외 한국학교</option>
  </select></label>
  <label class="field field-suggest"><span data-i18n="schoolField">학교·소속 이름 (선택, 두 글자만 넣어도 찾아 줍니다)</span><input id="school-name" maxlength="60" placeholder="독도초등학교" autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="school-suggest"><div id="school-suggest" class="suggest-list" role="listbox" hidden></div></label>
+ <p class="fine" data-i18n="schoolPublic">학교 이름은 학교 순위에 공개돼요.</p>
  <label class="field"><span data-i18n="ageBand">나이대</span><select id="age-band" required><option value="" data-i18n="selectAge">나이대를 골라 주세요</option></select></label>
  <label class="check-row"><input type="checkbox" id="age-easy"><span data-i18n="easyStart">나이에 관계없이 아주 쉬운 말부터 시작할게요.</span></label>
  <p id="age-error" class="error" role="alert"></p><button class="button primary" type="submit" data-i18n="continue">계속하기</button><p class="fine" data-i18n="agePreserve">기존 성장 등급과 기록을 낮추지 않습니다.</p></form>

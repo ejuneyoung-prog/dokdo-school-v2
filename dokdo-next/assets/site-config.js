@@ -41,10 +41,10 @@ window.DOKDO_SITE_CONFIG=Object.freeze({
  ]),
  youtube:Object.freeze({
   channelUrl:'https://www.youtube.com/@독도코리아',
-  /* A specific video URL, not the channel's /live handle -- the operator's
-   * explicit choice: this particular stream stays live for a month or
-   * more at a time, and they will send an updated one if/when it changes.
-   * If this ever goes stale, swap it back to `channelUrl + '/live'`. */
+  /* The channel's fixed /live address, not a single video's watch?v= URL.
+   * /live always points at whatever stream is on air now, so it does not go
+   * stale when a broadcast ends and a new one starts (changed 2026-10-11,
+   * commit 4fe833e). */
   liveUrl:'https://www.youtube.com/@독도코리아/live',
   membershipUrl:'https://www.youtube.com/@독도코리아/join',
   videoIds:Object.freeze(['Yt59g3GKH58','qIPzX4Pv_pw','M7FvE6fxUVw','FopCZvMGvRQ','rots70BT7S4','4z2lzU7ZYGk','GKNV0UX3dIU','xBd6QDlTLpE','7QRtHpzAgeA','qHACSY2wNn4','AheUe-8-sDY','sgzS66CXiew','ogh--u-5xQg'])

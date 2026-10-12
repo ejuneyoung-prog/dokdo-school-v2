@@ -18,6 +18,15 @@ function shareMeta(){
   url:get('link[rel="canonical"]','content')||get('link[rel="canonical"]','href')||location.href
  };
 }
+/* 유입 측정용 utm. 어느 공유 단추로 들어왔는지만 붙입니다. 값은 아래 네 개로
+ * 고정이고, 별명·학교·점수 같은 사용자 값은 절대 넣지 않습니다. canonical과
+ * OG 태그는 그대로 둡니다. */
+const UTM_SOURCES=['link','yt_live','os_share','kakao'];
+function withUtm(url,source){
+ if(!UTM_SOURCES.includes(source))return url;
+ try{const u=new URL(url);u.searchParams.set('utm_source',source);u.searchParams.set('utm_medium','share');return u.toString();}
+ catch(e){return url;}
+}
 async function copyText(text){
  try{
   if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(text);
@@ -28,16 +37,16 @@ async function copyText(text){
   return{state:'copied'};
  }catch(e){return{state:'error',error:String(e&&e.message||e)};}
 }
-async function copyLink(){const m=shareMeta();return copyText(m.title+'\n'+m.url);}
+async function copyLink(){const m=shareMeta();return copyText(m.title+'\n'+withUtm(m.url,'link'));}
 /* Live chat text must stay on one line -- YouTube Live chat strips
  * newlines and runs words together otherwise (per the operator's own
  * V1 notes). */
-async function copyForChat(brag){const m=shareMeta();const prefix=brag?brag+' · ':'';return copyText(prefix+m.title+' · '+m.url);}
+async function copyForChat(brag){const m=shareMeta();const prefix=brag?brag+' · ':'';return copyText(prefix+m.title+' · '+withUtm(m.url,'yt_live'));}
 function nativeShareSupported(){return typeof navigator.share==='function';}
 async function nativeShare(){
  if(!nativeShareSupported())return{state:'not_supported'};
  const m=shareMeta();
- try{await navigator.share({title:m.title,text:m.title,url:m.url});return{state:'shared'};}
+ try{await navigator.share({title:m.title,text:m.title,url:withUtm(m.url,'os_share')});return{state:'shared'};}
  catch(e){if(e&&e.name==='AbortError')return{state:'cancelled'};return{state:'error',error:String(e&&e.message||e)};}
 }
 let kakaoLoading=null;
@@ -60,14 +69,14 @@ async function kakaoShare(){
  if(!kakaoKey())return{state:'not_configured'};
  try{
   await loadKakaoSdk();
-  const m=shareMeta();
+  const m=shareMeta(),url=withUtm(m.url,'kakao');
   window.Kakao.Share.sendDefault({
    objectType:'feed',
-   content:{title:m.title,description:m.description,imageUrl:m.image,link:{webUrl:m.url,mobileWebUrl:m.url}},
-   buttons:[{title:'독도 코리아 스쿨 열기',link:{webUrl:m.url,mobileWebUrl:m.url}}]
+   content:{title:m.title,description:m.description,imageUrl:m.image,link:{webUrl:url,mobileWebUrl:url}},
+   buttons:[{title:'독도 코리아 스쿨 열기',link:{webUrl:url,mobileWebUrl:url}}]
   });
   return{state:'opened'};
  }catch(e){return{state:'error',error:String(e&&e.message||e)};}
 }
-return{copyLink,copyForChat,nativeShare,nativeShareSupported,kakaoShare,isKakaoConfigured:()=>!!kakaoKey()};
+return{withUtm,copyLink,copyForChat,nativeShare,nativeShareSupported,kakaoShare,isKakaoConfigured:()=>!!kakaoKey()};
 })();
