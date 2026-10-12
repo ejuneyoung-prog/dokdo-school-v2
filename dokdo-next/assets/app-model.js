@@ -124,8 +124,11 @@ function finish(s,now=Date.now(),items=[]){
  let completed=false,unit=null;
  if(items.length){
   items=items.map(q=>Course.getQuestion(q.id));
-  if(items.length!==5||new Set(items.map(q=>q.familyId)).size!==5||new Set(items.map(q=>q.unit)).size!==1||items.some(q=>!Course.isActive(q.id)||!s.m[q.id]?.courseLearned))throw Error('Five understood questions from one unit are required.');
-  unit=items[0].unit;completed=Course.completeUnit(p,unit,now);
+  if(items.length!==5||new Set(items.map(q=>q.familyId)).size!==5||new Set(items.map(q=>q.unit)).size!==1||items.some(q=>!Course.isActive(q.id)))throw Error('Five questions from one unit are required.');
+  unit=items[0].unit;
+  // 틀린 문제를 다시 풀지 않고 넘어가도 수업은 끝납니다. 단원은 다섯 문제를 모두
+  // 이해했을 때만 마친 것으로 치고, 아니면 같은 단원이 다음 수업에 다시 나옵니다.
+  if(items.every(q=>s.m[q.id]?.courseLearned))completed=Course.completeUnit(p,unit,now);
  }
  const e=Course.courseEvidence(p,s.m,Core.dayKey(now));
  const tier=Math.min(4,Math.floor(e.completed/3));

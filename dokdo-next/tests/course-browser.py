@@ -70,7 +70,7 @@ try:
      check(prefix+' correct sources and wrong explanations are attached',page.evaluate('DokdoApp.lesson.item.sources.length>0 && DokdoApp.lesson.item.wrong.length===DokdoApp.lesson.item.choices.length'))
      check(prefix+' no mobile horizontal overflow',page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'))
      wrong=page.evaluate('(DokdoApp.lesson.answer+1)%DokdoApp.lesson.order.length');page.locator(f'.answer-option[data-index="{wrong}"]').click();page.wait_for_selector('#retry-question',state='visible')
-     before=page.evaluate('DokdoApp.lesson.index');page.evaluate('DokdoApp.next()');check(prefix+' wrong answer blocks both button and next function',page.locator('#next-question').is_hidden() and page.evaluate('DokdoApp.lesson.index')==before)
+     before=page.evaluate('DokdoApp.lesson.index');check(prefix+' wrong answer offers next with an optional retry',page.locator('#next-question').is_visible() and page.evaluate('DokdoApp.lesson.index')==before)
      check(prefix+' feedback links the actual source',page.locator('#question-citations a[href^="https://"]').count()>0)
      page.click('#retry-question');right=page.evaluate('DokdoApp.lesson.answer');page.locator(f'.answer-option[data-index="{right}"]').click();page.wait_for_selector('#next-question',state='visible')
      check(prefix+' correction is understood without bonus XP',page.evaluate('DokdoApp.state.xp===0 && DokdoApp.state.gcHit===0 && DokdoApp.state.m[DokdoApp.lesson.item.id].courseLearned===true'))

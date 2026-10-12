@@ -106,8 +106,8 @@ test('A wrong answer followed by correction permits learning without pretending 
  const s=fresh(),q=C.getQuestion(920001);M.answer(s,q,false,{now:NOW});M.answer(s,q,true,{retry:true,now:NOW});
  const r=s.m[q.id];a.equal(r.att,1);a.equal(r.cor,0);a.equal(s.xp,0);a.equal(s.gcHit,0);a.equal(s.weekly.correct,0);a.equal(r.courseLearned,true);a.equal(Core.visualLevel(r),1);
 });
-test('Unit completion rejects missing, repeated, cross-unit and unlearned questions',()=>{
- const s=fresh(),items=sample(s,8);a.throws(()=>M.finish(s,NOW,items));items.forEach(q=>M.answer(s,q,true,{now:NOW}));
+test('Unit completion rejects missing, repeated and cross-unit questions, and leaves an unlearned unit open',()=>{
+ const s=fresh(),items=sample(s,8);const unitBefore=s.learningProfile.course.unit;const open=M.finish(s,NOW,items);a.equal(open.completed,false);a.equal(s.learningProfile.course.unit,unitBefore);a.equal(C.courseEvidence(s.learningProfile,s.m).completed,0);items.forEach(q=>M.answer(s,q,true,{now:NOW}));
  a.throws(()=>M.finish(s,NOW,items.slice(0,4)));a.throws(()=>M.finish(s,NOW,[items[0],items[0],...items.slice(2)]));
  const another=C.getQuestion(920001);M.answer(s,another,true,{now:NOW});a.throws(()=>M.finish(s,NOW,[another,...items.slice(1)]));
 });
