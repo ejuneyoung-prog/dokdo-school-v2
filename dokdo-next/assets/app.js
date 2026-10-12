@@ -48,7 +48,7 @@ const en={
  footer:'Small moments of learning make Dokdo shine.',demoLink:'Separate demo',ageTitle:'Where shall we begin together?',
  ageDesc:'Your age band helps us choose explanations. We do not ask for a birth date.',
  ageRecoverLink:'Already have a nickname? Load your record here ↗',
- nickname:'Nickname (optional)',ageBand:'Age band',
+ nickname:'Nickname (optional)',nicknamePublic:'This nickname appears in the Hall of Fame. Do not use your real name or phone number.',schoolPublic:'Your school name appears in the school ranking.',ageBand:'Age band',
  selectAge:'Select your age band',easyStart:'Start with very simple language, regardless of age.',continue:'Continue',
  agePreserve:'Existing game grades and records are not reduced.',settings:'Settings',reduceMotion:'Reduce motion',
  enableBirds:'Show birds after achievements',seaDensity:'Life in the sea',calm:'Calm',rich:'Lively',full:'More lively',
