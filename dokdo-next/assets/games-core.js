@@ -57,7 +57,7 @@ function validateRunner(g){
 }
 function jump(g){if(g.over||g.phase!=='running'||g.y>0.5)return false;g.vy=640;return true;}
 function releaseJump(g){if(g.vy>300)g.vy=300;}
-function nextRound(g){if(g.over||g.phase!=='round-clear')return false;const from=roundPlan(g.round).theme;g.round++;g.roundElapsed=0;g.roundStartScore=g.score;g.roundStartStars=g.collected;g.phase='running';g.y=0;g.vy=0;g.spawn=1.5;g.objects=[];g.stars=[];g.bag=[];g.transition={from,progress:0};return true;}
+function nextRound(g){if(g.over||g.phase!=='round-clear')return false;const from=roundPlan(g.round).theme;g.round++;g.roundElapsed=0;g.roundStartScore=g.score;g.roundStartStars=g.collected;g.phase='running';g.speed=Math.min(620,Math.max(g.speed+8,roundPlan(g.round).speed));g.y=0;g.vy=0;g.spawn=1.5;g.objects=[];g.stars=[];g.bag=[];g.transition={from,progress:0};return true;}
 function spawnRunner(g,rng){
  const plan=roundPlan(g.round),limit=plan.high?5:4;
  if(!g.bag.length){g.bag=Array.from({length:limit},(_,i)=>i);for(let i=g.bag.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[g.bag[i],g.bag[j]]=[g.bag[j],g.bag[i]];}if(OBSTACLES[g.bag[0]].kind===g.lastKind&&g.bag.length>1)[g.bag[0],g.bag[1]]=[g.bag[1],g.bag[0]];}
@@ -69,7 +69,7 @@ function spawnRunner(g,rng){
  g.spawn=plan.gap+rng()*.65+(pair?.25:0);g.nextKind++;
 }
 function runnerStep(g,dt,rng=Math.random){
- if(g.over||g.phase!=='running'||!Number.isFinite(dt)||dt<=0)return[];dt=Math.min(.05,dt);const events=[],plan=roundPlan(g.round);g.elapsed+=dt;g.roundElapsed+=dt;g.speed=Math.min(620,plan.speed+g.roundElapsed*1.3);g.distance+=g.speed*dt;g.y=Math.max(0,g.y+g.vy*dt);g.vy-=1580*dt;if(g.y===0)g.vy=0;
+ if(g.over||g.phase!=='running'||!Number.isFinite(dt)||dt<=0)return[];dt=Math.min(.05,dt);const events=[],plan=roundPlan(g.round);g.elapsed+=dt;g.roundElapsed+=dt;g.speed=Math.min(620,Math.max(g.speed,plan.speed+g.roundElapsed*1.3));g.distance+=g.speed*dt;g.y=Math.max(0,g.y+g.vy*dt);g.vy-=1580*dt;if(g.y===0)g.vy=0;
  if(g.transition){g.transition.progress=Math.min(1,g.transition.progress+dt/1.2);if(g.transition.progress===1)g.transition=null;}
  g.spawn-=dt;if(g.spawn<=0&&g.roundElapsed<plan.duration-3.4)spawnRunner(g,rng);
  const dog={x:DOG_X-23,y:FLOOR-g.y-46,w:46,h:40};

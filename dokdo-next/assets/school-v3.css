@@ -16,3 +16,5 @@ body.school-v3{--bg:#f8faf5;--panel:#fff;--panel-2:#edf4eb;--ink:#203f35;--muted
 .school-v3 .legacy-banner{background:#fff4df;border-color:#dbc18e;color:#795f3c;margin:15px 0 24px}.school-v3 .legacy-banner p{color:#8b7049}
 
 .v3-question-scope{font-size:12px;line-height:1.8;color:#718368;margin:0 0 16px}
+
+@media(max-width:380px){.school-v3 .site-header{display:grid;grid-template-columns:1fr auto;gap:5px 10px}.school-v3 .brand{grid-column:1;grid-row:1}.school-v3 .v3-version{grid-column:2;grid-row:1;margin:0;justify-self:end}.school-v3 .v3-nav{grid-column:1;grid-row:2;justify-content:flex-start}.school-v3 .v3-more{grid-column:2;grid-row:2}.v3-welcome h1{font-size:25px}.v3-welcome canvas{width:75px;height:68px}.v3-next-top{font-size:9px}}
