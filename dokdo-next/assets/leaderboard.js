@@ -9,7 +9,10 @@
 window.DokdoLeaderboard=(function(){
 'use strict';
 const cfg=()=>(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.leaderboard)||{};
-const apiUrl=()=>{const u=cfg().apiUrl;return typeof u==='string'&&/^https:\/\//.test(u)?u:'';};
+// Preview/demo records must never reach the operating backend, even if a
+// portable preview accidentally includes the production configuration.
+const liveMode=()=>typeof document!=='undefined'&&typeof document.querySelector==='function'&&document.querySelector('meta[name="dokdo-mode"]')?.content==='live';
+const apiUrl=()=>{if(!liveMode())return '';const u=cfg().apiUrl;return typeof u==='string'&&/^https:\/\//.test(u)?u:'';};
 const isConfigured=()=>!!apiUrl();
 
 /* Apps Script는 잠들어 있다 깨어날 때 첫 응답이 몇 초 늦습니다. 8초는 그때

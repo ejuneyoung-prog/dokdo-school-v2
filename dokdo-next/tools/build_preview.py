@@ -24,6 +24,10 @@ def make_preview(output):
     scripts=[]
     for path in sources:
         text=(ROOT/path).read_text()
+        if path=='assets/site-config.js':
+            # A portable demonstration must carry no operating backend or
+            # analytics identifiers, independently of the runtime guards.
+            text=re.sub(r"(apiUrl|gaId):'[^']*'",lambda m:m.group(1)+":''",text)
         for asset in assets:text=text.replace('./'+asset,data(asset))
         scripts.append('<script>'+text.replace('</script','<\\/script')+'</script>')
     scripts.insert(sources.index('assets/app.js'),'<script>'+(ROOT/'assets/demo-ids.js').read_text()+'</script>')

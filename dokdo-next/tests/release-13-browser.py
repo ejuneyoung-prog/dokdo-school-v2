@@ -86,6 +86,31 @@ try:
   page.evaluate("DokdoApp.view('home')");page.click('#start-lesson');page.click('#read-done')
   check('Ordinary history lesson displays why-Dokdo background',page.evaluate('DokdoApp.lesson.item.unit===8 && !document.querySelector("#question-context").hidden && document.querySelector("#question-context").textContent.includes("1900")'))
   page.evaluate("DokdoApp.view('home')")
+  # Complete a real local lesson, then translate its result without answering or finishing again.
+  page.click('#start-lesson');page.click('#read-done')
+  expected_english_facts=page.evaluate("DokdoApp.lesson.items.map(q=>DokdoStarter.getQuestion(q.id,'en').fact).join(' ')")
+  for _ in range(5):
+   answer=page.evaluate('DokdoApp.lesson.answer')
+   page.locator('#question-options .answer-option').nth(answer).click()
+   page.wait_for_selector('#next-question:not([hidden])');page.click('#next-question')
+  page.wait_for_selector('#lesson-result',state='visible')
+  wait_until(page,'DokdoApp.lesson===null')
+  protected_record="JSON.stringify({m:DokdoApp.state.m,xp:DokdoApp.state.xp,grade:DokdoApp.state.grade,course:DokdoApp.state.learningProfile.course,weekly:DokdoApp.state.weekly,gcHit:DokdoApp.state.gcHit})"
+  before_translation=page.evaluate(protected_record)
+  if page.locator('.school-v3').count():page.click('#lesson-result .v3-result-details>summary')
+  more(page);page.click('#language');wait_until(page,'document.documentElement.lang==="en"')
+  check('Completed result translates its heading and action without another lesson',page.locator('#lesson-result h2').inner_text()=='Dokdo shines a little brighter today' and page.locator('#lesson-result .button.primary').inner_text()=='Back to my Dokdo' and page.evaluate('DokdoApp.lesson===null'))
+  check('Completed result translates its original five knowledge facts',page.locator('#lesson-result .lesson-takeaway p').inner_text()==expected_english_facts)
+  check('Translating a result preserves question records, XP, grades, course and weekly totals',page.evaluate(protected_record)==before_translation)
+  if page.locator('.school-v3').count():
+   check('Result translation recreates exactly one island, open details and playground action',page.locator('#lesson-result .v3-result-island').count()==1 and page.locator('#lesson-result .v3-result-details[open]').count()==1 and page.locator('#lesson-result .v3-result-play').count()==1)
+  more(page);page.click('#language');wait_until(page,'document.documentElement.lang==="ko"')
+  more(page);page.click('[data-view="grade"]')
+  more(page);page.click('#language');wait_until(page,'document.documentElement.lang==="en"')
+  check('Grade view translates its dynamic ladder and progress in place',page.locator('#grade-ladder .grade-row-name').first.inner_text()=='Kindergarten' and 'Correct' in page.locator('#grade-view-stats').inner_text())
+  check('Grade translation preserves learning achievements',page.evaluate(protected_record)==before_translation)
+  more(page);page.click('#language');wait_until(page,'document.documentElement.lang==="ko"')
+  page.evaluate("DokdoApp.view('home')")
   # Synthetic heavy record only. No user data or production services are involved.
   page.evaluate("()=>{const s=DokdoApp.seedDemo();for(const key of Object.keys(s.m).slice(500))delete s.m[key];delete s.visual.journey;DokdoAppModel.ensure(s);DokdoApp.store.state=s;DokdoApp.store.save();DokdoApp.view('home');}")
   explore(page)
@@ -130,6 +155,13 @@ try:
   more(page);page.click('#language');page.evaluate("DokdoApp.view('home')");explore(page);page.select_option('#time-mode','night')
   check('English environment interface uses English labels','circuit' in page.locator('#route-title').inner_text())
   check('English start lesson has translated context',page.evaluate("()=>{const q=DokdoStarter.getQuestion(920141,'en');return q.context.includes('1900')&&q.context.includes('Dokdo');}"))
+  # Cached hall fixture: language switching must not request the backend again.
+  page.evaluate("""()=>{window.__hallOriginal={...DokdoLeaderboard};window.__hallFetches=0;Object.assign(DokdoLeaderboard,{isConfigured:()=>true,fetchWeekly:async()=>{window.__hallFetches++;return {state:'ok',data:{today:3,people:2,people_week:2,week:[],schools:{},recent:[]}};},fetchTops:async()=>({state:'ok',tops:[]}),saveProgress:async()=>({state:'not_configured'})});DokdoApp.view('hall');}""")
+  page.wait_for_selector('#hall-content',state='visible')
+  check('Cached hall fixture is rendered once',page.evaluate('window.__hallFetches===1') and 'Participants today' in page.locator('#hall-summary').inner_text())
+  more(page);page.click('#language');wait_until(page,'document.documentElement.lang==="ko"')
+  check('Hall translation updates dynamic labels without a backend request',page.evaluate('window.__hallFetches===1') and '오늘 참여자' in page.locator('#hall-summary').inner_text() and '초등' in page.locator('#hall-school-tabs').inner_text())
+  page.evaluate('Object.assign(DokdoLeaderboard,window.__hallOriginal)')
   # Third-party asset hosts the site embeds by design are excluded above
   # (fonts from jsdelivr, video posters from ytimg). What this still
   # catches is the app's own backend, the weather provider, analytics and
