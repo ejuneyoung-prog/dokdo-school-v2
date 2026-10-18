@@ -1,0 +1,22 @@
+# V3 공유 카드와 버전 접속 안내 — 2026-10-19
+
+## 문제와 변경
+
+V3 화면 출시 때 HTML의 OG 제목·설명·대표 이미지는 V2 내용으로 남아 있었습니다. 카카오 공유 단추도 이 태그를 읽으므로 화면만 바꿔서는 새 카드가 되지 않았습니다. 도메인 루트에는 OG 태그가 아예 없었습니다.
+
+메인·도메인 루트·놀이터에 새 V3 제목/설명과 새 파일명의 대표 이미지를 연결했습니다. 공유 주소와 QR, canonical 메인 주소는 유지합니다. 이미지의 문구는 “독도 코리아 스쿨 / 배우고, 놀고, 나의 독도를 키워요.”이며 상상 일러스트입니다. 생성 방식은 내장 image_gen, 최종 프롬프트는 이관팩에 보존합니다. 파일은 assets/share/dokdo-school-v3-20261019.png, PNG 1731×909입니다.
+
+카카오 캐시는 별도입니다. 배포 후 https://developers.kakao.com/tool/debugger/sharing 에서 메인 주소와 루트·놀이터 URL을 조회해 캐시 초기화 후 새 메타정보를 확인합니다. 이미 보낸 채팅 메시지가 자동 수정된다고 약속하지 않습니다. 공식 설명: https://developers.kakao.com/docs/ko/tool/common
+
+## 버전 구분
+
+- V1: https://dokdo-school.vercel.app/ — 원래 앱을 수정하지 않았습니다.
+- V2: https://dokdo-school-v2-ssayz9tcz-dokdo-korea.vercel.app/dokdo-next/ — V3 전 커밋 39ffe7b945b1648677ddd5bb0f0b98e08c53a206 의 기존 Production 배포. GitHub deployment 7155736292의 성공 상태와 브라우저 실제 V2 화면을 확인했습니다. 최신 배포가 갱신되는 공유 별칭 대신 이 시점 배포 URL을 사용합니다. Vercel 배포가 삭제될 경우에는 SSD/Drive 원본으로 복원해야 합니다.
+- V3: https://dokdo-school-v2.vercel.app/dokdo-next/ — 기존 V2 공유 주소·QR이 현재 V3를 엽니다.
+
+백업 구분과 접속 주소 구분은 다릅니다. 메인 더보기 → V1 · V2 · V3 버전 안내(versions.html)에서 세 주소와 기록의 범위를 설명합니다. 새 안내 페이지는 스크립트나 저장소 접근, GA, 백엔드 호출이 없습니다. 본인의 브라우저·origin별 기록은 자동 합쳐지지 않습니다. 기존 V2 origin에서 V3로 이어지는 저장 키와 학습·게임·점수 로직은 이 변경에서 수정하지 않습니다.
+
+## 반영 전 태그·되돌리기
+
+반영 전 태그: before-social-versions-20261019 (edd84d2198ee2896ed98fadcf5224bf2231e6e0c).
+이번 PR 병합 커밋을 git revert -m 1 로 되돌린 뒤 필수 검사와 재검수를 거쳐 main에 반영합니다. 개인정보·운영 데이터·기록지·Apps Script를 수정하지 않으므로 데이터 되돌리기는 필요하지 않습니다. 카카오 캐시는 배포된 HTML에 맞춰 다시 초기화합니다.

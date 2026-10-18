@@ -44,3 +44,5 @@ body.school-v3{--bg:#f8faf5;--panel:#fff;--panel-2:#edf4eb;--ink:#203f35;--muted
 .profile-only .v3-optional-profile>summary{display:none}
 
 .v3-language-entry{display:block;margin:14px auto 0;min-height:38px;padding:7px 16px;color:#315d42;background:#edf4e7;border:1px solid #c9d9bd;border-radius:8px;font-size:12px;font-weight:600}
+
+.v3-versions-link{display:block;padding:12px 10px;margin-top:9px;border-top:1px solid #e0e7da;color:#395f3e;text-underline-offset:3px;font-size:12px;min-height:44px}
