@@ -11,9 +11,10 @@ let learningEntered=areaParams.get('area')==='learn'||areaParams.get('play')==='
 const originalHome=$('brand-home').onclick,originalMap=$('nav-map').onclick;
 function syncArea(){
  document.body.classList.toggle('v3-choosing',!learningEntered);
- const nav=$('v3-learn-nav'),active=learningEntered&&!$('view-home').hidden;
+ const info=document.body.classList.contains('v3-exploring'),channel=!$('view-channel').hidden;
+ const nav=$('v3-learn-nav'),active=learningEntered&&!$('view-home').hidden&&!info;
  nav.classList.toggle('active',active);if(active)nav.setAttribute('aria-current','page');else nav.removeAttribute('aria-current');
- document.title=learningEntered?copy('독도 배움터 · 독도 코리아 스쿨 V3','Dokdo Learning · Dokdo Korea School V3'):copy('독도 코리아 스쿨 V3 · 배움터와 놀이터','Dokdo Korea School V3 · Learn and Play');
+ document.title=channel?copy('독도 코리아 채널 · 독도 코리아 스쿨','Dokdo Korea Channel · Dokdo Korea School'):info?copy('독도 알아보기 · 독도 코리아 스쿨','Discover Dokdo · Dokdo Korea School'):learningEntered?copy('독도 배움터 · 독도 코리아 스쿨 V3','Dokdo Learning · Dokdo Korea School V3'):copy('독도 코리아 스쿨 V3 · 배움터와 놀이터','Dokdo Korea School V3 · Learn and Play');
 }
 function enterLearning(){
  const previous=learningEntered;learningEntered=true;
@@ -39,6 +40,10 @@ function gameRecord(){try{const live=App.mode==='live',raw=live?localStorage.get
 function garden(canvas,s,game){if(!canvas||!game)return;A.island(canvas,game);const lights=window.DokdoAppModel.summary(s).lights||0;if(lights){const c=canvas.getContext('2d');for(let i=0;i<Math.min(60,lights);i++){const x=(.3+(i%12)*.036)*canvas.width,y=(.58+Math.sin(i*.8)*.065+Math.floor(i/12)*.018)*canvas.height;c.beginPath();c.arc(x,y,2.6,0,Math.PI*2);c.fillStyle='#fff7b4';c.fill();}}}
 function refresh(){
  syncArea();
+ label('v3-live-entry-label','실시간 독도 보러 가기 ↗','Watch Dokdo live ↗');label('v3-channel-live-label','실시간 독도 보러 가기 ↗','Watch Dokdo live ↗');label('v3-info-live','실시간 독도 보러 가기 ↗','Watch Dokdo live ↗');
+ label('v3-info-menu-title','독도 알아보기','Discover Dokdo');label('v3-info-menu-copy','위치·역사·생명·오늘의 날씨','Place, history, wildlife & weather');label('v3-channel-menu-title','독도 코리아 채널','Dokdo Korea Channel');label('v3-channel-menu-copy','최근 영상·라이브·음악과 이야기','Recent videos, live & music');
+ label('v3-info-title','독도 알아보기','Discover Dokdo');label('v3-info-copy','독도의 위치와 모습, 살아가는 생명과 오늘의 날씨를 만나요.','Explore Dokdo’s location, landscape, wildlife and today’s weather.');label('v3-weather-link','오늘의 날씨','Today’s weather');label('v3-question-link','240문항과 출처','240 questions & sources');label('v3-info-sources','그림·자료 출처','Artwork & sources');
+ label('v3-channel-title','독도 코리아 채널','Dokdo Korea Channel');label('v3-channel-copy','음악과 영상으로 독도의 이야기를 전합니다.','Sharing Dokdo’s story through music and video.');label('v3-channel-home','← 메인으로','← Back to the main menu');label('v3-latest-title','최근 공개 영상','Recent public videos');label('youtube-channel-link','채널에서 전체 영상 보기 ↗','All videos on YouTube ↗');label('channel-feed-retry','다시 불러오기','Try again');label('v3-channel-feed-note','공식 공개 영상 목록은 최대 15분간 보관됩니다. 눌러서 YouTube에서 보며, 자동으로 재생하지 않습니다.','The official public feed is cached for up to 15 minutes. Open a video on YouTube to watch; nothing plays automatically.');
  label('v3-entry-title','어디로 가볼까요?','Where shall we go?');label('v3-entry-description','배우고, 놀며 독도와 가까워져요.','Learn, play, and get closer to Dokdo.');
  label('v3-choice-learn-title','독도 배움터','Dokdo Learning');label('v3-choice-learn-description','문제를 풀며 독도를 알아가요.','Discover Dokdo, one question at a time.');label('v3-choice-learn-action','배움터 들어가기 →','Start learning →');
  label('v3-choice-play-title','독도 놀이터','Dokdo Playground');label('v3-choice-play-description','게임하며 나의 섬을 가꿔요.','Play games and grow your own island.');label('v3-choice-play-action','놀이터 들어가기 →','Start playing →');
@@ -62,6 +67,26 @@ function refresh(){
  for(let i=0;i<3;i++){const id=(n-1+i)%12+1,u=C.unitInfo(id),done=!!p?.course?.completed[p.course.track+':'+id],row=document.createElement('div');row.className='v3-stop'+(i===0?' current':'')+(done?' done':'');const icon=document.createElement('span');icon.className='v3-stop-icon';icon.textContent=done?'✓':i===0?'★':String(id).padStart(2,'0');icon.setAttribute('aria-hidden','true');const text=document.createElement('div'),small=document.createElement('small'),name=document.createElement('b');small.textContent=copy(i===0?'지금 만날 이야기':'다음 이야기',i===0?'YOUR NEXT STEP':'UP NEXT');name.textContent=en?u.en:u.ko;text.append(small,name);row.append(icon,text);if(i===0){row.setAttribute('aria-current','step');const tag=document.createElement('span');tag.className='v3-now';tag.textContent=copy('여기부터','START HERE');row.append(tag);}list.append(row);}
  const mascot=$('v3-mascot');if(mascot){const c=mascot.getContext('2d');c.clearRect(0,0,mascot.width,mascot.height);A.sprite(c,'dog',97,132,1.9,.3);}
  if($('lesson-result')&&!$('lesson-result').hidden)decorateResult();
+ if(!$('view-channel').hidden){renderChannel();loadChannel();}
+}
+const channelFeed={status:'idle',data:null,loading:false,expires:0};
+function renderChannel(){
+ const status=$('channel-feed-status'),time=$('channel-feed-time'),list=$('channel-latest-list');list.replaceChildren();time.hidden=true;
+ $('channel-feed-retry').hidden=channelFeed.status!=='error';
+ if(App.mode!=='live'){status.textContent=copy('미리보기에서는 최근 영상을 불러오지 않습니다. 공식 채널에서 확인해 주세요.','This preview does not fetch recent videos. Open the official channel to see them.');return;}
+ if(channelFeed.status==='error'){status.textContent=copy('최근 영상을 불러오지 못했어요. 잠시 후 다시 시도하거나 채널에서 확인해 주세요.','Recent videos could not be loaded. Try again later or open the channel.');return;}
+ if(channelFeed.status!=='ready'){status.textContent=copy('공식 YouTube 채널의 최근 영상을 불러오고 있어요.','Loading recent videos from the official YouTube channel.');return;}
+ status.textContent=copy('YouTube 공식 공개 목록 · 공개일이 최근인 순서','Official YouTube public feed · newest publication first');
+ const locale=document.documentElement.lang==='en'?'en-US':'ko-KR';
+ time.textContent=copy('목록 확인: ','Feed checked: ')+new Date(channelFeed.data.checkedAt).toLocaleString(locale,{timeZone:'Asia/Seoul'})+copy(' (한국 시간)',' (Korea time)');time.hidden=false;
+ for(const item of channelFeed.data.items){const a=document.createElement('a');a.className='v3-video';a.href='https://www.youtube.com/watch?v='+item.id;a.target='_blank';a.rel='noopener noreferrer';const img=document.createElement('img');img.src='https://i.ytimg.com/vi/'+item.id+'/hqdefault.jpg';img.alt='';img.loading='lazy';img.width=480;img.height=360;const name=document.createElement('strong');name.textContent=item.title;const date=document.createElement('small');date.textContent=copy('공개일 ','Published ')+new Date(item.published).toLocaleDateString(locale,{year:'numeric',month:'short',day:'numeric',timeZone:'Asia/Seoul'});a.append(img,name,date);list.append(a);}
+}
+async function loadChannel(force=false){
+ if(App.mode!=='live'||channelFeed.loading||!force&&(channelFeed.status==='error'||channelFeed.status==='ready'&&Date.now()<channelFeed.expires))return;
+ channelFeed.loading=true;channelFeed.status='loading';renderChannel();const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),10000);
+ try{const response=await fetch('/api/channel',{credentials:'omit',signal:ctrl.signal});if(!response.ok)throw Error('Channel feed unavailable.');const data=await response.json();if(data.state!=='ok'||data.channelId!=='UCVfBrS1H2crOZHjf2I1mv0A'||!Number.isFinite(Date.parse(data.checkedAt))||!Array.isArray(data.items)||!data.items.length||data.items.length>6||data.items.some(item=>!item||!/^[A-Za-z0-9_-]{11}$/.test(item.id)||typeof item.title!=='string'||!item.title.trim()||item.title.length>300||!Number.isFinite(Date.parse(item.published))))throw Error('Invalid channel feed.');channelFeed.data=data;channelFeed.expires=Date.parse(data.checkedAt)+15*60000;channelFeed.status='ready';}
+ catch(e){channelFeed.data=null;channelFeed.status='error';}
+ finally{clearTimeout(timer);channelFeed.loading=false;renderChannel();}
 }
 function decorateResult(){
  const box=$('lesson-result');if(box.querySelector('.v3-result-island'))return;
@@ -75,9 +100,10 @@ $('v3-review-slot').append($('start-review'));
 $('v3-island-slot').append($('play-entry-island'));
 $('v3-enter-learn').onclick=enterLearning;$('v3-learn-nav').onclick=enterLearning;
 $('brand-home').onclick=enterMain;$('v3-main-home').onclick=enterMain;
+$('v3-channel-home').onclick=enterMain;$('channel-feed-retry').onclick=()=>loadChannel(true);$('v3-info-sources').onclick=()=>$('open-sources').click();
 $('nav-map').onclick=()=>{const previous=learningEntered;learningEntered=true;const moved=originalMap();if(moved===false)learningEntered=previous;syncArea();};
 $('v3-all-units').onclick=()=>App.view('learn');
-$('v3-explore').onclick=()=>{if(!enterLearning())return;document.body.classList.add('v3-exploring');$('stage-grid').scrollIntoView({block:'start'});};
+$('v3-explore').onclick=()=>{if(!enterLearning())return;document.body.classList.add('v3-exploring');refresh();$('v3-info-title').scrollIntoView({block:'start'});};
 $('v3-back-learning').onclick=()=>{document.body.classList.remove('v3-exploring');App.view('home');};
 const legacy=$('legacy-banner');if(legacy)$('view-home').prepend(legacy);
 // Optional public profile fields are disclosed together, with their existing visibility notices intact.
