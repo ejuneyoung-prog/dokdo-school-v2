@@ -3,6 +3,7 @@
 'use strict';
 const KEY='dokdo-ui-language-v1';
 const dictionary={
+ "닉네임·국가·학교": "Nickname, country & school",
  "본문으로 바로가기": "Skip to content",
  "독도 놀이터 메뉴": "Dokdo Playground menu",
  "독도 놀이터": "Dokdo Playground",

@@ -127,7 +127,7 @@ const isolated=mode!=='live';
 let storage;
 try{storage=isolated?new M.MemoryStorage():window.localStorage;}catch(e){storage={getItem(){throw e;},setItem(){throw e;}};}
 const store=new M.Store(storage);
-let state=store.load(),language=(!isolated&&window.DokdoLanguage?.saved())||state?.visual?.language||'ko',currentView='home',mapOpen=false,lesson=null,ageNext=null,lastResult=null;
+let state=store.load(),language=(!isolated&&window.DokdoLanguage?.saved())||state?.visual?.language||'ko',currentView='home',mapOpen=false,lesson=null,ageNext=null,ageSetupRevision=0,profileEditing=false,lastResult=null;
 if(!isolated&&window.DokdoLanguage&&window.DokdoLanguage.saved()===null)window.DokdoLanguage.set(language);
 let lastLessonFirst=null;try{lastLessonFirst=isolated?null:Number(sessionStorage.getItem('dokdo-v3-last-first'))||null;}catch(e){}
 let busy=false,sceneTime=state?.scene?.timeSec||0,frameLast=0,drawAt=0,saveAt=0,sceneVisible=true,lightDirty=true,lightLayer=null,dirty=false,homeVideoIds=null;
@@ -470,9 +470,14 @@ function toggleMap(on){
  if($('scene-bottom'))$('scene-bottom').hidden=!on;
  txt('save-image',on?tr('지도 저장','Save map'):tr('이미지 저장','Save image'));
 }
-function setupAge(callback,force=false){
- if(!guarded())return;
+function setupAge(callback,force=false,profileOnly=false){
+ if(!guarded())return;ageSetupRevision++;
  if(C.valid(getS().learningProfile)&&!force){callback();return;}
+ const optional=$('age-form').querySelector('.v3-optional-profile');if(profileOnly&&optional)optional.open=true;
+ profileEditing=profileOnly;$('age-dialog').classList.toggle('profile-only',profileOnly);$('age-band').required=!profileOnly;$('age-band').closest('label').hidden=profileOnly;$('age-easy').closest('label').hidden=profileOnly;$('age-recover-link').hidden=profileOnly;
+ $('age-form').querySelector('h2').textContent=profileOnly?tr('닉네임·국가·학교','Nickname, country, and school'):tr('어디서부터 함께 배울까요?','Where shall we start learning?');
+ $('age-form').querySelector('[data-i18n="ageDesc"]').textContent=profileOnly?tr('모두 선택 사항입니다. 아래 공개 안내를 확인하고 편하게 정해 주세요.','All fields are optional. Check the visibility notes below before saving.'):tr('나이대는 설명을 고르는 참고값이에요. 생년월일은 받지 않아요.','Your age band helps us choose an explanation. We do not collect your date of birth.');
+ $('age-form').querySelector('[type="submit"]').textContent=profileOnly?tr('저장하기','Save'):tr('계속하기','Continue');
  ageNext=callback;$('age-band').replaceChildren();const empty=document.createElement('option');empty.value='';empty.textContent=tr('나이대를 골라 주세요','Select your age band');$('age-band').append(empty);
  C.BANDS.forEach(b=>{const o=document.createElement('option');o.value=b.id;o.textContent=b[language];$('age-band').append(o);});
  $('age-band').value=getS().learningProfile?.ageBand||'';$('age-easy').checked=!!getS().learningProfile?.easy;
@@ -482,7 +487,7 @@ function setupAge(callback,force=false){
  if(knownFlags.includes(curFlag)){$('flag-select').value=curFlag;$('flag-other-row').hidden=true;$('flag-other').value='';}
  else{$('flag-select').value='OTHER';$('flag-other-row').hidden=false;$('flag-other').value=curFlag;}
  $('school-cat').value=getS().schoolCat||'';$('school-name').value=getS().school||'';
- txt('age-error','');showDialog('age-dialog');$('age-band').focus();
+ txt('age-error','');showDialog('age-dialog');$(profileOnly?'nickname':'age-band').focus();
 }
 wire('flag-select','onchange',()=>{$('flag-other-row').hidden=$('flag-select').value!=='OTHER';});
 /* School name suggestions. Names come from real data only -- the operator's
@@ -565,8 +570,8 @@ listen('school-name','keydown',event=>{
  else if(event.key==='Escape')closeSchoolSuggest();
 });
 $('age-form').addEventListener('submit',async event=>{
- event.preventDefault();if(busy)return;
- if(!C.band($('age-band').value)){txt('age-error',tr('나이대를 먼저 골라 주세요.','Please select an age band.'));return;}
+ event.preventDefault();if(busy)return;const editOnly=profileEditing,entryToken=ageSetupRevision,afterSave=ageNext;
+ if(!editOnly&&!C.band($('age-band').value)){txt('age-error',tr('나이대를 먼저 골라 주세요.','Please select an age band.'));return;}
  busy=true;
  try{
   const band=$('age-band').value,easy=$('age-easy').checked,nick=$('nickname').value.trim().normalize('NFC');
@@ -574,11 +579,12 @@ $('age-form').addEventListener('submit',async event=>{
   const flag=/^[A-Z]{2}$/.test(flagRaw)?flagRaw:'KR';
   const schoolCat=$('school-cat').value,schoolName=$('school-name').value.trim().slice(0,60);
   await mutate(s=>{
-   M.selectProfile(s,band,easy);if(!s.name||s.name.length<=40)s.name=nick;
+   if(!editOnly)M.selectProfile(s,band,easy);if(!s.name||s.name.length<=40)s.name=nick;
    s.flag=flag;s.schoolCat=schoolCat;s.school=schoolName;
    if(!s.recoveryCode)s.recoveryCode=String(Math.floor(1000+Math.random()*9000));
   });
-  closeDialog('age-dialog');const next=ageNext;ageNext=null;renderHome();if(next)next();
+  if(entryToken!==ageSetupRevision||!$('age-dialog').open)return;
+  closeDialog('age-dialog');ageNext=null;renderHome();if(afterSave)afterSave();
  }catch(e){txt('age-error',tr('설정을 저장하지 못했습니다. 내 기록에서 먼저 백업해 주세요.','Settings could not be saved. Back up your record first.'));}
  finally{busy=false;}
 });
@@ -1552,7 +1558,7 @@ if(!getS())view('records',true);
 else if(new URLSearchParams(location.search).get('play')==='learn')view('learn');
 document.body.classList.toggle('motion-reduced',reduced());
 window.DokdoApp={
- version:M.VERSION,mode,get state(){return getS();},store,start,choose,next,view,mutate,paint,saveImage,
+ version:M.VERSION,mode,editProfile:()=>setupAge(renderHome,true,true),get state(){return getS();},store,start,choose,next,view,mutate,paint,saveImage,
  tick:(ms,active=true)=>{M.tick(getS(),ms,active);paint();renderVisitors();},
  get lesson(){return lesson;},get sceneTime(){return sceneTime;},get assetsReady(){return assetsReady;},
  get audio(){return audio;},stopSound,seedDemo,weatherClient,get timeMode(){return timeMode;}
