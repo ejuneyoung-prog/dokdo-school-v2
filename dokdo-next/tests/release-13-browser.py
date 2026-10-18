@@ -20,7 +20,7 @@ def explore(page):
  if page.locator('#v3-explore').count():
   more(page);page.click('#v3-explore')
 def selector_checks(page):
- check('Main starts with only the two area choices',page.locator('#v3-entry').is_visible() and page.locator('#v3-entry button,#v3-entry a').count()==2 and page.locator('#start-lesson').is_hidden())
+ check('Main starts with only the two area choices',page.locator('#v3-entry').is_visible() and page.locator('#v3-entry .v3-choice-grid button,#v3-entry .v3-choice-grid a').count()==2 and page.locator('#start-lesson').is_hidden())
  check('The two choices identify learning and playground separately','독도배움터' in re.sub(r'\s+','',page.locator('#v3-enter-learn').inner_text()) and '독도놀이터' in re.sub(r'\s+','',page.locator('#v3-enter-play').inner_text()))
  protected=page.evaluate('JSON.stringify(DokdoApp.state)')
  page.locator('#v3-enter-learn').focus();page.locator('#v3-enter-learn').press('Space')
@@ -81,7 +81,39 @@ def preview_selector_checks(browser):
  check('Portable preview opens the same simple selector',preview.locator('#v3-entry').is_visible() and preview.locator('#start-lesson').is_hidden())
  check('Portable playground choice points to the absolute operating URL in a new tab',preview.locator('#v3-enter-play').get_attribute('href')=='https://dokdo-school-v2.vercel.app/dokdo-next/games.html' and preview.locator('#v3-enter-play').get_attribute('target')=='_blank' and 'noopener' in (preview.locator('#v3-enter-play').get_attribute('rel') or ''))
  enter_learning(preview);check('Portable preview can enter learning without real student storage',preview.locator('#start-lesson').is_visible() and preview.evaluate('DokdoApp.mode==="preview" && Object.keys(DokdoApp.state.m).length===0'))
+ preview_requests=[];preview.on('request',lambda r:preview_requests.append(r.url) if '/api/channel' in r.url else None)
+ more(preview);preview.click('#v3-open-channel')
+ check('Portable preview does not request live channel data or fabricate a recent list',not preview_requests and preview.locator('.v3-video').count()==0 and '미리보기' in preview.locator('#channel-feed-status').inner_text())
  preview_ctx.close()
+
+def info_channel_checks(page):
+ page.click('#brand-home')
+ check('Main exposes the fixed live-channel link without opening More',page.locator('#v3-live-entry').is_visible() and page.locator('#v3-live-entry').get_attribute('href')=='https://www.youtube.com/@독도코리아/live' and page.locator('#v3-live-entry').get_attribute('target')=='_blank')
+ more(page)
+ check('More has two clear content destinations and keeps record/account tools',page.locator('.v3-more-destinations>button').count()==2 and all(page.locator(selector).is_visible() for selector in ['#v3-explore','#v3-open-channel','#language','#open-settings','.v3-utility [data-view="records"]','#account-link']))
+ page.click('#v3-explore')
+ check('Discover Dokdo groups weather, geography, wildlife and original sources',page.locator('#v3-info-title').is_visible() and page.locator('#dokdo-weather').is_visible() and page.locator('.v3-info-links [data-view="journal"]').is_visible() and page.locator('#v3-question-link').is_visible())
+ check('Channel promotion is separated from the information landscape',page.locator('#view-channel #youtube-card').count()==1 and page.locator('#view-channel #offer-block').count()==1 and page.locator('.v3-legacy-home #youtube-card').count()==0)
+ page.click('#nav-map');check('Information entry preserves the existing sourced map and facilities',page.locator('#map-card').is_visible() and page.locator('.facility-details').is_visible())
+ if a.mode=='http':
+  calls=[];checked=page.evaluate('new Date().toISOString()')
+  fixture={'state':'ok','channelId':'UCVfBrS1H2crOZHjf2I1mv0A','checkedAt':checked,'items':[{'id':'rjjeZE_tPso','title':'가상 피드 검사 영상','published':'2026-10-18T12:50:58.000Z'}]}
+  def feed_route(route):
+   calls.append(route.request.url)
+   route.fulfill(status=503 if len(calls)==1 else 200,content_type='application/json',body=json.dumps({'state':'unavailable'} if len(calls)==1 else fixture))
+  page.route('**/api/channel',feed_route)
+  protected="JSON.stringify({m:DokdoApp.state.m,xp:DokdoApp.state.xp,course:DokdoApp.state.learningProfile,weekly:DokdoApp.state.weekly,gcHit:DokdoApp.state.gcHit})"
+  before=page.evaluate(protected)
+  more(page);page.click('#v3-open-channel');page.wait_for_selector('#channel-feed-retry',state='visible')
+  check('A failed official feed honestly shows a retry, with no random old videos',page.locator('.v3-video').count()==0 and '불러오지 못' in page.locator('#channel-feed-status').inner_text() and len(calls)==1)
+  page.click('#channel-feed-retry');page.wait_for_selector('.v3-video')
+  check('A successful local feed fixture shows its own title, publication date and official watch link',len(calls)==2 and page.locator('.v3-video strong').inner_text()=='가상 피드 검사 영상' and page.locator('.v3-video small').inner_text().startswith('공개일') and page.locator('.v3-video').get_attribute('href')=='https://www.youtube.com/watch?v=rjjeZE_tPso')
+  more(page);page.click('#language');wait_until(page,'document.documentElement.lang==="en"')
+  check('Channel interface translates without requesting the feed again',len(calls)==2 and page.locator('#v3-channel-title').inner_text()=='Dokdo Korea Channel' and page.locator('.v3-video small').inner_text().startswith('Published'))
+  check('Discovering and watching listings does not change learning achievements',page.evaluate(protected)==before)
+  more(page);page.click('#language');wait_until(page,'document.documentElement.lang==="ko"')
+  page.unroute('**/api/channel',feed_route)
+ page.click('#brand-home');enter_learning(page)
 
 def unconfigured(src=None):
  """site-config.js with no backend or analytics id, so nothing is called out to.
@@ -138,6 +170,7 @@ try:
   selector_checks(page)
   learning_link_checks(ctx)
   preview_selector_checks(browser)
+  info_channel_checks(page)
   check('Existing record model 1.3 remains compatible',page.evaluate('DokdoApp.version')=='1.3.0')
   check('Fresh profile has no flags, credits, or visitors',page.evaluate('DokdoJourney.progress(DokdoApp.state).total===0 && DokdoApp.state.gangchiVisits.length===0 && DokdoApp.state.gcHit===0'))
   check('Weather terms are not silently accepted',page.evaluate('!DokdoApp.weatherClient.enabled'))

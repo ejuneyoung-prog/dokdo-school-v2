@@ -136,7 +136,7 @@ try:
             check(prefix+' no horizontal document overflow',page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'))
             check(prefix+' real labels and controls not baked into background',page.locator('#start-lesson').is_visible() and (page.locator('#play-entry-island').is_visible() if page.locator('.school-v3').count() else page.locator('#sound').is_visible()))
             check(prefix+' invite without credits is disabled',page.locator('#invite').is_disabled())
-            more(page);page.click('#nav-map')
+            explore(page);page.click('#nav-map')
             check(prefix+' map information appears',page.locator('#map-card').is_visible() and page.locator('#today-card').is_hidden())
             check(prefix+' sourced outline comparison, no fake measured contours',page.locator('#outline-compare svg').count()==2 and page.locator('#map-card').inner_text().find('20m')==-1)
             page.click('[data-island=east]')
@@ -197,11 +197,11 @@ try:
             page.click('[data-close=settings-dialog]')
             # The credits button now lives with the map plate, so the map has
             # to be open before it can be reached.
-            more(page);page.click('#nav-map');page.wait_for_selector('#open-sources',state='visible')
+            explore(page);page.click('#nav-map');page.wait_for_selector('#open-sources',state='visible')
             page.click('#open-sources')
             check(prefix+' art/source limitations are visible',page.locator('#sources-dialog').is_visible())
             page.click('[data-close=sources-dialog]')
-            more(page);page.click('#nav-map');page.wait_for_selector('#open-sources',state='hidden')
+            page.click('#nav-map');page.wait_for_selector('#open-sources',state='hidden')
             if lang=='ko' and width==390:page.screenshot(path=str(OUT/'mobile-learning-progress.png'),full_page=True)
             check(prefix+' translated main page after completion',page.evaluate('document.documentElement.lang')==lang)
         except Exception as e:check(prefix+' flow completed',False,str(e))

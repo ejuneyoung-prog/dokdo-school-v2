@@ -405,6 +405,8 @@ function pickRandomDistinct(arr,n){
  return out;
 }
 function renderYoutubeCard(){
+ // V3 displays only the official channel feed in its dedicated channel view.
+ if(document.body.classList.contains('school-v3'))return;
  const yt=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.youtube)||{};
  const ids=Array.isArray(yt.videoIds)?yt.videoIds:[];
  if(!$('youtube-card'))return;
