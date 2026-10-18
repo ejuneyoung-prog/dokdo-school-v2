@@ -57,7 +57,7 @@ function refresh(){
  label('v3-snapshot-note','불빛과 친구는 배움을 기념하는 상상 풍경이에요.','Lights and friends are an imagined celebration of learning.');
  label('v3-review-title','배운 이야기, 기억나나요?','Remember this story?');label('v3-review-copy','전에 만난 문제로 가볍게 떠올려요.','Recall what you learned before.');
  label('v3-play-title','이제, 독도에서 놀까요?','Time to play on Dokdo?');label('v3-play-copy','삽살개와 달리고, 바다를 깨끗하게.','Run with Sapsal, or clean the sea.');label('v3-play-link','독도 놀이터 가기 →','Visit Dokdo Playground →');
- label('v3-home-note','기록은 이 브라우저에 저장돼요.','Your record is saved in this browser.');label('v3-more-label','더보기','More');label('v3-optional-label','별명·학교 추가하기 (선택)','Add nickname / school (optional)');
+ label('v3-home-note','기록은 이 브라우저에 저장돼요.','Your record is saved in this browser.');label('v3-more-label','더보기','More');label('v3-optional-label','닉네임·국가·학교 (선택)','Nickname, country & school (optional)');label('v3-profile-entry','닉네임·국가·학교 설정','Nickname, country & school');label('v3-profile-menu','닉네임·국가·학교','Nickname, country & school');
  label('v3-source-label','자료 출처 보기','Sources');label('v3-feedback-label','조금 더 알아보기','A little more detail');
  const count=p?C.courseEvidence(p,s.m).completed:0;label('v3-path-count',count+' / 12 이야기',count+' / 12 stories');
  label('v3-lights',summary.lights+'개의 불빛',summary.lights+' lights');
@@ -98,7 +98,7 @@ function decorateResult(){
 const start=$('start-lesson');start.replaceChildren();const startLabel=document.createElement('span');startLabel.id='v3-start-label';start.append(startLabel);$('v3-start-slot').append(start);
 $('v3-review-slot').append($('start-review'));
 $('v3-island-slot').append($('play-entry-island'));
-$('v3-enter-learn').onclick=enterLearning;$('v3-learn-nav').onclick=enterLearning;
+$('v3-profile-entry').onclick=()=>App.editProfile();$('v3-profile-menu').onclick=()=>{$('v3-more').open=false;App.editProfile();};$('v3-enter-learn').onclick=enterLearning;$('v3-learn-nav').onclick=enterLearning;
 $('brand-home').onclick=enterMain;$('v3-main-home').onclick=enterMain;
 $('v3-channel-home').onclick=enterMain;$('channel-feed-retry').onclick=()=>loadChannel(true);$('v3-info-sources').onclick=()=>$('open-sources').click();
 $('nav-map').onclick=()=>{const previous=learningEntered;learningEntered=true;const moved=originalMap();if(moved===false)learningEntered=previous;syncArea();};
@@ -107,7 +107,7 @@ $('v3-explore').onclick=()=>{if(!enterLearning())return;document.body.classList.
 $('v3-back-learning').onclick=()=>{document.body.classList.remove('v3-exploring');App.view('home');};
 const legacy=$('legacy-banner');if(legacy)$('view-home').prepend(legacy);
 // Optional public profile fields are disclosed together, with their existing visibility notices intact.
-const form=$('age-form'),optional=document.createElement('details'),optionalTitle=document.createElement('summary');optional.className='v3-optional-profile';optionalTitle.id='v3-optional-label';optional.append(optionalTitle);
+const form=$('age-form'),optional=document.createElement('details'),optionalTitle=document.createElement('summary');optional.className='v3-optional-profile';optional.open=true;optionalTitle.id='v3-optional-label';optional.append(optionalTitle);
 for(const id of ['nickname','flag-select','flag-other','school-cat','school-name']){const field=$(id)?.closest('label');if(field)optional.append(field);}
 for(const el of [...form.querySelectorAll('[data-i18n="nicknamePublic"],[data-i18n="schoolPublic"]')])optional.append(el);
 const ageField=$('age-band').closest('label');form.insertBefore(optional,$('age-error'));form.insertBefore(ageField,$('age-recover-link'));
@@ -117,5 +117,5 @@ document.addEventListener('dokdo:question',()=>{document.body.classList.add('v3-
 document.addEventListener('dokdo:answered',()=>{$('v3-question-guide').hidden=true;});
 document.addEventListener('dokdo:result',()=>{document.body.classList.remove('v3-in-lesson');decorateResult();});
 window.addEventListener('storage',e=>{if(e.key===G.KEY)refresh();});window.addEventListener('pageshow',refresh);
-entryArt();refresh();
+entryArt();refresh();if(areaParams.get('profile')==='1')App.editProfile();
 })();

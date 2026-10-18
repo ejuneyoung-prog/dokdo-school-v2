@@ -23,6 +23,12 @@ def selector_checks(page):
  check('Main starts with only the two area choices',page.locator('#v3-entry').is_visible() and page.locator('#v3-entry .v3-choice-grid button,#v3-entry .v3-choice-grid a').count()==2 and page.locator('#start-lesson').is_hidden())
  check('The two choices identify learning and playground separately','독도배움터' in re.sub(r'\s+','',page.locator('#v3-enter-learn').inner_text()) and '독도놀이터' in re.sub(r'\s+','',page.locator('#v3-enter-play').inner_text()))
  protected=page.evaluate('JSON.stringify(DokdoApp.state)')
+ page.click('#v3-profile-entry')
+ check('Nickname, country and school are visible together without selecting a learning age',page.locator('#nickname').is_visible() and page.locator('#flag-select').is_visible() and page.locator('#school-name').is_visible() and page.locator('#age-band').is_hidden())
+ check('Optional profile keeps the original nickname and school visibility notices',page.locator('[data-i18n="nicknamePublic"]').is_visible() and page.locator('[data-i18n="schoolPublic"]').is_visible())
+ page.click('#age-dialog [data-close="age-dialog"]')
+ check('Inspecting optional profile does not alter student records',page.evaluate('JSON.stringify(DokdoApp.state)')==protected)
+
  page.locator('#v3-enter-learn').focus();page.locator('#v3-enter-learn').press('Space')
  check('Space enters the learning dashboard through the actual choice',page.locator('#v3-entry').is_hidden() and page.locator('#start-lesson').is_visible())
  page.evaluate("DokdoApp.view('learn');DokdoApp.view('home')")
@@ -40,6 +46,10 @@ def selector_checks(page):
  page.click('#v3-main-home')
  check('Choosing areas does not alter existing student records',page.evaluate('JSON.stringify(DokdoApp.state)')==protected)
  enter_learning(page);more(page);page.click('#language');wait_until(page,'document.documentElement.lang==="en"');page.click('#brand-home')
+ page.click('#v3-profile-entry')
+ check('English profile localizes the country names and optional field labels','United States' in page.locator('#flag-select option[value="US"]').inner_text() and 'Country' in page.locator('[data-i18n="flagField"]').inner_text() and 'school' in page.locator('#age-dialog h2').inner_text())
+ page.click('#age-dialog [data-close="age-dialog"]')
+
  for width in [320,768]:
   page.set_viewport_size({'width':width,'height':1100})
   check(str(width)+'px English selector has no horizontal overflow',page.locator('#v3-entry').is_visible() and page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'))
