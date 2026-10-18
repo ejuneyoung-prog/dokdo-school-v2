@@ -148,7 +148,7 @@ try:
             check(prefix+' age gate before lesson (no placement test)',page.locator('#age-dialog').is_visible() and page.evaluate('DokdoApp.lesson===null'))
             page.click('#age-form button[type=submit]')
             check(prefix+' missing age cannot start lesson',page.locator('#age-dialog').is_visible() and page.evaluate('DokdoApp.state.learningProfile==null'))
-            page.click('.v3-optional-profile>summary') if page.locator('.v3-optional-profile').count() else None
+            page.click('.v3-optional-profile>summary') if page.locator('.v3-optional-profile').count() and not page.eval_on_selector('.v3-optional-profile','e=>e.open') else None
             page.fill('#nickname','Learner');page.select_option('#age-band','8-9');page.click('#age-form button[type=submit]')
             page.wait_for_selector('#teaching',state='visible')
             check(prefix+' low-primary pool is actually simple, everyone starts unplaced',page.evaluate("DokdoApp.lesson.item.cognitive<=2 && DokdoApp.lesson.items.length===5 && DokdoApp.state.learningProfile.course.track==='early' && DokdoApp.state.grade==='K' && DokdoApp.state.gcHit===0 && DokdoApp.state.xp===0"))

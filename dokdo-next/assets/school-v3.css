@@ -42,3 +42,5 @@ body.school-v3{--bg:#f8faf5;--panel:#fff;--panel-2:#edf4eb;--ink:#203f35;--muted
 .v3-profile-entry{display:block;margin:17px auto 0;padding:9px 15px;border:1px solid #d4e0cc;border-radius:9px;color:#4d7150;background:#f4f8ee;font-size:12px;min-height:40px}.v3-profile-menu{margin-top:10px;width:100%;padding:10px;background:#edf4e7;color:#395f3e;border:1px solid #d7e3cc;border-radius:9px;font-size:12px}.profile-only .v3-optional-profile{margin-top:12px}.profile-only #age-form>[data-i18n=agePreserve]{display:none}.school-v3 #age-form .field{margin-top:12px}
 
 .profile-only .v3-optional-profile>summary{display:none}
+
+.v3-language-entry{display:block;margin:14px auto 0;min-height:38px;padding:7px 16px;color:#315d42;background:#edf4e7;border:1px solid #c9d9bd;border-radius:8px;font-size:12px;font-weight:600}
