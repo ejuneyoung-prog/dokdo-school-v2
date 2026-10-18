@@ -66,11 +66,13 @@ function island(canvas,state,time=0,now=Date.now()){
 // One shared, visibility-aware animation clock. Repainting a hub updates its job,
 // never creates another loop. Reduced-motion users receive a still scene.
 const islandJobs=new Map();let islandFrame=0,lastIslandFrame=0;
-const reduced=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+const reduced=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)').matches||document.body?.classList.contains('motion-reduced');
 function paintIslands(now){islandFrame=0;if(document.hidden||reduced())return;if(now-lastIslandFrame>=80){lastIslandFrame=now;for(const[canvas,job]of islandJobs){if(!canvas.isConnected){islandJobs.delete(canvas);continue;}const r=canvas.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight||!r.width)continue;island(canvas,job.state(),now/1000);job.after?.();}}if(islandJobs.size)islandFrame=requestAnimationFrame(paintIslands);}
 function animateIsland(canvas,state,after){islandJobs.set(canvas,{state,after});island(canvas,state(),reduced()?0:performance.now()/1000);after?.();if(!islandFrame&&!document.hidden&&!reduced())islandFrame=requestAnimationFrame(paintIslands);}
 document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(islandFrame);islandFrame=0;}else if(islandJobs.size&&!islandFrame&&!reduced())islandFrame=requestAnimationFrame(paintIslands);});
-window.matchMedia?.('(prefers-reduced-motion: reduce)').addEventListener('change',()=>{if(reduced()){cancelAnimationFrame(islandFrame);islandFrame=0;for(const[canvas,job]of islandJobs){island(canvas,job.state());job.after?.();}}else if(islandJobs.size&&!islandFrame)islandFrame=requestAnimationFrame(paintIslands);});
+function motionPreferenceChanged(){if(reduced()){cancelAnimationFrame(islandFrame);islandFrame=0;for(const[canvas,job]of islandJobs){island(canvas,job.state());job.after?.();}}else if(islandJobs.size&&!islandFrame&&!document.hidden)islandFrame=requestAnimationFrame(paintIslands);}
+window.matchMedia?.('(prefers-reduced-motion: reduce)').addEventListener('change',motionPreferenceChanged);
+new MutationObserver(motionPreferenceChanged).observe(document.body,{attributes:true,attributeFilter:['class']});
 function trash(c,id,x,y,s=1){c.save();c.translate(x,y);c.scale(s,s);c.lineJoin='round';c.lineCap='round';
  if(id===1){path(c,'M-5 -22 -5 -17 -9 -12 -8 8Q0 12 8 8L9 -12 5 -17 5 -22Z','#e8f5ed','#527d88',1.8);round(c,-5,-26,10,5,1,'#4e8a9d');round(c,-8,-8,16,9,1,'#89bbbe');line(c,-4,-14,-3,4,'#fff',2);}
  else if(id===2){path(c,'M-11 -17 -10 -25 -5 -25 -5 -16 5 -16 5 -25 10 -25 11 -17 14 9Q1 15 -13 9Z','#e9ece3','#7e9f99',1.8);line(c,-8,-11,-6,6,'#bfd0c8',1);line(c,7,-10,8,5,'#bfd0c8',1);}
