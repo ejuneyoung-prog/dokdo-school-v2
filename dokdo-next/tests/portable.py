@@ -3,6 +3,7 @@
 import argparse,json
 from pathlib import Path
 from playwright.sync_api import sync_playwright
+from browser_entry import enter_learning
 p=argparse.ArgumentParser();p.add_argument('html');p.add_argument('--browser',default='/usr/bin/chromium');p.add_argument('--output',default='test-results/portable.json');a=p.parse_args()
 checks=[];errors=[]
 def check(name,ok):
@@ -15,6 +16,7 @@ with sync_playwright() as pw:
  check('Standalone preview uses isolated memory',page.evaluate('DokdoApp.mode==="preview" && DokdoApp.state.xp===0 && Object.keys(DokdoApp.state.m).length===0'))
  check('All 240 revised questions are embedded',page.evaluate('DokdoStarter.DATA.questions.length===240'))
  check('Age selection blocks first lesson',page.locator('#age-dialog').is_hidden())
+ enter_learning(page)
  page.click('#start-lesson');check('Age dialog is required',page.locator('#age-dialog').is_visible());page.select_option('#age-band','14-16');page.click('#age-form button[type=submit]')
  check('Middle-school lesson is an actual Dokdo history unit',page.evaluate('DokdoApp.lesson.item.unit===8 && DokdoApp.lesson.item.id>=920001 && DokdoApp.lesson.item.id<=920240'))
  page.click('#read-done');check('Material and choices are visible',page.locator('#question-material').is_visible() and page.locator('.answer-option').count()==3)

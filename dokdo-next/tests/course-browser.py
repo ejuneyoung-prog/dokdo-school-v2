@@ -3,6 +3,7 @@
 import argparse,base64,functools,http.server,json,os,re,threading
 from pathlib import Path
 from playwright.sync_api import sync_playwright
+from browser_entry import enter_learning
 ROOT=Path(__file__).resolve().parents[1]
 INTRO_WATCH="if(!window.__introWatch)window.__introWatch=setInterval(()=>{const d=document.getElementById('youtube-intro-dialog');if(d&&d.open)d.close();},50);"
 def unconfigured():
@@ -55,7 +56,10 @@ try:
    if a.mode=='inline':page.evaluate(INIT);page.evaluate('window.requestAnimationFrame=()=>0');page.set_content(INLINE,wait_until='domcontentloaded')
    else:page.goto(base+'index.html',wait_until='domcontentloaded')
    page.wait_for_function('!!window.DokdoApp');page.evaluate('DokdoApp.assetsReady')
-   if lang=='en':page.click('#language')
+   enter_learning(page)
+   if lang=='en':
+    if page.locator('#v3-more').count() and not page.eval_on_selector('#v3-more','e=>e.open'):page.click('#v3-more>summary')
+    page.click('#language')
    return ctx,page
   expected={'u7':1,'8-9':1,'10-11':2,'12-13':3,'14-16':8,'17-19':9,'20+':11}
   for lang in ['ko','en']:
