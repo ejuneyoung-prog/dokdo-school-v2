@@ -27,7 +27,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com https://t1.kakaocdn.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://i.ytimg.com; media-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://api.open-meteo.com https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://*.analytics.google.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'none'; worker-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="dokdo-mode" content="live">
-<title>독도 코리아 스쿨 V3 · 한 걸음씩, 나의 독도</title>
+<title>독도배움터 · 독도 코리아 스쿨 V3</title>
 <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./assets/app.css">
 <link rel="stylesheet" href="./assets/games-entry.css">
@@ -63,7 +63,7 @@
   <span><small data-i18n="tagline">배우는 만큼, 더 빛나는 독도</small><strong><span class="brand-main" data-i18n="brandMain">독도 코리아</span> <span class="brand-sub" data-i18n="brandSub">스쿨</span></strong></span>
  </button>
  <span class="v3-version" aria-label="버전 3">V3</span>
- <nav class="v3-nav" aria-label="주 메뉴"><button class="nav-item active" data-view="home" aria-current="page"><span aria-hidden="true">✦</span><span data-i18n="v3Learn">배우기</span></button><a class="nav-item" href="./games.html"><span aria-hidden="true">♧</span><span data-i18n="v3Play">놀이터</span></a></nav>
+ <nav class="v3-nav" aria-label="주 메뉴"><button class="nav-item active" data-view="home" aria-current="page"><span aria-hidden="true">✦</span><span data-i18n="v3Learn">독도배움터</span></button><a class="nav-item" href="./games.html"><span aria-hidden="true">♧</span><span data-i18n="v3Play">독도놀이터</span></a></nav>
  <details class="v3-more" id="v3-more"><summary><span id="v3-more-label">더보기</span> <span aria-hidden="true">⌄</span></summary><div class="v3-more-panel"><button class="nav-item" id="v3-explore">독도 풍경 살펴보기</button>
   <button class="nav-item" id="nav-map"><span aria-hidden="true">🗺️</span><span data-i18n="map">지도 살펴보기</span></button>
   <button class="nav-item" data-view="learn"><span aria-hidden="true">📚</span><span data-i18n="learn">학습하기</span></button>
@@ -78,20 +78,20 @@ Dokdo Korea</a><a id="header-collab-link" class="button primary small-button hea
 <main id="main" tabindex="-1">
 <section id="view-home" class="view">
 <section class="v3-home" aria-labelledby="v3-greeting">
- <div class="v3-welcome"><div><p class="v3-eyebrow">DOKDO KOREA SCHOOL</p><h1 id="v3-greeting">오늘도, 한 걸음만.</h1><p id="v3-subtitle">알아갈수록 가까워지는 나의 독도.</p></div><canvas id="v3-mascot" width="200" height="150" aria-hidden="true"></canvas></div>
+ <div class="v3-welcome"><div><p class="v3-eyebrow" id="v3-area-label">DOKDO KOREA SCHOOL · 독도배움터</p><h1 id="v3-greeting">오늘도, 한 걸음만.</h1><p id="v3-subtitle">알아갈수록 가까워지는 나의 독도.</p></div><canvas id="v3-mascot" width="200" height="150" aria-hidden="true"></canvas></div>
  <div class="v3-columns"><div class="v3-main-column">
   <section class="v3-next" aria-labelledby="v3-lesson-title"><div class="v3-next-top"><span id="v3-today">오늘의 독도 이야기</span><span id="v3-lesson-meta">짧은 이야기 · 5문제</span></div><h2 id="v3-lesson-title">독도는 어디에 있을까</h2><div id="v3-start-slot"></div></section>
   <section class="v3-path-card" aria-labelledby="v3-path-title"><div class="v3-card-title"><h2 id="v3-path-title">나의 배움길</h2><span id="v3-path-count">0 / 12 이야기</span></div><div id="v3-path" class="v3-path"></div><button id="v3-all-units" class="text-button">전체 이야기 보기 →</button></section>
  </div><aside class="v3-side-column">
   <section class="v3-island-card"><div class="v3-card-title"><h2 id="v3-island-title">배운 만큼 자라는 내 독도</h2></div><div id="v3-island-slot"></div><div class="v3-island-stats"><span id="v3-lights">0개의 불빛</span><span id="v3-island-level">꾸미기 Lv. 1</span></div><progress id="v3-garden-progress" aria-label="다음 독도 꾸밈까지의 경험치" max="30" value="0"></progress><p id="v3-next-gift">해국 꽃밭까지 30 XP</p><a href="./games.html" id="v3-island-link">내 독도 꾸미기 →</a><small id="v3-snapshot-note">불빛과 친구는 배움을 기념하는 상상 풍경이에요.</small></section>
   <section class="v3-review-card"><span class="v3-mini-icon" aria-hidden="true">↺</span><div><h2 id="v3-review-title">배운 이야기, 기억나나요?</h2><p id="v3-review-copy">전에 만난 문제로 가볍게 떠올려요.</p><div id="v3-review-slot"></div></div></section>
-  <section class="v3-play-card"><h2 id="v3-play-title">이제, 독도에서 놀까요?</h2><p id="v3-play-copy">삽살개와 달리고, 바다를 깨끗하게.</p><a href="./games.html" id="v3-play-link">놀이터 가기 →</a></section>
+  <section class="v3-play-card"><h2 id="v3-play-title">이제, 독도에서 놀까요?</h2><p id="v3-play-copy">삽살개와 달리고, 바다를 깨끗하게.</p><a href="./games.html" id="v3-play-link">독도놀이터 가기 →</a></section>
  </aside></div><p class="v3-home-note" id="v3-home-note">기록은 이 브라우저에 저장돼요.</p>
 </section>
 <div class="v3-legacy-home"><button id="v3-back-learning" class="button secondary">← 배움길로 돌아가기</button>
 
  <section class="play-entry" lang="ko" aria-labelledby="play-entry-title">
-  <div class="play-entry-copy"><p class="play-entry-eyebrow">MY LITTLE DOKDO · 내 독도 놀이터</p><h2 id="play-entry-title">놀고, 지키고,<br>내 독도를 가꿔요.</h2><p>블록으로 바다를 정리하고, 삽살개와 폴짝!<br>레벨이 오르면 내 섬에 작은 선물이 도착해요.</p><div class="play-entry-actions"><a href="./games.html?game=blocks">독도 바다 청소 <span aria-hidden="true">→</span></a><a href="./games.html?game=runner">삽살개 달리기 <span aria-hidden="true">→</span></a></div><a class="play-entry-more" href="./games.html">내 독도 꾸미기 · <span id="play-entry-level">Lv. 1</span> ↗</a></div>
+  <div class="play-entry-copy"><p class="play-entry-eyebrow">MY LITTLE DOKDO · 독도놀이터</p><h2 id="play-entry-title">놀고, 지키고,<br>내 독도를 가꿔요.</h2><p>블록으로 바다를 정리하고, 삽살개와 폴짝!<br>레벨이 오르면 내 섬에 작은 선물이 도착해요.</p><div class="play-entry-actions"><a href="./games.html?game=blocks">독도 바다 청소 <span aria-hidden="true">→</span></a><a href="./games.html?game=runner">삽살개 달리기 <span aria-hidden="true">→</span></a></div><a class="play-entry-more" href="./games.html">내 독도 꾸미기 · <span id="play-entry-level">Lv. 1</span> ↗</a></div>
   <div class="play-entry-scene"><canvas id="play-entry-island" width="1120" height="430" role="img" aria-label="게임으로 꾸미는 내 독도 상상 풍경"></canvas><span>나의 작은 독도 · 상상 풍경</span></div>
  </section>
  <div class="section-heading"><div><p class="eyebrow">LEARN · LIGHT · REMEMBER</p><h1 id="greeting">오늘도, 독도를 밝혀볼까요?</h1>

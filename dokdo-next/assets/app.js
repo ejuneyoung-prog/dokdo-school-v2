@@ -11,7 +11,7 @@ const wire=(id,prop,fn)=>{const el=$(id);if(el)el[prop]=fn;};
 const listen=(id,type,fn,opts)=>{const el=$(id);if(el)el.addEventListener(type,fn,opts);};
 const ko={};document.querySelectorAll('[data-i18n]').forEach(el=>ko[el.dataset.i18n]=el.textContent);
 const en={
- v3Learn:'Learn',v3Play:'Play',facilityTitle:'Places and facilities',facilitySource:'Official facility information ↗',
+ v3Learn:'Dokdo Learning',v3Play:'Dokdo Playground',facilityTitle:'Places and facilities',facilitySource:'Official facility information ↗',
  skip:'Skip to content',brandMain:'Dokdo Korea',brandSub:'School',tagline:'A little learning. A brighter Dokdo.',
  demoBanner:'PREVIEW ONLY · reload resets this demo · no real accounts',demoReset:'Try an empty record',
  myDokdo:'My Dokdo',map:'Explore the map',learn:'Learn',journal:'Life journal',myRecords:'My records',
