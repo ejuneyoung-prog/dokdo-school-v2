@@ -163,9 +163,9 @@ function translate(){
  txt('language',language==='en'?'KO':'EN');
  $('language').setAttribute('aria-label',language==='en'?'한국어로 바꾸기':'Switch to English');
  $('question-title').lang=language;
- const countries=new Intl.DisplayNames([language==='en'?'en-US':'ko-KR'],{type:'region'});for(const option of $('flag-select').options){const code=option.value;if(/^[A-Z]{2}$/.test(code))option.textContent=flagEmoji(code)+' '+countries.of(code);else if(code==='OTHER')option.textContent=tr('🌐 기타','🌐 Other');}
+ const countries=new Intl.DisplayNames([language==='en'?'en-US':'ko-KR'],{type:'region'});for(const option of $('flag-select')?.options||[]){const code=option.value;if(/^[A-Z]{2}$/.test(code))option.textContent=flagEmoji(code)+' '+countries.of(code);else if(code==='OTHER')option.textContent=tr('🌐 기타','🌐 Other');}
  window.DokdoLanguage?.attributes(document);
- $('nickname').placeholder=tr('독도 탐험가','Dokdo explorer');$('school-name').placeholder=tr('학교 이름 또는 소속','School or organization');
+ if($('nickname'))$('nickname').placeholder=tr('독도 탐험가','Dokdo explorer');if($('school-name'))$('school-name').placeholder=tr('학교 이름 또는 소속','School or organization');
 }
 function showDialog(id){
  const el=$(id);if(el.open)return;
