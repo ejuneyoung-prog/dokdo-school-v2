@@ -680,6 +680,10 @@ async function choose(pick,skip=false){
  busy=true;const ok=!skip&&pick===q.answer,retry=q.retrying;
  try{
   const awarded=await mutate(s=>M.answer(s,q.item,ok,{mode:q.mode,retry,skipped:skip,helped:!!q.usedHelp}));
+  // Play rewards follow a committed first answer; school rank/records stay unchanged.
+  if(ok&&!retry&&!skip&&q.mode!=='placement'&&window.DokdoPlayBridge){
+   DokdoPlayBridge.rewardLearning(q.item.familyId).then(earned=>{if(earned)toast(tr('독도 이야기 선물: 도전권 +1회 · 꾸미기 XP +5','Dokdo story gift: +1 play ticket · +5 decorating XP'));}).catch(()=>toast(tr('학습 기록은 저장됐어요. 놀이터 저장 공간을 확인해 주세요.','Your lesson is saved. Please check playground storage.')));
+  }
   // Persistent commit succeeded before moving the question forward.
   if(window.DokdoLeaderboard){const cur=getS();DokdoLeaderboard.postEvent({
    nick:cur.name||'',flag:cur.flag||'KR',grade:cur.grade||'K',qid:q.item.id,ok:ok?1:0,
@@ -1528,6 +1532,7 @@ function initializeDemo(){
 }
 translate();if(isolated)initializeDemo();renderHome();renderOutlines();mapFacts();updateStorageStatus();
 if(!getS())view('records',true);
+else if(new URLSearchParams(location.search).get('play')==='learn')view('learn');
 document.body.classList.toggle('motion-reduced',reduced());
 window.DokdoApp={
  version:M.VERSION,mode,get state(){return getS();},store,start,choose,next,view,mutate,paint,saveImage,
