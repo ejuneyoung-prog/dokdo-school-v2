@@ -7,7 +7,7 @@ def make_preview(output):
     html=(ROOT/'index.html').read_text(encoding='utf-8')
     html=html.replace('name="dokdo-mode" content="live"','name="dokdo-mode" content="preview"')
     html=html.replace("script-src 'self'","script-src 'self' 'unsafe-inline'")
-    for sheet in ['app.css','games-entry.css']:
+    for sheet in ['app.css','games-entry.css','school-v3.css']:
         html=html.replace('<link rel="stylesheet" href="./assets/'+sheet+'">','<style>'+ (ROOT/'assets'/sheet).read_text()+'</style>')
     def data(path):
         p=ROOT/path
@@ -26,7 +26,7 @@ def make_preview(output):
         text=(ROOT/path).read_text()
         for asset in assets:text=text.replace('./'+asset,data(asset))
         scripts.append('<script>'+text.replace('</script','<\\/script')+'</script>')
-    scripts.insert(-1,'<script>'+(ROOT/'assets/demo-ids.js').read_text()+'</script>')
+    scripts.insert(sources.index('assets/app.js'),'<script>'+(ROOT/'assets/demo-ids.js').read_text()+'</script>')
     html=html.replace('</body>',''.join(scripts)+'</body>')
     html=html.replace('./assets/icon.svg',data('assets/icon.svg')).replace('href="./demo.html"','href="#demo-banner"')
     html=html.replace('href="./question-review.html"', 'href="./dokdo-questions-v1.3-review.html"')
