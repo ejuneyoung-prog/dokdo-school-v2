@@ -3,6 +3,15 @@
 'use strict';
 const KEY='dokdo-ui-language-v1';
 const dictionary={
+ "카카오 로그인": "Log in with Kakao",
+ "카카오 계정으로 간편하게 시작해요.": "Get started with your Kakao account.",
+ "이메일로 가입한 계정과는 별도 계정일 수 있어요.": "This may be a different account from your email sign-in.",
+ "또는 이메일로": "Or use email",
+ "카카오 계정으로 로그인했어요.": "You are signed in with Kakao.",
+ "카카오 로그인으로 이동하고 있어요.": "Opening Kakao sign-in.",
+ "카카오 로그인을 열지 못했어요. 다시 시도하거나 이메일로 로그인해 주세요.": "Kakao sign-in could not be opened. Try again or sign in with email.",
+ "카카오 로그인을 마치지 못했어요. 다시 시도하거나 이메일로 로그인해 주세요.": "Kakao sign-in was not completed. Try again or sign in with email.",
+
  "닉네임·국가·학교": "Nickname, country & school",
  "본문으로 바로가기": "Skip to content",
  "독도 놀이터 메뉴": "Dokdo Playground menu",
