@@ -24,7 +24,7 @@ const en={
  outlineNote:'An outline comparison simplified from official illustrations. Placement, facility coordinates and elevation contours are not surveyed.',
  locatorUlleung:'From Ulleungdo',locatorOki:'From the Oki Islands, Japan',locatorCounty:'Ulleung County, Gyeongsangbuk-do',
  locatorNote:'A location guide using real distances and coordinates. The coastlines shown are simplified illustrations, not surveyed shapes.',
- west:'Seodo',east:'Dongdo',distanceMeaning:'The shortest distance between the shores, not the centres of the drawings.',
+ west:'Seodo',east:'Dongdo',distanceMeaning:'The shortest distance between the shores, not the centers of the drawings.',
  officialMap:'See the official island outlines ↗',topographic:'Open the National Atlas map ↗',
  myLights:'Lights I have earned',lifetime:'Lifetime correct',discoveries:'Encounters with life',gullJournal:'Black-tailed gull journal',
  placeBeacons:'Place beacons',openJournal:'Open journal',journey:'🗺️ My learning journey',seaVisitors:'🦭 Call the legendary gangchi',
@@ -69,7 +69,7 @@ const en={
  flagOtherField:'Country code (ISO 2-letter, e.g. NZ)',
  schoolCatField:'School category (hall of fame section, optional)',
  schoolCatE:'Elementary school',schoolCatM:'Middle school',schoolCatH:'High school',schoolCatW:'Korean school abroad',
- schoolField:'School / organisation name (optional — type two letters to search)',
+ schoolField:'School / organization name (optional — type two letters to search)',
  cloudBackupTitle:'Server backup · continue on another device',
  cloudBackupWarning:'Sending alone does not guarantee storage on this legacy server, so it is automatically double-checked for a few seconds after sending. You will be told if it could not be confirmed.',
  cloudSaveBtn:'Send a backup to the server',
@@ -127,7 +127,8 @@ const isolated=mode!=='live';
 let storage;
 try{storage=isolated?new M.MemoryStorage():window.localStorage;}catch(e){storage={getItem(){throw e;},setItem(){throw e;}};}
 const store=new M.Store(storage);
-let state=store.load(),language=state?.visual?.language||'ko',currentView='home',mapOpen=false,lesson=null,ageNext=null,lastResult=null;
+let state=store.load(),language=(!isolated&&window.DokdoLanguage?.saved())||state?.visual?.language||'ko',currentView='home',mapOpen=false,lesson=null,ageNext=null,lastResult=null;
+if(!isolated&&window.DokdoLanguage&&window.DokdoLanguage.saved()===null)window.DokdoLanguage.set(language);
 let lastLessonFirst=null;try{lastLessonFirst=isolated?null:Number(sessionStorage.getItem('dokdo-v3-last-first'))||null;}catch(e){}
 let busy=false,sceneTime=state?.scene?.timeSec||0,frameLast=0,drawAt=0,saveAt=0,sceneVisible=true,lightDirty=true,lightLayer=null,dirty=false,homeVideoIds=null;
 let soundOn=false,audioToken=0,audio=null,importCandidate=null,importOriginal=null,assetError=false;
@@ -157,11 +158,14 @@ const levelText=gp=>gp.rank>=Core.DOKKOMIN_FROM?gradeLabel(gp.grade):'Lv.'+(gp.r
 const nextLevelText=gp=>gp.rank+1>=Core.DOKKOMIN_FROM?gradeLabel(Core.GRADES[gp.rank+1]):'Lv.'+(gp.rank+2);
 function toast(message){txt('toast',message);$('toast').hidden=false;clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('toast').hidden=true,5200);}
 function translate(){
- document.documentElement.lang=language;
+ document.documentElement.lang=language;window.DokdoLanguage?.adopt(language);
  document.querySelectorAll('[data-i18n]').forEach(el=>el.textContent=language==='en'?(en[el.dataset.i18n]||ko[el.dataset.i18n]):ko[el.dataset.i18n]);
  txt('language',language==='en'?'KO':'EN');
  $('language').setAttribute('aria-label',language==='en'?'한국어로 바꾸기':'Switch to English');
  $('question-title').lang=language;
+ const countries=new Intl.DisplayNames([language==='en'?'en-US':'ko-KR'],{type:'region'});for(const option of $('flag-select')?.options||[]){const code=option.value;if(/^[A-Z]{2}$/.test(code))option.textContent=flagEmoji(code)+' '+countries.of(code);else if(code==='OTHER')option.textContent=tr('🌐 기타','🌐 Other');}
+ window.DokdoLanguage?.attributes(document);
+ if($('nickname'))$('nickname').placeholder=tr('독도 탐험가','Dokdo explorer');if($('school-name'))$('school-name').placeholder=tr('학교 이름 또는 소속','School or organization');
 }
 function showDialog(id){
  const el=$(id);if(el.open)return;
@@ -1516,7 +1520,7 @@ $('enable-birds').onchange=async()=>{try{await mutate(s=>s.visual.birdsEnabled=$
 $('sea-density').onchange=async()=>{try{await mutate(s=>s.seaDensity=$('sea-density').value);paint();}catch(e){}};
 $('language').onclick=async()=>{
  if(lesson){toast(tr('수업을 마치거나 나온 뒤 언어를 바꿔 주세요.','Finish or leave the lesson before switching language.'));return;}
- try{const next=language==='ko'?'en':'ko';await mutate(s=>s.visual.language=next);language=next;translate();renderHome();renderJournal();if(currentView==='records')renderRecords();if(currentView==='learn'&&!lesson){if(lastResult&&!$('lesson-result').hidden)renderResult(lastResult.q,lastResult.outcome);else renderCatalog();}if(currentView==='grade')renderGrade();if(currentView==='hall')renderHall(true);renderOutlines();mapFacts();
+ try{const next=language==='ko'?'en':'ko';await mutate(s=>s.visual.language=next);language=next;if(!isolated)window.DokdoLanguage?.set(next);translate();renderHome();renderJournal();if(currentView==='records')renderRecords();if(currentView==='learn'&&!lesson){if(lastResult&&!$('lesson-result').hidden)renderResult(lastResult.q,lastResult.outcome);else renderCatalog();}if(currentView==='grade')renderGrade();if(currentView==='hall')renderHall(true);renderOutlines();mapFacts();
   if(soundOn){const label=trackLabel(trackIndex);if(label)$('sound').title=label;}
  }catch(e){}
 };
