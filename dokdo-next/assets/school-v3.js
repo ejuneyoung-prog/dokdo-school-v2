@@ -9,13 +9,14 @@ function gameRecord(){try{const live=App.mode==='live',raw=live?localStorage.get
 function garden(canvas,s,game){if(!canvas||!game)return;A.island(canvas,game);const lights=window.DokdoAppModel.summary(s).lights||0;if(lights){const c=canvas.getContext('2d');for(let i=0;i<Math.min(60,lights);i++){const x=(.3+(i%12)*.036)*canvas.width,y=(.58+Math.sin(i*.8)*.065+Math.floor(i/12)*.018)*canvas.height;c.beginPath();c.arc(x,y,2.6,0,Math.PI*2);c.fillStyle='#fff7b4';c.fill();}}}
 function refresh(){
  const s=App.state;if(!s)return;const en=document.documentElement.lang==='en',p=s.learningProfile,unit=C.unitInfo(p?.course?.unit||1),game=gameRecord(),summary=window.DokdoAppModel.summary(s);
+ label('v3-area-label','DOKDO KOREA SCHOOL · 독도배움터','DOKDO KOREA SCHOOL · LEARNING');
  label('v3-greeting','오늘도, 한 걸음만.','One little step today.');label('v3-subtitle','알아갈수록 가까워지는 나의 독도.','A little learning brings Dokdo closer.');
  label('v3-today','오늘의 독도 이야기','TODAY’S DOKDO STORY');label('v3-lesson-title',unit.ko,unit.en);label('v3-lesson-meta','짧은 이야기 · 5문제','A short story · 5 questions');
  label('v3-start-label',p?'이어서 시작하기':'첫 이야기 시작하기',p?'Continue learning':'Start my first story');
  label('v3-path-title','나의 배움길','My learning path');label('v3-all-units','전체 이야기 보기 →','All stories →');label('v3-island-title','배운 만큼 자라는 내 독도','My growing Dokdo');label('v3-island-link','내 독도 꾸미기 →','Decorate my Dokdo →');
  label('v3-snapshot-note','불빛과 친구는 배움을 기념하는 상상 풍경이에요.','Lights and friends are an imagined celebration of learning.');
  label('v3-review-title','배운 이야기, 기억나나요?','Remember this story?');label('v3-review-copy','전에 만난 문제로 가볍게 떠올려요.','Recall what you learned before.');
- label('v3-play-title','이제, 독도에서 놀까요?','Time to play on Dokdo?');label('v3-play-copy','삽살개와 달리고, 바다를 깨끗하게.','Run with Sapsal, or clean the sea.');label('v3-play-link','놀이터 가기 →','Visit the playground →');
+ label('v3-play-title','이제, 독도에서 놀까요?','Time to play on Dokdo?');label('v3-play-copy','삽살개와 달리고, 바다를 깨끗하게.','Run with Sapsal, or clean the sea.');label('v3-play-link','독도놀이터 가기 →','Visit Dokdo Playground →');
  label('v3-home-note','기록은 이 브라우저에 저장돼요.','Your record is saved in this browser.');label('v3-more-label','더보기','More');label('v3-optional-label','별명·학교 추가하기 (선택)','Add nickname / school (optional)');
  label('v3-source-label','자료 출처 보기','Sources');label('v3-feedback-label','조금 더 알아보기','A little more detail');
  const count=p?C.courseEvidence(p,s.m).completed:0;label('v3-path-count',count+' / 12 이야기',count+' / 12 stories');
