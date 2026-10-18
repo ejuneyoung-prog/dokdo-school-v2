@@ -51,6 +51,25 @@ test('Invalid sign-in shows a safe error and releases the submission lock',async
 test('A network exception cannot leave a fake signed-in state or locked form',async()=>{
  const f=fixture({loginThrow:true});await f.c.init();a.equal(await f.c.submit({email:USER.email,password:'fictional-password'}),false);a.equal(f.c.getState().busy,false);a.equal(f.c.getState().user,null);
 });
+test('A signup mail-service 500 gives fixed mail guidance without blaming the user network or reflecting private details',async()=>{
+ const error={code:'unexpected_failure',status:500,message:'535 PRIVATE_SMTP_USER fictional@example.invalid token=PRIVATE_TOKEN password=PRIVATE_PASSWORD'},f=fixture({signupError:error});
+ await f.c.init();f.c.setMode('signup');a.equal(await f.c.submit({email:USER.email,password:'fictional-password'}),false);
+ const state=f.c.getState();a.equal(state.message,'가입 확인 메일을 보내지 못했어요. 메일 연결을 확인 중이니 잠시 뒤 다시 시도해 주세요.');a.equal(state.user,null);a.equal(state.busy,false);a.equal(state.error,true);a.doesNotMatch(state.message,/인터넷|535|SMTP|fictional|PRIVATE|token|password/);
+});
+test('A reset-mail service 500 never reveals the address or whether an account exists',async()=>{
+ const f=fixture({resetError:{code:'unexpected_failure',status:500,message:'No such user fictional@example.invalid PRIVATE_TOKEN'}});await f.c.init();f.c.setMode('forgot');a.equal(await f.c.submit({email:USER.email}),false);
+ const state=f.c.getState();a.equal(state.message,'비밀번호 재설정 메일을 보내지 못했어요. 메일 연결을 확인 중이니 잠시 뒤 다시 시도해 주세요.');a.equal(state.user,null);a.equal(state.busy,false);a.doesNotMatch(state.message,/인터넷|없는 계정|가입하지|fictional|PRIVATE|No such/);
+});
+test('Sign-in server failures are account-service failures rather than mail or internet failures',async()=>{
+ const f=fixture({loginError:{code:'unexpected_failure',status:500,message:'PRIVATE_PROVIDER_DETAILS'}});await f.c.init();a.equal(await f.c.submit({email:USER.email,password:'fictional-password'}),false);
+ a.equal(f.c.getState().message,'계정 서비스를 확인 중이에요. 잠시 뒤 다시 시도해 주세요.');a.doesNotMatch(f.c.getState().message,/메일|인터넷|PRIVATE/);
+});
+test('Only a classified SDK network failure receives internet guidance; retryable HTTP server errors do not',async()=>{
+ for(const [status,internet]of [[0,true],[503,false]]){const f=fixture({loginError:{name:'AuthRetryableFetchError',status,message:'PRIVATE_RAW_MESSAGE'}});await f.c.init();await f.c.submit({email:USER.email,password:'fictional-password'});a.equal(f.c.getState().message.includes('인터넷'),internet);a.doesNotMatch(f.c.getState().message,/PRIVATE/);}
+});
+test('Unknown and account-existence error messages are not reflected or presented as network trouble',async()=>{
+ let baseline;for(const code of ['unknown_error','user_already_exists','email_exists']){const f=fixture({signupError:{code,status:422,message:'fictional@example.invalid already exists PRIVATE_TOKEN'}});await f.c.init();f.c.setMode('signup');await f.c.submit({email:USER.email,password:'fictional-password'});const message=f.c.getState().message;baseline=baseline||message;a.equal(message,baseline);a.doesNotMatch(message,/인터넷|fictional|exists|PRIVATE|이미 가입|없는 계정/);}
+});
 test('Repeated submission while a sign-in is pending makes only one auth request',async()=>{
  let release;const gate=new Promise(resolve=>release=resolve),f=fixture({gate});await f.c.init();const first=f.c.submit({email:USER.email,password:'fictional-password'});
  a.equal(f.c.getState().busy,true);a.equal(await f.c.submit({email:USER.email,password:'fictional-password'}),false);a.equal(f.calls.filter(c=>c.name==='signInWithPassword').length,1);release();await first;a.equal(f.c.getState().busy,false);

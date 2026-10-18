@@ -17,11 +17,18 @@
    return {url:project.origin,key:config.publishableKey,redirect:redirect.href};
   }catch(e){return null;}
  }
- function messageFor(error){
+ function messageFor(error,mode){
   const code=error?.code||'';
   const messages={email_not_confirmed:'가입 확인 메일을 먼저 열어 주세요.',weak_password:'더 긴 비밀번호로 다시 정해 주세요.',over_email_send_rate_limit:'메일 요청이 많습니다. 잠시 뒤 다시 해 주세요.',over_request_rate_limit:'요청이 많습니다. 잠시 뒤 다시 해 주세요.',otp_expired:'메일 링크가 만료됐습니다. 재설정 메일을 다시 요청해 주세요.'};
   if(code==='invalid_credentials')return '이메일 아이디와 비밀번호를 확인해 주세요.';
-  return messages[code]||'연결을 완료하지 못했습니다. 인터넷 연결을 확인하고 다시 해 주세요.';
+  // The provider's message may contain private details. Classify by code/status only.
+  if(code==='unexpected_failure'&&error.status>=500&&error.status<600){
+   if(mode==='signup')return '가입 확인 메일을 보내지 못했어요. 메일 연결을 확인 중이니 잠시 뒤 다시 시도해 주세요.';
+   if(mode==='forgot')return '비밀번호 재설정 메일을 보내지 못했어요. 메일 연결을 확인 중이니 잠시 뒤 다시 시도해 주세요.';
+  }
+  if(error?.status>=500&&error.status<600)return '계정 서비스를 확인 중이에요. 잠시 뒤 다시 시도해 주세요.';
+  if(error?.name==='AuthRetryableFetchError'&&error.status===0)return '인터넷 연결을 확인하고 다시 시도해 주세요.';
+  return messages[code]||'지금은 요청을 완료하지 못했어요. 잠시 뒤 다시 시도해 주세요.';
  }
  function returnPath(currentUrl){
   try{const next=new URL(currentUrl).searchParams.get('next');return next==='games.html'?'games.html':'./';}catch(e){return './';}
@@ -105,7 +112,7 @@
     const checked=await verify(result.data.session);if(disposed||checked.token!==revision||checked.status==='stale')return false;
     if(checked.status!=='verified')throw checked.error||Error('Sign-in not verified');
     notice('로그인했습니다. 이 기기의 학습·게임 기록은 그대로 남아 있어요.');return true;
-   }catch(e){notice(messageFor(e),true);return false;}
+   }catch(e){notice(messageFor(e,mode),true);return false;}
    finally{state.busy=false;emit();drain();}
   }
   async function signOut(){
