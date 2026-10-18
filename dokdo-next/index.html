@@ -30,6 +30,10 @@
 <title>독도 코리아 스쿨 · 나의 독도</title>
 <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./assets/app.css">
+<link rel="stylesheet" href="./assets/games-entry.css">
+<script defer src="./assets/games-core.js"></script>
+<script defer src="./assets/games-art.js"></script>
+<script defer src="./assets/games-entry.js"></script>
 <script defer src="./assets/dokdo-core.js"></script>
 <script defer src="./assets/course-data.js"></script>
 <script defer src="./assets/starter-course.js"></script>
@@ -46,7 +50,7 @@
 <script defer src="./assets/scene.js"></script>
 <script defer src="./assets/app.js"></script>
 </head>
-<body>
+<body class="has-playground">
 <a class="skip" href="#main" data-i18n="skip">본문으로 바로가기</a>
 <noscript><div class="warning">학습과 기록 저장을 사용하려면 JavaScript를 켜 주세요. Please enable JavaScript.</div></noscript>
 <div id="demo-banner" class="demo-banner" hidden><span data-i18n="demoBanner">미리보기 전용 · 새로고침하면 시연 기록 초기화 · 실제 계정과 분리</span><button id="demo-reset" class="small-button" data-i18n="demoReset">빈 기록으로 확인</button></div>
@@ -70,6 +74,10 @@ Dokdo Korea</a><a id="header-collab-link" class="button primary small-button hea
 
 <main id="main" tabindex="-1">
 <section id="view-home" class="view">
+ <section class="play-entry" lang="ko" aria-labelledby="play-entry-title">
+  <div class="play-entry-copy"><p class="play-entry-eyebrow">MY LITTLE DOKDO · 내 독도 놀이터</p><h2 id="play-entry-title">놀고, 지키고,<br>내 독도를 가꿔요.</h2><p>블록으로 바다를 정리하고, 삽살개와 폴짝!<br>레벨이 오르면 내 섬에 작은 선물이 도착해요.</p><div class="play-entry-actions"><a href="./games.html?game=blocks">블록 바다 청소 <span aria-hidden="true">→</span></a><a href="./games.html?game=runner">삽살개 달리기 <span aria-hidden="true">→</span></a></div><a class="play-entry-more" href="./games.html">내 독도 꾸미기 · <span id="play-entry-level">Lv. 1</span> ↗</a></div>
+  <div class="play-entry-scene"><canvas id="play-entry-island" width="1120" height="430" role="img" aria-label="게임으로 꾸미는 내 독도 상상 풍경"></canvas><span>나의 작은 독도 · 상상 풍경</span></div>
+ </section>
  <div class="section-heading"><div><p class="eyebrow">LEARN · LIGHT · REMEMBER</p><h1 id="greeting">오늘도, 독도를 밝혀볼까요?</h1>
   <div id="grade-line" class="grade-line" hidden><span id="grade-badge" class="grade-badge"></span><span id="grade-stats" class="fine"></span><progress id="grade-gauge" value="0" max="5"></progress><small id="grade-gauge-label" class="fine"></small><button type="button" id="grade-share" class="text-button" data-i18n="gradeShare">공유하기 ↗</button></div>
   </div><span class="save-indicator" id="save-status" role="status">이 기기의 기록</span></div>

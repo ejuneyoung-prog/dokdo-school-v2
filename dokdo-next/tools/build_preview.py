@@ -7,7 +7,8 @@ def make_preview(output):
     html=(ROOT/'index.html').read_text(encoding='utf-8')
     html=html.replace('name="dokdo-mode" content="live"','name="dokdo-mode" content="preview"')
     html=html.replace("script-src 'self'","script-src 'self' 'unsafe-inline'")
-    html=html.replace('<link rel="stylesheet" href="./assets/app.css">','<style>'+ (ROOT/'assets/app.css').read_text()+'</style>')
+    for sheet in ['app.css','games-entry.css']:
+        html=html.replace('<link rel="stylesheet" href="./assets/'+sheet+'">','<style>'+ (ROOT/'assets'/sheet).read_text()+'</style>')
     def data(path):
         p=ROOT/path
         mime={'png':'image/png','webp':'image/webp','mp3':'audio/mpeg','wav':'audio/wav','svg':'image/svg+xml'}[p.suffix[1:]]
@@ -29,6 +30,8 @@ def make_preview(output):
     html=html.replace('</body>',''.join(scripts)+'</body>')
     html=html.replace('./assets/icon.svg',data('assets/icon.svg')).replace('href="./demo.html"','href="#demo-banner"')
     html=html.replace('href="./question-review.html"', 'href="./dokdo-questions-v1.3-review.html"')
+    html=html.replace('href="./games.html', 'target="_blank" rel="noopener noreferrer" href="https://dokdo-school-v2.vercel.app/dokdo-next/games.html')
+    html=html.replace('MY LITTLE DOKDO · 내 독도 놀이터', '미리보기 · 게임은 운영 놀이터에서 새 창으로 열려요')
     Path(output).write_text(html,encoding='utf-8')
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('output',nargs='?',default=str(ROOT/'preview.html'));a=p.parse_args()
