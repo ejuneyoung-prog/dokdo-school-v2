@@ -22,6 +22,12 @@
  <p id="connection-note">계정 서비스를 연결하고 있어요. 준비가 끝나면 이메일 아이디로 입장할 수 있어요.</p>
  <p id="account-status" role="status" aria-live="polite">연결이 끝날 때까지 이메일과 비밀번호를 입력받지 않습니다.</p>
  <section id="account-controls" hidden>
+  <div id="kakao-option" hidden>
+   <button id="kakao-signin" class="kakao-signin" type="button" disabled aria-label="카카오 로그인"><img class="kakao-ko" src="./assets/kakao-login-ko.svg" alt=""><img class="kakao-en" src="./assets/kakao-login-en.svg" alt=""></button>
+   <p class="hint">카카오 계정으로 간편하게 시작해요.</p>
+   <p class="hint">이메일로 가입한 계정과는 별도 계정일 수 있어요.</p>
+   <div class="account-divider">또는 이메일로</div>
+  </div>
   <div id="mode-buttons" class="modes" aria-label="계정 이용 방법">
    <button id="mode-login" type="button" disabled aria-pressed="true">로그인</button>
    <button id="mode-signup" type="button" disabled aria-pressed="false">처음 가입하기</button>

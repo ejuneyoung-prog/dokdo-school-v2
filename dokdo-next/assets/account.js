@@ -14,7 +14,7 @@
    const local=redirect.protocol==='http:'&&['localhost','127.0.0.1'].includes(redirect.hostname);
    if(redirect.protocol!=='https:'&&!local)return null;
    if(redirect.origin!==current.origin||redirect.pathname!==current.pathname||redirect.search||redirect.hash||redirect.username||redirect.password)return null;
-   return {url:project.origin,key:config.publishableKey,redirect:redirect.href};
+   return {url:project.origin,key:config.publishableKey,redirect:redirect.href,kakaoEnabled:config.kakaoEnabled===true};
   }catch(e){return null;}
  }
  function messageFor(error,mode){
@@ -33,15 +33,23 @@
  function returnPath(currentUrl){
   try{const next=new URL(currentUrl).searchParams.get('next');return next==='games.html'?'games.html':'./';}catch(e){return './';}
  }
- function createController({config,sdk,currentUrl,onChange=()=>{},defer=fn=>setTimeout(fn,0)}){
+ function kakaoReturnUrl(settings,currentUrl){const u=new URL(settings.redirect);u.searchParams.set('oauth','kakao');u.searchParams.set('next',returnPath(currentUrl));return u.href;}
+ function validKakaoUrl(value,settings,currentUrl){
+  try{const u=new URL(value);return u.protocol==='https:'&&u.origin===settings.url&&u.pathname==='/auth/v1/authorize'&&!u.username&&!u.password&&!u.hash&&u.searchParams.getAll('provider').length===1&&u.searchParams.get('provider')==='kakao'&&u.searchParams.getAll('redirect_to').length===1&&u.searchParams.get('redirect_to')===kakaoReturnUrl(settings,currentUrl)&&u.searchParams.getAll('scope').length===1&&u.searchParams.get('scope')==='profile_nickname';}catch(e){return false;}
+ }
+ function createController({config,sdk,currentUrl,onChange=()=>{},defer=fn=>setTimeout(fn,0),navigate=()=>{}}){
   const settings=validateConfig(config,currentUrl);let url;try{url=new URL(currentUrl);}catch(e){url=new URL('https://invalid.example/');}
   const recoveryHint=url.searchParams.get('flow')==='recovery'||new URLSearchParams(url.hash.slice(1)).get('type')==='recovery';
+  const fragment=new URLSearchParams(url.hash.slice(1));
+  const oauthError=['error','error_code','error_description'].some(key=>url.searchParams.has(key)||fragment.has(key));
+  const oauthHint=url.searchParams.get('oauth')==='kakao';
+  const incomingToken=oauthHint&&!oauthError&&!recoveryHint?fragment.get('access_token'):null;
   let recoveryWanted=false; // Only an SDK PASSWORD_RECOVERY event enables a password change.
-  const state={ready:false,busy:false,user:null,mode:'login',message:'계정 서비스를 연결하고 있어요. 연결이 끝날 때까지 이메일과 비밀번호를 입력받지 않습니다.',error:false};
+  const state={ready:false,busy:false,user:null,mode:'login',oauthComplete:false,kakaoEnabled:!!settings?.kakaoEnabled&&!recoveryHint,message:'계정 서비스를 연결하고 있어요. 연결이 끝날 때까지 이메일과 비밀번호를 입력받지 않습니다.',error:false};
   let client=null,subscription=null,revision=0,pendingEvent=null,disposed=false;
   const emit=()=>{if(!disposed)onChange({...state,user:state.user?{...state.user}:null});};
   const notice=(message,error=false)=>{state.message=message;state.error=error;emit();};
-  const userOut=()=>{revision++;state.user=null;if(state.mode==='recovery')state.mode='forgot';};
+  const userOut=()=>{revision++;state.user=null;state.oauthComplete=false;if(state.mode==='recovery')state.mode='forgot';};
   async function verify(session){
    const token=++revision;
    if(!session)return {status:'none',token};
@@ -49,7 +57,8 @@
    if(disposed||token!==revision)return {status:'stale',token};
    const {data,error}=response;
    if(error||!data?.user?.id||data.user.id!==session.user?.id)return {status:'error',token,error:error||Error('Unverified session')};
-   state.user={id:data.user.id,email:data.user.email||''};
+   state.user={id:data.user.id,email:data.user.email||'',provider:data.user.app_metadata?.provider==='kakao'?'kakao':'email'};
+   state.oauthComplete=!!(incomingToken&&session.access_token===incomingToken&&!recoveryWanted&&!recoveryHint&&!oauthError);
    if(recoveryWanted)state.mode='recovery';
    return {status:'verified',token};
   }
@@ -58,9 +67,9 @@
    const result=await verify(session);
    // A late response, including an error, must not clear a newer verified account.
    if(disposed||result.token!==revision||result.status==='stale')return;
-   if(result.status==='verified')notice(recoveryWanted?'새 비밀번호를 정해 주세요.':recoveryHint?'재설정 메일 링크를 확인하지 못했습니다. 메일의 링크를 다시 열어 주세요.':'로그인 상태를 확인했습니다.',recoveryHint&&!recoveryWanted);
+   if(result.status==='verified')notice(recoveryWanted?'새 비밀번호를 정해 주세요.':oauthError?'카카오 로그인을 마치지 못했어요. 다시 시도하거나 이메일로 로그인해 주세요.':recoveryHint?'재설정 메일 링크를 확인하지 못했습니다. 메일의 링크를 다시 열어 주세요.':'로그인 상태를 확인했습니다.',(recoveryHint&&!recoveryWanted)||oauthError);
    else if(result.status==='error'){userOut();notice('로그인 상태를 확인하지 못했습니다. 다시 로그인해 주세요.',true);}
-   else{userOut();recoveryWanted=false;notice(recoveryHint?'재설정 링크를 확인하지 못했습니다. 메일을 다시 요청해 주세요.':'이메일 아이디로 로그인해 주세요.',recoveryHint);}
+   else{userOut();recoveryWanted=false;notice(oauthError?'카카오 로그인을 마치지 못했어요. 다시 시도하거나 이메일로 로그인해 주세요.':recoveryHint?'재설정 링크를 확인하지 못했습니다. 메일을 다시 요청해 주세요.':'이메일 아이디로 로그인해 주세요.',recoveryHint||oauthError);}
   }
   function drain(){const pending=pendingEvent;pendingEvent=null;if(pending)defer(()=>restore(pending.session));}
   async function init(){
@@ -69,9 +78,11 @@
    if(typeof sdk?.createClient!=='function'){notice('계정 화면을 불러오지 못했어요. 새로고침한 뒤 다시 이용해 주세요.',true);return false;}
    state.busy=true;emit();
    try{
-    client=sdk.createClient(settings.url,settings.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,flowType:'implicit',storageKey:'dokdo-account-session-v1'}});
+    client=sdk.createClient(settings.url,settings.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:!oauthError,flowType:'implicit',storageKey:'dokdo-account-session-v1'}});
     const watcher=client.auth.onAuthStateChange((event,session)=>{
      if(disposed||event==='INITIAL_SESSION')return;
+     // Invalidate in-flight verification immediately, before a queued restore.
+     revision++;state.oauthComplete=false;
      if(event==='PASSWORD_RECOVERY')recoveryWanted=true;
      // Keep SDK calls outside its synchronous auth callback to avoid a lock deadlock.
      if(state.busy){pendingEvent={event,session};return;}
@@ -85,6 +96,16 @@
   function setMode(mode){
    if(!state.ready||state.busy||state.user||!['login','signup','forgot'].includes(mode))return false;
    state.mode=mode;notice(mode==='signup'?'이메일 아이디와 8자 이상의 비밀번호로 가입해 주세요.':mode==='forgot'?'가입한 이메일 주소로 재설정 링크를 받아요.':'이메일 아이디와 비밀번호를 입력해 주세요.');return true;
+  }
+  async function signInKakao(){
+   if(disposed||!state.ready||state.busy||state.user||!settings.kakaoEnabled||recoveryWanted||recoveryHint||!['login','signup'].includes(state.mode))return false;
+   const startingRevision=revision;state.busy=true;notice('카카오 로그인으로 이동하고 있어요.');let moved=false;
+   try{
+    const {data,error}=await client.auth.signInWithOAuth({provider:'kakao',options:{redirectTo:kakaoReturnUrl(settings,currentUrl),skipBrowserRedirect:true,queryParams:{scope:'profile_nickname'}}});
+    if(disposed||revision!==startingRevision||pendingEvent)return false;if(error||!validKakaoUrl(data?.url,settings,currentUrl))throw Error('OAuth start unavailable');
+    navigate(data.url);moved=true;return true;
+   }catch(e){if(!disposed)notice('카카오 로그인을 열지 못했어요. 다시 시도하거나 이메일로 로그인해 주세요.',true);return false;}
+   finally{if(!moved){state.busy=false;emit();drain();}}
   }
   async function submit({email='',password=''}={}){
    if(disposed||!state.ready||state.busy)return false;
@@ -123,10 +144,11 @@
    finally{state.busy=false;emit();drain();}
   }
   function dispose(){disposed=true;revision++;subscription?.unsubscribe();}
-  emit();return {init,setMode,submit,signOut,dispose,getState:()=>({...state,user:state.user?{...state.user}:null})};
+  emit();return {init,setMode,submit,signInKakao,signOut,dispose,getState:()=>({...state,user:state.user?{...state.user}:null})};
  }
  function mount(root){
   const d=root.document,$=id=>d.getElementById(id),form=$('account-form');
+  let continued=false;
   const view=state=>{
    const recovery=state.mode==='recovery',forgot=state.mode==='forgot',signed=!!state.user&&!recovery;
    $('account-status').textContent=state.message;$('account-status').dataset.error=String(state.error);
@@ -142,10 +164,13 @@
    for(const mode of ['login','signup']){$('mode-'+mode).disabled=!state.ready||state.busy;$('mode-'+mode).setAttribute('aria-pressed',String(state.mode===mode));}
    $('mode-forgot').hidden=recovery||forgot;$('mode-back').hidden=!forgot;
    for(const id of ['mode-forgot','mode-back','account-signout'])$(id).disabled=!state.ready||state.busy;
-   $('account-email-display').textContent=state.user?.email||'이메일 확인됨';
+   $('account-email-display').textContent=state.user?.email||(state.user?.provider==='kakao'?'카카오 계정으로 로그인했어요.':'로그인한 계정');
+   if($('kakao-signin')){$('kakao-option').hidden=!state.kakaoEnabled||recovery||forgot||signed;$('kakao-signin').disabled=!state.ready||state.busy;}
    if($('account-continue')){$('account-continue').href=returnPath(root.location.href);$('account-continue').textContent=returnPath(root.location.href)==='games.html'?'독도 놀이터로 돌아가기':'독도 스쿨로 돌아가기';}
+   if(state.ready&&state.oauthComplete&&state.user&&!recovery&&!continued){continued=true;root.location.assign(returnPath(root.location.href));}
   };
-  const controller=createController({config:root.DOKDO_AUTH_CONFIG,sdk:root.supabase,currentUrl:root.location.href,onChange:view});
+  const controller=createController({config:root.DOKDO_AUTH_CONFIG,sdk:root.supabase,currentUrl:root.location.href,onChange:view,navigate:url=>root.location.assign(url)});
+  if($('kakao-signin'))$('kakao-signin').onclick=()=>controller.signInKakao();
   for(const mode of ['login','signup','forgot'])$('mode-'+mode).onclick=()=>{if(controller.setMode(mode)){$('account-password').value='';$('account-email').focus();}};
   $('mode-back').onclick=()=>controller.setMode('login');
   form.onsubmit=async event=>{event.preventDefault();if(!form.reportValidity())return;const before=controller.getState();const ok=await controller.submit({email:$('account-email').value,password:$('account-password').value});$('account-password').value='';if(ok&&['login','signup'].includes(before.mode)&&controller.getState().user)root.location.assign(returnPath(root.location.href));};
@@ -153,5 +178,5 @@
   root.addEventListener('pageshow',event=>{if(event.persisted)root.location.reload();});
   root.DokdoLanguage?.mount(d.body);controller.init();return controller;
  }
- return {createController,validateConfig,returnPath,mount};
+ return {createController,validateConfig,returnPath,kakaoReturnUrl,validKakaoUrl,mount};
 });
