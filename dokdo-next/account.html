@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self' https://cqlvhrodebmhxbrhlmzu.supabase.co; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+<title>내 계정 · 독도 코리아 스쿨</title>
+<link rel="stylesheet" href="./assets/account.css">
+<script defer src="./assets/account-config.js"></script>
+<script defer src="./assets/vendor/supabase-2.118.0.js" integrity="sha384-TcHRA3zBbn+Lexh5n+Oil4guNPOS3rjNDpGRAN46u/s/mB2IZ50ceC6TYDU2yvgK" crossorigin="anonymous"></script>
+<script defer src="./assets/account.js"></script>
+</head>
+<body>
+<main class="account">
+ <a class="back" href="https://dokdo-school-v2.vercel.app/dokdo-next/">← 독도 코리아 스쿨</a>
+ <p class="eyebrow">DOKDO KOREA SCHOOL</p>
+ <h1 id="account-title">내 계정</h1>
+ <p id="connection-note">계정 서비스를 연결하고 있어요. 준비가 끝나면 이메일 아이디로 입장할 수 있어요.</p>
+ <p id="account-status" role="status" aria-live="polite">연결이 끝날 때까지 이메일과 비밀번호를 입력받지 않습니다.</p>
+ <section id="account-controls" hidden>
+  <div id="mode-buttons" class="modes" aria-label="계정 이용 방법">
+   <button id="mode-login" type="button" disabled aria-pressed="true">로그인</button>
+   <button id="mode-signup" type="button" disabled aria-pressed="false">처음 가입하기</button>
+  </div>
+  <form id="account-form">
+   <fieldset id="account-fields" disabled>
+    <label id="email-field">이메일 아이디<input id="account-email" name="email" type="email" inputmode="email" autocomplete="username" maxlength="254" required></label>
+    <label id="password-field"><span id="password-label">비밀번호</span><input id="account-password" name="password" type="password" autocomplete="current-password" maxlength="128" required></label>
+    <p id="password-hint" class="hint" hidden>비밀번호는 8자 이상으로 정해 주세요.</p>
+    <button id="account-submit" class="primary" type="submit">로그인</button>
+   </fieldset>
+  </form>
+  <button id="mode-forgot" class="text-button" type="button" disabled>비밀번호를 잊으셨나요?</button>
+  <button id="mode-back" class="text-button" type="button" hidden disabled>로그인으로 돌아가기</button>
+ </section>
+ <section id="signed-in" hidden>
+  <h2>로그인한 계정</h2><p id="account-email-display"></p>
+  <a id="account-continue" class="primary" href="./">독도 스쿨로 돌아가기</a>
+  <button id="account-signout" type="button" disabled>이 기기에서 로그아웃</button>
+ </section>
+ <p class="scope-note">이 기기의 학습·게임 기록은 그대로 남아요. 다른 기기에서 이어하기는 아직 준비 중이에요.</p>
+ <p class="hint">로그아웃해도 이 브라우저의 기존 학습·게임 기록은 지우지 않습니다.</p>
+ <noscript><p>계정 기능을 사용하려면 JavaScript를 켜 주세요. </p></noscript>
+</main>
+</body>
+</html>
