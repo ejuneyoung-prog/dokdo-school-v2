@@ -37,6 +37,13 @@ def wait_until(page,expression,timeout_ms=12000,step_ms=100):
   except Exception:pass  # mid-navigation; keep polling
   page.wait_for_timeout(step_ms)
  raise AssertionError('Timed out waiting for: '+expression)
+def more(page):
+ if page.locator('#v3-more').count() and not page.locator('#v3-more').get_attribute('open'):
+  # Boolean open attributes may be the empty string; inspect the DOM property.
+  if not page.eval_on_selector('#v3-more','e=>e.open'):page.click('#v3-more>summary')
+def explore(page):
+ if page.locator('#v3-explore').count():
+  more(page);page.click('#v3-explore')
 def check(name,condition,details=None):
     result={'name':name,'pass':bool(condition)}
     if details is not None:result['detail']=details
@@ -117,7 +124,7 @@ try:
         page.evaluate('()=>{'+INTRO_WATCH+'}')
         page.evaluate('DokdoApp.assetsReady')
         page.wait_for_timeout(100)
-        if lang=='en':page.click('#language');wait_until(page,'document.documentElement.lang==="en"')
+        if lang=='en':more(page);page.click('#language');wait_until(page,'document.documentElement.lang==="en"');page.click('#v3-more>summary') if page.locator('#v3-more[open]').count() else None
         return ctx,page
     for width in [390,768,1440]:
       for lang in ['ko','en']:
@@ -125,20 +132,21 @@ try:
         try:
             check(prefix+' first visit has no seeded rewards',page.evaluate('DokdoApp.state.xp===0 && DokdoApp.state.gangchiVisits.length===0 && Object.keys(DokdoApp.state.m).length===0'))
             check(prefix+' no horizontal document overflow',page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'))
-            check(prefix+' real labels and controls not baked into background',page.locator('#start-lesson').is_visible() and page.locator('#sound').is_visible())
+            check(prefix+' real labels and controls not baked into background',page.locator('#start-lesson').is_visible() and (page.locator('#play-entry-island').is_visible() if page.locator('.school-v3').count() else page.locator('#sound').is_visible()))
             check(prefix+' invite without credits is disabled',page.locator('#invite').is_disabled())
-            page.click('#nav-map')
+            more(page);page.click('#nav-map')
             check(prefix+' map information appears',page.locator('#map-card').is_visible() and page.locator('#today-card').is_hidden())
             check(prefix+' sourced outline comparison, no fake measured contours',page.locator('#outline-compare svg').count()==2 and page.locator('#map-card').inner_text().find('20m')==-1)
             page.click('[data-island=east]')
             check(prefix+' separate eastern-island facts', '98.6 m' in page.locator('#island-facts').inner_text())
             if width==1440 and lang=='ko':page.screenshot(path=str(OUT/'map-desktop.png'),full_page=True)
             page.click('#close-map')
-            check(prefix+' landscape and map are independently switchable',page.locator('#map-card').is_hidden() and page.locator('#today-card').is_visible())
+            check(prefix+' landscape and map are independently switchable',page.locator('#map-card').is_hidden() and (page.locator('.v3-home').is_visible() if page.locator('.school-v3').count() else page.locator('#today-card').is_visible()))
             page.click('#start-lesson')
             check(prefix+' age gate before lesson (no placement test)',page.locator('#age-dialog').is_visible() and page.evaluate('DokdoApp.lesson===null'))
             page.click('#age-form button[type=submit]')
             check(prefix+' missing age cannot start lesson',page.locator('#age-dialog').is_visible() and page.evaluate('DokdoApp.state.learningProfile==null'))
+            page.click('.v3-optional-profile>summary') if page.locator('.v3-optional-profile').count() else None
             page.fill('#nickname','Learner');page.select_option('#age-band','8-9');page.click('#age-form button[type=submit]')
             page.wait_for_selector('#teaching',state='visible')
             check(prefix+' low-primary pool is actually simple, everyone starts unplaced',page.evaluate("DokdoApp.lesson.item.cognitive<=2 && DokdoApp.lesson.items.length===5 && DokdoApp.state.learningProfile.course.track==='early' && DokdoApp.state.grade==='K' && DokdoApp.state.gcHit===0 && DokdoApp.state.xp===0"))
@@ -181,17 +189,17 @@ try:
             check(prefix+' skipped question keeps the unit open and says so',page.locator('#lesson-result .unit-open').is_visible())
             page.locator('#lesson-result .button.primary').click()
             check(prefix+' learned lights are visible',int(page.locator('#lights-count').inner_text().replace(',',''))>0)
-            page.click('#open-settings');page.check('#reduce-motion')
+            more(page);page.click('#open-settings');page.check('#reduce-motion')
             wait_until(page,'DokdoApp.state.visual.reduceMotion===true')
             check(prefix+' reduced motion is saved',page.evaluate('DokdoApp.state.visual.reduceMotion'))
             page.click('[data-close=settings-dialog]')
             # The credits button now lives with the map plate, so the map has
             # to be open before it can be reached.
-            page.click('#nav-map');page.wait_for_selector('#open-sources',state='visible')
+            more(page);page.click('#nav-map');page.wait_for_selector('#open-sources',state='visible')
             page.click('#open-sources')
             check(prefix+' art/source limitations are visible',page.locator('#sources-dialog').is_visible())
             page.click('[data-close=sources-dialog]')
-            page.click('#nav-map');page.wait_for_selector('#open-sources',state='hidden')
+            more(page);page.click('#nav-map');page.wait_for_selector('#open-sources',state='hidden')
             if lang=='ko' and width==390:page.screenshot(path=str(OUT/'mobile-learning-progress.png'),full_page=True)
             check(prefix+' translated main page after completion',page.evaluate('document.documentElement.lang')==lang)
         except Exception as e:check(prefix+' flow completed',False,str(e))
@@ -212,16 +220,17 @@ try:
         exported=json.loads(downloaded.read_text())
         check('real Blob download contains all 1513 records',len(exported['state']['m'])==1513)
         page.evaluate('DokdoApp.view("home")')
-        page.click('#invite')
+        explore(page);page.click('#invite')
         wait_until(page,'DokdoApp.state.gangchiVisits.length===10')
         check('ten visible visitors have one-minute budgets',page.evaluate('DokdoApp.state.gangchiVisits.every(v=>v.remainingMs<=60000&&v.remainingMs>50000)'))
         check('three beacons and 1513 lights are reflected by UI',page.locator('#beacon-count').inner_text().endswith('3') and page.locator('#lights-count').inner_text()=='1,513')
         before=page.evaluate('DokdoApp.state.gangchiVisits.map(v=>v.remainingMs)')
-        page.click('#open-settings');stopped=page.evaluate('DokdoApp.state.gangchiVisits.map(v=>v.remainingMs)')
+        more(page);page.click('#open-settings');stopped=page.evaluate('DokdoApp.state.gangchiVisits.map(v=>v.remainingMs)')
         page.wait_for_timeout(170)
         check('a dialog pauses active visitor time',page.evaluate('DokdoApp.state.gangchiVisits.map(v=>v.remainingMs)')==stopped)
         page.click('[data-close=settings-dialog]')
         page.screenshot(path=str(OUT/'desktop-heavy.png'),full_page=True)
+        explore(page)
         with page.expect_download() as d:page.click('#save-image')
         card=OUT/'actual-saved-card.png';d.value.save_as(card)
         check('actual canvas export creates PNG',card.read_bytes().startswith(b'\x89PNG') and card.stat().st_size>30000)
@@ -254,7 +263,7 @@ try:
         page.evaluate('DokdoApp.view("home")')
         page.screenshot(path=str(OUT/'mobile-heavy.png'),full_page=True)
         check('heavy user mobile layout remains within viewport',page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'))
-        page.click('#language');wait_until(page,'document.documentElement.lang==="en"')
+        more(page);page.click('#language');wait_until(page,'document.documentElement.lang==="en"')
         check('language switch preserves the shared new record',page.evaluate('Object.keys(DokdoApp.state.m).length===1513'))
     except Exception as e:check('file restore flow completed',False,str(e))
     finally:ctx.close()
@@ -287,7 +296,7 @@ try:
           pause(){this.paused=true;}
          };
         }""")
-        page.click('#sound');page.click('#sound')
+        explore(page);page.click('#sound');page.click('#sound')
         page.evaluate('window.__finishPlay.forEach(f=>f())');page.wait_for_timeout(70)
         check('late audio completion cannot undo a user mute (controlled media race)',page.evaluate('DokdoApp.audio.muted&&DokdoApp.audio.paused'))
         page.evaluate('(key)=>{const other=DokdoAppModel.fresh();other.xp=33;localStorage.setItem(key,JSON.stringify(other));}',KEY)

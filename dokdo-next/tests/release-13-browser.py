@@ -11,6 +11,13 @@ checks=[];errors=[];requests=[]
 # slower here than chromium -- so dismissing it once at startup was not
 # enough. Close it whenever it appears, as a visitor would.
 INTRO_WATCH="if(!window.__introWatch)window.__introWatch=setInterval(()=>{const d=document.getElementById('youtube-intro-dialog');if(d&&d.open)d.close();},50);"
+def more(page):
+ if page.locator('#v3-more').count() and not page.locator('#v3-more').get_attribute('open'):
+  # Boolean open attributes may be the empty string; inspect the DOM property.
+  if not page.eval_on_selector('#v3-more','e=>e.open'):page.click('#v3-more>summary')
+def explore(page):
+ if page.locator('#v3-explore').count():
+  more(page);page.click('#v3-explore')
 def unconfigured(src=None):
  """site-config.js with no backend or analytics id, so nothing is called out to.
 
@@ -63,7 +70,7 @@ try:
   # it before doing anything else, and so must this run -- otherwise every
   # click below lands on the dialog backdrop instead of the page.
   page.evaluate('()=>{'+INTRO_WATCH+'}')
-  check('Version 1.3 is running',page.evaluate('DokdoApp.version')=='1.3.0')
+  check('Existing record model 1.3 remains compatible',page.evaluate('DokdoApp.version')=='1.3.0')
   check('Fresh profile has no flags, credits, or visitors',page.evaluate('DokdoJourney.progress(DokdoApp.state).total===0 && DokdoApp.state.gangchiVisits.length===0 && DokdoApp.state.gcHit===0'))
   check('Weather terms are not silently accepted',page.evaluate('!DokdoApp.weatherClient.enabled'))
   check('No automatic translation is requested',page.get_attribute('html','translate')=='no')
@@ -81,6 +88,7 @@ try:
   page.evaluate("DokdoApp.view('home')")
   # Synthetic heavy record only. No user data or production services are involved.
   page.evaluate("()=>{const s=DokdoApp.seedDemo();for(const key of Object.keys(s.m).slice(500))delete s.m[key];delete s.visual.journey;DokdoAppModel.ensure(s);DokdoApp.store.state=s;DokdoApp.store.save();DokdoApp.view('home');}")
+  explore(page)
   baseline=page.evaluate('JSON.stringify(DokdoApp.state.m)')
   check('Heavy profile has 1,500 lifetime path credits',page.evaluate('DokdoJourney.progress(DokdoApp.state).total===1500'))
   for mode in ['day','sunset','night']:
@@ -102,6 +110,7 @@ try:
   page.evaluate("DokdoApp.view('home')")
   # Inject model output as a fixture, never describe it as retrieved weather.
   page.evaluate("()=>{const c=DokdoApp.weatherClient;c.data={temperature:17.5,cloud:90,wind:4,code:73,kind:'snow',at:Date.now(),fetchedAt:Date.now(),provider:'Open-Meteo',model:true};c.status='ready';}")
+  explore(page)
   page.select_option('#time-mode','night');check('Forecast fixture includes source time and no fabricated station claim', '17.5' in page.locator('#weather-status').inner_text())
   page.locator('.scene-panel').screenshot(path=str(OUT/'snow-fixture.png'))
   page.evaluate("DokdoApp.weatherClient.data=null;DokdoApp.weatherClient.status='unavailable'");page.select_option('#time-mode','auto')
@@ -118,7 +127,7 @@ try:
   d.value.save_as(OUT/'synthetic-backup.json');data=json.loads((OUT/'synthetic-backup.json').read_text())
   check('Backup includes all 500 synthetic question records',len(data['state']['m'])==500)
   check('Backup includes new path tiers',data['state']['visual']['journey']['legacy']==1500)
-  page.click('#language');page.evaluate("DokdoApp.view('home')");page.select_option('#time-mode','night')
+  more(page);page.click('#language');page.evaluate("DokdoApp.view('home')");explore(page);page.select_option('#time-mode','night')
   check('English environment interface uses English labels','circuit' in page.locator('#route-title').inner_text())
   check('English start lesson has translated context',page.evaluate("()=>{const q=DokdoStarter.getQuestion(920141,'en');return q.context.includes('1900')&&q.context.includes('Dokdo');}"))
   # Third-party asset hosts the site embeds by design are excluded above

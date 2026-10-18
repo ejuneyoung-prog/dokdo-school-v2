@@ -11,7 +11,7 @@ const wire=(id,prop,fn)=>{const el=$(id);if(el)el[prop]=fn;};
 const listen=(id,type,fn,opts)=>{const el=$(id);if(el)el.addEventListener(type,fn,opts);};
 const ko={};document.querySelectorAll('[data-i18n]').forEach(el=>ko[el.dataset.i18n]=el.textContent);
 const en={
- facilityTitle:'Places and facilities',facilitySource:'Official facility information ↗',
+ v3Learn:'Learn',v3Play:'Play',facilityTitle:'Places and facilities',facilitySource:'Official facility information ↗',
  skip:'Skip to content',brandMain:'Dokdo Korea',brandSub:'School',tagline:'A little learning. A brighter Dokdo.',
  demoBanner:'PREVIEW ONLY · reload resets this demo · no real accounts',demoReset:'Try an empty record',
  myDokdo:'My Dokdo',map:'Explore the map',learn:'Learn',journal:'Life journal',myRecords:'My records',
@@ -128,6 +128,7 @@ let storage;
 try{storage=isolated?new M.MemoryStorage():window.localStorage;}catch(e){storage={getItem(){throw e;},setItem(){throw e;}};}
 const store=new M.Store(storage);
 let state=store.load(),language=state?.visual?.language||'ko',currentView='home',mapOpen=false,lesson=null,ageNext=null;
+let lastLessonFirst=null;try{lastLessonFirst=isolated?null:Number(sessionStorage.getItem('dokdo-v3-last-first'))||null;}catch(e){}
 let busy=false,sceneTime=state?.scene?.timeSec||0,frameLast=0,drawAt=0,saveAt=0,sceneVisible=true,lightDirty=true,lightLayer=null,dirty=false,homeVideoIds=null;
 let soundOn=false,audioToken=0,audio=null,importCandidate=null,importOriginal=null,assetError=false;
 let writeQueue=Promise.resolve();
@@ -235,6 +236,7 @@ function view(id,force=false){
  if(id==='grade')renderGrade();
  frameLast=0;window.scrollTo({top:0,behavior:'instant'});
  $('main').focus({preventScroll:true});
+ document.dispatchEvent(new Event('dokdo:view'));
  return true;
 }
 /* A promotion is celebrated on the home view, where the learner actually is.
@@ -303,6 +305,7 @@ function renderHome(){
  $('legacy-banner').hidden=!olds.length||a.questions>0||s.visual.importedFrom;
  $('arrange-beacon').disabled=!a.beacons;
  $('start-review').disabled=!Object.entries(s.m).some(([id,r])=>C.isActive(id)&&(r.cor>0||r.courseLearned));
+ document.dispatchEvent(new Event('dokdo:present'));
  updateStorageStatus();
 }
 function renderGradeLine(idPrefix,s,a){
@@ -415,7 +418,7 @@ function renderYoutubeCard(){
  $('youtube-live-link').href=yt.liveUrl||yt.channelUrl||'#';
 }
 function maybeShowIntro(){
- if(isolated)return;
+ if(isolated||document.body.classList.contains('school-v3'))return;
  const yt=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.youtube)||{};
  const ids=Array.isArray(yt.videoIds)?yt.videoIds:[];if(!ids.length)return;
  const s=getS();if(!s||s.introOff)return;
@@ -455,7 +458,7 @@ function mapFacts(which='west'){
 }
 function toggleMap(on){
  const previous=mapOpen;mapOpen=on;if(!view('home')){mapOpen=previous;return false;}$('stage-grid').classList.toggle('map-open',on);$('map-card').hidden=!on;$('today-card').hidden=on;
- renderOutlines();mapFacts();paint();
+ renderOutlines();mapFacts();paint();if(on&&document.body.classList.contains('school-v3'))document.body.classList.add('v3-exploring');
  // 그림 출처는 지도 살펴보기에서만 보입니다. 거기가 그림과 실제 지형을
  // 견주어 보는 자리라, 출처가 필요한 유일한 화면입니다.
  if($('scene-bottom'))$('scene-bottom').hidden=!on;
@@ -580,6 +583,7 @@ function start(mode,forceAge=false){
 function begin(mode){
  const s=getS();C.ensureProfile(s.learningProfile);
  const items=mode==='placement'?[]:C.lesson(s.learningProfile,s.m,language,5,Math.random,mode);
+ if(document.body.classList.contains('school-v3')&&items.length>1){if(items[0].id===lastLessonFirst)[items[0],items[1]]=[items[1],items[0]];lastLessonFirst=items[0].id;try{if(!isolated)sessionStorage.setItem('dokdo-v3-last-first',String(lastLessonFirst));}catch(e){}}
  if(mode==='review'&&!items.length){toast(tr('새 독도 과정에서 배운 내용이 아직 없어요. 먼저 한 단원을 배워 주세요.','Learn a unit in the new Dokdo course before reviewing it.'));return;}
  lesson={mode,items,diagnostic:mode==='placement'?C.createPlacement(s.learningProfile):null,index:0,total:mode==='placement'?5:items.length,first:0,corrected:0,xp:0,answered:false,retrying:false,needsRetry:false};
  view('learn',true);$('learning-menu').hidden=true;$('course-catalog').hidden=true;$('lesson').hidden=false;$('lesson-result').hidden=true;nextItem();
@@ -639,6 +643,7 @@ function renderQuestion(teach=false){
  $('dont-know').hidden=q.mode!=='placement';
  renderTeachingHelp(q.item);material(q.item);
  if(!teach)$('question-title').focus({preventScroll:true});
+ document.dispatchEvent(new Event('dokdo:question'));
 }
 function renderTeachingHelp(item){
  const el=$('teaching-help'),list=$('teaching-help-list');if(!el||!list)return;list.replaceChildren();
@@ -707,13 +712,14 @@ async function choose(pick,skip=false){
   const takeaway=document.createElement('p');takeaway.className='feedback-takeaway';takeaway.textContent=tr('기억할 독도 한 가지 · ','One Dokdo fact to remember · ')+q.item.fact;
   const report=document.createElement('button');report.type='button';report.className='text-button dispute-button';report.textContent=tr('이 문제가 이상한가요? 이의제기','Something wrong with this question?');
   report.onclick=()=>openDispute(q.item);
-  $('question-feedback').append(head,correctLine,text,takeaway,note,report);
+  if(document.body.classList.contains('school-v3')){const details=document.createElement('details'),summary=document.createElement('summary');summary.id='v3-feedback-label';summary.textContent=tr('조금 더 알아보기','A little more detail');details.append(summary,takeaway,note,report);$('question-feedback').append(head,correctLine,text,details);}else $('question-feedback').append(head,correctLine,text,takeaway,note,report);
+  $('lesson-progress').value=q.index+1;document.dispatchEvent(new Event('dokdo:answered'));
   $('retry-question').hidden=!q.needsRetry;$('next-question').hidden=false;
   txt('next-question',q.index+1===q.total?tr('결과 보기','See results'):tr('다음으로','Continue'));
   $('question-feedback').scrollIntoView({block:'nearest',behavior:'smooth'});
  }catch(e){}finally{busy=false;}
 }
-$('read-done').onclick=()=>{if(!lesson)return;$('teaching').hidden=true;$('question-area').hidden=false;$('question-title').focus();};
+$('read-done').onclick=()=>{if(!lesson)return;$('teaching').hidden=true;$('question-area').hidden=false;$('question-title').focus();document.dispatchEvent(new Event('dokdo:question'));};
 $('retry-question').onclick=()=>{if(!lesson?.needsRetry||busy)return;lesson.retrying=true;lesson.answered=false;lesson.needsRetry=false;renderQuestion(false);};
 $('dont-know').onclick=()=>choose(-1,true);
 $('word-help')?.addEventListener('toggle',()=>{if(lesson&&$('word-help').open)lesson.usedHelp=true;});
@@ -777,7 +783,7 @@ function renderResult(q,outcome){
  // 틀린 문제를 넘기면 단원이 끝나지 않고 같은 단원이 다시 나옵니다. 이유를 말없이 되풀이하지 않게 여기서 알립니다.
  let open=null;
  if(q.mode==='daily'&&outcome&&outcome.completed===false&&q.items.some(it=>!getS()?.m?.[it.id]?.courseLearned)){open=document.createElement('p');open.className='fine unit-open';open.textContent=tr('틀린 문제는 다음 수업에 다시 나와요. 그 문제까지 맞히면 이 단원을 마쳐요.','The questions you missed come back next lesson. Get those right too and this unit is done.');}
- el.append(star,title,count,desc,note,...(open?[open]:[]),...(noNick?[noNick]:[]),...(done?[done]:[]),facts,row,renderShareRow());el.focus();
+ el.append(star,title,count,desc,note,...(open?[open]:[]),...(noNick?[noNick]:[]),...(done?[done]:[]),facts,row,renderShareRow());document.dispatchEvent(new Event('dokdo:result'));el.focus();
 }
 // 복사가 막히는 기기(권한, 앱 내부 브라우저)에서는 공유 목록 안에 문구 칸을 띄워 손으로 복사하게 합니다.
 // 창(prompt)은 새로 연 방송 탭 뒤에 숨거나 앱 내부 브라우저에서 무시될 수 있어 쓰지 않습니다.
@@ -1495,7 +1501,7 @@ $('bird-replay').onclick=async()=>{
  // The visit is drawn on the home canvas, so replaying it from the journal
  // looked like a dead button until the view followed the bird.
  try{const ok=await mutate(s=>M.replayBirds(s));toggleMap(false);
-  if(ok){view('home');toast(tr('새가 다시 찾아왔어요. 바다를 보세요.','The visitor is back — watch the sea.'));}
+  if(ok){view('home');if(document.body.classList.contains('school-v3')){document.body.classList.add('v3-exploring');$('stage-grid').scrollIntoView({block:'start'});}toast(tr('새가 다시 찾아왔어요. 바다를 보세요.','The visitor is back — watch the sea.'));}
   else toast(tr('아직 만난 생명이 없어요. 한 단원을 마치면 찾아옵니다.','No encounter yet. Finish a unit and a visitor will come.'));
  }catch(e){}};
 $('reduce-motion').onchange=async()=>{try{await mutate(s=>s.visual.reduceMotion=$('reduce-motion').checked);document.body.classList.toggle('motion-reduced',reduced());paint();}catch(e){}};
