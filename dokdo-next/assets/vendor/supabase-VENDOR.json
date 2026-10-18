@@ -1,0 +1,15 @@
+{
+  "package": "@supabase/supabase-js",
+  "version": "2.118.0",
+  "source": "https://registry.npmjs.org/@supabase/supabase-js/-/supabase-js-2.118.0.tgz",
+  "release": "https://github.com/supabase/supabase-js/releases/tag/v2.118.0",
+  "retrieved": "2026-10-19",
+  "method": "npm pack --ignore-scripts; read only UMD and LICENSE from tar archive; no install or package scripts",
+  "npm_integrity": "sha512-FxI8UXMVC2UG7IkeiI8fuQZqq2oI3JeSuN8MPIC2RLVaoEAxKS0nqE6kii9Ewpq8f9gNPM6git1Y8f0vN/QLFw==",
+  "archive_sha256": "f2d4f13a8d7a96bdbf338b6f6887a475d1bbca438c6668172b867a94e3d454cf",
+  "files": {
+    "supabase-2.118.0.js": "ee3be8de192b97cb1d73d1e95d6b82bb1f6b658c0f97c4ef757fc331996ed3d3",
+    "supabase-LICENSE": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936"
+  },
+  "script_integrity": "sha384-TcHRA3zBbn+Lexh5n+Oil4guNPOS3rjNDpGRAN46u/s/mB2IZ50ceC6TYDU2yvgK"
+}
