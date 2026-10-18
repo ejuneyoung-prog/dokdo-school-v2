@@ -25,3 +25,43 @@ test('unplaceable saved tray ends immediately and legacy records receive a clock
 test('school and playground share one daily concept reward without modifying lesson scores',()=>{const s=G.fresh(NOW);a.equal(G.rewardLearning(s,'concept-a',NOW),true);a.equal(G.earnTicket(s,'concept-a',true,NOW),false);a.equal(s.bonus,1);a.equal(s.xp,5);G.earnTicket(s,'concept-b',false,NOW);a.equal(G.rewardLearning(s,'concept-b',NOW),true);a.equal(G.rewardLearning(s,'concept-b',NOW),false);a.equal(s.xp,10);a.equal(s.bonus,2);G.validate(s);});
 test('corrupt records are rejected instead of silently replacing them',()=>{a.throws(()=>G.validate({}));const s=G.fresh(NOW);s.equipped.push('seal');a.throws(()=>G.validate(s));const g=G.newBlocks();g.board[0][0]=NaN;a.throws(()=>G.validateBlocks(g));});
 test('a serialized active game resumes with its prior XP, gifts and ticket balance',()=>{const s=G.fresh(NOW),r=G.begin(s,'blocks',NOW);r.active.game.score=350;G.checkpoint(s,r.active.id,r.active.game);const restored=G.validate(JSON.parse(JSON.stringify(s)));a.equal(restored.xp,35);a.equal(G.tickets(restored),2);a.ok(restored.equipped.includes('flower'));a.equal(restored.active.game.score,350);G.finish(restored,restored.active.id,restored.active.game);a.equal(restored.xp,35);});
+
+// Exercise the actual UI handlers with small DOM/event adapters. These regressions
+// concern elapsed browser time, native key defaults and asynchronous quiz rendering.
+const gameUiSource=require('node:fs').readFileSync(require('node:path').join(__dirname,'../assets/games.js'),'utf8');
+const vm=require('node:vm');
+function uiFragment(start,end){const from=gameUiSource.indexOf(start),to=gameUiSource.indexOf(end,from);a.ok(from>=0&&to>from,'UI handler boundaries exist');return gameUiSource.slice(from,to);}
+function uiContext(bindings,source){const context=vm.createContext(bindings);vm.runInContext(source,context);return context;}
+const blockFrameSource=uiFragment('function blockFrame(now)',"$('block-resume').onclick");
+test('visible block UI counts the whole delayed frame and paused time does not count',()=>{
+ let ended=0;const c=uiContext({G,paused:false,active:{id:'test'},kind:'blocks',game:G.newBlocks(),lastFrame:1000,lastSaved:0,dirtyRunner:false,frame:0,updateClock(){},endRun(){ended++;return Promise.resolve();},fail(e){throw e;},saveRun:async()=>{},requestAnimationFrame:()=>1},blockFrameSource);
+ c.blockFrame(31000);a.equal(c.game.over,true);a.equal(c.game.endReason,'time');a.equal(ended,1);
+ c.game=G.newBlocks();c.paused=true;c.lastFrame=1000;c.blockFrame(90000);a.equal(c.game.remainingMs,30000);
+ c.paused=false;c.lastFrame=0;c.blockFrame(100000);a.equal(c.game.remainingMs,30000);c.blockFrame(101000);a.equal(c.game.remainingMs,29000);
+});
+const jumpKeySource=uiFragment('function jumpKeyTarget(target)',"$('runner-resume').onclick")+uiFragment("document.addEventListener('keydown',e=>{if(!$('player-dialog').open",'let ending=null;');
+test('runner Space preserves native pause, back, music and resume controls while jump retains hold input',()=>{
+ const handlers={},nodes={'player-dialog':{open:true},'play-content':{hidden:false}};let hops=0,releases=0;
+ const c=uiContext({document:{addEventListener:(type,fn)=>handlers[type]=fn},$:id=>nodes[id],kind:'runner',jumpHeld:false,releaseHop(){releases++;c.jumpHeld=false;},hop(){hops++;}},jumpKeySource);
+ const event=(id,key=' ',repeat=false)=>({key,repeat,target:{id,closest(){return id==='background'?null:this;}},preventDefault(){this.prevented=true;}});
+ for(const id of ['runner-pause','player-back','game-sound','music-next','runner-resume']){const down=event(id);handlers.keydown(down);a.equal(down.prevented,undefined,id);c.jumpHeld=true;const up=event(id);handlers.keyup(up);a.equal(up.prevented,undefined,id+' keyup');}a.equal(hops,0);
+ const jump=event('runner-jump');handlers.keydown(jump);a.equal(jump.prevented,true);a.equal(hops,1);handlers.keydown(event('runner-jump',' ',true));a.equal(hops,1);
+ c.jumpHeld=true;const up=event('runner-jump');handlers.keyup(up);a.equal(up.prevented,true);a.equal(releases,6);
+ const background=event('background','ArrowUp');handlers.keydown(background);a.equal(background.prevented,true);a.equal(hops,2);
+});
+function quizUi(pending=false){
+ const nodes={};function element(){return{children:[],hidden:false,disabled:false,textContent:'',classList:{values:new Set(),add(x){this.values.add(x);}},replaceChildren(){this.children=[];},append(b){this.children.push(b);}};}const $=id=>nodes[id]||(nodes[id]=element());
+ const raw={id:1,difficulty:1,familyId:'test-concept',q:'Question',choices:['A','B','C'],answer:1,wrong:['wrong-A','unused-correct','wrong-C'],explain:'correct-explanation',fact:'fact',source:{url:'https://example.test/source',title:'source'}};
+ const record=G.fresh(NOW),calls=[];let resolve;
+ const c=uiContext({G,C:{getQuestion:()=>structuredClone(raw),shuffled:arr=>require('../assets/starter-course.js').shuffled(arr,()=>0)},window:{DokdoCourseData:{questions:[raw]}},document:{createElement:()=>element()},$,text:(id,value)=>$(id).textContent=value,record,question:null,questionOrder:[],questionBusy:false,blocked:false,tx(change){calls.push(change);if(pending)return new Promise(done=>{resolve=()=>done(change(record));});return Promise.resolve(change(record));},drawHub(){},tone(){},fail(e){throw e;}},uiFragment('function nextQuestion()',"$('earn-open').onclick"));
+ return{c,$,raw,record,calls,resolve:()=>resolve()};
+}
+test('ticket quiz shuffles display choices and maps correctness and wrong-answer explanations to authored indices',async()=>{
+ const correct=quizUi();correct.c.nextQuestion();a.deepEqual(correct.$('ticket-choices').children.map(b=>b.textContent),['B','C','A']);await correct.$('ticket-choices').children[0].onclick();a.equal(correct.record.bonus,1);a.match(correct.$('ticket-feedback').textContent,/정답: B\ncorrect-explanation/);a.ok(correct.$('ticket-choices').children[0].classList.values.has('correct'));a.deepEqual(correct.raw.choices,['A','B','C']);
+ const wrong=quizUi();wrong.c.nextQuestion();await wrong.$('ticket-choices').children[1].onclick();a.equal(wrong.record.bonus,0);a.match(wrong.$('ticket-feedback').textContent,/정답: B\nwrong-C/);a.ok(wrong.$('ticket-choices').children[0].classList.values.has('correct'));a.ok(wrong.$('ticket-choices').children[1].classList.values.has('wrong'));
+});
+test('pending ticket answer disables immediately and cannot paint or submit a replacement question',async()=>{
+ const q=quizUi(true);q.c.nextQuestion();const oldButtons=q.$('ticket-choices').children.slice(),answer=oldButtons[0].onclick();a.ok(oldButtons.every(b=>b.disabled));oldButtons[1].onclick();a.equal(q.calls.length,1);
+ q.c.nextQuestion();const newButtons=q.$('ticket-choices').children.slice();q.resolve();await answer;a.ok(newButtons.every(b=>!b.disabled&&b.classList.values.size===0));a.equal(q.$('ticket-feedback').hidden,true);a.equal(q.record.bonus,1);
+ await oldButtons[0].onclick();a.equal(q.calls.length,1,'detached old buttons cannot answer the new question');
+});

@@ -5,7 +5,8 @@
 window.DokdoAnalytics=(function(){
 'use strict';
 const cfg=()=>(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.analytics)||{};
-const gaId=()=>{const id=cfg().gaId;return typeof id==='string'&&/^G-[A-Z0-9]+$/.test(id)?id:'';};
+const liveMode=()=>typeof document!=='undefined'&&typeof document.querySelector==='function'&&document.querySelector('meta[name="dokdo-mode"]')?.content==='live';
+const gaId=()=>{if(!liveMode())return '';const id=cfg().gaId;return typeof id==='string'&&/^G-[A-Z0-9]+$/.test(id)?id:'';};
 let started=false;
 function start(){
  if(started)return;const id=gaId();if(!id)return;started=true;

@@ -52,7 +52,7 @@ const en={
  selectAge:'Select your age band',easyStart:'Start with very simple language, regardless of age.',continue:'Continue',
  agePreserve:'Existing game grades and records are not reduced.',settings:'Settings',reduceMotion:'Reduce motion',
  enableBirds:'Show birds after achievements',seaDensity:'Life in the sea',calm:'Calm',rich:'Lively',full:'More lively',
- changeAge:'Age and starting-point settings',soundRule:'Sound starts only when you turn it on. Leaving the app turns it off. Returning does not restart it.',
+ changeAge:'Age and starting-point settings',soundRule:'Music starts only when you turn it on. It continues while you use another app. It stops when you turn it off, close this page, or open another webpage in this tab. Returning does not restart it.',
  beaconHelp:'Only earned beacons can be moved. Choose a location that does not overlap another beacon.',
  beacon:'Beacon',position:'Position',savePosition:'Save this position',
  hallOfFame:'Hall of fame',
@@ -127,7 +127,7 @@ const isolated=mode!=='live';
 let storage;
 try{storage=isolated?new M.MemoryStorage():window.localStorage;}catch(e){storage={getItem(){throw e;},setItem(){throw e;}};}
 const store=new M.Store(storage);
-let state=store.load(),language=state?.visual?.language||'ko',currentView='home',mapOpen=false,lesson=null,ageNext=null;
+let state=store.load(),language=state?.visual?.language||'ko',currentView='home',mapOpen=false,lesson=null,ageNext=null,lastResult=null;
 let lastLessonFirst=null;try{lastLessonFirst=isolated?null:Number(sessionStorage.getItem('dokdo-v3-last-first'))||null;}catch(e){}
 let busy=false,sceneTime=state?.scene?.timeSec||0,frameLast=0,drawAt=0,saveAt=0,sceneVisible=true,lightDirty=true,lightLayer=null,dirty=false,homeVideoIds=null;
 let soundOn=false,audioToken=0,audio=null,importCandidate=null,importOriginal=null,assetError=false;
@@ -585,6 +585,7 @@ function begin(mode){
  const items=mode==='placement'?[]:C.lesson(s.learningProfile,s.m,language,5,Math.random,mode);
  if(document.body.classList.contains('school-v3')&&items.length>1){if(items[0].id===lastLessonFirst)[items[0],items[1]]=[items[1],items[0]];lastLessonFirst=items[0].id;try{if(!isolated)sessionStorage.setItem('dokdo-v3-last-first',String(lastLessonFirst));}catch(e){}}
  if(mode==='review'&&!items.length){toast(tr('새 독도 과정에서 배운 내용이 아직 없어요. 먼저 한 단원을 배워 주세요.','Learn a unit in the new Dokdo course before reviewing it.'));return;}
+ lastResult=null;
  lesson={mode,items,diagnostic:mode==='placement'?C.createPlacement(s.learningProfile):null,index:0,total:mode==='placement'?5:items.length,first:0,corrected:0,xp:0,answered:false,retrying:false,needsRetry:false};
  view('learn',true);$('learning-menu').hidden=true;$('course-catalog').hidden=true;$('lesson').hidden=false;$('lesson-result').hidden=true;nextItem();
 }
@@ -751,13 +752,15 @@ async function next(){
 }
 $('next-question').onclick=next;
 function renderResult(q,outcome){
- const el=$('lesson-result');el.replaceChildren();
+ // Keep display inputs in memory so translation never finishes or scores the lesson again.
+ lastResult={q,outcome};
+ const el=$('lesson-result'),detailsOpen=!!el.querySelector('.v3-result-details[open]');el.replaceChildren();
  const star=document.createElement('div');star.className='result-star';star.textContent='✧';
  const title=document.createElement('h2');title.textContent=q.mode==='placement'?tr('여기서 편하게 시작해요','Start comfortably here'):outcome.advanced?tr('다음 탐험이 열렸어요','Your next exploration is ready'):tr('오늘도 독도가 조금 더 빛나요','Dokdo shines a little brighter today');
  const count=document.createElement('p');count.className='result-score mono';count.textContent=`${q.first} / ${q.total}`;
  const desc=document.createElement('p');desc.textContent=q.mode==='placement'?C.unitInfo(outcome.unit)[language]+' · '+C.DIFFICULTY[language][outcome.suggested]:tr(`처음 답해서 맞힌 문제 ${q.first}개 · 해설 후 확인 ${q.corrected}개`,`${q.first} correct first attempts · ${q.corrected} corrections with help`);
  const note=document.createElement('p');note.className='fine';note.textContent=q.mode==='placement'?tr('다섯 문제로 학교 학년이나 학력을 판정하지 않습니다. 기존 성취는 유지됩니다.','Five questions do not certify a school grade. Previous achievements remain.'):tr('기억은 다른 날 다시 확인해요. 이미 얻은 불빛과 봉화는 사라지지 않습니다.','Review again on another day. Earned lights and beacons are never taken away.');
- const facts=document.createElement('div');facts.className='lesson-takeaway';const h=document.createElement('h3');h.textContent=tr('이번에 알게 된 독도','Dokdo knowledge to take away');const para=document.createElement('p');para.textContent=(q.mode==='placement'?q.diagnostic.answers.map(a=>C.getQuestion(a.id,language)):q.items).map(it=>it.fact).join(' ');facts.append(h,para);
+ const facts=document.createElement('div');facts.className='lesson-takeaway';const h=document.createElement('h3');h.textContent=tr('이번에 알게 된 독도','Dokdo knowledge to take away');const para=document.createElement('p');para.textContent=(q.mode==='placement'?q.diagnostic.answers:q.items).map(it=>C.getQuestion(it.id,language).fact).join(' ');facts.append(h,para);
  // 열두 단원을 다 마치면 예전에는 아무 말 없이 같은 단원만 되풀이됐습니다.
  // 무슨 일이 일어났는지, 다음에 무엇을 하면 되는지 여기서 알려 줍니다.
  let done=null;
@@ -783,7 +786,7 @@ function renderResult(q,outcome){
  // 틀린 문제를 넘기면 단원이 끝나지 않고 같은 단원이 다시 나옵니다. 이유를 말없이 되풀이하지 않게 여기서 알립니다.
  let open=null;
  if(q.mode==='daily'&&outcome&&outcome.completed===false&&q.items.some(it=>!getS()?.m?.[it.id]?.courseLearned)){open=document.createElement('p');open.className='fine unit-open';open.textContent=tr('틀린 문제는 다음 수업에 다시 나와요. 그 문제까지 맞히면 이 단원을 마쳐요.','The questions you missed come back next lesson. Get those right too and this unit is done.');}
- el.append(star,title,count,desc,note,...(open?[open]:[]),...(noNick?[noNick]:[]),...(done?[done]:[]),facts,row,renderShareRow());document.dispatchEvent(new Event('dokdo:result'));el.focus();
+ el.append(star,title,count,desc,note,...(open?[open]:[]),...(noNick?[noNick]:[]),...(done?[done]:[]),facts,row,renderShareRow());document.dispatchEvent(new Event('dokdo:result'));if(detailsOpen&&el.querySelector('.v3-result-details'))el.querySelector('.v3-result-details').open=true;el.focus();
 }
 // 복사가 막히는 기기(권한, 앱 내부 브라우저)에서는 공유 목록 안에 문구 칸을 띄워 손으로 복사하게 합니다.
 // 창(prompt)은 새로 연 방송 탭 뒤에 숨거나 앱 내부 브라우저에서 무시될 수 있어 쓰지 않습니다.
@@ -902,7 +905,7 @@ function renderJournalMore(){
   box.append(card);
  }
 }
-let hallSchoolFilter='E';
+let hallSchoolFilter='E',hallResponse=null;
 function hallShow(which){
  for(const id of['hall-not-configured','hall-loading','hall-error','hall-content'])$(id).hidden=id!==which;
 }
@@ -925,10 +928,12 @@ function hallRenderList(container,rows,cols){
   tr2.append(td);}tbody.append(tr2);}
  table.append(tbody);container.append(table);
 }
-async function renderHall(){
+async function renderHall(cached=false){
  if(!window.DokdoLeaderboard||!DokdoLeaderboard.isConfigured()){hallShow('hall-not-configured');return;}
+ if(cached&&!hallResponse)return;
  hallShow('hall-loading');
- const res=await DokdoLeaderboard.fetchWeekly();
+ const res=cached?hallResponse:await DokdoLeaderboard.fetchWeekly();
+ if(!cached)hallResponse=res;
  if(res.state==='error'){hallShow('hall-error');$('hall-error-text').textContent=tr('이번 주 기록을 불러오지 못했습니다: ','Could not load this week’s data: ')+res.error;return;}
  if(res.state==='not_configured'){hallShow('hall-not-configured');return;}
  const d=res.data||{};
@@ -1509,7 +1514,7 @@ $('enable-birds').onchange=async()=>{try{await mutate(s=>s.visual.birdsEnabled=$
 $('sea-density').onchange=async()=>{try{await mutate(s=>s.seaDensity=$('sea-density').value);paint();}catch(e){}};
 $('language').onclick=async()=>{
  if(lesson){toast(tr('수업을 마치거나 나온 뒤 언어를 바꿔 주세요.','Finish or leave the lesson before switching language.'));return;}
- try{const next=language==='ko'?'en':'ko';await mutate(s=>s.visual.language=next);language=next;translate();renderHome();renderJournal();if(currentView==='records')renderRecords();if(currentView==='learn'&&!lesson)renderCatalog();renderOutlines();mapFacts();
+ try{const next=language==='ko'?'en':'ko';await mutate(s=>s.visual.language=next);language=next;translate();renderHome();renderJournal();if(currentView==='records')renderRecords();if(currentView==='learn'&&!lesson){if(lastResult&&!$('lesson-result').hidden)renderResult(lastResult.q,lastResult.outcome);else renderCatalog();}if(currentView==='grade')renderGrade();if(currentView==='hall')renderHall(true);renderOutlines();mapFacts();
   if(soundOn){const label=trackLabel(trackIndex);if(label)$('sound').title=label;}
  }catch(e){}
 };
