@@ -23,3 +23,5 @@ body.school-v3{--bg:#f8faf5;--panel:#fff;--panel-2:#edf4eb;--ink:#203f35;--muted
 @media(max-width:560px){.school-v3 .site-header{display:grid;grid-template-columns:1fr auto;gap:5px 10px}.school-v3 .brand{grid-column:1;grid-row:1}.school-v3 .v3-version{grid-column:2;grid-row:1;margin:0;justify-self:end}.school-v3 .v3-nav{grid-column:1;grid-row:2;justify-content:flex-start;gap:10px}.school-v3 .v3-more{grid-column:2;grid-row:2}}
 
 @media(max-width:560px){.school-v3:lang(en) .v3-nav{gap:4px}.school-v3:lang(en) .v3-nav .nav-item{font-size:9px;padding:9px 5px;gap:3px}.school-v3:lang(en) .v3-nav .nav-item>span:first-child{font-size:13px}}
+
+@media(min-width:561px) and (max-width:900px){.school-v3 .site-header{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 10px}.school-v3 .brand{grid-column:1;grid-row:1}.school-v3 .v3-version{grid-column:2;grid-row:1;margin:0;justify-self:end}.school-v3 .v3-nav{grid-column:1;grid-row:2;justify-content:flex-start}.school-v3 .v3-more{grid-column:2;grid-row:2}}
