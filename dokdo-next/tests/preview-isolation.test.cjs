@@ -22,8 +22,8 @@ test('Explicit live mode preserves configured backend and analytics behavior',as
  h.context.window.DokdoAnalytics.track('question_answered',{qid:920001});a.equal(h.scripts.length,1);a.match(h.scripts[0].src,/gtag\/js\?id=G-TESTONLY$/);a.equal(h.context.window.dataLayer.length,3);
 });
 test('Switching a live document to preview blocks subsequent backend and analytics events',async()=>{
- const h=client('live');h.context.window.DokdoAnalytics.track('before');a.equal(h.context.window.dataLayer.length,3);
- h.context.document.querySelector=()=>({content:'preview'});await callBackend(h.context);h.context.window.DokdoAnalytics.track('after');
+ const h=client('live');h.context.window.DokdoAnalytics.track('share_click',{channel:'link'});a.equal(h.context.window.dataLayer.length,3);
+ h.context.document.querySelector=()=>({content:'preview'});await callBackend(h.context);h.context.window.DokdoAnalytics.track('share_click',{channel:'card'});
  a.equal(h.requests.length,0);a.equal(h.scripts.length,1);a.equal(h.context.window.dataLayer.length,3);
 });
 test('The generated portable preview strips operating backend and analytics configuration',()=>{

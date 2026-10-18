@@ -21,8 +21,8 @@ window.DOKDO_SITE_CONFIG=Object.freeze({
   * allows script.google.com / googleusercontent.com for this. */
  leaderboard:Object.freeze({apiUrl:'https://script.google.com/macros/s/AKfycbxhkR93f7__AekcpkHyd-pzfNHcPeQQK8HhHrtcRW6sLanzJGhPI3B2LRksxqrs1Uzelw/exec'}),
  /* GA4. No name/nickname/school/flag/nationality is ever attached to any
-  * event — only question id, correctness, question type, mode and the
-  * legacy grade code. See assets/analytics.js. */
+  * event. Only learning metrics, fixed navigation labels and numeric
+  * game metrics are permitted. Account pages do not load GA. See assets/analytics.js. */
  analytics:Object.freeze({gaId:'G-WJM7KL33ST'}),
  /* Kakao JS key is a public browser identifier, not a secret — protected by
   * domain registration in the Kakao developer console (must include this
