@@ -7,6 +7,7 @@ Neither mode contacts the old production API.
 import argparse,base64,functools,http.server,json,os,re,threading
 from pathlib import Path
 from playwright.sync_api import sync_playwright
+from browser_entry import enter_learning
 ROOT=Path(__file__).resolve().parents[1]
 p=argparse.ArgumentParser();p.add_argument('--mode',choices=['inline','http'],default='http')
 p.add_argument('--engine',choices=['chromium','webkit'],default='chromium')
@@ -124,6 +125,7 @@ try:
         page.evaluate('()=>{'+INTRO_WATCH+'}')
         page.evaluate('DokdoApp.assetsReady')
         page.wait_for_timeout(100)
+        enter_learning(page)
         if lang=='en':more(page);page.click('#language');wait_until(page,'document.documentElement.lang==="en"');page.click('#v3-more>summary') if page.locator('#v3-more[open]').count() else None
         return ctx,page
     for width in [390,768,1440]:

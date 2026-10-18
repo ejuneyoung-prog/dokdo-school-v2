@@ -3,6 +3,7 @@
 import argparse,base64,functools,http.server,json,os,re,threading
 from pathlib import Path
 from playwright.sync_api import sync_playwright
+from browser_entry import enter_learning
 ROOT=Path(__file__).resolve().parents[1]
 p=argparse.ArgumentParser();p.add_argument('--mode',choices=['inline','http'],default='http');p.add_argument('--engine',choices=['chromium','webkit'],default='chromium');p.add_argument('--browser',default=os.environ.get('CHROMIUM_EXECUTABLE'));p.add_argument('--output',default='test-results/release-13-browser');a=p.parse_args();OUT=Path(a.output);OUT.mkdir(parents=True,exist_ok=True)
 checks=[];errors=[];requests=[]
@@ -18,6 +19,70 @@ def more(page):
 def explore(page):
  if page.locator('#v3-explore').count():
   more(page);page.click('#v3-explore')
+def selector_checks(page):
+ check('Main starts with only the two area choices',page.locator('#v3-entry').is_visible() and page.locator('#v3-entry button,#v3-entry a').count()==2 and page.locator('#start-lesson').is_hidden())
+ check('The two choices identify learning and playground separately','독도배움터' in re.sub(r'\s+','',page.locator('#v3-enter-learn').inner_text()) and '독도놀이터' in re.sub(r'\s+','',page.locator('#v3-enter-play').inner_text()))
+ protected=page.evaluate('JSON.stringify(DokdoApp.state)')
+ page.locator('#v3-enter-learn').focus();page.locator('#v3-enter-learn').press('Space')
+ check('Space enters the learning dashboard through the actual choice',page.locator('#v3-entry').is_hidden() and page.locator('#start-lesson').is_visible())
+ page.evaluate("DokdoApp.view('learn');DokdoApp.view('home')")
+ check('Internal home navigation remains in the learning dashboard',page.locator('#v3-entry').is_hidden() and page.locator('#start-lesson').is_visible())
+ page.click('#v3-main-home')
+ check('Learning has an explicit return to the main selector',page.locator('#v3-entry').is_visible() and page.locator('#start-lesson').is_hidden())
+ # Observe a real keyboard-generated anchor click without navigating to the operating game.
+ page.locator('#v3-enter-play').evaluate("el=>el.addEventListener('click',e=>{e.preventDefault();window.__playEntryClick={trusted:e.isTrusted,href:el.href};},{once:true})")
+ page.locator('#v3-enter-play').focus();page.locator('#v3-enter-play').press('Enter')
+ check('Enter activates the playground link with a trusted native click',page.evaluate("!!window.__playEntryClick?.trusted && /\/games\.html(?:[?#]|$)/.test(window.__playEntryClick.href)"))
+ enter_learning(page);page.click('#brand-home')
+ check('Brand returns from learning to the main selector',page.locator('#v3-entry').is_visible())
+ page.evaluate("DokdoApp.view('home')")
+ check('An internal home return also leaves the chooser when no area was selected',page.locator('#v3-entry').is_hidden() and page.locator('#start-lesson').is_visible())
+ page.click('#v3-main-home')
+ check('Choosing areas does not alter existing student records',page.evaluate('JSON.stringify(DokdoApp.state)')==protected)
+ enter_learning(page);more(page);page.click('#language');wait_until(page,'document.documentElement.lang==="en"');page.click('#brand-home')
+ for width in [320,768]:
+  page.set_viewport_size({'width':width,'height':1100})
+  check(str(width)+'px English selector has no horizontal overflow',page.locator('#v3-entry').is_visible() and page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'))
+  check(str(width)+'px English selector names both destinations','Learning' in page.locator('#v3-enter-learn').inner_text() and 'Playground' in page.locator('#v3-enter-play').inner_text())
+  enter_learning(page)
+  check(str(width)+'px English learning dashboard has no horizontal overflow',page.locator('#start-lesson').is_visible() and page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'))
+  page.click('#brand-home')
+ page.set_viewport_size({'width':1440,'height':1100});enter_learning(page);more(page);page.click('#language');wait_until(page,'document.documentElement.lang==="ko"')
+ if page.locator('#v3-more[open]').count():page.click('#v3-more>summary')
+
+def learning_link_checks(ctx):
+ # Exercise actual query-string startup on localhost, even when other checks use inline HTML.
+ class EntryQuiet(http.server.SimpleHTTPRequestHandler):
+  def log_message(self,*args):pass
+ service=server;owned=service is None
+ if owned:
+  service=http.server.ThreadingHTTPServer(('127.0.0.1',0),functools.partial(EntryQuiet,directory=str(ROOT)));threading.Thread(target=service.serve_forever,daemon=True).start()
+ try:
+  for query in ['?area=learn','?play=learn']:
+   direct=ctx.new_page();direct.set_default_timeout(12000);direct.on('pageerror',lambda e:errors.append(str(e)))
+   direct.goto('http://127.0.0.1:'+str(service.server_port)+'/'+query,wait_until='domcontentloaded');wait_until(direct,'!!window.DokdoApp')
+   if query=='?area=learn':
+    check(query+' opens the learning dashboard directly',direct.locator('#v3-entry').is_hidden() and direct.locator('#start-lesson').is_visible())
+   else:
+    check(query+' preserves the direct course-catalogue destination',direct.locator('#v3-entry').is_hidden() and direct.locator('#view-learn').is_visible() and direct.locator('#course-catalog').is_visible() and direct.locator('#learning-menu').is_visible())
+   direct.close()
+ finally:
+  if owned:service.shutdown()
+
+def preview_selector_checks(browser):
+ # Build the same portable artifact handed to the professor, with real storage forbidden.
+ import importlib.util
+ spec=importlib.util.spec_from_file_location('chooser_preview_builder',ROOT/'tools/build_preview.py');builder=importlib.util.module_from_spec(spec);spec.loader.exec_module(builder)
+ artifact=OUT/'chooser-portable.html';builder.make_preview(artifact)
+ preview_ctx=browser.new_context(viewport={'width':768,'height':1100},reduced_motion='reduce');preview_ctx.route('https://cdn.jsdelivr.net/**',lambda r:r.abort())
+ preview=preview_ctx.new_page();preview.set_default_timeout(12000);preview.on('pageerror',lambda e:errors.append(str(e)))
+ preview.evaluate("Object.defineProperty(window,'localStorage',{get(){throw Error('Portable chooser must not read student storage')},configurable:true})")
+ preview.set_content(artifact.read_text(),wait_until='domcontentloaded');wait_until(preview,'!!window.DokdoApp')
+ check('Portable preview opens the same simple selector',preview.locator('#v3-entry').is_visible() and preview.locator('#start-lesson').is_hidden())
+ check('Portable playground choice points to the absolute operating URL in a new tab',preview.locator('#v3-enter-play').get_attribute('href')=='https://dokdo-school-v2.vercel.app/dokdo-next/games.html' and preview.locator('#v3-enter-play').get_attribute('target')=='_blank' and 'noopener' in (preview.locator('#v3-enter-play').get_attribute('rel') or ''))
+ enter_learning(preview);check('Portable preview can enter learning without real student storage',preview.locator('#start-lesson').is_visible() and preview.evaluate('DokdoApp.mode==="preview" && Object.keys(DokdoApp.state.m).length===0'))
+ preview_ctx.close()
+
 def unconfigured(src=None):
  """site-config.js with no backend or analytics id, so nothing is called out to.
 
@@ -70,6 +135,9 @@ try:
   # it before doing anything else, and so must this run -- otherwise every
   # click below lands on the dialog backdrop instead of the page.
   page.evaluate('()=>{'+INTRO_WATCH+'}')
+  selector_checks(page)
+  learning_link_checks(ctx)
+  preview_selector_checks(browser)
   check('Existing record model 1.3 remains compatible',page.evaluate('DokdoApp.version')=='1.3.0')
   check('Fresh profile has no flags, credits, or visitors',page.evaluate('DokdoJourney.progress(DokdoApp.state).total===0 && DokdoApp.state.gangchiVisits.length===0 && DokdoApp.state.gcHit===0'))
   check('Weather terms are not silently accepted',page.evaluate('!DokdoApp.weatherClient.enabled'))

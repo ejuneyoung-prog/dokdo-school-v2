@@ -6,6 +6,7 @@ actual course/DOM/event handlers/Blob remain the app's own implementations.
 import argparse,base64,functools,http.server,json,os,re,threading,time
 from pathlib import Path
 from playwright.sync_api import sync_playwright
+from browser_entry import enter_learning
 A=Path(__file__).resolve().parents[1]
 ap=argparse.ArgumentParser();ap.add_argument('--mode',choices=['inline','http'],default='http');ap.add_argument('--browser',default=os.environ.get('CHROMIUM_EXECUTABLE'));ap.add_argument('--engine',choices=['chromium','webkit'],default='chromium');ap.add_argument('--output',default=str(A/'test-results/clear-browser'));ap.add_argument('--phase',choices=['flow','matrix','screens','all'],default='all');args=ap.parse_args();OUT=Path(args.output);OUT.mkdir(parents=True,exist_ok=True)
 checks=[];errors=[];requests=[];rows=[]
@@ -69,6 +70,7 @@ try:
   # The channel intro opens once a day over the home view and swallows every
   # click underneath it, so dismiss it as a visitor would.
   p.evaluate('()=>{'+INTRO_WATCH+'}')
+  enter_learning(p)
   ck('live starts with zero question rewards',p.evaluate('Object.keys(DokdoApp.state.m).length===0 && DokdoApp.state.xp===0'))
   if args.phase in ['flow','all']:
    p.eval_on_selector('#start-lesson','e=>e.click()');p.eval_on_selector('#age-form button[type=submit]','e=>e.click()');ck('age gate remains mandatory',p.evaluate('DokdoApp.lesson===null'))
