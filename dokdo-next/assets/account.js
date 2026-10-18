@@ -151,7 +151,7 @@
   form.onsubmit=async event=>{event.preventDefault();if(!form.reportValidity())return;const before=controller.getState();const ok=await controller.submit({email:$('account-email').value,password:$('account-password').value});$('account-password').value='';if(ok&&['login','signup'].includes(before.mode)&&controller.getState().user)root.location.assign(returnPath(root.location.href));};
   $('account-signout').onclick=()=>controller.signOut();root.addEventListener('pagehide',()=>controller.dispose(),{once:true});
   root.addEventListener('pageshow',event=>{if(event.persisted)root.location.reload();});
-  controller.init();return controller;
+  root.DokdoLanguage?.mount(d.body);controller.init();return controller;
  }
  return {createController,validateConfig,returnPath,mount};
 });

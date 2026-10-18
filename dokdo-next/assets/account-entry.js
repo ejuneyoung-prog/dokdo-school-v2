@@ -12,5 +12,5 @@
    link.setAttribute('aria-label',en?'My account · sign in or sign out':'내 계정 · 로그인과 로그아웃');
   }
  }
- document.addEventListener('dokdo:present',refresh);document.addEventListener('dokdo:view',refresh);refresh();
+ document.addEventListener('dokdo:language',refresh);document.addEventListener('dokdo:present',refresh);document.addEventListener('dokdo:view',refresh);refresh();
 })();
