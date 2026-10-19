@@ -120,7 +120,7 @@ test('PASSWORD_RECOVERY and SIGNED_OUT events update the view outside the synchr
  f.emit('SIGNED_OUT',null);await flush();a.equal(f.c.getState().user,null);f.c.dispose();a.ok(f.calls.some(c=>c.name==='unsubscribe'));
 });
 test('Login and signup share exactly two fields; disconnected HTML starts hidden and disabled',()=>{
- const html=fs.readFileSync(path.join(__dirname,'../account.html'),'utf8');a.equal((html.match(/<input\s/g)||[]).length,2);a.match(html,/<input[^>]*type="email"/);a.match(html,/<input[^>]*type="password"/);a.match(html,/<section id="account-controls" hidden/);a.match(html,/<fieldset id="account-fields" disabled/);
+ const html=fs.readFileSync(path.join(__dirname,'../account.html'),'utf8');a.equal((html.match(/<form id="account-form">([\s\S]*?)<\/form>/)[1].match(/<input\s/g)||[]).length,2);a.match(html,/<input[^>]*type="email"/);a.match(html,/<input[^>]*type="password"/);a.match(html,/<section id="account-controls" hidden/);a.match(html,/<fieldset id="account-fields" disabled/);
 });
 test('DOM binding keeps the unconnected preparation page non-interactive',async()=>{
  const nodes={};const doc={getElementById(id){return nodes[id]||(nodes[id]={hidden:false,disabled:false,value:'',dataset:{},setAttribute(k,v){this[k]=v;},focus(){},reportValidity(){return true;}});}};
@@ -133,7 +133,7 @@ test('Post-login destinations have a closed same-site allowlist',()=>{
 function bindFixture(options={}){
  const f=fixture(options),nodes={},assigned=[],listeners={};
  const doc={getElementById(id){return nodes[id]||(nodes[id]={hidden:false,disabled:false,value:'',dataset:{},setAttribute(k,v){this[k]=v;},focus(){},reportValidity(){return true;}});}};
- const root={document:doc,location:{href:options.url||URL_NOW+'?next=games.html',assign:path=>assigned.push(path)},DOKDO_AUTH_CONFIG:CONFIG,supabase:f.sdk,addEventListener:(type,fn)=>listeners[type]=fn};
+ const root={document:doc,location:{href:options.url||URL_NOW+'?next=games.html',assign:path=>assigned.push(path)},DOKDO_AUTH_CONFIG:CONFIG,supabase:f.sdk,DokdoRecordsUI:options.recordsUI,addEventListener:(type,fn)=>listeners[type]=fn};
  const c=mount(root);return {...f,c,nodes,assigned,listeners};
 }
 test('The real form binding returns to the allowed destination only after verified sign-in',async()=>{
@@ -162,3 +162,5 @@ test('The vendored fixed SDK and license match the recorded hashes and HTML inte
  for(const [name,hash]of Object.entries(meta.files))a.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname,'../assets/vendor',name))).digest('hex'),hash);
  const bytes=fs.readFileSync(path.join(__dirname,'../assets/vendor/supabase-2.118.0.js')),sri='sha384-'+crypto.createHash('sha384').update(bytes).digest('base64');a.equal(meta.script_integrity,sri);a.ok(fs.readFileSync(path.join(__dirname,'../account.html'),'utf8').includes('integrity="'+sri+'"'));
 });
+
+test('Private record UI initialization failure cannot stop the existing login controller',async()=>{const f=bindFixture({recordsUI:{mount(){throw Object.assign(Error('storage blocked'),{name:'SecurityError'});}}});await flush();a.equal(f.c.getState().ready,true);a.equal(f.nodes['record-local-error'].hidden,false);f.nodes['account-email'].value=USER.email;f.nodes['account-password'].value='fictional-password';await f.nodes['account-form'].onsubmit({preventDefault(){}});a.deepEqual(f.assigned,['games.html']);});

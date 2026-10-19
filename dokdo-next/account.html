@@ -11,6 +11,15 @@
 <script defer src="./assets/ui-language.js"></script>
 <script defer src="./assets/account-config.js"></script>
 <script defer src="./assets/vendor/supabase-2.118.0.js" integrity="sha384-TcHRA3zBbn+Lexh5n+Oil4guNPOS3rjNDpGRAN46u/s/mB2IZ50ceC6TYDU2yvgK" crossorigin="anonymous"></script>
+<script defer src="./assets/dokdo-core.js"></script>
+<script defer src="./assets/course-data.js"></script>
+<script defer src="./assets/starter-course.js"></script>
+<script defer src="./assets/journey.js"></script>
+<script defer src="./assets/app-model.js"></script>
+<script defer src="./assets/games-core.js"></script>
+<script defer src="./assets/games-art.js"></script>
+<script defer src="./assets/personal-records.js"></script>
+<script defer src="./assets/personal-records-ui.js"></script>
 <script defer src="./assets/account.js"></script>
 </head>
 <body>
@@ -48,7 +57,29 @@
   <a id="account-continue" class="primary" href="./">독도 스쿨로 돌아가기</a>
   <button id="account-signout" type="button" disabled>이 기기에서 로그아웃</button>
  </section>
- <p class="scope-note">이 기기의 학습·게임 기록은 그대로 남아요. 다른 기기에서 이어하기는 아직 준비 중이에요.</p>
+ <section id="my-records" class="my-records" aria-labelledby="record-name">
+  <p class="eyebrow">MY DOKDO</p><h2 id="record-name">이 기기의 독도 기록</h2>
+  <p class="hint">이 기기에 쌓인 기록이에요. 로그인 계정에 자동으로 연결되지 않아요. 공용 기기에서는 다른 사람의 기록일 수 있어요.</p>
+  <p id="record-local-error" role="alert" hidden></p>
+  <canvas id="record-island-canvas" width="1120" height="430" role="img" aria-label="이 기기에서 가꾼 독도"></canvas>
+  <div class="record-card"><span class="record-tag">배우기</span><h3 id="record-learning"></h3><p id="record-learning-detail"></p><a href="./?area=learn">배움 이어가기 →</a></div>
+  <div class="record-card"><span class="record-tag">즐기기</span><h3 id="record-game"></h3><p id="record-game-detail"></p><a href="./games.html#games">최고 기록에 도전하기 →</a></div>
+  <div class="record-card"><span class="record-tag">가꾸기</span><h3 id="record-island"></h3><p id="record-next"></p><a href="./games.html#island">내 독도 가꾸기 →</a></div>
+  <section id="record-cloud" class="record-cloud" hidden aria-label="내 계정 기록 보관">
+   <h3>내 계정에 기록 보관</h3><p id="record-remote"></p><p id="record-saved-at" class="hint"></p>
+   <p id="record-cloud-status" role="status" aria-live="polite"></p>
+   <label class="record-consent"><input id="record-consent" type="checkbox">이 기기 기록은 제 기록이에요. 내 계정에 보관할게요.</label>
+   <button id="record-save" class="primary" type="button" disabled>내 계정에 저장</button>
+   <button id="record-restore" type="button" disabled>계정 기록으로 이어하기</button>
+   <button id="record-refresh" class="text-button" type="button">계정 기록 다시 확인</button>
+   <p class="hint">계정 저장은 이 버튼을 눌렀을 때 이뤄져요. 기존 기록을 지우거나 점수를 합산하지 않아요.</p>
+   <div id="record-restore-confirm" class="restore-confirm" hidden>
+    <p>이 기기 기록의 복구 사본을 먼저 남기고, 계정 기록으로 이어갑니다. 다른 창의 학습·게임을 마친 뒤 눌러 주세요. 기록이 줄거나 충돌하면 멈춥니다.</p>
+    <button id="record-restore-yes" type="button">복구 사본 남기고 이어하기</button><button id="record-restore-cancel" type="button">취소</button>
+   </div>
+  </section>
+ </section>
+ <p id="account-scope" class="scope-note">이 기기의 학습·게임 기록은 그대로 남아요. 다른 기기에서 이어하기는 아직 준비 중이에요.</p>
  <p class="hint">로그아웃해도 이 브라우저의 기존 학습·게임 기록은 지우지 않습니다.</p>
  <noscript><p>계정 기능을 사용하려면 JavaScript를 켜 주세요. </p></noscript>
 </main>
