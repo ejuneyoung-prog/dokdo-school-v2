@@ -26,9 +26,10 @@ for name in ['index.html','demo.html','question-review.html','games.html']:
         if ref.startswith('./'):check(name+' local asset '+ref,(ROOT/ref).is_file())
     csp=next((a.get('content','') for a in p.meta if a.get('http-equiv')=='Content-Security-Policy'),'')
     connect_allowlist={"'self'","'none'",'https://api.open-meteo.com','https://script.google.com','https://script.googleusercontent.com','https://*.googleusercontent.com','https://www.google-analytics.com','https://*.google-analytics.com','https://www.googletagmanager.com','https://*.analytics.google.com'}
+    if name in ['index.html','games.html']:connect_allowlist.add('https://cqlvhrodebmhxbrhlmzu.supabase.co')
     connect_directive=next((d for d in csp.split(';') if d.strip().startswith('connect-src')),'')
     connect_tokens=connect_directive.strip().split()[1:]
-    check(name+' connect-src only names the approved weather/leaderboard/analytics endpoints',bool(connect_tokens) and set(connect_tokens)<=connect_allowlist,connect_tokens)
+    check(name+' connect-src only names the approved weather/leaderboard/analytics/account endpoints',bool(connect_tokens) and set(connect_tokens)<=connect_allowlist,connect_tokens)
     script_allowlist={"'self'",'https://www.googletagmanager.com','https://t1.kakaocdn.net'}
     script_directive=next((d for d in csp.split(';') if d.strip().startswith('script-src')),'')
     script_tokens=script_directive.strip().split()[1:]
