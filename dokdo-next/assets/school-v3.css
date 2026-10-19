@@ -53,3 +53,198 @@ body.school-v3{--bg:#f8faf5;--panel:#fff;--panel-2:#edf4eb;--ink:#203f35;--muted
 @media(max-width:380px){.school-v3 .site-header{padding:12px 14px;column-gap:7px}.school-v3 .brand strong{font-size:15px}.school-v3 .brand svg{width:20px}.school-v3 .brand{gap:6px}html[lang=en] .school-v3 .brand strong{font-size:13px}}
 
 @media(max-width:380px){.school-v3 .v3-nav .nav-item{font-size:11px;padding:9px 6px}.school-v3 .v3-nav .nav-item>[aria-hidden=true]{display:none}}
+
+/* Readability review: Gmarket Sans, readable labels and reflowing stage cards.
+   Presentation only; grade order, progress, records and authentication stay authoritative. */
+body.school-v3{--body:GmarketSans,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;font:500 1rem/1.75 var(--body);letter-spacing:-.02em;min-width:0;--muted:#49634f;--dim:#49634f}
+.school-v3 :is(button,input,select,textarea){font-family:var(--body)}
+.school-v3 :is(h1,h2,h3,strong,b){font-weight:700}
+.school-v3 main,.school-v3 .view,.school-v3 .v3-main-column,.school-v3 .v3-side-column{min-width:0}
+.school-v3 :is(h1,h2,h3,p,small,b,.fine,.lead){overflow-wrap:anywhere}
+.school-v3 :is(button,.button,.text-button,.profile-button,summary,select,input:not([type=checkbox]):not([type=radio])){min-height:2.75rem;min-width:2.75rem}
+.school-v3 :is(.button,.text-button,.profile-button,.nav-item){font-size:1rem;line-height:1.55;white-space:normal}
+.school-v3 :is(.button,.text-button){height:auto;max-width:100%}
+.school-v3 :is(.fine,.lead,.record-panel>p,.menu-course p,.question-context,.question-material,.question-feedback,.feedback-takeaway,.lesson-takeaway p){font-size:1rem;line-height:1.8;color:#42604b}
+.school-v3 .mono{font-family:var(--body)!important;font-variant-numeric:tabular-nums}
+.school-v3 :is(.v3-eyebrow,.v3-entry-kicker,.eyebrow){font-size:.875rem;line-height:1.6;letter-spacing:.06em;color:#49634f}
+.school-v3 .site-header{flex-wrap:wrap;gap:12px}
+.school-v3 .brand{min-width:0;white-space:normal}
+.school-v3 .brand strong{font-size:1.375rem;line-height:1.4;overflow-wrap:anywhere}
+.school-v3 .brand svg{width:2.25rem;height:2.25rem;flex:none}
+.school-v3 .brand small{font-size:.875rem;color:#49634f}
+.school-v3 .v3-version{font-size:.75rem;line-height:1.4}
+.school-v3 .v3-nav{flex-wrap:wrap;gap:8px;min-width:0}
+.school-v3 .v3-nav .nav-item{font-size:1rem;min-height:2.75rem;padding:10px 12px;gap:8px;color:#345940}
+.school-v3 .v3-nav .nav-item>span:first-child{font-size:1.5rem;line-height:1;flex:none}
+.school-v3 .v3-more>summary{font-size:1rem;white-space:normal;padding:8px;min-width:2.75rem}
+.school-v3 .login-entry{font-size:1rem;white-space:normal;line-height:1.55;min-width:2.75rem;min-height:2.75rem}
+.school-v3 .v3-more-panel{width:min(22rem,calc(100vw - 32px));max-width:calc(100vw - 32px);max-height:75dvh}
+.school-v3 .v3-more-destination{grid-template-columns:2rem minmax(0,1fr) 1rem;gap:10px}
+.school-v3 .v3-more-destination>span:first-child{font-size:2rem}
+.school-v3 .v3-more-destination strong{font-size:1.125rem}
+.school-v3 .v3-more-destination small{font-size:.875rem;color:#4a644f}
+.school-v3 .v3-more-channel small{color:#765133}
+.school-v3 .v3-utility{grid-template-columns:repeat(auto-fit,minmax(min(100%,8rem),1fr))}
+.school-v3 .v3-utility .nav-item,.school-v3 .v3-utility .header-actions :is(button,a),.school-v3 .v3-profile-menu,.school-v3 .v3-versions-link{font-size:1rem;min-height:2.75rem;white-space:normal}
+.school-v3 .v3-utility .header-actions{grid-template-columns:repeat(auto-fit,minmax(min(100%,8rem),1fr))}
+.school-v3 .v3-entry-welcome h1{font-size:clamp(1.75rem,4vw,2.375rem);line-height:1.45}
+.school-v3 .v3-entry-welcome #v3-entry-description,.school-v3:lang(en) .v3-choice-description,.school-v3 .v3-choice-description{font-size:1rem;line-height:1.75}
+.school-v3 .v3-choice-action{font-size:1rem;min-height:2.75rem;line-height:1.6}
+.school-v3 .v3-choice-name,.school-v3:lang(en) .v3-choice-name{font-size:clamp(1.625rem,3.1vw,2.125rem);line-height:1.45;word-break:normal;overflow-wrap:anywhere}
+.school-v3 .v3-choice{padding:20px;gap:4px}
+.school-v3 .v3-choice-art{height:7rem;min-width:0}
+.school-v3 :is(.v3-profile-entry,.v3-language-entry,.v3-live-entry){font-size:1rem;min-height:2.75rem;line-height:1.6;white-space:normal;max-width:100%}
+.school-v3 .v3-welcome h1{font-size:clamp(1.75rem,3.8vw,2.375rem);line-height:1.45}
+.school-v3 .v3-welcome p:last-child{font-size:1rem;color:#49634f}
+.school-v3 .v3-welcome canvas{width:6rem;height:5rem;max-width:25%}
+.school-v3 .v3-next-top{flex-wrap:wrap;font-size:.875rem;line-height:1.6;color:#49633b}
+.school-v3 .v3-next h2{font-size:1.5rem;line-height:1.6;margin:16px 0 20px}
+.school-v3 .v3-card-title{flex-wrap:wrap;gap:8px 16px}
+.school-v3 .v3-card-title h2,.school-v3 .v3-island-card .v3-card-title h2{font-size:1.25rem;line-height:1.6}
+.school-v3 .v3-card-title>span{font-size:.875rem;color:#49634f}
+.school-v3 .v3-path{padding:0;display:grid;gap:12px}
+.school-v3 .v3-path:before{display:none}
+.school-v3 .v3-stop{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:10px 14px;min-height:0;padding:16px;border:1px solid #d3dfc9;border-radius:16px;background:#fff}
+.school-v3 .v3-stop.current{border:2px solid #477b46;background:#edf5e4}
+.school-v3 .v3-stop-icon{width:3rem;height:3rem;font-size:1.125rem;border-bottom-width:3px;color:#4c6943}
+.school-v3 .v3-stop.current .v3-stop-icon{font-size:1.5rem;background:#3f7c40;border-color:#3f7c40}
+.school-v3 .v3-stop small{font-size:.875rem;line-height:1.6;color:#4d684b;margin-bottom:4px;letter-spacing:0}
+.school-v3 .v3-stop b{font:700 1rem/1.65 var(--heading);color:#31533b;word-break:normal}
+.school-v3 .v3-now{display:block;grid-column:2;justify-self:start;margin:0;font-size:.875rem;white-space:normal;color:#345d36;padding:4px 9px}
+.school-v3 .v3-path-card>.text-button{font-size:1rem;margin:12px 0 0;padding:8px 0;min-height:2.75rem}
+.school-v3 .v3-island-stats{font-size:1rem;line-height:1.6;flex-wrap:wrap;gap:8px}
+.school-v3 .v3-island-card>p,.school-v3 .v3-island-card>a,.school-v3 .v3-play-card a{font-size:1rem;line-height:1.75;color:#3c633f}
+.school-v3 .v3-island-card>a,.school-v3 .v3-play-card a{min-height:2.75rem;display:flex;align-items:center;justify-content:center;text-decoration:underline;text-underline-offset:4px}
+.school-v3 .v3-island-card>small,.school-v3 .v3-home-note{font-size:.875rem;line-height:1.75;color:#52694c}
+.school-v3 .v3-mini-icon{font-size:2.25rem;flex:none;color:#477b46}
+.school-v3 .v3-review-card h2,.school-v3 .v3-play-card h2{font-size:1.125rem;line-height:1.6}
+.school-v3 .v3-review-card p,.school-v3 .v3-play-card p{font-size:1rem;line-height:1.75;color:#49634f}
+.school-v3 #v3-review-slot .button{font-size:1rem;min-height:2.75rem;padding:8px 0}
+.school-v3 #v3-review-slot .button:disabled{color:#52694c}
+.school-v3 .v3-info-heading>p:last-child,.school-v3 .v3-info-links :is(a,button),.school-v3 .v3-video strong,.school-v3 .v3-channel-actions .button.secondary{font-size:1rem;line-height:1.75;min-height:2.75rem}
+.school-v3 .v3-video small,.school-v3 .v3-latest .card-heading .text-button{font-size:.875rem;line-height:1.7;color:#49634f}
+.school-v3 .v3-info-links{align-items:stretch}
+.school-v3 .v3-info-links :is(a,button){max-width:100%}
+.school-v3 .field>span,.school-v3 .check-row,.school-v3 .v3-optional-profile>summary,.school-v3 #age-recover-link,.school-v3 #age-form>.fine{font-size:1rem;line-height:1.75}
+.school-v3 .lesson-top{flex-wrap:wrap;gap:10px 16px}
+.school-v3 .lesson-top>.text-button{font-size:1rem;white-space:normal}
+.school-v3 .lesson-top>span,.school-v3 .lesson-context,.school-v3 .pill,.school-v3 .v3-question-scope,.school-v3 .v3-question-guide{font-size:.875rem;line-height:1.75;color:#49634f}
+.school-v3 .lesson h2{font-size:1.5rem;line-height:1.65}
+.school-v3 .answer-option{font-size:1.125rem;line-height:1.75;min-width:0;padding:14px;gap:12px}
+.school-v3 .answer-number{width:2rem;height:2rem;min-width:2rem;font-size:1rem;flex:none;color:#47613e}
+.school-v3 .question-feedback h3{font-size:1.125rem}
+.school-v3 :is(.question-feedback details,.feedback-takeaway,.question-citations,.word-help,.v3-source-details,.v3-result-details,.v3-result-play){font-size:1rem;line-height:1.8;color:#42604b}
+.school-v3 :is(.question-feedback summary,.word-help summary,.v3-source-details>summary,.v3-result-details>summary){min-height:2.75rem;padding-block:8px}
+.school-v3 .question-actions{flex-wrap:wrap}
+.school-v3 .question-actions .secondary{font-size:1rem;white-space:normal}
+.school-v3 .card-heading{flex-wrap:wrap;gap:10px 16px;align-items:start}
+.school-v3 .record-panel{padding:22px;min-width:0}
+.school-v3 .record-panel h2{font-size:1.25rem;line-height:1.6}
+.school-v3 .gangchi-gauge{min-width:0;flex-wrap:wrap}
+/* Short portrait cards replace minimum-width horizontal pills. Status is visible in words. */
+.school-v3 .grade-ladder{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,8.5rem),1fr));gap:12px;align-items:stretch}
+.school-v3 .grade-row{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:10px;min-width:0;min-height:9rem;padding:16px 14px;border:1px solid #cdddc6;border-radius:16px;background:#f5f8ef;color:#34563d;font-size:1rem;box-shadow:none}
+.school-v3 .grade-row-index{display:grid;place-items:center;min-width:2rem;width:2rem;height:2rem;border-radius:9px;background:#e3edd9;color:#345c3e;font:700 .875rem var(--heading)}
+.school-v3 .grade-row-name{font-size:1rem;line-height:1.6;font-weight:700;max-width:100%;word-break:normal;overflow-wrap:anywhere}
+.school-v3 .grade-row::after{content:'다음 단계';display:block;position:static;width:auto;height:auto;margin:auto 0 0;padding:4px 8px;border-radius:7px;background:#e7eee0;color:#49634f;box-shadow:none;font:500 .875rem/1.6 var(--body);white-space:normal}
+.school-v3 .grade-row.done{background:#eff5e6;border-color:#a6c397;color:#315b3b;box-shadow:none}
+.school-v3 .grade-row.done::after{content:'✓ 완료';background:#dcebd0;color:#315b3b}
+.school-v3 .grade-row.current{background:#e7f1dd;border:2px solid #3b7841;box-shadow:none}
+.school-v3 .grade-row.current::after{content:'● 현재 단계';background:#366f3c;color:#fff}
+.school-v3:lang(en) .grade-row::after{content:'Up next'}
+.school-v3:lang(en) .grade-row.done::after{content:'✓ Completed'}
+.school-v3:lang(en) .grade-row.current::after{content:'● Current stage'}
+.school-v3 .badges-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,8.5rem),1fr));gap:12px}
+.school-v3 .badge-tile{aspect-ratio:auto;min-height:10rem;padding:16px 12px;gap:12px;background:#f3f7ed;border:1px solid #cdddc6;border-radius:16px;justify-content:flex-start;box-shadow:none}
+.school-v3 .badge-tile .badge-icon{font-size:2.5rem;line-height:1.2;filter:grayscale(.8);opacity:.75}
+.school-v3 .badge-tile b,.school-v3 .badge-tile.earned b{font-size:1rem;line-height:1.6;color:#31563b;text-shadow:none;font-weight:700;overflow-wrap:anywhere}
+.school-v3 .badge-tile::after{content:'도전 중';font-size:.875rem;line-height:1.6;color:#49634f;margin-top:auto}
+.school-v3 .badge-tile.earned{background:#e8f2dd;border:2px solid #5f8b47;box-shadow:none}
+.school-v3 .badge-tile.earned::after{content:'✓ 획득';color:#315b3b;font-weight:700}
+.school-v3:lang(en) .badge-tile::after{content:'To earn'}
+.school-v3:lang(en) .badge-tile.earned::after{content:'✓ Earned'}
+.school-v3 .badges-more>summary{font-size:1rem;line-height:1.7;min-height:2.75rem}
+.school-v3 .badges-empty{grid-column:1/-1;font-size:1rem;line-height:1.75}
+.school-v3 .site-footer,.school-v3 .footer-base{font-size:.875rem;line-height:1.75}
+@media(max-width:1000px){
+ .school-v3 .site-header{grid-template-columns:minmax(0,1fr) auto auto}
+ .school-v3 .site-header>.v3-nav{grid-column:1/-1;grid-row:2}
+ .school-v3 .site-header>.login-entry{grid-column:1/-1;grid-row:3;justify-self:stretch;min-width:0}
+ .school-v3 .v3-more-panel{right:0}
+ .school-v3 .v3-columns{display:grid;grid-template-columns:minmax(0,1fr);gap:24px}
+ .school-v3 .v3-side-column{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:18px;align-items:start}
+}
+@media(max-width:560px){
+ .school-v3 main{padding:24px 16px 32px}
+ .school-v3 .site-header{padding:14px 16px;gap:10px}
+ .school-v3 .brand strong{font-size:1.125rem}
+ .school-v3 .brand svg{width:2rem;height:2rem}
+ .school-v3 .v3-nav{width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,8rem),1fr))}
+ .school-v3:lang(en) .v3-nav{gap:8px}
+ .school-v3:lang(en) .v3-nav .nav-item{font-size:1rem;padding:10px 12px;gap:8px}
+ .school-v3:lang(en) .v3-nav .nav-item>span:first-child{font-size:1.5rem}
+ .school-v3 .v3-welcome{align-items:start;gap:12px}
+ .school-v3 .v3-next{padding:20px}
+ .school-v3 .v3-island-card{padding:18px}
+ .school-v3 .record-panel{padding:18px 14px}
+ .school-v3 .v3-main-home{margin-bottom:20px}
+ .school-v3 .course-unit-list{grid-template-columns:repeat(auto-fit,minmax(min(100%,8.5rem),1fr))}
+ .school-v3 .unit-button{font-size:1rem;line-height:1.7;padding:16px;min-width:0}
+ .school-v3 .unit-button b{font-size:1rem;line-height:1.6}
+ .school-v3 .v3-choice-grid{max-width:none}
+ .school-v3 .learning-menu{min-width:0}
+ .school-v3 .menu-course,.school-v3 .course-catalog{padding:20px;min-width:0}
+}
+@media(max-width:320px){
+ .school-v3 .site-header{grid-template-columns:minmax(0,1fr) auto;padding:12px}
+ .school-v3 .site-header>.brand{grid-column:1/-1;grid-row:1}
+ .school-v3 .site-header>.v3-version{grid-column:1;grid-row:2;justify-self:start}
+ .school-v3 .site-header>.v3-more{grid-column:2;grid-row:2}
+ .school-v3 .site-header>.v3-nav{grid-column:1/-1;grid-row:3}
+ .school-v3 .site-header>.login-entry{grid-column:1/-1;grid-row:4}
+ .school-v3 main{padding-inline:12px}
+ .school-v3 .v3-welcome{display:block}
+ .school-v3 .v3-welcome canvas{display:none}
+ .school-v3 .v3-next,.school-v3 .record-panel,.school-v3 .course-catalog,.school-v3 .result-card,.school-v3 #teaching{padding:14px}
+ .school-v3 .v3-stop{grid-template-columns:minmax(0,1fr);padding:14px}
+ .school-v3 .v3-now{grid-column:1}
+ .school-v3 .v3-choice{padding:14px 10px}
+ .school-v3 .v3-choice-name{font-size:1.5rem}
+ .school-v3 .v3-more-panel{position:fixed;left:12px;right:12px;top:12px;width:auto;max-width:none;max-height:80dvh}
+}
+/* Keep all 33 stages available without an always-open wall of tiny badges. */
+.school-v3 .grade-ladder{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.school-v3 .grade-group{min-width:0;border:1px solid #cdddc6;border-radius:14px;background:#f7faf3;padding:0 14px}
+.school-v3 .grade-group>summary{display:flex;align-items:center;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;cursor:pointer;min-height:3.5rem;padding:12px 0;font-size:1rem;list-style:none}
+.school-v3 .grade-group>summary::-webkit-details-marker{display:none}
+.school-v3 .grade-group>summary:after{content:'＋';font-size:1.5rem;line-height:1;flex:none;color:#315b3b}
+.school-v3 .grade-group[open]>summary:after{content:'−'}
+.school-v3 .grade-group>summary strong{font-size:1rem;color:#315b3b}
+.school-v3 .grade-group>summary>span{font-size:.875rem;line-height:1.6;color:#49634f}
+.school-v3 .grade-group[open]{background:#fff;border-color:#9bb88e}
+.school-v3 .grade-group-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,8.5rem),1fr));gap:12px;padding:4px 0 16px;min-width:0}
+.school-v3 .grade-row{min-height:8rem;padding:14px 12px;gap:8px}
+.school-v3 .grade-row::after{display:none;content:none}
+.school-v3 .grade-row-status{display:block;margin-top:auto;padding:4px 8px;border-radius:7px;background:#e7eee0;color:#49634f;font-size:.875rem;line-height:1.6;white-space:normal;overflow-wrap:anywhere}
+.school-v3 .grade-row.done .grade-row-status{background:#dcebd0;color:#315b3b}
+.school-v3 .grade-row.current .grade-row-status{background:#366f3c;color:#fff}
+@media(max-width:560px){.school-v3 .grade-group{padding:0 10px}.school-v3 .grade-group-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,7.5rem),1fr));gap:10px}.school-v3 .grade-row{padding:12px 10px}}
+/* Text enlargement can narrow the logo's track even on a wide handset. */
+.school-v3 .site-header{container-type:inline-size}
+@container (max-width:20rem){
+ .school-v3 .site-header>.brand{grid-column:1/-1;grid-row:1;max-width:100%}
+ .school-v3 .site-header>.v3-version{grid-column:1;grid-row:2;justify-self:start}
+ .school-v3 .site-header>.v3-more{grid-column:3;grid-row:2}
+ .school-v3 .site-header>.v3-nav{grid-column:1/-1;grid-row:3}
+ .school-v3 .site-header>.login-entry{grid-column:1/-1;grid-row:4}
+ .school-v3 .brand>span{min-width:0}
+}
+@media(max-width:320px){.school-v3 .site-header>.v3-more{grid-column:2}}
+.school-v3 .site-footer,.school-v3 .footer-base{color:#49634f}
+/* Small button text keeps at least 4.5:1 contrast while retaining the brand palette. */
+.school-v3 .button.primary{background:#3f7c40;border-color:#3f7c40;border-bottom-color:#2c6433}
+.school-v3 .v3-choice-play .v3-choice-action{background:#a75f29}
+/* Keep verified account names readable when account-entry.css loads later. */
+.school-v3 .site-header>.login-entry{min-width:0;max-width:min(100%,22rem);overflow:visible;overflow-wrap:anywhere;white-space:normal;text-overflow:clip;line-height:1.6}
+@media(max-width:1000px){.school-v3 .site-header>.login-entry{width:100%;max-width:100%}}
+.school-v3 .v3-utility .nav-item>span:first-child{font-size:1rem;line-height:1.6}
