@@ -30,6 +30,13 @@
   if(error?.name==='AuthRetryableFetchError'&&error.status===0)return '인터넷 연결을 확인하고 다시 시도해 주세요.';
   return messages[code]||'지금은 요청을 완료하지 못했어요. 잠시 뒤 다시 시도해 주세요.';
  }
+ function passwordTransport(config,fetcher){
+  return async(token,password)=>{
+   const project=new URL(config.supabaseUrl);if(typeof fetcher!=='function'||!/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(project.href))throw Error('Password change unavailable');
+   const response=await fetcher(project.origin+'/auth/v1/user',{method:'PUT',credentials:'omit',cache:'no-store',redirect:'error',referrerPolicy:'no-referrer',headers:{apikey:config.publishableKey,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({password})});
+   if(!response.ok)throw Error('Password change unavailable');return response.json();
+  };
+ }
  function returnPath(currentUrl){
   try{const next=new URL(currentUrl).searchParams.get('next');return next==='games.html'?'games.html':'./';}catch(e){return './';}
  }
@@ -50,7 +57,7 @@
    await locks.request('lock:'+key,{mode:'exclusive'},()=>{const raw=storage.getItem(key);if(!raw)return;const saved=JSON.parse(raw);if(saved.access_token!==session.access_token)return;if(session.user?.id&&storage.getItem(accepted)===session.user.id)clearAccepted();storage.removeItem(key);if(storage.getItem(key)!==null)throw Error('Session cleanup unavailable');});
   }};
  }
- function createController({config,sdk,currentUrl,onChange=()=>{},defer=fn=>setTimeout(fn,0),navigate=()=>{},onAccount=()=>{},consumeCallback=()=>{},cleanup=null}){
+ function createController({config,sdk,currentUrl,onChange=()=>{},defer=fn=>setTimeout(fn,0),navigate=()=>{},onAccount=()=>{},consumeCallback=()=>{},cleanup=null,updatePassword=null}){
   const settings=validateConfig(config,currentUrl);let url;try{url=new URL(currentUrl);}catch(e){url=new URL('https://invalid.example/');}
   const recoveryHint=url.searchParams.get('flow')==='recovery'||new URLSearchParams(url.hash.slice(1)).get('type')==='recovery';
   const fragment=new URLSearchParams(url.hash.slice(1));
@@ -62,13 +69,16 @@
   const tokenCallback=secure&&['access_token','refresh_token','provider_token','provider_refresh_token'].some(key=>fragment.has(key)||url.searchParams.has(key));
   const malformedCode=secure&&url.searchParams.has('code')&&(url.searchParams.getAll('code').length!==1||!code||code.length>4096);
   let callbackRejected=!!(secure&&(tokenCallback||oauthError||malformedCode)),exchangedSession=null,exchangePending=false,exchangeEvents=[],exchangeOverflow=false,recoveryConsumed=false;
-  let recoveryWanted=false; // Only an SDK PASSWORD_RECOVERY event enables a password change.
+  let recoveryWanted=false,recoveryAuthority=null; // Recovery is scoped to one verified SDK identity/session.
   const state={ready:false,busy:false,user:null,mode:'login',oauthComplete:false,kakaoEnabled:!!settings?.kakaoEnabled&&!recoveryHint,message:'계정 서비스를 연결하고 있어요. 연결이 끝날 때까지 이메일과 비밀번호를 입력받지 않습니다.',error:false};
   let client=null,subscription=null,revision=0,pendingEvent=null,disposed=false;
   const emit=()=>{if(!disposed)onChange({...state,user:state.user?{...state.user}:null});};
   const notice=(message,error=false)=>{state.message=message;state.error=error;emit();};
   const accountChanged=(user)=>{try{onAccount(user, user?client:null);}catch(e){/* Record UI must never interrupt authentication. */}};
-  const userOut=()=>{accountChanged(null);revision++;state.user=null;state.oauthComplete=false;if(state.mode==='recovery')state.mode='forgot';};
+  const recoveryMatches=session=>!!recoveryAuthority&&session?.user?.id===recoveryAuthority.id&&session?.access_token===recoveryAuthority.token;
+  const clearRecovery=()=>{recoveryWanted=false;recoveryAuthority=null;if(state.mode==='recovery')state.mode='login';};
+  const acceptRecovery=session=>{if(!session?.user?.id||!session.access_token){clearRecovery();return;}recoveryAuthority={id:session.user.id,token:session.access_token};recoveryWanted=true;};
+  const userOut=()=>{accountChanged(null);revision++;state.user=null;state.oauthComplete=false;if(state.mode==='recovery')state.mode='forgot';clearRecovery();};
   async function verify(session,establish=false){
    const token=++revision;
    if(!session)return {status:'none',token};
@@ -80,6 +90,7 @@
     try{if(!await cleanup.authorize(session,establish,()=>!disposed&&token===revision))throw Error('Session not accepted');}catch(error){return {status:'error',token,error};}
     if(disposed||token!==revision)return {status:'stale',token};
    }
+   if(recoveryWanted&&!recoveryMatches(session))clearRecovery();
    state.user={id:data.user.id,email:data.user.email||'',provider:data.user.app_metadata?.provider==='kakao'?'kakao':'email'};
    accountChanged({...state.user});
    state.oauthComplete=!!(secure&&exchangedSession&&session.access_token===exchangedSession.access_token&&oauthHint&&!recoveryWanted&&!recoveryHint&&!oauthError&&!callbackRejected);
@@ -96,7 +107,7 @@
    else if(result.status==='error'){userOut();notice('로그인 상태를 확인하지 못했습니다. 다시 로그인해 주세요.',true);}
    else{userOut();recoveryWanted=false;notice(oauthError?oauthMessage:recoveryHint?'재설정 링크를 확인하지 못했습니다. 메일을 다시 요청해 주세요.':'이메일 아이디로 로그인해 주세요.',recoveryHint||oauthError);}
   }
-  function drain(){const pending=pendingEvent;pendingEvent=null;if(pending)defer(()=>restore(pending.session));}
+  function drain(){const pending=pendingEvent;pendingEvent=null;if(pending?.event==='PASSWORD_RECOVERY'&&state.mode==='recovery'&&state.user?.id===pending.session?.user?.id&&recoveryMatches(pending.session))return;if(pending)defer(()=>restore(pending.session));}
   async function init(){
    if(disposed||state.ready||state.busy)return false;
    if(!settings){emit();return false;}
@@ -111,7 +122,7 @@
      // Invalidate in-flight verification immediately, before a queued restore.
      revision++;state.oauthComplete=false;accountChanged(null);
      if(exchangePending){if(exchangeEvents.length<50)exchangeEvents.push({event,id:session?.user?.id,token:session?.access_token});else exchangeOverflow=true;}
-     if(event==='PASSWORD_RECOVERY')recoveryWanted=true;
+     if(event==='PASSWORD_RECOVERY')acceptRecovery(session);else if(event==='SIGNED_OUT'||recoveryAuthority&&!recoveryMatches(session))clearRecovery();
      // Keep SDK calls outside its synchronous auth callback to avoid a lock deadlock.
      if(state.busy){pendingEvent={event,session};return;}
      defer(()=>restore(session));
@@ -127,7 +138,7 @@
      if(pendingEvent&&(!pendingEvent.session||pendingEvent.session.user?.id!==exchanged.data?.session?.user?.id)){callbackRejected=true;await cleanup?.discard(exchanged.data?.session);await restore(null);state.ready=true;return true;}
      if(exchanged.error||!exchanged.data?.session||exchanged.data.user?.id!==exchanged.data.session.user?.id){callbackRejected=true;await cleanup?.discard(exchanged.data?.session);await restore(null);state.ready=true;return true;}
      exchangedSession=exchanged.data.session;
-     if(exchanged.data.redirectType==='recovery')recoveryWanted=true;
+     if(exchanged.data.redirectType==='recovery')acceptRecovery(exchangedSession);
      await restore(exchangedSession,true);if(!state.user||state.user.id!==exchangedSession.user.id){callbackRejected=true;await cleanup?.discard(exchangedSession);}state.ready=true;return true;
     }
     const {data,error}=await client.auth.getSession();if(error)throw error;
@@ -153,7 +164,7 @@
    if(disposed||!state.ready||state.busy)return false;
    const mode=state.mode;email=email.trim();
    if(mode==='recovery'){
-    if(!recoveryWanted||!state.user){notice('재설정 메일 링크를 먼저 열어 주세요.',true);return false;}
+    if(!recoveryWanted||!recoveryAuthority||state.user?.id!==recoveryAuthority.id){notice('재설정 메일 링크를 먼저 열어 주세요.',true);return false;}
    }else if(state.user)return false;
    if(mode!=='recovery'&&(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254)){notice('이메일 주소를 확인해 주세요.',true);return false;}
    if(mode!=='forgot'&&(!password||password.length>128||(['signup','recovery'].includes(mode)&&password.length<8))){notice(['signup','recovery'].includes(mode)?'비밀번호를 8자 이상으로 정해 주세요.':'비밀번호를 입력해 주세요.',true);return false;}
@@ -164,9 +175,19 @@
      notice('입력한 주소로 메일을 보낼 수 있으면 재설정 안내를 보냈습니다. 메일함을 확인해 주세요.');return true;
     }
     if(mode==='recovery'){
-     const {data,error}=await client.auth.updateUser({password});if(error)throw error;
-     if(!data?.user?.id||data.user.id!==state.user.id)throw Error('Password change not confirmed');
-     recoveryWanted=false;recoveryConsumed=true;state.mode='login';notice('비밀번호를 바꿨어요.');return true;
+     const authority=recoveryAuthority,started=revision;
+     const current=()=>!disposed&&revision===started&&recoveryWanted&&recoveryAuthority===authority&&state.user?.id===authority.id;
+     const reject=()=>{if(current()){clearRecovery();notice('재설정 메일 링크를 먼저 열어 주세요.',true);}return false;};
+     try{
+      const before=await client.auth.getSession();if(!current())return false;if(before.error||!recoveryMatches(before.data?.session))return reject();
+      const proof=await client.auth.getUser(authority.token);if(!current())return false;if(proof.error||proof.data?.user?.id!==authority.id)return reject();
+      const latest=await client.auth.getSession();if(!current())return false;if(latest.error||!recoveryMatches(latest.data?.session))return reject();
+      if(typeof updatePassword!=='function')throw Error('Password change unavailable');
+      // Never let an SDK reload of mutable storage choose the password mutation target.
+      const updated=await updatePassword(authority.token,password);if(!current())return false;if(updated?.id!==authority.id)throw Error('Password change not confirmed');
+      const after=await client.auth.getSession();if(!current())return false;if(after.error||!recoveryMatches(after.data?.session))return reject();
+      clearRecovery();recoveryConsumed=true;state.mode='login';notice('비밀번호를 바꿨어요.');return true;
+     }catch(e){if(current())notice(messageFor(e,mode),true);return false;}
     }
     const result=mode==='signup'?await client.auth.signUp({email,password,options:{emailRedirectTo:settings.redirect}}):await client.auth.signInWithPassword({email,password});
     if(result.error)throw result.error;
@@ -186,7 +207,7 @@
    catch(e){notice('로그아웃하지 못했습니다. 다시 눌러 주세요.',true);return false;}
    finally{state.busy=false;emit();drain();}
   }
-  function dispose(){accountChanged(null);disposed=true;revision++;subscription?.unsubscribe();}
+  function dispose(){clearRecovery();accountChanged(null);disposed=true;revision++;subscription?.unsubscribe();}
   emit();return {init,setMode,submit,signInKakao,signOut,dispose,getState:()=>({...state,user:state.user?{...state.user}:null})};
  }
  function mount(root){
@@ -213,7 +234,7 @@
    if(state.ready&&state.oauthComplete&&state.user&&!recovery&&!continued){continued=true;root.location.assign(returnPath(root.location.href));}
   };
   let cleanup;try{cleanup=sessionCleanup(root.localStorage,root.navigator.locks);}catch(e){cleanup={prepare(){throw Error('Session storage unavailable');}};}
-  const controller=createController({config:root.DOKDO_AUTH_CONFIG,sdk:root.supabase,currentUrl:root.location.href,onChange:view,cleanup,navigate:url=>root.location.assign(url),consumeCallback:()=>{const safe=new URL(root.location.href);safe.search='';safe.hash='';safe.searchParams.set('next',returnPath(root.location.href));root.history?.replaceState(null,'',safe.href);},onAccount:(user,client)=>{if(user)records?.connect(user,client);else records?.invalidate();}});
+  const controller=createController({updatePassword:passwordTransport(root.DOKDO_AUTH_CONFIG,root.fetch?.bind(root)),config:root.DOKDO_AUTH_CONFIG,sdk:root.supabase,currentUrl:root.location.href,onChange:view,cleanup,navigate:url=>root.location.assign(url),consumeCallback:()=>{const safe=new URL(root.location.href);safe.search='';safe.hash='';safe.searchParams.set('next',returnPath(root.location.href));root.history?.replaceState(null,'',safe.href);},onAccount:(user,client)=>{if(user)records?.connect(user,client);else records?.invalidate();}});
   if($('kakao-signin'))$('kakao-signin').onclick=()=>controller.signInKakao();
   for(const mode of ['login','signup','forgot'])$('mode-'+mode).onclick=()=>{if(controller.setMode(mode)){$('account-password').value='';$('account-email').focus();}};
   $('mode-back').onclick=()=>controller.setMode('login');
@@ -222,5 +243,5 @@
   root.addEventListener('pageshow',event=>{if(event.persisted)root.location.reload();});
   root.DokdoLanguage?.mount(d.body);controller.init();return controller;
  }
- return {createController,validateConfig,returnPath,kakaoReturnUrl,validKakaoUrl,sessionCleanup,mount};
+ return {createController,passwordTransport,validateConfig,returnPath,kakaoReturnUrl,validKakaoUrl,sessionCleanup,mount};
 });
