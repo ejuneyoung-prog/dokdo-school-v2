@@ -36,8 +36,8 @@ function entryArt(){
  for(const [x,y,r]of[[126,92,13],[445,142,18],[399,52,9]]){c.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,d=i%2?r*.45:r;c.lineTo(x+Math.cos(a)*d,y+Math.sin(a)*d);}c.closePath();c.fillStyle='#d38b2d';c.fill();}
  A.sprite(c,'dog',298,260,3.25,.3);
 }
-function gameRecord(){try{const live=App.mode==='live',raw=live?localStorage.getItem(G.KEY):null;return raw?G.roll(G.validate(JSON.parse(raw))):G.fresh();}catch(e){return null;}}
-function garden(canvas,s,game){if(!canvas||!game)return;A.animateIsland(canvas,()=>game,()=>{const lights=window.DokdoAppModel.summary(s).lights||0;if(lights){const c=canvas.getContext('2d');for(let i=0;i<Math.min(60,lights);i++){const x=(.3+(i%12)*.036)*canvas.width,y=(.58+Math.sin(i*.8)*.065+Math.floor(i/12)*.018)*canvas.height;c.beginPath();c.arc(x,y,2.6,0,Math.PI*2);c.fillStyle='#fff7b4';c.fill();}}});}
+function gameRecord(){try{const live=App.mode==='live',raw=live?localStorage.getItem(G.KEY):null;const game=raw?G.roll(G.validate(JSON.parse(raw))):G.fresh();G.adoptLearning(game,window.DokdoGarden?.learning()||0);return game;}catch(e){return null;}}
+function garden(canvas,s,game){if(!canvas||!game)return;A.animateIsland(canvas,()=>game);}
 function refresh(){
  syncArea();
  label('v3-live-entry-label','실시간 독도 보러 가기 ↗','Watch Dokdo live ↗');label('v3-channel-live-label','실시간 독도 보러 가기 ↗','Watch Dokdo live ↗');label('v3-info-live','실시간 독도 보러 가기 ↗','Watch Dokdo live ↗');
@@ -56,14 +56,15 @@ function refresh(){
  label('v3-today','오늘의 독도 이야기','TODAY’S DOKDO STORY');label('v3-lesson-title',unit.ko,unit.en);label('v3-lesson-meta','짧은 이야기 · 5문제','A short story · 5 questions');
  label('v3-start-label',p?'이어서 시작하기':'첫 이야기 시작하기',p?'Continue learning':'Start my first story');
  label('v3-path-title','나의 배움길','My learning path');label('v3-all-units','전체 이야기 보기 →','All stories →');label('v3-island-title','배운 만큼 자라는 내 독도','My growing Dokdo');label('v3-island-link','내 독도 꾸미기 →','Decorate my Dokdo →');
- label('v3-snapshot-note','불빛과 친구는 배움을 기념하는 상상 풍경이에요.','Lights and friends are an imagined celebration of learning.');
+ label('v3-snapshot-note','문제를 풀면 해국이, 달리면 잔디가 자라요.','Answer questions to grow flowers. Run to grow grass.');
  label('v3-review-title','배운 이야기, 기억나나요?','Remember this story?');label('v3-review-copy','전에 만난 문제로 가볍게 떠올려요.','Recall what you learned before.');
  label('v3-play-title','이제, 독도에서 놀까요?','Time to play on Dokdo?');label('v3-play-copy','삽살개와 달리고, 바다를 깨끗하게.','Run with Sapsal, or clean the sea.');label('v3-play-link','독도 놀이터 가기 →','Visit Dokdo Playground →');
  label('v3-home-note','기록은 이 브라우저에 저장돼요.','Your record is saved in this browser.');label('v3-more-label','더보기','More');label('v3-optional-label','닉네임·국가·학교 (선택)','Nickname, country & school (optional)');label('v3-profile-entry','닉네임·국가·학교 설정','Nickname, country & school');label('v3-profile-menu','닉네임·국가·학교','Nickname, country & school');
  label('v3-source-label','자료 출처 보기','Sources');label('v3-feedback-label','조금 더 알아보기','A little more detail');
  const count=p?C.courseEvidence(p,s.m).completed:0;label('v3-path-count',count+' / 12 이야기',count+' / 12 stories');
- label('v3-lights',summary.lights+'개의 불빛',summary.lights+' lights');
- if(game){garden($('play-entry-island'),s,game);const lv=G.islandLevel(game),done=game.growth.cleared>=20&&game.growth.seals>=10;label('v3-island-level',done?'★ 별 · 완성':'섬 '+lv+'단계',done?'Star · Complete':'Island stage '+lv);$('v3-garden-progress').max=20;$('v3-garden-progress').value=game.growth.cleared;label('v3-next-gift','강치 '+game.growth.seals+'/10마리 · '+game.xp+' XP','Gangchi '+game.growth.seals+'/10 · '+game.xp+' XP');}
+ const gardenPlan=game&&window.DokdoGarden?.plan(game,summary.lights);
+ label('v3-lights',gardenPlan?'해국 '+gardenPlan.flowers+'/100 · 잔디 '+gardenPlan.grass+'/100':summary.lights+'개의 배움',gardenPlan?'Flowers '+gardenPlan.flowers+'/100 · Grass '+gardenPlan.grass+'/100':summary.lights+' learning lights');
+ if(game){garden($('play-entry-island'),s,game);const lv=G.islandLevel(game),done=G.islandComplete(game);label('v3-island-level',done?'★ 별 · 완성':'섬 '+lv+'단계',done?'Star · Complete':'Island stage '+lv);$('v3-garden-progress').max=20;$('v3-garden-progress').value=game.growth.cleared;label('v3-next-gift','강치 '+game.growth.seals+'/10마리 · '+game.xp+' XP','Gangchi '+game.growth.seals+'/10 · '+game.xp+' XP');}
  else label('v3-next-gift','놀이터 기록을 확인해 주세요.','Please check your playground record.');
  const list=$('v3-path');list.replaceChildren();const n=unit.id;
  for(let i=0;i<3;i++){const id=(n-1+i)%12+1,u=C.unitInfo(id),done=!!p?.course?.completed[p.course.track+':'+id],row=document.createElement('div');row.className='v3-stop'+(i===0?' current':'')+(done?' done':'');const icon=document.createElement('span');icon.className='v3-stop-icon';icon.textContent=done?'✓':i===0?'★':String(id).padStart(2,'0');icon.setAttribute('aria-hidden','true');const text=document.createElement('div'),small=document.createElement('small'),name=document.createElement('b');small.textContent=copy(i===0?'지금 만날 이야기':'다음 이야기',i===0?'YOUR NEXT STEP':'UP NEXT');name.textContent=en?u.en:u.ko;text.append(small,name);row.append(icon,text);if(i===0){row.setAttribute('aria-current','step');const tag=document.createElement('span');tag.className='v3-now';tag.textContent=copy('여기부터','START HERE');row.append(tag);}list.append(row);}

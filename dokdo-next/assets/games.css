@@ -50,6 +50,67 @@
 /* A clear account action above the playground. */
 .header>.login-entry{display:inline-flex;align-items:center;justify-content:center;flex:none;min-height:44px;padding:10px 18px;border:1px solid #286947;border-radius:11px;background:#286947;color:#fff;font-size:14px;font-weight:700;white-space:nowrap;text-decoration:none;box-shadow:0 3px 0 #1d5135}
 @media(max-width:1100px){.header{flex-wrap:wrap;gap:14px}.header nav{order:5;width:100%;margin:0;min-height:35px}.header>.login-entry{margin-left:auto}.header>.language-switch{margin-left:0}}
+
+/* Readable play controls and gift cards, including enlarged text. The scene's
+   minimum height must never apply to the tiny canvases inside gift buttons. */
+.play-page{min-width:0;font-size:1rem;line-height:1.8;overflow-wrap:anywhere}
+.play-page .header{gap:16px;flex-wrap:wrap}
+.play-page .brand{font-size:1.125rem;white-space:normal;min-width:0}
+.play-page .brand svg{flex:none}.play-page .brand small{font-size:.875rem}
+.play-page .header nav{font-size:1rem;white-space:normal;flex-wrap:wrap}
+.play-page .header nav a{min-height:44px;display:inline-flex;align-items:center}
+.play-page .header .profile-link,.play-page .language-switch,.play-page .ticket{font-size:.875rem}
+.play-page .language-switch{min-height:44px;white-space:normal}
+.play-page .header>.login-entry{font-size:1rem;max-width:100%;white-space:normal}
+.play-page .eyebrow{font-size:.875rem;letter-spacing:.08em}
+.play-page .lead,.play-page .card-content>p:not(.eyebrow){font-size:1rem}
+.play-page .quick-play{flex-wrap:wrap}
+.play-page .quick-play .primary{flex:1 1 12rem;min-width:0;font-size:1rem}
+.play-page .primary,.play-page .text-button{font-size:1rem;min-height:44px;white-space:normal}
+.play-page .progress-card,.play-page .progress-card>div{min-width:0}
+.play-page .progress-card p,.play-page .progress-card small,.play-page .progress-card>div{font-size:.875rem}
+.play-page .level{font-size:1.5rem}
+.play-page .island-label{position:static;display:flex;flex-wrap:wrap;gap:4px 16px;padding:12px 20px;font-size:.875rem}
+.play-page .island-label>span:last-child{font-size:.875rem}
+.play-page .island-card>canvas{width:100%;height:auto;min-height:0;aspect-ratio:1120/430;object-fit:contain}
+.play-page .scene-note{margin:0;padding:8px 16px 14px;font-size:.875rem;text-align:center}
+.play-page .gifts-top{align-items:start;gap:8px;flex-wrap:wrap}
+.play-page .gifts-top h2{font-size:1.125rem}.play-page .gifts-top>span{font-size:.875rem}
+.play-page .gifts{grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding:8px 18px 20px}
+.play-page .gifts .gift{padding:14px 8px;gap:8px;font-size:1rem;line-height:1.6;justify-content:center;border-color:#cbdcc5}
+.play-page .gifts .gift canvas{width:64px;height:auto;aspect-ratio:84/74;min-height:0;max-width:100%;object-fit:contain}
+.play-page .gifts .gift small{font-size:.875rem;color:#3c5947}
+.play-page .gift:disabled{opacity:1;color:#64705f;background:#ecefe7;border-style:dashed}
+.play-page .gift:disabled canvas{opacity:.6}
+.play-page .section-title>div:last-child,.play-page .game-meta,.play-page .card-content>small,.play-page .card-badge{font-size:.875rem}
+.play-page .how h3{font-size:1.125rem}.play-page .how p,.play-page .how b,.play-page .info,.play-page .info summary,.play-page .footer,.play-page .footer a{font-size:.875rem}
+.play-page dialog{font-size:1rem;max-width:min(100% - 16px,36rem)}
+.play-page dialog.runner-mode{max-width:min(100% - 16px,56rem)}
+.play-page .player-header{display:grid;grid-template-columns:44px minmax(0,1fr) 44px 44px;gap:8px}
+.play-page .player-header>div{min-width:0}.play-page .player-header h2{font-size:1rem}
+.play-page .player-header small,.play-page .scorebar small,.play-page .scorebar span{font-size:.875rem}
+.play-page .icon-button{width:44px;height:44px}
+.play-page .music-row{flex-wrap:wrap;font-size:.875rem;padding:8px 16px;gap:4px 12px}
+.play-page #player-dialog .music-row .text-button{font-size:.875rem;min-height:44px}
+.play-page .scorebar{gap:10px;flex-wrap:wrap}.play-page .scorebar>div{min-width:0}
+.play-page .play-hint,.play-page #player-dialog:not(.runner-mode) .play-hint,.play-page .block-bottom,.play-page .piece small,.play-page .stage-label,.play-page .stage-label span,.play-page .runner-cover p,.play-page .question-rule,.play-page .question-foot,.play-page .question-source{font-size:.875rem}
+.play-page .turn-time{flex-wrap:wrap;font-size:.875rem}.play-page .turn-time span{white-space:normal}
+.play-page .turn-time progress{flex:1 1 7rem}
+.play-page .mission-panel{font-size:1rem;grid-template-columns:1fr}
+.play-page .mission-panel strong{white-space:normal}.play-page .mission-panel span{font-size:.875rem}
+.play-page #player-dialog .block-bottom .text-button,.play-page .mission-panel .primary,.play-page .finish{font-size:.875rem;min-height:44px}
+.play-page #player-dialog:not(.runner-mode) .board{position:relative;isolation:isolate;width:min(calc(100% - 28px),360px);min-width:0;background:#174c65;border-color:#376c80;overflow:hidden}
+.play-page #board-habitat{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1}
+.play-page .cell{background:#d9f2ef20;border:1px solid #e4fbf020}
+.play-page .cell.filled{border:1px solid #f9dca5;box-shadow:inset 0 -2px #a36e37}
+.play-page .question h3,.play-page .material,.play-page .choices button,.play-page .feedback,.play-page .result>p:not(.eyebrow){font-size:1rem}
+.play-page .question,.play-page .result{padding:24px 18px}
+.play-page .jump span{display:block;font-size:.875rem;margin:4px 0 0}
+.play-page .toast{font-size:1rem}
+.garden-summary{font-size:.875rem;padding:12px 20px;background:#edf4e8;border-top:1px solid #d4e3d0}
+.garden-summary p{margin:3px 0}.garden-summary button{margin-top:8px}
+@media(max-width:900px){.play-page .gifts{grid-template-columns:repeat(auto-fit,minmax(min(100%,9rem),1fr))}.play-page .intro{display:block}.play-page .progress-card{width:100%;margin-top:20px}}
+@media(max-width:540px){.play-page main{padding:24px 16px}.play-page .header{padding:14px 16px;gap:10px}.play-page .header nav{gap:6px 18px}.play-page .intro h1{font-size:2rem}.play-page .progress-card{display:block}.play-page .progress-card>div{display:flex;gap:10px;flex-wrap:wrap}.play-page .gifts{gap:10px;padding:8px 12px 16px}.play-page .gifts-top{padding:16px 14px 8px}.play-page .gifts .gift{min-height:152px}.play-page .game-grid{grid-template-columns:minmax(0,1fr)}.play-page .card-content{padding:20px}.play-page .card-content h3{font-size:1.5rem}.play-page .section-title>div:last-child{align-items:start;gap:12px;flex-wrap:wrap}.play-page .runner-cover{padding:8px}.play-page .runner-cover>div{width:100%}.play-page .runner-cover h3{font-size:1.125rem}.play-page .runner-cover p{margin-bottom:6px}.play-page .runner-stage>canvas{aspect-ratio:900/420;object-fit:cover}.play-page .footer{padding:20px 16px}}
 @media(max-width:540px){.header>.brand{flex:1;min-width:0}.header>.login-entry{margin-left:0;min-width:72px;padding:9px 13px}.header>.language-switch{order:3}.header>.ticket{order:4;margin-left:auto}.header nav{order:5;justify-content:space-between;font-size:11px;white-space:normal;gap:8px 12px;margin:5px 0}.header nav a{min-height:40px;display:inline-flex;align-items:center}}
 @media(max-width:540px){.header{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px}.header>.brand{grid-column:1;grid-row:1;min-width:0}.header>.login-entry{grid-column:2;grid-row:1}.header>.language-switch{grid-column:1;grid-row:2;justify-self:start}.header>.ticket{grid-column:2;grid-row:2;justify-self:end;margin:0}.header>nav{grid-column:1/-1;grid-row:3;width:100%;margin:0}}
 @media(max-width:540px){.header>.brand>span{min-width:0;white-space:normal}.header>.brand small{white-space:normal;line-height:1.45}}

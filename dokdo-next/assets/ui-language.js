@@ -3,6 +3,7 @@
 'use strict';
 const KEY='dokdo-ui-language-v1';
 const dictionary={
+ "놀이별 성장 기록을 확인해 주세요.":"Please check your activity growth record.",
  "로그인 링크를 확인하지 못했어요. 이메일로 로그인하거나 이 브라우저에서 새 링크를 요청해 주세요.":"This sign-in link could not be verified. Sign in with email or request a new link in this browser.",
  "카카오 로그인 요청 시간이 지났어요. 카카오 로그인 버튼을 눌러 새로 시작해 주세요.":"Your Kakao sign-in request expired. Select Sign in with Kakao to start again.",
  "카카오 로그인 요청 시간이 지났어요. 지금은 이메일로 로그인해 주세요.":"Your Kakao sign-in request expired. Please sign in with email for now.",
@@ -93,6 +94,9 @@ const dictionary={
  "20라운드부터 그 너머까지 · 내 최고 기록": "20 rounds and beyond · Beat your best",
  "마음 가는 놀이 한 판": "Pick a game you like",
  "두 게임이 같은 내 독도를 키워요.": "Both games grow the same island.",
+ "해국부터 차근차근": "Grow from flowers, step by step",
+ "해국·잔디를 채우고 나무, 새우, 갈매기, 강치를 모아요.": "Fill flowers and grass, then grow trees and collect shrimp, gulls, and Gangchi.",
+ "해국 100송이와 잔디 100곳을 먼저 채우고 나무, 새우, 갈매기, 강치 순서로 정원을 키워요. 정원을 채운 뒤 10단계 이상 청소 미션이나 달리기 라운드를 완료하면 강치가 한 마리씩, 최대 10마리 모입니다. 나무·새우·갈매기는 종류별 최대 10개, 경비대·삽살개·깃발은 하나만 보입니다. 정원과 강치 10마리, 20단계를 모두 완성하면 별이 빛납니다. 이전에 받은 선물은 유지되고 기록 도전은 계속됩니다.": "Grow 100 flowers and 100 grass patches first, followed by trees, shrimp, gulls, and Gangchi. Once the garden is filled, each cleanup mission or running round completed at stage 10 or higher earns one Gangchi, up to 10. Trees, shrimp, and gulls are capped at 10 each; the guard, dog, and flag at one each. Complete the garden, collect 10 Gangchi, and finish stage 20 to light the star. Previously earned gifts remain, and record challenges continue.",
  "미션을 깨면 자라는 섬": "Clear missions. Grow your island.",
  "10단계부터 강치를 모으고, 20단계에서 별을 밝혀요.": "Collect Gangchi from stage 10. Complete stage 20 to earn your star.",
  "내가 고른 모습으로": "Make it your own",
@@ -167,6 +171,7 @@ const dictionary={
  "그물 속 강치가 있는 줄을 지우면 망치 +1!": "Clear the line containing the trapped Gangchi to earn a hammer!",
  "블록을 골라 한 줄을 채워요. 놓을 자리는 힌트로 볼 수 있어요.": "Choose a block and complete a line. Tap Hint if you need help.",
  "첫 블록을 맨 아래 반짝이는 두 칸에 놓아 보세요.": "Place the first block in the two highlighted spaces at the bottom.",
+ "첫 블록을 아래쪽 반짝이는 칸에 놓아 보세요.": "Place the first block on the glowing tiles near the bottom.",
  "한 줄을 채워 쓰레기 8칸 청소!": "Complete a line to clear 8 litter tiles!",
  "겹치지 않는 빈칸에 놓아 주세요.": "Place the block in empty spaces without overlapping.",
  "쓰레기가 있는 칸을 골라 주세요.": "Choose a tile with litter.",

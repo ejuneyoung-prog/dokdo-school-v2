@@ -1,0 +1,12 @@
+/* Transient game feedback. Board sizing remains in games.css. */
+.board{position:relative}.game-feedback{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:4;border-radius:inherit}.feedback-label,.feedback-particle{position:absolute;display:block;pointer-events:none;animation:feedback-rise .7s ease-out both;will-change:transform,opacity}.feedback-label{font-size:clamp(12px,2vw,19px);font-weight:700;white-space:nowrap;color:#22574c;background:#f4ffefed;border:1px solid #99cabc;padding:5px 12px;border-radius:30px;box-shadow:0 3px 12px #22574c24}.feedback-success{color:#82601f}.feedback-particle{font-size:16px;color:#a6f0d3;text-shadow:0 1px 3px #285e5d}.feedback-particle.feedback-star,.feedback-particle.feedback-success{color:#f6d47b}.feedback-hit{color:#87513c}.cell canvas.trash-release{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;animation:trash-release .55s ease-out both}.cell.clearing{animation:clean-ripple .55s ease-out}.music-row{flex-wrap:wrap;gap:8px}#game-effects{white-space:nowrap}
+/* Leave the cleared board visible so the final removal is visible too. */
+#blocks-play.mission-done .board{display:grid;pointer-events:none}#blocks-play.mission-done .pieces{visibility:hidden}
+@keyframes feedback-rise{0%{opacity:0;transform:translate(-50%,-25%) scale(.85)}15%{opacity:1}65%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1)}}
+@keyframes trash-release{0%{opacity:1;transform:scale(1)}25%{opacity:1;transform:translateY(-4px) scale(1.08)}100%{opacity:0;transform:translateY(-24px) rotate(12deg) scale(.3)}}
+@keyframes clean-ripple{0%{box-shadow:inset 0 0 0 2px #a8e5c7;background:#71bbaa}100%{box-shadow:inset 0 0 0 0 #a8e5c700;background:#3b7566}}
+@media(prefers-reduced-motion:reduce){.feedback-particle{display:none}.feedback-label{animation:feedback-still .7s linear both;will-change:opacity}.cell canvas.trash-release{display:none}.cell.clearing{animation:none;box-shadow:inset 0 0 0 2px #a8e5c7}}body.motion-reduced .feedback-particle,body.motion-reduced .trash-release{display:none}body.motion-reduced .feedback-label{animation:feedback-still .7s linear both}
+@keyframes feedback-still{0%,85%{opacity:1;transform:translate(-50%,-50%)}100%{opacity:0;transform:translate(-50%,-50%)}}
+.mission-done .mission-panel{margin-block:8px 12px}.mission-done .play-hint{padding:0 12px;margin:6px 0 10px}
+
+body.motion-reduced .cell.clearing{animation:none;box-shadow:inset 0 0 0 2px #a8e5c7}
