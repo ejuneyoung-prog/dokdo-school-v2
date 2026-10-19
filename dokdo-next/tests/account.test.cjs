@@ -21,7 +21,7 @@ function fixture(options={}){
   async updateUser(data){call('updateUser',data);return {data:{user:USER},error:options.updateError||null};}
  };
  const sdk={createClient(url,key,settings){factoryCalls++;call('createClient',{url,key,settings});return {auth};}};
- const changes=[];const c=createController({config:options.config===undefined?CONFIG:options.config,sdk:options.missingSdk?null:sdk,currentUrl:options.url||URL_NOW,onChange:s=>changes.push(s)});
+ const changes=[];const c=createController({updatePassword:async(token,password)=>{call('updateUser',{password,token});if(options.updateError)throw options.updateError;return USER;},config:options.config===undefined?CONFIG:options.config,sdk:options.missingSdk?null:sdk,currentUrl:options.url||URL_NOW,onChange:s=>changes.push(s)});
  return {c,sdk,calls,changes,emit:(event,s)=>{session=s;verified=s?.user||null;listener(event,s);},factoryCalls:()=>factoryCalls};
 }
 test('Unconnected preparation never creates a client, enables fields or simulates login',async()=>{
