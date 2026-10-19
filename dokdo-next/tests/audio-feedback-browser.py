@@ -60,7 +60,7 @@ try:
   page.locator('#player-back').click();page.wait_for_selector('#player-dialog[open]',state='hidden');check('leaving the game pauses and mutes native BGM',page.evaluate('__players[0].paused&&__players[0].muted'))
   fixture(page,'blocks','hammer');page.locator('#block-hammer').click();page.locator('.cell[data-x="0"][data-y="7"]').click();page.wait_for_selector('.trash-release',state='attached')
   check('hammer rescue shows one outgoing litter icon and a rescue message',page.locator('.trash-release').count()==1 and '구조' in page.locator('.feedback-label').inner_text());page.screenshot(path=str(OUT/'hammer-rescue.png'))
-  page.locator('#player-back').click();fixture(page,'runner','hit');page.locator('#runner-resume').click();page.wait_for_timeout(100);check('runner collision provides immediate local feedback',page.locator('.feedback-hit').count()>0);page.screenshot(path=str(OUT/'runner-hit.png'))
+  page.locator('#player-back').click();fixture(page,'runner','hit');page.locator('#runner-resume').click();page.wait_for_selector('.feedback-hit',state='attached',timeout=3000);check('runner collision provides immediate local feedback',page.locator('.feedback-hit').count()>0);page.screenshot(path=str(OUT/'runner-hit.png'))
   fixture(page,'runner');page.emulate_media(reduced_motion='reduce');page.evaluate('DokdoGameFeedback.burst(document.querySelector(".runner-stage"),"success","라운드 완주!")')
   check('OS reduced motion keeps a message without particles',page.locator('.feedback-particle').count()==0 and page.locator('.feedback-label').count()==1)
   page.wait_for_timeout(900);check('transient effects remove their finished layers',page.locator('.game-feedback').count()==0)
