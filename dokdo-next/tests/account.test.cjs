@@ -2,7 +2,7 @@
 const test=require('node:test'),a=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const {createController,validateConfig,returnPath,mount}=require('../assets/account.js');
 const URL_NOW='https://school.example/auth/account.html';
-const CONFIG={enabled:true,supabaseUrl:'https://fixture-project.supabase.co',publishableKey:'sb_publishable_FIXTURE_ONLY_NOT_A_REAL_KEY',redirectUrl:URL_NOW};
+const CONFIG={enabled:true,registrationEnabled:true,supabaseUrl:'https://fixture-project.supabase.co',publishableKey:'sb_publishable_FIXTURE_ONLY_NOT_A_REAL_KEY',redirectUrl:URL_NOW};
 const USER={id:'00000000-0000-0000-0000-000000000001',email:'fictional@example.invalid'};
 const SESSION={user:USER,access_token:'FICTIONAL_TEST_TOKEN'};
 const flush=()=>new Promise(resolve=>setTimeout(resolve,0));
@@ -133,7 +133,7 @@ test('Post-login destinations have a closed same-site allowlist',()=>{
 function bindFixture(options={}){
  const f=fixture(options),nodes={},assigned=[],listeners={};
  const doc={getElementById(id){return nodes[id]||(nodes[id]={hidden:false,disabled:false,value:'',dataset:{},setAttribute(k,v){this[k]=v;},focus(){},reportValidity(){return true;}});}};
- const root={document:doc,location:{href:options.url||URL_NOW+'?next=games.html',assign:path=>assigned.push(path)},DOKDO_AUTH_CONFIG:CONFIG,supabase:f.sdk,DokdoRecordsUI:options.recordsUI,addEventListener:(type,fn)=>listeners[type]=fn};
+ const root={document:doc,location:{href:options.url||URL_NOW+'?next=games.html',assign:path=>assigned.push(path)},DOKDO_AUTH_CONFIG:options.config===undefined?CONFIG:options.config,supabase:f.sdk,DokdoRecordsUI:options.recordsUI,addEventListener:(type,fn)=>listeners[type]=fn};
  const c=mount(root);return {...f,c,nodes,assigned,listeners};
 }
 test('The real form binding returns to the allowed destination only after verified sign-in',async()=>{
@@ -164,3 +164,18 @@ test('The vendored fixed SDK and license match the recorded hashes and HTML inte
 });
 
 test('Private record UI initialization failure cannot stop the existing login controller',async()=>{const f=bindFixture({recordsUI:{mount(){throw Object.assign(Error('storage blocked'),{name:'SecurityError'});}}});await flush();a.equal(f.c.getState().ready,true);a.equal(f.nodes['record-local-error'].hidden,false);f.nodes['account-email'].value=USER.email;f.nodes['account-password'].value='fictional-password';await f.nodes['account-form'].onsubmit({preventDefault(){}});a.deepEqual(f.assigned,['games.html']);});
+
+test('Child privacy hold is fail-closed for registration and Kakao entry unless explicitly reopened',async()=>{
+ for(const value of[undefined,false,'true',1]){const config={...CONFIG,kakaoEnabled:true,registrationEnabled:value};if(value===undefined)delete config.registrationEnabled;const f=fixture({config});await f.c.init();a.equal(f.c.getState().registrationEnabled,false);a.equal(f.c.getState().kakaoEnabled,false);a.equal(f.c.setMode('signup'),false);a.equal(await f.c.signInKakao(),false);a.equal(f.calls.filter(c=>c.name==='signUp'||c.name==='signInWithOAuth').length,0);a.equal(validateConfig(config,URL_NOW).secureSessions,true,'Closing enrollment must not change the existing secure session storage mode');f.c.dispose();}
+});
+test('Registration hold preserves existing email sign-in, stored accounts, reset email and local sign-out',async()=>{
+ const config={...CONFIG,registrationEnabled:false};const login=fixture({config});await login.c.init();a.equal(await login.c.submit({email:USER.email,password:'FICTIONAL_EXISTING_PASSWORD'}),true);a.equal(login.c.getState().user.id,USER.id);a.equal(await login.c.signOut(),true);a.equal(login.calls.filter(c=>c.name==='signUp').length,0);
+ const stored=fixture({config,session:SESSION});await stored.c.init();a.equal(stored.c.getState().user.id,USER.id);a.equal(stored.calls.filter(c=>c.name==='signOut').length,0);stored.c.dispose();
+ const forgot=fixture({config});await forgot.c.init();a.equal(forgot.c.setMode('forgot'),true);a.equal(await forgot.c.submit({email:USER.email}),true);a.equal(forgot.calls.filter(c=>c.name==='resetPasswordForEmail').length,1);a.equal(forgot.calls.filter(c=>c.name==='signUp').length,0);
+});
+test('The real account binding hides enrollment, shows the hold notice and keeps existing login usable',async()=>{
+ const f=bindFixture({config:{...CONFIG,registrationEnabled:false}});await flush();a.equal(f.nodes['mode-signup'].hidden,true);a.equal(f.nodes['mode-buttons'].hidden,true);a.equal(f.nodes['mode-signup'].disabled,true);a.equal(f.nodes['registration-hold'].hidden,false);a.equal(f.nodes['kakao-option'].hidden,true);a.equal(f.nodes['account-controls'].hidden,false);a.equal(f.nodes['account-fields'].disabled,false);f.nodes['mode-signup'].onclick();a.equal(f.c.getState().mode,'login');a.equal(f.calls.filter(c=>c.name==='signUp').length,0);f.c.dispose();
+});
+test('Public enrollment defaults and disconnected HTML cannot flash signup or Kakao entry',()=>{
+ const config=fs.readFileSync(path.join(__dirname,'../assets/account-config.js'),'utf8'),html=fs.readFileSync(path.join(__dirname,'../account.html'),'utf8');a.match(config,/registrationEnabled:false/);a.match(config,/enabled:true/);a.match(config,/kakaoEnabled:false/);a.match(html,/<button id="mode-signup"[^>]*hidden[^>]*disabled/);a.match(html,/<div id="kakao-option" hidden>/);a.match(html,/id="registration-hold"/);a.doesNotMatch(html,/id="registration-hold"[^>]*hidden/);
+});

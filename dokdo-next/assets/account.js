@@ -14,7 +14,7 @@
    const local=redirect.protocol==='http:'&&['localhost','127.0.0.1'].includes(redirect.hostname);
    if(redirect.protocol!=='https:'&&!local)return null;
    if(redirect.origin!==current.origin||redirect.pathname!==current.pathname||redirect.search||redirect.hash||redirect.username||redirect.password)return null;
-   return {url:project.origin,key:config.publishableKey,redirect:redirect.href,kakaoEnabled:config.kakaoEnabled===true,secureSessions:config.kakaoEnabled===true||config.privateRecordsEnabled===true};
+   return {url:project.origin,key:config.publishableKey,redirect:redirect.href,registrationEnabled:config.registrationEnabled===true,kakaoEnabled:config.kakaoEnabled===true&&config.registrationEnabled===true,secureSessions:config.kakaoEnabled===true||config.privateRecordsEnabled===true};
   }catch(e){return null;}
  }
  function messageFor(error,mode){
@@ -70,7 +70,7 @@
   const malformedCode=secure&&url.searchParams.has('code')&&(url.searchParams.getAll('code').length!==1||!code||code.length>4096);
   let callbackRejected=!!(secure&&(tokenCallback||oauthError||malformedCode)),exchangedSession=null,exchangePending=false,exchangeEvents=[],exchangeOverflow=false,recoveryConsumed=false;
   let recoveryWanted=false,recoveryAuthority=null; // Recovery is scoped to one verified SDK identity/session.
-  const state={ready:false,busy:false,user:null,mode:'login',oauthComplete:false,kakaoEnabled:!!settings?.kakaoEnabled&&!recoveryHint,message:'계정 서비스를 연결하고 있어요. 연결이 끝날 때까지 이메일과 비밀번호를 입력받지 않습니다.',error:false};
+  const state={ready:false,busy:false,user:null,mode:'login',oauthComplete:false,registrationEnabled:settings?.registrationEnabled===true,kakaoEnabled:!!settings?.kakaoEnabled&&!recoveryHint,message:'계정 서비스를 연결하고 있어요. 연결이 끝날 때까지 이메일과 비밀번호를 입력받지 않습니다.',error:false};
   let client=null,subscription=null,revision=0,pendingEvent=null,disposed=false;
   const emit=()=>{if(!disposed)onChange({...state,user:state.user?{...state.user}:null});};
   const notice=(message,error=false)=>{state.message=message;state.error=error;emit();};
@@ -147,7 +147,7 @@
    finally{state.busy=false;emit();drain();}
   }
   function setMode(mode){
-   if(!state.ready||state.busy||state.user||!['login','signup','forgot'].includes(mode))return false;
+   if(!state.ready||state.busy||state.user||!['login','signup','forgot'].includes(mode)||mode==='signup'&&!state.registrationEnabled)return false;
    state.mode=mode;notice(mode==='signup'?'이메일 아이디와 8자 이상의 비밀번호로 가입해 주세요.':mode==='forgot'?'가입한 이메일 주소로 재설정 링크를 받아요.':'이메일 아이디와 비밀번호를 입력해 주세요.');return true;
   }
   async function signInKakao(){
@@ -162,7 +162,7 @@
   }
   async function submit({email='',password=''}={}){
    if(disposed||!state.ready||state.busy)return false;
-   const mode=state.mode;email=email.trim();
+   const mode=state.mode;if(mode==='signup'&&!state.registrationEnabled)return false;email=email.trim();
    if(mode==='recovery'){
     if(!recoveryWanted||!recoveryAuthority||state.user?.id!==recoveryAuthority.id){notice('재설정 메일 링크를 먼저 열어 주세요.',true);return false;}
    }else if(state.user)return false;
@@ -219,13 +219,14 @@
    $('account-title').textContent=state.ready?(recovery?'비밀번호 다시 정하기':signed?'내 계정':forgot?'비밀번호 찾기':'독도 스쿨 입장'):'내 계정';
    $('connection-note').hidden=state.ready;$('account-controls').hidden=!state.ready||signed;$('signed-in').hidden=!state.ready||!signed;
    $('account-fields').disabled=!state.ready||state.busy;
-   $('mode-buttons').hidden=recovery||forgot;$('email-field').hidden=recovery;$('account-email').disabled=recovery;
+   $('mode-signup').hidden=!state.registrationEnabled;if($('registration-hold'))$('registration-hold').hidden=state.registrationEnabled;
+   $('mode-buttons').hidden=!state.registrationEnabled||recovery||forgot;$('email-field').hidden=recovery;$('account-email').disabled=recovery;
    $('password-field').hidden=forgot;$('account-password').disabled=forgot;$('account-password').required=!forgot;
    $('account-password').autocomplete=state.mode==='login'?'current-password':'new-password';
    $('password-label').textContent=recovery?'새 비밀번호':'비밀번호';$('password-hint').hidden=!['signup','recovery'].includes(state.mode);
    $('account-email').required=!recovery;
    $('account-submit').textContent=state.busy?'확인 중…':({login:'로그인',signup:'가입하기',forgot:'재설정 메일 받기',recovery:'새 비밀번호 저장'})[state.mode];
-   for(const mode of ['login','signup']){$('mode-'+mode).disabled=!state.ready||state.busy;$('mode-'+mode).setAttribute('aria-pressed',String(state.mode===mode));}
+   for(const mode of ['login','signup']){$('mode-'+mode).disabled=!state.ready||state.busy||mode==='signup'&&!state.registrationEnabled;$('mode-'+mode).setAttribute('aria-pressed',String(state.mode===mode));}
    $('mode-forgot').hidden=recovery||forgot;$('mode-back').hidden=!forgot;
    for(const id of ['mode-forgot','mode-back','account-signout'])$(id).disabled=!state.ready||state.busy;
    $('account-email-display').textContent=state.user?.email||(state.user?.provider==='kakao'?'카카오 계정으로 로그인했어요.':'로그인한 계정');

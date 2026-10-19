@@ -3,6 +3,7 @@
 'use strict';
 const KEY='dokdo-ui-language-v1';
 const dictionary={
+ "새 회원가입과 카카오 로그인은 아동 개인정보 보호 절차를 준비하는 동안 잠시 쉬어요. 기존 이메일 계정으로 로그인하거나, 로그인 없이 이 기기의 배움·놀이 기록을 이어갈 수 있어요.":"New account registration and Kakao sign-in are paused while we prepare child privacy safeguards. You can sign in with an existing email account or keep learning and playing with records on this device.",
  "놀이별 성장 기록을 확인해 주세요.":"Please check your activity growth record.",
  "로그인 링크를 확인하지 못했어요. 이메일로 로그인하거나 이 브라우저에서 새 링크를 요청해 주세요.":"This sign-in link could not be verified. Sign in with email or request a new link in this browser.",
  "카카오 로그인 요청 시간이 지났어요. 카카오 로그인 버튼을 눌러 새로 시작해 주세요.":"Your Kakao sign-in request expired. Select Sign in with Kakao to start again.",
