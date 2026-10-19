@@ -1,4 +1,4 @@
-/* Auth only. No school/game storage is read, changed, claimed or synchronised. */
+/* Auth controller. Private record UI receives only server-verified identities. */
 (function(root,factory){
  'use strict';const api=factory();
  if(typeof module==='object'&&module.exports)module.exports=api;
@@ -37,7 +37,7 @@
  function validKakaoUrl(value,settings,currentUrl){
   try{const u=new URL(value);return u.protocol==='https:'&&u.origin===settings.url&&u.pathname==='/auth/v1/authorize'&&!u.username&&!u.password&&!u.hash&&u.searchParams.getAll('provider').length===1&&u.searchParams.get('provider')==='kakao'&&u.searchParams.getAll('redirect_to').length===1&&u.searchParams.get('redirect_to')===kakaoReturnUrl(settings,currentUrl)&&u.searchParams.getAll('scope').length===1&&u.searchParams.get('scope')==='profile_nickname';}catch(e){return false;}
  }
- function createController({config,sdk,currentUrl,onChange=()=>{},defer=fn=>setTimeout(fn,0),navigate=()=>{}}){
+ function createController({config,sdk,currentUrl,onChange=()=>{},defer=fn=>setTimeout(fn,0),navigate=()=>{},onAccount=()=>{}}){
   const settings=validateConfig(config,currentUrl);let url;try{url=new URL(currentUrl);}catch(e){url=new URL('https://invalid.example/');}
   const recoveryHint=url.searchParams.get('flow')==='recovery'||new URLSearchParams(url.hash.slice(1)).get('type')==='recovery';
   const fragment=new URLSearchParams(url.hash.slice(1));
@@ -49,7 +49,8 @@
   let client=null,subscription=null,revision=0,pendingEvent=null,disposed=false;
   const emit=()=>{if(!disposed)onChange({...state,user:state.user?{...state.user}:null});};
   const notice=(message,error=false)=>{state.message=message;state.error=error;emit();};
-  const userOut=()=>{revision++;state.user=null;state.oauthComplete=false;if(state.mode==='recovery')state.mode='forgot';};
+  const accountChanged=(user)=>{try{onAccount(user, user?client:null);}catch(e){/* Record UI must never interrupt authentication. */}};
+  const userOut=()=>{accountChanged(null);revision++;state.user=null;state.oauthComplete=false;if(state.mode==='recovery')state.mode='forgot';};
   async function verify(session){
    const token=++revision;
    if(!session)return {status:'none',token};
@@ -58,6 +59,7 @@
    const {data,error}=response;
    if(error||!data?.user?.id||data.user.id!==session.user?.id)return {status:'error',token,error:error||Error('Unverified session')};
    state.user={id:data.user.id,email:data.user.email||'',provider:data.user.app_metadata?.provider==='kakao'?'kakao':'email'};
+   accountChanged({...state.user});
    state.oauthComplete=!!(incomingToken&&session.access_token===incomingToken&&!recoveryWanted&&!recoveryHint&&!oauthError);
    if(recoveryWanted)state.mode='recovery';
    return {status:'verified',token};
@@ -82,7 +84,7 @@
     const watcher=client.auth.onAuthStateChange((event,session)=>{
      if(disposed||event==='INITIAL_SESSION')return;
      // Invalidate in-flight verification immediately, before a queued restore.
-     revision++;state.oauthComplete=false;
+     revision++;state.oauthComplete=false;accountChanged(null);
      if(event==='PASSWORD_RECOVERY')recoveryWanted=true;
      // Keep SDK calls outside its synchronous auth callback to avoid a lock deadlock.
      if(state.busy){pendingEvent={event,session};return;}
@@ -143,12 +145,12 @@
    catch(e){notice('로그아웃하지 못했습니다. 다시 눌러 주세요.',true);return false;}
    finally{state.busy=false;emit();drain();}
   }
-  function dispose(){disposed=true;revision++;subscription?.unsubscribe();}
+  function dispose(){accountChanged(null);disposed=true;revision++;subscription?.unsubscribe();}
   emit();return {init,setMode,submit,signInKakao,signOut,dispose,getState:()=>({...state,user:state.user?{...state.user}:null})};
  }
  function mount(root){
   const d=root.document,$=id=>d.getElementById(id),form=$('account-form');
-  let continued=false;
+  let continued=false,records=null;try{records=root.DokdoRecordsUI?.mount(root);}catch(e){const warning=$('record-local-error');if(warning){warning.hidden=false;warning.textContent='기기 기록을 읽지 못했어요. 원본을 지우지 말고 기록 복구를 확인해 주세요.';}}
   const view=state=>{
    const recovery=state.mode==='recovery',forgot=state.mode==='forgot',signed=!!state.user&&!recovery;
    $('account-status').textContent=state.message;$('account-status').dataset.error=String(state.error);
@@ -169,7 +171,7 @@
    if($('account-continue')){$('account-continue').href=returnPath(root.location.href);$('account-continue').textContent=returnPath(root.location.href)==='games.html'?'독도 놀이터로 돌아가기':'독도 스쿨로 돌아가기';}
    if(state.ready&&state.oauthComplete&&state.user&&!recovery&&!continued){continued=true;root.location.assign(returnPath(root.location.href));}
   };
-  const controller=createController({config:root.DOKDO_AUTH_CONFIG,sdk:root.supabase,currentUrl:root.location.href,onChange:view,navigate:url=>root.location.assign(url)});
+  const controller=createController({config:root.DOKDO_AUTH_CONFIG,sdk:root.supabase,currentUrl:root.location.href,onChange:view,navigate:url=>root.location.assign(url),onAccount:(user,client)=>{if(user)records?.connect(user,client);else records?.invalidate();}});
   if($('kakao-signin'))$('kakao-signin').onclick=()=>controller.signInKakao();
   for(const mode of ['login','signup','forgot'])$('mode-'+mode).onclick=()=>{if(controller.setMode(mode)){$('account-password').value='';$('account-email').focus();}};
   $('mode-back').onclick=()=>controller.setMode('login');
