@@ -38,7 +38,33 @@ function islandSky(now){const d=new Date(now),hour=(d.getUTCHours()+9)%24+d.getU
 function inside(x,y,polygon){let yes=false;for(let i=0,j=polygon.length-1;i<polygon.length;j=i++){const[a,b]=polygon[i],[u,v]=polygon[j];if((b>y)!==(v>y)&&x<(u-a)*(y-b)/(v-b)+a)yes=!yes;}return yes;}
 const meadowRegions=[[[215,300],[248,232],[281,190],[307,124],[330,104],[349,168],[387,201],[404,246],[441,293],[398,312],[269,313]],[[632,315],[665,263],[687,230],[705,186],[810,181],[846,219],[868,265],[901,302],[875,326],[678,331]]];
 const meadowSites=(()=>{const halves=meadowRegions.map((polygon,side)=>{const points=[];for(let y=146;y<319;y+=14)for(let x=side?641:224;x<(side?898:439);x+=14){const px=x+(Math.floor(y/14)%2)*5;if(inside(px,y,polygon))points.push([px,y]);}points.sort((a,b)=>((a[0]*37+a[1]*19)%101)-((b[0]*37+b[1]*19)%101));return points.slice(0,50);});return Array.from({length:100},(_,i)=>halves[i%2][Math.floor(i/2)]);})();
-function dogWalk(time){return{x:845+Math.sin(time*.13)*47,y:318+Math.sin(time*.13)*3,direction:Math.cos(time*.13)>=0?1:-1,phase:time*3};}
+// Feet follow the illustrated slopes, not surveyed real-world coordinates.
+// Cross the channel above the fictional Gangchi resting rock, never through it.
+const dogRoute=[
+ [0,850,322,0],[6,820,267,0],[12,773,206,0],[16,760,168,0],[19,760,168,0],
+ [25,715,236,0],[31,650,326,0],[34,610,331,.7],[39,575,326,1],[44,510,325,1],
+ [47,477,325,1],[49,450,310,.4],[51,430,307,0],[57,396,275,0],[63,364,202,0],
+ [69,329,82,0],[72,329,82,0],[78,292,202,0],[84,260,300,0],[89,330,317,0],
+ [94,430,307,0],[96,450,310,.4],[99,477,325,1],[104,575,326,1],[108,610,331,.7],
+ [112,647,326,0],[116,724,327,0],[122,850,322,0]
+];
+function dogWalk(time){
+ const t=Number.isFinite(time)&&time>0?time:0,period=dogRoute.at(-1)[0],reverse=Math.floor(t/period)%2===1,local=t%period,at=reverse?period-local:local;
+ let i=1;while(i<dogRoute.length-1&&dogRoute[i][0]<at)i++;
+ const a=dogRoute[i-1],b=dogRoute[i],u=Math.max(0,Math.min(1,(at-a[0])/(b[0]-a[0]))),ease=u*u*(3-2*u),swim=a[3]+(b[3]-a[3])*ease,moving=a[1]!==b[1]||a[2]!==b[2];
+ const dx=b[1]-a[1]||dogRoute[Math.min(i+1,dogRoute.length-1)][1]-a[1]||1;
+ return{x:a[1]+(b[1]-a[1])*ease,y:a[2]+(b[2]-a[2])*ease,swim,direction:Math.sign(dx)*(reverse?-1:1),phase:moving?t*(swim>.5?5:3):0};
+}
+function roamingDog(c,time){
+ const p=dogWalk(time),swim=p.swim;
+ c.save();c.translate(p.x,p.y+Math.sin(time*3)*swim);c.scale(p.direction,1);
+ if(swim){ellipse(c,-5,-10*swim,27*swim,3,'#d7f3eb91');line(c,-35*swim,-8*swim,-22*swim,-9*swim,'#dbf4e5',1.5);}
+ c.save();if(swim){c.beginPath();c.rect(-65,-85,130,85-12*swim);c.clip();}
+ const size=.58-Math.max(0,140-p.y)*.001;
+ sprite(c,'dog',0,0,size,p.phase);c.restore();
+ if(swim){line(c,-20,-12*swim,12,-12*swim,'#ccecdf',1.5);line(c,-10,-8*swim,24,-8*swim,'#8dc6bd',1);}
+ c.restore();
+}
 function island(canvas,state,time=0,now=Date.now()){
  const garden=window.DokdoGarden?.view(state)||{flowers:0,grass:0,trees:0,shrimp:0,gulls:0,complete:false};
  const c=canvas.getContext('2d'),w=canvas.width,h=canvas.height,G=window.DokdoGames,p=islandSky(now),eq=state.equipped||[],count=id=>G.population(state,id),hour=(new Date(now).getUTCHours()+9)%24,night=hour<6||hour>=19;
@@ -55,7 +81,6 @@ function island(canvas,state,time=0,now=Date.now()){
  if(count('guard'))sprite(c,'guard',800,170,.4);
  // Legacy lamps stay on Dongdo's shore; learning no longer paints dots over water.
  if(count('lights'))for(let i=0;i<8;i++){const x=688+i*20,y=322+Math.sin(i*.7)*3;ellipse(c,x,y,5,5,'#ffeab126');ellipse(c,x,y,1.5,1.5,'#fff1bb');}
- if(count('dog')){const walk=dogWalk(time);c.save();c.translate(walk.x,walk.y);c.scale(walk.direction,1);sprite(c,'dog',0,0,.58,walk.phase);c.restore();}
  for(let i=0;i<garden.grass;i++){const[x,y]=meadowSites[i];const sway=Math.sin(time*.65+i)*1.2;line(c,x,y,x-3+sway,y-8,'#477e4e',1.6);line(c,x,y,x+1+sway,y-10,'#6d9b58',1.8);line(c,x,y,x+5+sway,y-5,'#5c8c4e',1.6);}
  const flowers=eq.includes('flower')?Math.max(count('flower'),garden.flowers):0;
  for(let i=0;i<flowers;i++){const[x,y]=meadowSites[i];c.save();c.translate(x,y);c.rotate(Math.sin(time*.8+i)*.035);sprite(c,'flower',0,0,flowers>30?.29:.42);c.restore();}
@@ -69,6 +94,7 @@ function island(canvas,state,time=0,now=Date.now()){
   if(cycle>.55){const q=(cycle-.55)/.45,arc=Math.sin(q*Math.PI);x=slotX+Math.sin(q*Math.PI*2)*70;y=slotY+arc*(39+(i%2)*5);swim=Math.min(1,arc*3);}
   c.save();c.translate(x,y);if(swim){ellipse(c,0,4,21,3,'#d6eadc80');c.scale(1,1-swim*.37);c.rotate(-.65*swim);}sprite(c,'seal',0,0,.45);c.restore();
  }
+ if(count('dog'))roamingDog(c,time);
  c.fillStyle=night?'#d4e4d9':'#456b5d';c.font='500 11px Gmarket, sans-serif';c.textAlign='center';c.fillText(window.DokdoLanguage?.lang==='en'?'Seodo (West)': '서도',333,334);c.fillText(window.DokdoLanguage?.lang==='en'?'Dongdo (East)':'동도',778,349);if(count('seal')){c.font='10px Gmarket, sans-serif';c.fillText(window.DokdoLanguage?.lang==='en'?'Gangchi Rock · imaginary resting place':'강치바위 · 상상 쉼터',550,416);}c.restore();
 }
 // One shared, visibility-aware animation clock. Repainting a hub updates its job,
