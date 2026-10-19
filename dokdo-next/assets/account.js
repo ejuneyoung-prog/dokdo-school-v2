@@ -55,6 +55,8 @@
   const recoveryHint=url.searchParams.get('flow')==='recovery'||new URLSearchParams(url.hash.slice(1)).get('type')==='recovery';
   const fragment=new URLSearchParams(url.hash.slice(1));
   const oauthError=['error','error_code','error_description'].some(key=>url.searchParams.has(key)||fragment.has(key));
+  const expiredState=[url.searchParams,fragment].some(params=>params.get('error_code')==='bad_oauth_state');
+  const oauthMessage=expiredState?(settings?.kakaoEnabled?'카카오 로그인 요청 시간이 지났어요. 카카오 로그인 버튼을 눌러 새로 시작해 주세요.':'카카오 로그인 요청 시간이 지났어요. 지금은 이메일로 로그인해 주세요.'):'카카오 로그인을 마치지 못했어요. 다시 시도하거나 이메일로 로그인해 주세요.';
   const oauthHint=url.searchParams.get('oauth')==='kakao';
   const secure=!!settings?.secureSessions,code=url.searchParams.get('code');
   const tokenCallback=secure&&['access_token','refresh_token','provider_token','provider_refresh_token'].some(key=>fragment.has(key)||url.searchParams.has(key));
@@ -86,13 +88,13 @@
   }
   async function restore(session,establish=false){
    if(disposed)return;
-   if(callbackRejected){userOut();notice('로그인 링크를 확인하지 못했어요. 이메일로 로그인하거나 이 브라우저에서 새 링크를 요청해 주세요.',true);return;}
+   if(callbackRejected){userOut();notice(oauthError?oauthMessage:'로그인 링크를 확인하지 못했어요. 이메일로 로그인하거나 이 브라우저에서 새 링크를 요청해 주세요.',true);return;}
    const result=await verify(session,establish);
    // A late response, including an error, must not clear a newer verified account.
    if(disposed||result.token!==revision||result.status==='stale')return;
-   if(result.status==='verified')notice(recoveryWanted?'새 비밀번호를 정해 주세요.':oauthError?'카카오 로그인을 마치지 못했어요. 다시 시도하거나 이메일로 로그인해 주세요.':recoveryHint&&!recoveryConsumed?'재설정 메일 링크를 확인하지 못했습니다. 메일의 링크를 다시 열어 주세요.':'로그인 상태를 확인했습니다.',(recoveryHint&&!recoveryWanted&&!recoveryConsumed)||oauthError);
+   if(result.status==='verified')notice(recoveryWanted?'새 비밀번호를 정해 주세요.':oauthError?oauthMessage:recoveryHint&&!recoveryConsumed?'재설정 메일 링크를 확인하지 못했습니다. 메일의 링크를 다시 열어 주세요.':'로그인 상태를 확인했습니다.',(recoveryHint&&!recoveryWanted&&!recoveryConsumed)||oauthError);
    else if(result.status==='error'){userOut();notice('로그인 상태를 확인하지 못했습니다. 다시 로그인해 주세요.',true);}
-   else{userOut();recoveryWanted=false;notice(oauthError?'카카오 로그인을 마치지 못했어요. 다시 시도하거나 이메일로 로그인해 주세요.':recoveryHint?'재설정 링크를 확인하지 못했습니다. 메일을 다시 요청해 주세요.':'이메일 아이디로 로그인해 주세요.',recoveryHint||oauthError);}
+   else{userOut();recoveryWanted=false;notice(oauthError?oauthMessage:recoveryHint?'재설정 링크를 확인하지 못했습니다. 메일을 다시 요청해 주세요.':'이메일 아이디로 로그인해 주세요.',recoveryHint||oauthError);}
   }
   function drain(){const pending=pendingEvent;pendingEvent=null;if(pending)defer(()=>restore(pending.session));}
   async function init(){
@@ -114,7 +116,7 @@
      if(state.busy){pendingEvent={event,session};return;}
      defer(()=>restore(session));
     });subscription=watcher?.data?.subscription;
-    if(secure&&(url.searchParams.has('code')||tokenCallback||oauthError))try{consumeCallback();}catch(ignore){}
+    if(oauthError||(secure&&(url.searchParams.has('code')||tokenCallback)))try{consumeCallback();}catch(ignore){}
     if(callbackRejected){await restore(null);state.ready=true;return true;}
     if(secure&&code){
      exchangePending=true;exchangeEvents=[];exchangeOverflow=false;
