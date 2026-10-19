@@ -53,8 +53,9 @@ do $$ begin
 end $$;
 reset role;
 do $$ begin
- if (select revision from public.dokdo_private_records where user_id='e29e8981-1af7-4a49-a4fd-918691b78c11') <> 2 then raise exception 'A revision corrupted'; end if;
- if (select revision from public.dokdo_private_records where user_id='a0e63436-3c93-44d4-90cd-5209143dd522') <> 1 then raise exception 'B revision corrupted'; end if;
+ if (select revision from public.dokdo_private_records where user_id='e29e8981-1af7-4a49-a4fd-918691b78c11') is distinct from 2 then raise exception 'A revision corrupted'; end if;
+ if (select revision from public.dokdo_private_records where user_id='a0e63436-3c93-44d4-90cd-5209143dd522') is distinct from 1 then raise exception 'B revision corrupted'; end if;
 end $$;
+select 'Private-record A/B/anonymous assertions passed inside this transaction. Confirm ROLLBACK below and no errors.' as result;
 rollback;
-select 'Private-record A/B/anonymous checks completed; fictional fixtures rolled back.' as result;
+-- Any error anywhere means NOT PASSED, even if the client continues showing later output.

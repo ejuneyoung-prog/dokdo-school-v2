@@ -31,7 +31,7 @@ privateRecordsEnabled:false가 기본입니다. 현재 운영에서는 기기 �
 
 1. 교수님 승인 후 Supabase SQL Editor에서 private-records.sql을 실행합니다(새 개인 보관함만 생성, 기존 데이터 무수정).
 2. private-records-verification.sql을 실행해 가상 A/B 사용자와 익명 접근·CAS·직접쓰기 차단을 확인합니다. 이 검사는 트랜잭션 끝에서 가상 사용자와 기록을 전부 rollback합니다. 실제 학생을 쓰지 않습니다.
-3. 운영자의 실제 계정으로 저장·다른 기기 복원·로그아웃·계정 전환을 확인한 뒤 privateRecordsEnabled:true를 배포합니다. 검증 전에는 false입니다.
+3. SSD 운영/검수/계정_비공개시험_2026-10-19/의 localhost 시험본에서만 privateRecordsEnabled:true로 켜고 운영자의 실제 계정으로 저장·다른 기기 복원·로그아웃·계정 전환을 확인합니다. 시험본은 외부에 배포하지 않고 운영 설정은 false로 유지합니다. 실제 DB 검사와 제한 시험을 통과한 뒤에만 공개판의 privateRecordsEnabled:true를 배포합니다. SQL에서 오류가 하나라도 나오면 뒤의 문구와 무관하게 미통과입니다.
 
 JS 가짜 SDK·정적 SQL 검사는 실제 Postgres/RLS 검사를 대신하지 않습니다. 실제 DB 검사 결과는 활성화 시점에 별도로 기록합니다. 새 개인정보 목적·보관/삭제 운영 안내는 교수님 최종 확인이 필요합니다.
 
