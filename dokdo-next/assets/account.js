@@ -14,7 +14,7 @@
    const local=redirect.protocol==='http:'&&['localhost','127.0.0.1'].includes(redirect.hostname);
    if(redirect.protocol!=='https:'&&!local)return null;
    if(redirect.origin!==current.origin||redirect.pathname!==current.pathname||redirect.search||redirect.hash||redirect.username||redirect.password)return null;
-   return {url:project.origin,key:config.publishableKey,redirect:redirect.href,kakaoEnabled:config.kakaoEnabled===true};
+   return {url:project.origin,key:config.publishableKey,redirect:redirect.href,kakaoEnabled:config.kakaoEnabled===true,secureSessions:config.kakaoEnabled===true||config.privateRecordsEnabled===true};
   }catch(e){return null;}
  }
  function messageFor(error,mode){
@@ -35,15 +35,31 @@
  }
  function kakaoReturnUrl(settings,currentUrl){const u=new URL(settings.redirect);u.searchParams.set('oauth','kakao');u.searchParams.set('next',returnPath(currentUrl));return u.href;}
  function validKakaoUrl(value,settings,currentUrl){
-  try{const u=new URL(value);return u.protocol==='https:'&&u.origin===settings.url&&u.pathname==='/auth/v1/authorize'&&!u.username&&!u.password&&!u.hash&&u.searchParams.getAll('provider').length===1&&u.searchParams.get('provider')==='kakao'&&u.searchParams.getAll('redirect_to').length===1&&u.searchParams.get('redirect_to')===kakaoReturnUrl(settings,currentUrl)&&u.searchParams.getAll('scope').length===1&&u.searchParams.get('scope')==='profile_nickname';}catch(e){return false;}
+  try{const u=new URL(value);return u.protocol==='https:'&&u.origin===settings.url&&u.pathname==='/auth/v1/authorize'&&!u.username&&!u.password&&!u.hash&&u.searchParams.getAll('provider').length===1&&u.searchParams.get('provider')==='kakao'&&u.searchParams.getAll('redirect_to').length===1&&u.searchParams.get('redirect_to')===kakaoReturnUrl(settings,currentUrl)&&u.searchParams.getAll('scope').length===1&&u.searchParams.get('scope')==='profile_nickname'&&u.searchParams.getAll('code_challenge').length===1&&/^[A-Za-z0-9_-]{43}$/.test(u.searchParams.get('code_challenge')||'')&&u.searchParams.getAll('code_challenge_method').length===1&&u.searchParams.get('code_challenge_method')==='s256';}catch(e){return false;}
  }
- function createController({config,sdk,currentUrl,onChange=()=>{},defer=fn=>setTimeout(fn,0),navigate=()=>{},onAccount=()=>{}}){
+ function sessionCleanup(storage,locks){
+  const key='dokdo-account-session-v2',accepted=key+'-accepted-user';
+  const lock=(name,timeout,fn)=>locks.request(name,{mode:'exclusive'},fn);
+  const clearAccepted=()=>{storage.removeItem(accepted);if(storage.getItem(accepted)!==null)throw Error('Session acceptance cleanup unavailable');};
+  return {lock,prepare(){if(typeof locks?.request!=='function'||!storage)throw Error('Session lock unavailable');storage.getItem(key);storage.getItem(accepted);},
+   begin:()=>lock('lock:'+key,0,clearAccepted),
+   authorize:(session,establish,isCurrent)=>lock('lock:'+key,0,()=>{const saved=JSON.parse(storage.getItem(key)||'null');if(!isCurrent()||!saved?.access_token||saved.access_token!==session?.access_token||saved.user?.id!==session?.user?.id)return false;if(establish){storage.setItem(accepted,session.user.id);if(storage.getItem(accepted)!==session.user.id)throw Error('Session acceptance unavailable');}return storage.getItem(accepted)===session.user.id;}),
+   forget:id=>lock('lock:'+key,0,()=>{if(storage.getItem(accepted)===id)clearAccepted();}),async discard(session){
+   if(!session?.access_token)return;
+   // Explicitly shared with the pinned Auth SDK: never remove a newer account's session.
+   await locks.request('lock:'+key,{mode:'exclusive'},()=>{const raw=storage.getItem(key);if(!raw)return;const saved=JSON.parse(raw);if(saved.access_token!==session.access_token)return;if(session.user?.id&&storage.getItem(accepted)===session.user.id)clearAccepted();storage.removeItem(key);if(storage.getItem(key)!==null)throw Error('Session cleanup unavailable');});
+  }};
+ }
+ function createController({config,sdk,currentUrl,onChange=()=>{},defer=fn=>setTimeout(fn,0),navigate=()=>{},onAccount=()=>{},consumeCallback=()=>{},cleanup=null}){
   const settings=validateConfig(config,currentUrl);let url;try{url=new URL(currentUrl);}catch(e){url=new URL('https://invalid.example/');}
   const recoveryHint=url.searchParams.get('flow')==='recovery'||new URLSearchParams(url.hash.slice(1)).get('type')==='recovery';
   const fragment=new URLSearchParams(url.hash.slice(1));
   const oauthError=['error','error_code','error_description'].some(key=>url.searchParams.has(key)||fragment.has(key));
   const oauthHint=url.searchParams.get('oauth')==='kakao';
-  const incomingToken=oauthHint&&!oauthError&&!recoveryHint?fragment.get('access_token'):null;
+  const secure=!!settings?.secureSessions,code=url.searchParams.get('code');
+  const tokenCallback=secure&&['access_token','refresh_token','provider_token','provider_refresh_token'].some(key=>fragment.has(key)||url.searchParams.has(key));
+  const malformedCode=secure&&url.searchParams.has('code')&&(url.searchParams.getAll('code').length!==1||!code||code.length>4096);
+  let callbackRejected=!!(secure&&(tokenCallback||oauthError||malformedCode)),exchangedSession=null,exchangePending=false,exchangeEvents=[],exchangeOverflow=false,recoveryConsumed=false;
   let recoveryWanted=false; // Only an SDK PASSWORD_RECOVERY event enables a password change.
   const state={ready:false,busy:false,user:null,mode:'login',oauthComplete:false,kakaoEnabled:!!settings?.kakaoEnabled&&!recoveryHint,message:'계정 서비스를 연결하고 있어요. 연결이 끝날 때까지 이메일과 비밀번호를 입력받지 않습니다.',error:false};
   let client=null,subscription=null,revision=0,pendingEvent=null,disposed=false;
@@ -51,25 +67,30 @@
   const notice=(message,error=false)=>{state.message=message;state.error=error;emit();};
   const accountChanged=(user)=>{try{onAccount(user, user?client:null);}catch(e){/* Record UI must never interrupt authentication. */}};
   const userOut=()=>{accountChanged(null);revision++;state.user=null;state.oauthComplete=false;if(state.mode==='recovery')state.mode='forgot';};
-  async function verify(session){
+  async function verify(session,establish=false){
    const token=++revision;
    if(!session)return {status:'none',token};
-   let response;try{response=await client.auth.getUser();}catch(error){return {status:'error',token,error};}
+   let response;try{response=await client.auth.getUser(session.access_token);}catch(error){return {status:'error',token,error};}
    if(disposed||token!==revision)return {status:'stale',token};
    const {data,error}=response;
    if(error||!data?.user?.id||data.user.id!==session.user?.id)return {status:'error',token,error:error||Error('Unverified session')};
+   if(secure&&cleanup){
+    try{if(!await cleanup.authorize(session,establish,()=>!disposed&&token===revision))throw Error('Session not accepted');}catch(error){return {status:'error',token,error};}
+    if(disposed||token!==revision)return {status:'stale',token};
+   }
    state.user={id:data.user.id,email:data.user.email||'',provider:data.user.app_metadata?.provider==='kakao'?'kakao':'email'};
    accountChanged({...state.user});
-   state.oauthComplete=!!(incomingToken&&session.access_token===incomingToken&&!recoveryWanted&&!recoveryHint&&!oauthError);
+   state.oauthComplete=!!(secure&&exchangedSession&&session.access_token===exchangedSession.access_token&&oauthHint&&!recoveryWanted&&!recoveryHint&&!oauthError&&!callbackRejected);
    if(recoveryWanted)state.mode='recovery';
    return {status:'verified',token};
   }
-  async function restore(session){
+  async function restore(session,establish=false){
    if(disposed)return;
-   const result=await verify(session);
+   if(callbackRejected){userOut();notice('로그인 링크를 확인하지 못했어요. 이메일로 로그인하거나 이 브라우저에서 새 링크를 요청해 주세요.',true);return;}
+   const result=await verify(session,establish);
    // A late response, including an error, must not clear a newer verified account.
    if(disposed||result.token!==revision||result.status==='stale')return;
-   if(result.status==='verified')notice(recoveryWanted?'새 비밀번호를 정해 주세요.':oauthError?'카카오 로그인을 마치지 못했어요. 다시 시도하거나 이메일로 로그인해 주세요.':recoveryHint?'재설정 메일 링크를 확인하지 못했습니다. 메일의 링크를 다시 열어 주세요.':'로그인 상태를 확인했습니다.',(recoveryHint&&!recoveryWanted)||oauthError);
+   if(result.status==='verified')notice(recoveryWanted?'새 비밀번호를 정해 주세요.':oauthError?'카카오 로그인을 마치지 못했어요. 다시 시도하거나 이메일로 로그인해 주세요.':recoveryHint&&!recoveryConsumed?'재설정 메일 링크를 확인하지 못했습니다. 메일의 링크를 다시 열어 주세요.':'로그인 상태를 확인했습니다.',(recoveryHint&&!recoveryWanted&&!recoveryConsumed)||oauthError);
    else if(result.status==='error'){userOut();notice('로그인 상태를 확인하지 못했습니다. 다시 로그인해 주세요.',true);}
    else{userOut();recoveryWanted=false;notice(oauthError?'카카오 로그인을 마치지 못했어요. 다시 시도하거나 이메일로 로그인해 주세요.':recoveryHint?'재설정 링크를 확인하지 못했습니다. 메일을 다시 요청해 주세요.':'이메일 아이디로 로그인해 주세요.',recoveryHint||oauthError);}
   }
@@ -80,16 +101,33 @@
    if(typeof sdk?.createClient!=='function'){notice('계정 화면을 불러오지 못했어요. 새로고침한 뒤 다시 이용해 주세요.',true);return false;}
    state.busy=true;emit();
    try{
-    client=sdk.createClient(settings.url,settings.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:!oauthError,flowType:'implicit',storageKey:'dokdo-account-session-v1'}});
+    if(secure)cleanup?.prepare();
+    if(secure&&code&&!callbackRejected)await cleanup?.begin();
+    client=sdk.createClient(settings.url,settings.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:secure?false:!oauthError,flowType:secure?'pkce':'implicit',storageKey:secure?'dokdo-account-session-v2':'dokdo-account-session-v1',...(secure&&cleanup?{lock:cleanup.lock}:{})}});
     const watcher=client.auth.onAuthStateChange((event,session)=>{
      if(disposed||event==='INITIAL_SESSION')return;
      // Invalidate in-flight verification immediately, before a queued restore.
      revision++;state.oauthComplete=false;accountChanged(null);
+     if(exchangePending){if(exchangeEvents.length<50)exchangeEvents.push({event,id:session?.user?.id,token:session?.access_token});else exchangeOverflow=true;}
      if(event==='PASSWORD_RECOVERY')recoveryWanted=true;
      // Keep SDK calls outside its synchronous auth callback to avoid a lock deadlock.
      if(state.busy){pendingEvent={event,session};return;}
      defer(()=>restore(session));
     });subscription=watcher?.data?.subscription;
+    if(secure&&(url.searchParams.has('code')||tokenCallback||oauthError))try{consumeCallback();}catch(ignore){}
+    if(callbackRejected){await restore(null);state.ready=true;return true;}
+    if(secure&&code){
+     exchangePending=true;exchangeEvents=[];exchangeOverflow=false;
+     let exchanged;try{exchanged=await client.auth.exchangeCodeForSession(code);}catch(e){exchangePending=false;exchangeEvents=[];callbackRejected=true;await restore(null);state.ready=true;return true;}
+     exchangePending=false;const interrupted=exchangeOverflow||exchangeEvents.some(e=>e.event==='SIGNED_OUT'||e.id!==exchanged.data?.session?.user?.id||e.token!==exchanged.data?.session?.access_token);exchangeEvents=[];
+     if(disposed){await cleanup?.discard(exchanged.data?.session);return false;}
+     if(interrupted){callbackRejected=true;await cleanup?.discard(exchanged.data?.session);await restore(null);state.ready=true;return true;}
+     if(pendingEvent&&(!pendingEvent.session||pendingEvent.session.user?.id!==exchanged.data?.session?.user?.id)){callbackRejected=true;await cleanup?.discard(exchanged.data?.session);await restore(null);state.ready=true;return true;}
+     if(exchanged.error||!exchanged.data?.session||exchanged.data.user?.id!==exchanged.data.session.user?.id){callbackRejected=true;await cleanup?.discard(exchanged.data?.session);await restore(null);state.ready=true;return true;}
+     exchangedSession=exchanged.data.session;
+     if(exchanged.data.redirectType==='recovery')recoveryWanted=true;
+     await restore(exchangedSession,true);if(!state.user||state.user.id!==exchangedSession.user.id){callbackRejected=true;await cleanup?.discard(exchangedSession);}state.ready=true;return true;
+    }
     const {data,error}=await client.auth.getSession();if(error)throw error;
     await restore(data?.session||null);state.ready=true;return true;
    }catch(e){userOut();notice('로그인 서비스에 연결하지 못했습니다. 입력은 잠시 닫아 두었습니다.',true);return false;}
@@ -126,13 +164,14 @@
     if(mode==='recovery'){
      const {data,error}=await client.auth.updateUser({password});if(error)throw error;
      if(!data?.user?.id||data.user.id!==state.user.id)throw Error('Password change not confirmed');
-     recoveryWanted=false;state.mode='login';notice('비밀번호를 바꿨어요.');return true;
+     recoveryWanted=false;recoveryConsumed=true;state.mode='login';notice('비밀번호를 바꿨어요.');return true;
     }
     const result=mode==='signup'?await client.auth.signUp({email,password,options:{emailRedirectTo:settings.redirect}}):await client.auth.signInWithPassword({email,password});
     if(result.error)throw result.error;
     if(mode==='signup'&&!result.data?.session){notice('가입 확인 메일을 확인해 주세요. 이미 가입하셨다면 로그인해 주세요.');return true;}
     if(!result.data?.session)throw Error('Sign-in not verified');
-    const checked=await verify(result.data.session);if(disposed||checked.token!==revision||checked.status==='stale')return false;
+    callbackRejected=false;exchangedSession=null;
+    const checked=await verify(result.data.session,true);if(disposed||checked.token!==revision||checked.status==='stale')return false;
     if(checked.status!=='verified')throw checked.error||Error('Sign-in not verified');
     notice('로그인했습니다. 이 기기의 학습·게임 기록은 그대로 남아 있어요.');return true;
    }catch(e){notice(messageFor(e,mode),true);return false;}
@@ -141,7 +180,7 @@
   async function signOut(){
    if(disposed||!state.ready||state.busy||!state.user)return false;
    state.busy=true;notice('로그아웃하고 있어요.');
-   try{const {error}=await client.auth.signOut({scope:'local'});if(error)throw error;userOut();recoveryWanted=false;state.mode='login';notice('로그아웃했습니다. 이 기기의 학습·게임 기록은 남아 있습니다.');return true;}
+   try{if(secure)await cleanup?.forget(state.user.id);const {error}=await client.auth.signOut({scope:'local'});if(error)throw error;userOut();recoveryWanted=false;state.mode='login';notice('로그아웃했습니다. 이 기기의 학습·게임 기록은 남아 있습니다.');return true;}
    catch(e){notice('로그아웃하지 못했습니다. 다시 눌러 주세요.',true);return false;}
    finally{state.busy=false;emit();drain();}
   }
@@ -171,7 +210,8 @@
    if($('account-continue')){$('account-continue').href=returnPath(root.location.href);$('account-continue').textContent=returnPath(root.location.href)==='games.html'?'독도 놀이터로 돌아가기':'독도 스쿨로 돌아가기';}
    if(state.ready&&state.oauthComplete&&state.user&&!recovery&&!continued){continued=true;root.location.assign(returnPath(root.location.href));}
   };
-  const controller=createController({config:root.DOKDO_AUTH_CONFIG,sdk:root.supabase,currentUrl:root.location.href,onChange:view,navigate:url=>root.location.assign(url),onAccount:(user,client)=>{if(user)records?.connect(user,client);else records?.invalidate();}});
+  let cleanup;try{cleanup=sessionCleanup(root.localStorage,root.navigator.locks);}catch(e){cleanup={prepare(){throw Error('Session storage unavailable');}};}
+  const controller=createController({config:root.DOKDO_AUTH_CONFIG,sdk:root.supabase,currentUrl:root.location.href,onChange:view,cleanup,navigate:url=>root.location.assign(url),consumeCallback:()=>{const safe=new URL(root.location.href);safe.search='';safe.hash='';safe.searchParams.set('next',returnPath(root.location.href));root.history?.replaceState(null,'',safe.href);},onAccount:(user,client)=>{if(user)records?.connect(user,client);else records?.invalidate();}});
   if($('kakao-signin'))$('kakao-signin').onclick=()=>controller.signInKakao();
   for(const mode of ['login','signup','forgot'])$('mode-'+mode).onclick=()=>{if(controller.setMode(mode)){$('account-password').value='';$('account-email').focus();}};
   $('mode-back').onclick=()=>controller.setMode('login');
@@ -180,5 +220,5 @@
   root.addEventListener('pageshow',event=>{if(event.persisted)root.location.reload();});
   root.DokdoLanguage?.mount(d.body);controller.init();return controller;
  }
- return {createController,validateConfig,returnPath,kakaoReturnUrl,validKakaoUrl,mount};
+ return {createController,validateConfig,returnPath,kakaoReturnUrl,validKakaoUrl,sessionCleanup,mount};
 });
