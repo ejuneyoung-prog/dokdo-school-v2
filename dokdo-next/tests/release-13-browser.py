@@ -194,7 +194,8 @@ try:
   # page-side predicate, which this site's CSP blocks for lacking unsafe-eval.
   wait_until(page,'!!(window.DokdoApp&&DokdoApp.lesson&&DokdoApp.lesson.item)')
   check('Middle-school track begins at its real starting unit (no placement test)',page.evaluate('DokdoApp.lesson.item.unit===8'))
-  check('Question uses S-Core Dream token',page.eval_on_selector('#question-title','e=>getComputedStyle(e).fontFamily').startswith('SCoreDream'))
+  expected_body_font='GmarketSans' if page.locator('body.school-v3').count() else 'SCoreDream'
+  check('Question uses the body font specified for its theme',page.eval_on_selector('#question-title','e=>getComputedStyle(e).fontFamily').startswith(expected_body_font))
   page.evaluate("DokdoApp.view('home')");page.click('#start-lesson');page.click('#read-done')
   check('Ordinary history lesson displays why-Dokdo background',page.evaluate('DokdoApp.lesson.item.unit===8 && !document.querySelector("#question-context").hidden && document.querySelector("#question-context").textContent.includes("1900")'))
   page.evaluate("DokdoApp.view('home')")

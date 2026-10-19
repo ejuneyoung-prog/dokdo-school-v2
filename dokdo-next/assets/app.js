@@ -334,12 +334,22 @@ function renderGrade(){
  $('grade-view-gauge').max=gp.need;$('grade-view-gauge').value=Math.ceil(gp.have);
  txt('grade-view-gauge-label',gp.graduated?tr('최고 단계 달성','Top level reached'):tr(`${Math.ceil(gp.have)}/${gp.need} · 다음 단계(${gradeLabel(Core.GRADES[gp.rank+1])})까지`,`${Math.ceil(gp.have)}/${gp.need} to ${gradeLabel(Core.GRADES[gp.rank+1])}`));
  const ladder=$('grade-ladder');ladder.replaceChildren();
- Core.GRADES.forEach((code,i)=>{
-  const row=document.createElement('div');row.className='grade-row'+(i===gp.rank?' current':i<gp.rank?' done':'');
-  const n=document.createElement('span');n.className='grade-row-index';n.textContent=String(i+1);
-  const name=document.createElement('span');name.className='grade-row-name';name.textContent=gradeLabel(code);
-  row.append(n,name);ladder.append(row);
- });
+ // Grouping is presentation only: the complete authoritative order remains intact.
+ const bands=[['K','E6','유치원·초등','Early & elementary'],['M1','H3','중·고등','Middle & high school'],['U1','U4','대학','University'],['MA1','PHD2','석·박사','Graduate'],['DK1',Core.GRADES[Core.GRADES.length-1],'독코민','Dokkomin']];
+ for(const[first,last,ko,en]of bands){
+  const from=Core.GRADES.indexOf(first),to=Core.GRADES.indexOf(last);if(from<0||to<from)continue;
+  const current=gp.rank>=from&&gp.rank<=to,group=document.createElement('details');group.className='grade-group';group.open=current;
+  const heading=document.createElement('summary'),title=document.createElement('strong'),hint=document.createElement('span');title.textContent=tr(ko,en);hint.textContent=current?tr('현재 단계 포함','Includes current stage'):tr((to-from+1)+'개 단계 보기',(to-from+1)+' stages');heading.append(title,hint);
+  const cards=document.createElement('div');cards.className='grade-group-grid';
+  for(let i=from;i<=to;i++){
+   const code=Core.GRADES[i],row=document.createElement('div');row.className='grade-row'+(i===gp.rank?' current':i<gp.rank?' done':'');if(i===gp.rank)row.setAttribute('aria-current','step');
+   const n=document.createElement('span');n.className='grade-row-index';n.textContent=String(i+1);
+   const name=document.createElement('span');name.className='grade-row-name';name.textContent=gradeLabel(code);
+   const status=document.createElement('span');status.className='grade-row-status';status.textContent=i===gp.rank?tr('● 현재 단계','● Current stage'):i<gp.rank?tr('✓ 완료','✓ Completed'):tr('다음 단계','Up next');
+   row.append(n,name,status);cards.append(row);
+  }
+  group.append(heading,cards);ladder.append(group);
+ }
 }
 function renderVisitors(){
  const s=getS();if(!s)return;
