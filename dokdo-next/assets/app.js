@@ -108,6 +108,7 @@ const en={
  offerGoods:'Dokdo merchandise',offerGoodsSub:'Being prepared · coming soon',
  offerChat:'💬 Ask us on KakaoTalk open chat ↗',
  promoTitle:'🎵 Dokdo Korea · Music & Social',
+ channelMission:'A channel created by a digital activist and AI artist, sharing Dokdo’s history and culture through music and media.',
  visitCollabTitle:'🧭 Visit · Contact',
  gradeTab:'Grade',gradeLadderTitle:'Full grade ladder',materialTip:'TIP · Show question material',gradeShare:'Share ↗',
  gradeNote:'No placement test — everyone starts at Kindergarten. Correct answers auto-promote you to the next grade, and progress already earned carries forward.',
@@ -718,6 +719,9 @@ async function choose(pick,skip=false){
    run:cur.run||0,best:cur.best||0,mode:q.mode,school:cur.school||'',schoolCode:'',schoolCat:cur.schoolCat||''
   }).catch(()=>{});}
   if(window.DokdoAnalytics)DokdoAnalytics.track('question_answered',{qid:q.item.id,correct:ok?1:0,qtype:q.item.atype||q.mode,grade:getS().grade||'K',retry:retry?1:0});
+  // A delayed storage lock may finish after the learner leaves or starts again.
+  // Keep its committed rewards, but never paint an abandoned lesson over a new one.
+  if(lesson!==q)return;
   q.answered=true;q.needsRetry=q.mode!=='placement'&&!ok;
   {const s2=getS();if(s2)renderGradeLine('lesson-grade',s2,M.summary(s2));}
   if(q.mode==='placement'){C.recordPlacement(q.diagnostic,q.item,ok,skip);if(ok)q.first++;}
@@ -769,6 +773,7 @@ async function next(){
     if(outcome.advanced)DokdoAnalytics.track('grade_up',{grade:gradeNow,by:'lesson'});
    }
   }
+  if(lesson!==q)return;
   $('lesson').hidden=true;$('lesson-result').hidden=false;renderResult(q,outcome);lesson=null;lightDirty=true;
  }catch(e){}finally{busy=false;}
 }
