@@ -30,6 +30,7 @@
  <h1 id="account-title">내 계정</h1>
  <p id="connection-note">계정 서비스를 연결하고 있어요. 준비가 끝나면 이메일 아이디로 입장할 수 있어요.</p>
  <p id="account-status" role="status" aria-live="polite">연결이 끝날 때까지 이메일과 비밀번호를 입력받지 않습니다.</p>
+ <p id="registration-hold" class="hint">새 회원가입과 카카오 로그인은 아동 개인정보 보호 절차를 준비하는 동안 잠시 쉬어요. 기존 이메일 계정으로 로그인하거나, 로그인 없이 이 기기의 배움·놀이 기록을 이어갈 수 있어요.</p>
  <section id="account-controls" hidden>
   <div id="kakao-option" hidden>
    <button id="kakao-signin" class="kakao-signin" type="button" disabled aria-label="카카오 로그인"><img class="kakao-ko" src="./assets/kakao-login-ko.svg" alt=""><img class="kakao-en" src="./assets/kakao-login-en.svg" alt=""></button>
@@ -39,7 +40,7 @@
   </div>
   <div id="mode-buttons" class="modes" aria-label="계정 이용 방법">
    <button id="mode-login" type="button" disabled aria-pressed="true">로그인</button>
-   <button id="mode-signup" type="button" disabled aria-pressed="false">처음 가입하기</button>
+   <button id="mode-signup" type="button" hidden disabled aria-pressed="false">처음 가입하기</button>
   </div>
   <form id="account-form">
    <fieldset id="account-fields" disabled>

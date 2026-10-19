@@ -8,7 +8,7 @@ const {webcrypto}=require('node:crypto');
 const ROOT=process.env.DOKDO_TEST_ROOT||path.join(__dirname,'..');
 const {createController,sessionCleanup}=require(path.join(ROOT,'assets/account.js'));
 const KEY='dokdo-account-session-v2',MARKER=KEY+'-accepted-user',URL_NOW='https://school.example/account.html';
-const CONFIG={enabled:true,kakaoEnabled:true,privateRecordsEnabled:true,supabaseUrl:'https://fictional.supabase.co',publishableKey:'sb_publishable_FICTIONAL_ONLY_NOT_REAL',redirectUrl:URL_NOW};
+const CONFIG={enabled:true,registrationEnabled:true,kakaoEnabled:true,privateRecordsEnabled:true,supabaseUrl:'https://fictional.supabase.co',publishableKey:'sb_publishable_FICTIONAL_ONLY_NOT_REAL',redirectUrl:URL_NOW};
 const USER_A={id:'00000000-0000-0000-0000-000000000001',email:'a@example.invalid',aud:'authenticated',app_metadata:{provider:'kakao'}};
 const USER_B={id:'00000000-0000-0000-0000-000000000002',email:'b@example.invalid',aud:'authenticated',app_metadata:{provider:'email'}};
 const b64=x=>Buffer.from(JSON.stringify(x)).toString('base64url');

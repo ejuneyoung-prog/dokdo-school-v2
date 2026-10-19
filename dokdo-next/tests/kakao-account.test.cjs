@@ -1,7 +1,7 @@
 /* Fictional SDK only. No live login, consent or credentials. */
 const test=require('node:test'),a=require('node:assert/strict');
 const {createController,kakaoReturnUrl,validKakaoUrl,validateConfig}=require('../assets/account.js');
-const URL_NOW='https://school.example/account.html',CONFIG={enabled:true,kakaoEnabled:true,supabaseUrl:'https://fictional.supabase.co',publishableKey:'sb_publishable_FICTIONAL_ONLY_NOT_REAL',redirectUrl:URL_NOW};
+const URL_NOW='https://school.example/account.html',CONFIG={enabled:true,registrationEnabled:true,kakaoEnabled:true,supabaseUrl:'https://fictional.supabase.co',publishableKey:'sb_publishable_FICTIONAL_ONLY_NOT_REAL',redirectUrl:URL_NOW};
 const settings=validateConfig(CONFIG,URL_NOW),USER={id:'fictional-user',app_metadata:{provider:'kakao'}},SESSION={user:USER,access_token:'FICTIONAL_TOKEN'};
 function authorized(url=URL_NOW){const u=new URL(settings.url+'/auth/v1/authorize');u.searchParams.set('provider','kakao');u.searchParams.set('redirect_to',kakaoReturnUrl(settings,url));u.searchParams.set('scope','profile_nickname');u.searchParams.set('code_challenge','A'.repeat(43));u.searchParams.set('code_challenge_method','s256');return u.href;}
 function fixture(o={}){let listener=()=>{},session=o.session||null;const calls=[],moves=[];

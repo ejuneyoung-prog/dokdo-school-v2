@@ -1,5 +1,6 @@
 /* Public browser settings. SMTP and secret/service_role keys never belong here. */
 window.DOKDO_AUTH_CONFIG=Object.freeze({
+ registrationEnabled:false, // Child privacy consent flow is not ready; enrollment and Kakao entry stay closed.
  enabled:true, // Operator verified actual email confirmation and password sign-in on 2026-10-19.
  privateRecordsEnabled:false, // Activate only after private SQL/RLS and owner tests.
  kakaoEnabled:false, // Activate after provider setup and the operator's live sign-in test.
