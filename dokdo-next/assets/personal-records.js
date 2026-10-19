@@ -7,7 +7,7 @@ const keys=new Set(('name nick flag school schoolCat introDay introOff grade xp 
 'lv att cor seen earned lightBest courseFirstDay courseIndependentDays courseLearned courseRewardDay due lastAdvancedDay lastAnsweredAt pilotIndependentDays '+
 'version unlocks at species birdVisit remainingMs event birdsEnabled reduceMotion language geometry birdFlock journey legacy inviteRemainder importedFrom '+
 'order beaconSlots timeSec id seat key correct eligible credits history since partial ageBand easy stage readingMax practiceStage completed placement answers total track min max streak used unitPlan skipped unit course '+
-'day bonus answered credited equipped growth cleared cleanup seals quizFlowers runnerScore gardenVersion gardenLegacy active sequence blocks runner rounds kind awarded creditedClears game '+
+'revision day bonus answered credited equipped growth cleared cleanup seals quizFlowers runnerScore gardenVersion gardenLegacy active sequence blocks runner rounds kind awarded creditedClears game '+
 'score lines moves combo endReason over seeded missionVersion hammers rescued clears mission phase missionCleared missionCombo missionRescued board pieces pieceTrash net '+
 'round roundElapsed roundStartScore roundStartStars roundCleared transition bag lastKind hitKind elapsed distance y vy speed spawn objects stars collected showed passed won nextKind from progress x w h got').split(/\s+/));
 const maps={m:/^[1-9][0-9]*$/,beaconSlots:/^[1-9][0-9]*$/,credits:/^\d{4}-\d{2}-\d{2}:([1-9][0-9]*|dk-[a-z0-9-]{1,80})$/,unlocks:/^(stage-[1-4]|ecology-1)$/,completed:/^(1|2|3|4|(early|primary|upper|middle|high|adult):(1[0-2]|[1-9]))$/};
@@ -29,10 +29,11 @@ function validate(snapshot){
 }
 function capture(storage){const schoolRaw=storage.getItem(M.KEY),gameRaw=storage.getItem(G.KEY);return{schoolRaw,gameRaw,snapshot:validate({version:1,school:schoolRaw===null?null:JSON.parse(schoolRaw),game:gameRaw===null?null:JSON.parse(gameRaw)})};}
 function summary(snapshot){const s=validate(snapshot),school=s.school||M.fresh(),game=s.game||G.fresh(),a=M.summary(school),next=G.nextGift(game);return{name:a.name,questions:a.questions,correct:a.correct,streak:a.streak,learningXP:a.xp,unit:school.learningProfile?.course?.unit||1,island:G.islandLevel(game),seals:game.growth.seals,blocks:game.best.blocks,runner:game.best.runner,rounds:game.best.rounds,nextGift:next?.name||'',complete:G.islandComplete(game)};}
-function protects(incoming,current){
+function protects(incoming,current,now=Date.now()){
  const a=validate(incoming),b=validate(current);
+ if(a.game)G.roll(a.game,now);if(b.game)G.roll(b.game,now);
  if(b.school){if(!a.school)throw Error('RECORD_CONFLICT');M.parseImport(M.backupText(a.school),b.school);}
- if(b.game){if(!a.game)throw Error('RECORD_CONFLICT');for(const k of ['xp'])if(a.game[k]<b.game[k])throw Error('RECORD_CONFLICT');for(const k of ['blocks','runner','rounds'])if(a.game.best[k]<b.game.best[k])throw Error('RECORD_CONFLICT');if(b.game.growth.legacy.some(x=>!a.game.growth.legacy.includes(x))||b.game.growth.gardenLegacy.some(x=>!a.game.growth.gardenLegacy.includes(x)))throw Error('RECORD_CONFLICT');for(const k of ['cleared','cleanup','seals','quizFlowers','runnerScore'])if(a.game.growth[k]<b.game.growth[k])throw Error('RECORD_CONFLICT');if(b.game.day===a.game.day&&(a.game.used<b.game.used||b.game.credited.some(x=>!a.game.credited.includes(x))))throw Error('RECORD_CONFLICT');}
+ if(b.game){if(!a.game)throw Error('RECORD_CONFLICT');for(const k of ['xp'])if(a.game[k]<b.game[k])throw Error('RECORD_CONFLICT');for(const k of ['blocks','runner','rounds'])if(a.game.best[k]<b.game.best[k])throw Error('RECORD_CONFLICT');if(b.game.growth.legacy.some(x=>!a.game.growth.legacy.includes(x))||b.game.growth.gardenLegacy.some(x=>!a.game.growth.gardenLegacy.includes(x)))throw Error('RECORD_CONFLICT');for(const k of ['cleared','cleanup','seals','quizFlowers','runnerScore'])if(a.game.growth[k]<b.game.growth[k])throw Error('RECORD_CONFLICT');if(a.game.used<b.game.used||a.game.bonus<b.game.bonus||b.game.answered.some(x=>!a.game.answered.includes(x))||b.game.credited.some(x=>!a.game.credited.includes(x)))throw Error('RECORD_CONFLICT');}
  return a;
 }
 function readBinding(storage){try{const b=JSON.parse(storage.getItem(BINDING));return b&&b.version===1&&typeof b.uid==='string'&&Number.isSafeInteger(b.revision)&&b.revision>0&&typeof b.hash==='string'?b:null;}catch(e){return null;}}
@@ -48,7 +49,7 @@ function createController({storage,enabled=false,onChange=()=>{},locks=null,now=
  async function save(){
  if(!enabled||!uid||!client||busy||!confirmed||conflict)return false;
  const g=generation,id=uid,c=client,expected=remote?.revision||0;let start;try{start=capture(storage);}catch(e){message('기기 기록을 읽지 못했어요. 원본을 지우지 말고 기록 복구를 확인해 주세요.',true);return false;}
- if(remote)try{protects(start.snapshot,remote.snapshot);}catch(e){message('두 기록이 달라 자동으로 합치지 않았어요. 원본을 보관하고 기록을 확인해 주세요.',true);return false;}
+ if(remote)try{protects(start.snapshot,remote.snapshot,now());}catch(e){message('두 기록이 달라 자동으로 합치지 않았어요. 원본을 보관하고 기록을 확인해 주세요.',true);return false;}
  busy=true;emit();try{
   const api=await verified(g,id,c);const r=await api.rpc('dokdo_save_private_record',{p_expected:expected,p_snapshot:start.snapshot});if(!current(g,id))return false;
   if(r.error){if(r.error.code==='40001'||r.error.code==='23505'){conflict=true;throw Error('CONFLICT');}throw Error('CLOUD_UNAVAILABLE');}
@@ -67,7 +68,7 @@ function createController({storage,enabled=false,onChange=()=>{},locks=null,now=
   const api=await verified(g,id,c);if(!current(g,id))return false;
   const check=await api.from('dokdo_private_records').select('revision').eq('user_id',id).single();if(!current(g,id))return false;if(check.error||check.data?.revision!==chosen.revision)throw Error('RECORD_CONFLICT');
   const run=()=>{if(!current(g,id))throw Error('STALE');if(storage.getItem(M.KEY)!==start.schoolRaw||storage.getItem(G.KEY)!==start.gameRaw)throw Error('RECORD_CONFLICT');
-   if(start.snapshot.game?.active)throw Error('ACTIVE_GAME');const incoming=protects(chosen.snapshot,start.snapshot);
+   if(start.snapshot.game?.active)throw Error('ACTIVE_GAME');const incoming=protects(chosen.snapshot,start.snapshot,now());
    const newSchool=incoming.school?JSON.stringify(incoming.school):null,newGame=incoming.game?JSON.stringify(incoming.game):null;
    // A verified, complete two-key recovery copy must exist before either original is changed.
    const backup=JSON.stringify({version:1,at:new Date(now()).toISOString(),schoolRaw:start.schoolRaw,gameRaw:start.gameRaw});storage.setItem(BACKUP,backup);if(storage.getItem(BACKUP)!==backup)throw Error('BACKUP_FAILED');
