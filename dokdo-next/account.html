@@ -20,6 +20,7 @@
 <script defer src="./assets/games-art.js"></script>
 <script defer src="./assets/personal-records.js"></script>
 <script defer src="./assets/personal-records-ui.js"></script>
+<script defer src="./assets/account-profile.js"></script>
 <script defer src="./assets/account.js"></script>
 </head>
 <body>
@@ -56,6 +57,7 @@
   <h2>로그인한 계정</h2><p id="account-email-display"></p>
   <a id="account-continue" class="primary" href="./">독도 스쿨로 돌아가기</a>
   <button id="account-signout" type="button" disabled>이 기기에서 로그아웃</button>
+  <section id="account-profile-summary" hidden><p id="account-profile-name" data-no-translate></p><button id="account-profile-edit" type="button">닉네임·국가·학교 설정</button></section>
  </section>
  <section id="my-records" class="my-records" aria-labelledby="record-name">
   <p class="eyebrow">MY DOKDO</p><h2 id="record-name">이 기기의 독도 기록</h2>
@@ -83,5 +85,20 @@
  <p class="hint">로그아웃해도 이 브라우저의 기존 학습·게임 기록은 지우지 않습니다.</p>
  <noscript><p>계정 기능을 사용하려면 JavaScript를 켜 주세요. </p></noscript>
 </main>
+<dialog id="account-profile-dialog" class="profile-dialog" aria-labelledby="account-profile-title">
+ <form id="account-profile-form">
+  <button class="language-switch" type="button" data-language-toggle>English</button><p class="eyebrow">WELCOME TO DOKDO</p><h2 id="account-profile-title">어떤 닉네임으로 만날까요?</h2>
+  <p class="hint">닉네임을 정하고 내 독도를 시작해요. 국가와 학교는 선택이에요.</p>
+  <fieldset id="account-profile-fields">
+   <label for="account-nickname">닉네임 (필수)</label><input id="account-nickname" required maxlength="40" autocomplete="nickname" placeholder="독도 탐험가">
+   <p class="hint">실명이나 전화번호 대신 별명을 써 주세요.</p>
+   <label for="account-country">국가 (선택)</label><select id="account-country"><option value="">선택하지 않음</option><option value="KR">대한민국</option><option value="US">미국</option><option value="JP">일본</option><option value="CN">중국</option><option value="GB">영국</option><option value="CA">캐나다</option><option value="AU">호주</option><option value="DE">독일</option><option value="FR">프랑스</option><option value="VN">베트남</option><option value="PH">필리핀</option><option value="TH">태국</option><option value="ID">인도네시아</option><option value="IN">인도</option><option value="BR">브라질</option><option value="NZ">뉴질랜드</option></select>
+   <label for="account-school">학교·소속 (선택)</label><input id="account-school" maxlength="60" autocomplete="organization">
+   <p class="hint">이 정보는 본인 계정에 보관돼요. 공개 순위의 이름과 기존 기기 기록은 바꾸지 않아요.</p>
+   <p id="account-profile-status" role="status" aria-live="polite"></p>
+   <button id="account-profile-save" class="primary" type="submit">저장하고 시작하기</button><button id="account-profile-cancel" class="text-button" type="button">계정 화면으로</button>
+  </fieldset>
+ </form>
+</dialog>
 </body>
 </html>

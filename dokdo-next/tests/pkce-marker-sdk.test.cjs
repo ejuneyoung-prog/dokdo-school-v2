@@ -22,7 +22,7 @@ function storage(values=new Map()){return{values,getItem:k=>values.has(k)?values
 function harness(options={}){
  const store=options.store||storage(),locks=options.locks||mutex(),requests=[],clients=[],controllers=[],connections=[];
  const tokenGate=options.tokenGate,userGate=options.userGate;
- let tokens=0,users=0;
+ let tokens=0,users=0,profileA=null;
  const fakeFetch=async(input,opts={})=>{
   const u=new URL(input),body=opts.body?JSON.parse(opts.body):null;assert.equal(u.origin,'https://fixture.example');
   requests.push({path:u.pathname,grant:u.searchParams.get('grant_type')});
@@ -36,7 +36,7 @@ function harness(options={}){
    users++;const h=new Headers(opts.headers),token=h.get('authorization')?.replace(/^Bearer /,'');
    assert.ok(token===SESSION_A.access_token||token===SESSION_B.access_token,'Only fictional tokens are accepted');
    if(token===SESSION_A.access_token&&userGate&&users===1)await userGate.promise;
-   result=token===SESSION_A.access_token?USER_A:USER_B;
+   result=token===SESSION_A.access_token?(profileA?{...USER_A,user_metadata:{dokdo_school_profile_v1:profileA}}:USER_A):USER_B;
   }else if(u.pathname==='/auth/v1/logout')result={};
   else throw Error('Unexpected fixture endpoint; external fetch is never used');
   return new Response(JSON.stringify(result),{status:200,headers:{'content-type':'application/json'}});
@@ -49,10 +49,10 @@ function harness(options={}){
   const sdk={createClient(url,key,opts){assert.equal(typeof opts.auth.lock,'function');assert.equal(opts.auth.flowType,'pkce');assert.equal(opts.auth.detectSessionInUrl,false);
    const auth=new sandbox.supabase.AuthClient({...opts.auth,url:'https://fixture.example/auth/v1',storage:store,autoRefreshToken:false,fetch:fakeFetch});clients.push(auth);
    const original=auth.onAuthStateChange.bind(auth);auth.onAuthStateChange=fn=>{listener=fn;return original(fn);};return{auth};}};
-  const seen=[];const c=createController({config:CONFIG,currentUrl:URL_NOW+suffix,sdk,cleanup,onAccount:user=>{connections.push(user?.id||null);},onChange:s=>seen.push(s)});controllers.push(c);
+  const seen=[];const c=createController({config:options.config||CONFIG,currentUrl:URL_NOW+suffix,sdk,cleanup,onAccount:(user,client,serverUser,context)=>{connections.push(user?.id||null);options.onAccount?.(user,client,serverUser,context);},onChange:s=>{seen.push(s);options.onChange?.(s);}});controllers.push(c);
   return{c,seen,emit:(event,session)=>listener(event,session)};
  }
- return{store,locks,requests,connections,controller,get tokens(){return tokens;},get users(){return users;},async close(){for(const c of controllers)c.dispose();for(const auth of clients)await auth.stopAutoRefresh();await tick();}};
+ return{store,locks,requests,connections,controller,saveProfile:async(token,p)=>{assert.equal(token,SESSION_A.access_token);profileA=p;return{...USER_A,user_metadata:{dokdo_school_profile_v1:p}};},get tokens(){return tokens;},get users(){return users;},async close(){for(const c of controllers)c.dispose();for(const auth of clients)await auth.stopAutoRefresh();await tick();}};
 }
 function verifier(store){store.setItem(KEY+'-code-verifier',JSON.stringify('FICTIONAL_VERIFIER_ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'));}
 
@@ -117,4 +117,11 @@ test('Late rejected old A must preserve a newer explicitly accepted session for 
  await cleanup.discard(SESSION_A);
  assert.equal(JSON.parse(store.getItem(KEY)).access_token,newA.access_token);
  assert.equal(store.getItem(MARKER),USER_A.id);
+});
+
+test('Actual SDK queued SIGNED_IN keeps required nickname Save and start intent through same-UID revalidation',async()=>{
+ const P=require('../assets/account-profile.js');let moves=0,requested=false,h;
+ const profile=P.createController({onContinue:()=>moves++,putProfile:(token,p)=>h.saveProfile(token,p)});
+ h=harness({config:{...CONFIG,kakaoEnabled:false,privateRecordsEnabled:false,profileEnabled:true},onAccount:(u,c,s,context)=>{if(u)profile.connect(u,c);else if(context?.checking)profile.suspend();else profile.invalidate();},onChange:s=>{if(s.oauthComplete&&!requested){requested=true;profile.requestContinue();}}});verifier(h.store);
+ try{const f=h.controller('?oauth=kakao&code=FICTIONAL_CODE');await f.c.init();await until(()=>!profile.getState().loading);await tick();await until(()=>!profile.getState().loading);assert.equal(profile.getState().open,true);assert.equal(await profile.save({nickname:'Fixture friend',country:'',school:''}),true);assert.equal(moves,1);assert.equal(profile.getState().open,false);assert.equal(h.store.getItem(MARKER),USER_A.id);}finally{await h.close();}
 });

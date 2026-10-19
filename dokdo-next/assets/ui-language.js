@@ -3,6 +3,23 @@
 'use strict';
 const KEY='dokdo-ui-language-v1';
 const dictionary={
+ "어떤 닉네임으로 만날까요?":"What should we call you?",
+ "독도 탐험가":"Dokdo explorer",
+ "닉네임을 정하고 내 독도를 시작해요. 국가와 학교는 선택이에요.":"Choose a nickname to start your Dokdo journey. Country and school are optional.",
+ "닉네임 (필수)":"Nickname (required)",
+ "실명이나 전화번호 대신 별명을 써 주세요.":"Use a nickname. Please avoid your real name or phone number.",
+ "국가 (선택)":"Country (optional)",
+ "선택하지 않음":"Prefer not to say",
+ "학교·소속 (선택)":"School or organization (optional)",
+ "이 정보는 본인 계정에 보관돼요. 공개 순위의 이름과 기존 기기 기록은 바꾸지 않아요.":"This profile is saved to your account. Your public ranking name and existing device records stay unchanged.",
+ "저장하고 시작하기":"Save and start",
+ "계정 화면으로":"Back to my account",
+ "계정 프로필을 확인하지 못했어요. 다시 확인해 주세요.":"We could not check your account profile. Please try again.",
+ "닉네임을 1~40자로 적어 주세요. 국가와 학교는 비워도 괜찮아요.":"Enter a nickname of 1–40 characters. Country and school can be left blank.",
+ "저장하고 있어요.":"Saving…",
+ "닉네임을 저장했어요.":"Your nickname has been saved.",
+ "프로필 저장을 확인하지 못했어요. 다시 시도해 주세요.":"We could not confirm that your profile was saved. Please try again.",
+ "닉네임 설정 화면을 불러오지 못했어요. 새로고침해 주세요.":"We could not load nickname setup. Please refresh the page.",
  "로그인 링크를 확인하지 못했어요. 이메일로 로그인하거나 이 브라우저에서 새 링크를 요청해 주세요.":"This sign-in link could not be verified. Sign in with email or request a new link in this browser.",
  "카카오 로그인 요청 시간이 지났어요. 카카오 로그인 버튼을 눌러 새로 시작해 주세요.":"Your Kakao sign-in request expired. Select Sign in with Kakao to start again.",
  "카카오 로그인 요청 시간이 지났어요. 지금은 이메일로 로그인해 주세요.":"Your Kakao sign-in request expired. Please sign in with email for now.",

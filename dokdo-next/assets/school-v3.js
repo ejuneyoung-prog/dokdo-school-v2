@@ -100,7 +100,7 @@ function decorateResult(){
 const start=$('start-lesson');start.replaceChildren();const startLabel=document.createElement('span');startLabel.id='v3-start-label';start.append(startLabel);$('v3-start-slot').append(start);
 $('v3-review-slot').append($('start-review'));
 $('v3-island-slot').append($('play-entry-island'));
-$('v3-main-language').onclick=()=>$('language').click();$('v3-profile-entry').onclick=()=>App.editProfile();$('v3-profile-menu').onclick=()=>{$('v3-more').open=false;App.editProfile();};$('v3-enter-learn').onclick=enterLearning;$('v3-learn-nav').onclick=enterLearning;
+$('v3-main-language').onclick=()=>$('language').click();$('v3-profile-entry').onclick=()=>{if(!window.DokdoAccountEntry?.openProfile())App.editProfile();};$('v3-profile-menu').onclick=()=>{$('v3-more').open=false;if(!window.DokdoAccountEntry?.openProfile())App.editProfile();};$('v3-enter-learn').onclick=enterLearning;$('v3-learn-nav').onclick=enterLearning;
 $('brand-home').onclick=enterMain;$('v3-main-home').onclick=enterMain;
 $('v3-channel-home').onclick=enterMain;$('channel-feed-retry').onclick=()=>loadChannel(true);$('v3-info-sources').onclick=()=>$('open-sources').click();
 $('nav-map').onclick=()=>{const previous=learningEntered;learningEntered=true;const moved=originalMap();if(moved===false)learningEntered=previous;syncArea();};
@@ -119,5 +119,5 @@ document.addEventListener('dokdo:question',()=>{document.body.classList.add('v3-
 document.addEventListener('dokdo:answered',()=>{$('v3-question-guide').hidden=true;});
 document.addEventListener('dokdo:result',()=>{document.body.classList.remove('v3-in-lesson');decorateResult();});
 window.addEventListener('storage',e=>{if(e.key===G.KEY)refresh();});window.addEventListener('pageshow',refresh);
-entryArt();refresh();if(areaParams.get('profile')==='1')App.editProfile();
+entryArt();refresh();if(areaParams.get('profile')==='1'){if(!window.DokdoAccountEntry?.openProfile())App.editProfile();}
 })();
