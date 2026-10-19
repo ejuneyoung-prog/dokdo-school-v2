@@ -4,7 +4,7 @@
 --http uses a real localhost origin and native localStorage (for GitHub CI and developer machines).
 Neither mode contacts the old production API.
 """
-import argparse,base64,functools,http.server,json,os,re,threading
+import argparse,base64,functools,http.server,json,os,re,threading,subprocess,sys
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 from browser_entry import enter_learning
@@ -294,6 +294,7 @@ try:
          window.__finishPlay=[];
          window.Audio=class extends EventTarget{
           constructor(){super();this.paused=true;this.muted=true;}
+          getAttribute(key){return key==='src'?this.src:null;}
           play(){this.paused=false;this.dispatchEvent(new Event('play'));return new Promise(resolve=>window.__finishPlay.push(()=>{this.paused=false;this.dispatchEvent(new Event('play'));resolve();}));}
           pause(){this.paused=true;}
          };
@@ -320,6 +321,11 @@ except Exception as e:
     check('browser environment',False,str(e))
 finally:
     if httpd:httpd.shutdown()
+    if args.mode=='http' and not any(not item['pass'] for item in checks):
+        command=[sys.executable,str(ROOT/'tests/audio-feedback-browser.py'),'--engine',args.engine,'--output',str(OUT/'playground-audio')]
+        if args.browser:command+=['--browser',args.browser]
+        playground=subprocess.run(command,cwd=ROOT)
+        check('native playground audio and six-move cleanup flow',playground.returncode==0)
     report={'mode':args.mode,'nativeOrigin':args.mode=='http','storage':'native localStorage' if args.mode=='http' else 'controlled adapter',
       'media':'native HTMLMediaElement','device':'desktop '+args.engine+', responsive viewport (not a physical phone)',
       'checks':checks,'passed':sum(c['pass'] for c in checks),'failed':sum(not c['pass'] for c in checks),'errors':errors}

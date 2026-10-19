@@ -1404,27 +1404,28 @@ function stopSound(){
 function trackLabel(i){const t=musicList[i];return t?tr(t.t,t.tEn||t.t):'';}
 function ensureAudio(){
  if(audio)return;
- audio=new Audio();audio.preload='none';audio.volume=.45;
+ audio=new Audio();audio.preload='auto';audio.volume=.45;
  // Once the user has turned music on, keep it going until they turn it
  // off or leave the page -- a hidden/backgrounded tab is not a reason to
  // stop (see the visibilitychange listener below, which no longer stops it).
  audio.addEventListener('play',()=>{if(!soundOn){audio.muted=true;audio.pause();}});
- audio.addEventListener('error',()=>{stopSound();toast(tr('음악 파일을 재생하지 못했습니다.','The music file could not be played.'));});
- audio.addEventListener('ended',()=>{if(!musicList.length)return;trackIndex=pickWeightedTrack(trackIndex);playCurrentTrack();});
+ audio.addEventListener('error',()=>{if(!soundOn||!audio.error)return;stopSound();toast(tr('음악 파일을 재생하지 못했습니다.','The music file could not be played.'));});
+ audio.addEventListener('ended',()=>{if(!soundOn||!musicList.length)return;trackIndex=pickWeightedTrack(trackIndex);playCurrentTrack();});
 }
 async function playCurrentTrack(){
  if(!musicList.length)return;
- audio.src=musicList[trackIndex].f;
- const token=++audioToken;audio.muted=false;
- try{await audio.play();if(token!==audioToken||!soundOn){audio.muted=true;audio.pause();return;}
+ const token=++audioToken;
+ if(audio.getAttribute('src')!==musicList[trackIndex].f)audio.src=musicList[trackIndex].f;
+ audio.muted=false;
+ try{await audio.play();if(token!==audioToken)return;if(!soundOn){audio.muted=true;audio.pause();return;}
   const label=trackLabel(trackIndex);txt('sound',tr('♫ 소리 켜짐','♫ Sound on'));$('sound').setAttribute('aria-pressed','true');
   if(label)$('sound').title=label;
- }catch(e){stopSound();toast(tr('브라우저가 음악을 재생하지 못했습니다. 다시 소리 버튼을 눌러 주세요.','The browser could not play audio. Try the sound button again.'));}
+ }catch(e){if(token!==audioToken)return;stopSound();toast(tr('브라우저가 음악을 재생하지 못했습니다. 다시 소리 버튼을 눌러 주세요.','The browser could not play audio. Try the sound button again.'));}
 }
 async function toggleSound(){
  if(soundOn){stopSound();return;}
  if(!musicList.length){toast(tr('아직 연결된 음악이 없습니다.','No music is connected yet.'));return;}
- ensureAudio();trackIndex=pickWeightedTrack();soundOn=true;await playCurrentTrack();
+ const freshPlayer=!audio;ensureAudio();if(freshPlayer)trackIndex=pickWeightedTrack();soundOn=true;await playCurrentTrack();
 }
 async function musicSkip(dir){
  if(!musicList.length)return;
