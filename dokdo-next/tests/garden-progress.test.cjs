@@ -19,12 +19,18 @@ test('legacy flower quantities agree in the progress caption, card, accessible n
  const s=G.fresh();s.xp=880;delete s.growth.gardenVersion;delete s.growth.gardenLegacy;G.validate(s);a.equal(P.plan(s).flowers,G.population({...s,equipped:['flag','flower']},'flower'));
  G.adoptLearning(s,37);if(!s.equipped.includes('flower'))G.equip(s,'flower');a.equal(G.population(s,'flower'),37);a.equal(P.plan(s).flowers,37);G.equip(s,'flower');a.equal(G.population(s,'flower'),0);a.equal(P.plan(s).flowers,37);
 });
-test('100 planting places stay on the two island silhouettes and the dog walks on Dongdo',()=>{
+test('100 planting places stay on two islands; the dog visits both summits and swims the channel continuously',()=>{
  const context={window:{DokdoGames:G,matchMedia:()=>({matches:false,addEventListener(){}})},document:{body:{classList:{contains:()=>false}},addEventListener(){}},MutationObserver:class{observe(){}},performance:{now:()=>0}};
  vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'../assets/games-art.js'),'utf8'),context);
  const A=context.window.DokdoGameArt,points=A.meadowSites;a.equal(points.length,100);a.equal(new Set(points.map(p=>p.join(','))).size,100);
  a.equal(points.filter(([x])=>x<500).length,50);a.equal(points.filter(([x])=>x>600).length,50);a.ok(points.every(([x,y])=>y>100&&y<330&&(x<500||x>600)));
- const first=A.dogWalk(0),later=A.dogWalk(10);a.notEqual(first.x,later.x);for(let i=0;i<200;i++){const p=A.dogWalk(i);a.ok(p.x>=798&&p.x<=892&&p.y>=315&&p.y<=321);}
+ let eastSummit=false,westSummit=false,swimming=false,left=false,right=false,previous=A.dogWalk(0);
+ for(let t=.05;t<=488;t+=.05){const p=A.dogWalk(t);a.ok(Number.isFinite(p.x)&&Number.isFinite(p.y));a.ok(p.x>=260&&p.x<=850&&p.y>=82&&p.y<=331);a.ok(p.swim>=0&&p.swim<=1);a.ok(Math.hypot(p.x-previous.x,p.y-previous.y)<4,'No jump at a bend, shore or loop boundary');
+  if(p.x>730&&p.y<180)eastSummit=true;if(p.x<350&&p.y<100)westSummit=true;
+  if(p.x>480&&p.x<600){a.ok(p.swim>.5,'The dog must swim between islands');a.ok(p.y<335,'The channel route avoids the Gangchi resting rock');swimming=true;}
+  if(p.direction<0)left=true;if(p.direction>0)right=true;previous=p;
+ }
+ a.ok(eastSummit&&westSummit&&swimming&&left&&right);a.equal(A.dogWalk(17).phase,0,'Pause to look around on Dongdo');a.equal(A.dogWalk(70).phase,0,'Pause to look around on Seodo');
 });
 test('the real lesson bridge grows one first flower, without double counting the newly learned question',async()=>{
  const memory=new Map(),nodes={'play-entry-island':{},'play-entry-level':{}},events=[];
