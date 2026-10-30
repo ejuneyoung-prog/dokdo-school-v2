@@ -1,0 +1,11 @@
+const test=require('node:test'),a=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
+const src=fs.readFileSync(path.join(__dirname,'../assets/leaderboard.js'),'utf8');
+function boot(fetchImpl){const calls=[];const window={DOKDO_SITE_CONFIG:{leaderboard:{apiUrl:'https://script.google.com/macros/s/x/exec'}}};
+ const ctx={window,document:{querySelector:()=>({content:'live'})},fetch:(u,o)=>{calls.push(o);return fetchImpl(o,calls.length);},AbortController,setTimeout,clearTimeout,JSON,String,Number,Date};vm.createContext(ctx);vm.runInContext(src,ctx);return{L:window.DokdoLeaderboard,calls};}
+const reply=obj=>Promise.resolve({json:()=>Promise.resolve(obj)});
+const report={id:'r1',qid:920063,question:'Q',answer:'A',reason:'note',lang:'ko',age:'e34',nick:'secret',school:'secret school'};
+test('dispute report reads the server reply and sends no nickname or school',async()=>{const {L,calls}=boot(()=>reply({ok:true}));const r=await L.reportDispute(report);a.equal(r.state,'ok');const body=JSON.parse(calls[0].body);a.equal(body.t,'dispute');a.equal(body.qid,'920063');a.equal('nick' in body,false);a.equal('school' in body,false);a.equal(calls[0].mode,undefined);});
+test('server without the dispute branch is reported as unsupported so the app can fall back to mail',async()=>{const {L}=boot(()=>reply({ok:false,reason:'unknown_request'}));a.equal((await L.reportDispute(report)).state,'unsupported');});
+test('rate limit reply is reported as rate_limited',async()=>{const {L}=boot(()=>reply({ok:false,reason:'too_many'}));a.equal((await L.reportDispute(report)).state,'rate_limited');});
+test('an unreadable reply is resent once without reading, with the same report id',async()=>{const {L,calls}=boot((o,n)=>n===1?Promise.reject(new TypeError('cors')):Promise.resolve({}));a.equal((await L.reportDispute(report)).state,'sent_unconfirmed');a.equal(calls.length,2);a.equal(calls[1].mode,'no-cors');a.equal(JSON.parse(calls[1].body).id,'r1');});
+test('long fields are cut before sending',async()=>{const {L,calls}=boot(()=>reply({ok:true}));await L.reportDispute({...report,reason:'x'.repeat(5000),question:'q'.repeat(900)});const b=JSON.parse(calls[0].body);a.equal(b.reason.length,1000);a.equal(b.question.length,500);});

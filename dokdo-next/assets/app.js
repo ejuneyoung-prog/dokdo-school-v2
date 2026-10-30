@@ -117,10 +117,10 @@ const en={
  resetConfirm:'This clears every record on this device and cannot be undone here. Have you saved a backup, or do you have your nickname#code? Continue?',
  disputeButton:'Something wrong with this question?',
  disputeTitle:'Report a question',
- disputeHelp:'If you think this question, answer or explanation is wrong, let us know. Your email app opens with the question details already filled in.',
+ disputeHelp:'If you think this question, answer or explanation is wrong, let us know. The question details are sent with your note; your name and school are not.',
  disputeReason:'What seems wrong? (optional)',
- disputeSend:'Send by email',
- disputeSent:'Opened your email app. Please review and send it.'
+ disputeSend:'Send report',
+ disputeSent:'Received. We will check it and fix the question.'
 };
 en.mapShapeNote='Dongdo is lower, with a comparatively level upper area. This authored comparison is not a surveyed 3D terrain or facility-position model.';
 let mode=document.querySelector('meta[name="dokdo-mode"]').content;
@@ -739,7 +739,7 @@ async function choose(pick,skip=false){
   const takeaway=document.createElement('p');takeaway.className='feedback-takeaway';takeaway.textContent=tr('기억할 독도 한 가지 · ','One Dokdo fact to remember · ')+q.item.fact;
   const report=document.createElement('button');report.type='button';report.className='text-button dispute-button';report.textContent=tr('이 문제가 이상한가요? 이의제기','Something wrong with this question?');
   report.onclick=()=>openDispute(q.item);
-  if(document.body.classList.contains('school-v3')){const details=document.createElement('details'),summary=document.createElement('summary');summary.id='v3-feedback-label';summary.textContent=tr('조금 더 알아보기','A little more detail');details.append(summary,takeaway,note,report);$('question-feedback').append(head,correctLine,text,details);}else $('question-feedback').append(head,correctLine,text,takeaway,note,report);
+  if(document.body.classList.contains('school-v3')){const details=document.createElement('details'),summary=document.createElement('summary');summary.id='v3-feedback-label';summary.textContent=tr('조금 더 알아보기','A little more detail');details.append(summary,takeaway,note);$('question-feedback').append(head,correctLine,text,details,report);}else $('question-feedback').append(head,correctLine,text,takeaway,note,report);
   $('lesson-progress').value=q.index+1;document.dispatchEvent(new Event('dokdo:answered'));
   $('retry-question').hidden=!q.needsRetry;$('next-question').hidden=false;
   txt('next-question',q.index+1===q.total?tr('결과 보기','See results'):tr('다음으로','Continue'));
@@ -1499,16 +1499,41 @@ wire('offer-goods','onclick',()=>toast(tr('굿즈는 준비 중입니다. 준비
 wire('open-channel-info','onclick',()=>showDialog('channel-info-dialog'));
 wire('footer-channel-info','onclick',()=>showDialog('channel-info-dialog'));
 
-let disputeItem=null;
-function openDispute(item){disputeItem=item;$('dispute-reason').value='';showDialog('dispute-dialog');}
-wire('dispute-send','onclick',()=>{
- if(!disputeItem)return;
- const item=disputeItem,reason=$('dispute-reason').value.trim();
+let disputeItem=null,disputeSending=false;
+function openDispute(item){disputeItem=item;$('dispute-reason').value='';$('dispute-send').disabled=false;showDialog('dispute-dialog');if(window.DokdoAnalytics)DokdoAnalytics.track('dispute_open',{qid:item.id});}
+function disputeMail(item,reason){
  const subject=encodeURIComponent('[독도 코리아 스쿨] 문제 이의제기 - 문항 '+item.id);
  const body=encodeURIComponent('문항 ID: '+item.id+'\n문제: '+item.q+'\n정답으로 표시된 보기: '+item.choices[item.answer]+'\n\n의견:\n'+(reason||'(작성 없음)'));
  location.href='mailto:officialdokdokorea@gmail.com?subject='+subject+'&body='+body;
+}
+// The report goes straight to the record server so it arrives from phones,
+// in-app browsers and school PCs alike. Only when that fails does the old
+// mail-app route open, and the learner is told which one happened.
+wire('dispute-send','onclick',async()=>{
+ if(!disputeItem||disputeSending)return;
+ const item=disputeItem,reason=$('dispute-reason').value.trim().slice(0,1000);
+ // One report per device per minute keeps repeated taps from flooding the sheet.
+ let lastAt=0;try{lastAt=Number(localStorage.getItem('dokdo-dispute-at'))||0;}catch(e){}
+ if(Date.now()-lastAt<60000){toast(tr('방금 보내 주신 의견이 있어요. 1분 뒤에 다시 보내 주세요.','You just sent a report. Please try again in a minute.'));return;}
+ disputeSending=true;$('dispute-send').disabled=true;
+ const id=Date.now().toString(36)+Math.random().toString(36).slice(2,10);
+ let res={state:'not_configured'};
+ try{
+  if(window.DokdoLeaderboard&&DokdoLeaderboard.reportDispute)res=await DokdoLeaderboard.reportDispute({id,qid:item.id,question:item.q,answer:item.choices[item.answer],reason,lang:language,age:getS().learningProfile?.ageBand||''});
+ }catch(e){res={state:'error'};}
+ disputeSending=false;$('dispute-send').disabled=false;
+ if(res.state==='ok'||res.state==='sent_unconfirmed'){
+  try{localStorage.setItem('dokdo-dispute-at',String(Date.now()));}catch(e){}
+  closeDialog('dispute-dialog');disputeItem=null;
+  if(window.DokdoAnalytics)DokdoAnalytics.track('dispute_sent',{qid:item.id});
+  toast(tr('접수됐습니다. 확인 후 고치겠습니다.','Received. We will check it and fix the question.'));
+  return;
+ }
+ if(window.DokdoAnalytics)DokdoAnalytics.track('dispute_failed',{qid:item.id});
+ if(res.state==='rate_limited'){toast(tr('방금 보내 주신 의견이 있어요. 잠시 뒤에 다시 보내 주세요.','You just sent a report. Please try again in a little while.'));return;}
  closeDialog('dispute-dialog');
- toast(tr('이메일 앱을 열었습니다. 내용을 확인하고 보내주세요.','Opened your email app. Please review and send it.'));
+ disputeMail(item,reason);
+ toast(tr('바로 접수하지 못해 이메일 앱을 열었습니다. 내용을 확인하고 보내 주세요.','We could not send it directly, so your email app opened. Please review and send it.'));
 });
 // The standing "being prepared" line now lives at the top of the dialog
 // (item 11), so these buttons only confirm what the reader already sees.
