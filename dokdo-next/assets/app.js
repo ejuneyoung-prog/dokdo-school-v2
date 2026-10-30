@@ -117,7 +117,8 @@ const en={
  resetConfirm:'This clears every record on this device and cannot be undone here. Have you saved a backup, or do you have your nickname#code? Continue?',
  disputeButton:'Something wrong with this question?',
  disputeTitle:'Report a question',
- disputeHelp:'If you think this question, answer or explanation is wrong, let us know. The question details are sent with your note; your name and school are not.',
+ disputeHelp:'If you think this question, answer or explanation is wrong, let us know. The question details are sent with your note; your name and school are not. Please do not write your name or contact details in the note either.',
+ disputeMail:'Send by email',
  disputeReason:'What seems wrong? (optional)',
  disputeSend:'Send report',
  disputeSent:'Received. We will check it and fix the question.'
@@ -1499,41 +1500,47 @@ wire('offer-goods','onclick',()=>toast(tr('굿즈는 준비 중입니다. 준비
 wire('open-channel-info','onclick',()=>showDialog('channel-info-dialog'));
 wire('footer-channel-info','onclick',()=>showDialog('channel-info-dialog'));
 
-let disputeItem=null,disputeSending=false;
-function openDispute(item){disputeItem=item;$('dispute-reason').value='';$('dispute-send').disabled=false;showDialog('dispute-dialog');if(window.DokdoAnalytics)DokdoAnalytics.track('dispute_open',{qid:item.id});}
+let disputeItem=null,disputeSending=false,disputeMailItem=null;
+function disputeState(text){const st=$('dispute-status'),mail=$('dispute-mail');st.textContent=text||'';st.hidden=!text;mail.hidden=!disputeMailItem;}
+function openDispute(item){disputeItem=item;disputeMailItem=null;$('dispute-reason').value='';$('dispute-send').disabled=false;disputeState('');showDialog('dispute-dialog');if(window.DokdoAnalytics)DokdoAnalytics.track('dispute_open',{qid:item.id});}
 function disputeMail(item,reason){
  const subject=encodeURIComponent('[독도 코리아 스쿨] 문제 이의제기 - 문항 '+item.id);
  const body=encodeURIComponent('문항 ID: '+item.id+'\n문제: '+item.q+'\n정답으로 표시된 보기: '+item.choices[item.answer]+'\n\n의견:\n'+(reason||'(작성 없음)'));
  location.href='mailto:officialdokdokorea@gmail.com?subject='+subject+'&body='+body;
 }
 // The report goes straight to the record server so it arrives from phones,
-// in-app browsers and school PCs alike. Only when that fails does the old
-// mail-app route open, and the learner is told which one happened.
+// in-app browsers and school PCs alike. Only a confirmed reply counts as
+// received. Anything else keeps the dialog open and offers a mail button the
+// learner presses themselves (browsers may block a mail app opened later
+// without a tap), with wording that says what actually happened.
+wire('dispute-mail','onclick',()=>{if(!disputeMailItem)return;disputeMail(disputeMailItem.item,disputeMailItem.reason);disputeState(tr('이메일 앱에서 내용을 확인하고 보내 주세요. 앱이 열리지 않으면 officialdokdokorea@gmail.com 으로 보내 주세요.','Check and send it in your email app. If it does not open, write to officialdokdokorea@gmail.com.'));});
 wire('dispute-send','onclick',async()=>{
  if(!disputeItem||disputeSending)return;
  const item=disputeItem,reason=$('dispute-reason').value.trim().slice(0,1000);
  // One report per device per minute keeps repeated taps from flooding the sheet.
  let lastAt=0;try{lastAt=Number(localStorage.getItem('dokdo-dispute-at'))||0;}catch(e){}
  if(Date.now()-lastAt<60000){toast(tr('방금 보내 주신 의견이 있어요. 1분 뒤에 다시 보내 주세요.','You just sent a report. Please try again in a minute.'));return;}
- disputeSending=true;$('dispute-send').disabled=true;
+ disputeSending=true;$('dispute-send').disabled=true;disputeMailItem=null;disputeState(tr('보내는 중입니다…','Sending…'));
  const id=Date.now().toString(36)+Math.random().toString(36).slice(2,10);
  let res={state:'not_configured'};
  try{
   if(window.DokdoLeaderboard&&DokdoLeaderboard.reportDispute)res=await DokdoLeaderboard.reportDispute({id,qid:item.id,question:item.q,answer:item.choices[item.answer],reason,lang:language,age:getS().learningProfile?.ageBand||''});
  }catch(e){res={state:'error'};}
  disputeSending=false;$('dispute-send').disabled=false;
- if(res.state==='ok'||res.state==='sent_unconfirmed'){
+ const stillOpen=disputeItem===item&&$('dispute-dialog').open;
+ if(res.state==='ok'){
   try{localStorage.setItem('dokdo-dispute-at',String(Date.now()));}catch(e){}
-  closeDialog('dispute-dialog');disputeItem=null;
   if(window.DokdoAnalytics)DokdoAnalytics.track('dispute_sent',{qid:item.id});
+  if(stillOpen){closeDialog('dispute-dialog');disputeItem=null;}
   toast(tr('접수됐습니다. 확인 후 고치겠습니다.','Received. We will check it and fix the question.'));
   return;
  }
  if(window.DokdoAnalytics)DokdoAnalytics.track('dispute_failed',{qid:item.id});
- if(res.state==='rate_limited'){toast(tr('방금 보내 주신 의견이 있어요. 잠시 뒤에 다시 보내 주세요.','You just sent a report. Please try again in a little while.'));return;}
- closeDialog('dispute-dialog');
- disputeMail(item,reason);
- toast(tr('바로 접수하지 못해 이메일 앱을 열었습니다. 내용을 확인하고 보내 주세요.','We could not send it directly, so your email app opened. Please review and send it.'));
+ if(!stillOpen)return;
+ disputeMailItem={item,reason};
+ if(res.state==='sent_unconfirmed')disputeState(tr('보냈지만 접수 확인을 받지 못했어요. 확실히 하려면 메일로도 보내 주세요.','We sent it but could not confirm it arrived. To be sure, please also send it by email.'));
+ else if(res.state==='rate_limited')disputeState(tr('지금 같은 신고가 몰려 있어 바로 접수하지 못했어요. 메일로 보내 주시면 꼭 확인할게요.','Many reports are arriving right now, so this one was not taken. Please send it by email and we will read it.'));
+ else disputeState(tr('지금은 바로 접수하지 못했어요. 메일로 보내 주세요.','We could not take it right now. Please send it by email.'));
 });
 // The standing "being prepared" line now lives at the top of the dialog
 // (item 11), so these buttons only confirm what the reader already sees.

@@ -474,9 +474,11 @@
 </dialog>
 <dialog id="dispute-dialog" class="dialog">
  <div class="dialog-top"><h2 data-i18n="disputeTitle">문제 이의제기</h2><button type="button" class="icon-button" data-close="dispute-dialog" aria-label="닫기">×</button></div>
- <p data-i18n="disputeHelp">이 문제나 정답, 해설이 잘못되었다고 생각되면 알려주세요. 문항 정보는 자동으로 함께 보내지고, 이름이나 학교는 보내지 않습니다.</p>
+ <p data-i18n="disputeHelp">이 문제나 정답, 해설이 잘못되었다고 생각되면 알려주세요. 문항 정보는 자동으로 함께 보내지고, 이름이나 학교는 보내지 않습니다. 의견 칸에도 이름이나 연락처는 적지 말아 주세요.</p>
  <label class="field"><span data-i18n="disputeReason">무엇이 이상한가요? (선택)</span><textarea id="dispute-reason" rows="4"></textarea></label>
  <button id="dispute-send" class="button primary" data-i18n="disputeSend">의견 보내기</button>
+ <p id="dispute-status" class="fine" role="status" hidden></p>
+ <button id="dispute-mail" type="button" class="button secondary" data-i18n="disputeMail" hidden>메일로 보내기</button>
 </dialog>
 </body>
 </html>
