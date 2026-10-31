@@ -42,14 +42,24 @@ test('visible block UI counts the whole delayed frame and paused time does not c
  c.paused=false;c.lastFrame=0;c.blockFrame(100000);a.equal(c.game.remainingMs,300000);c.blockFrame(101000);a.equal(c.game.remainingMs,299000);
 });
 const jumpKeySource=uiFragment('function jumpKeyTarget(target)',"$('runner-resume').onclick")+uiFragment("document.addEventListener('keydown',e=>{if(!$('player-dialog').open",'let ending=null;');
-test('runner Space preserves native pause, back, music and resume controls while jump retains hold input',()=>{
+test('runner Space preserves native pause, back, music and resume controls while paused and jump retains hold input',()=>{
  const handlers={},nodes={'player-dialog':{open:true},'play-content':{hidden:false}};let hops=0,releases=0;
- const c=uiContext({document:{addEventListener:(type,fn)=>handlers[type]=fn},$:id=>nodes[id],kind:'runner',jumpHeld:false,releaseHop(){releases++;c.jumpHeld=false;},hop(){hops++;}},jumpKeySource);
+ const c=uiContext({document:{addEventListener:(type,fn)=>handlers[type]=fn},$:id=>nodes[id],kind:'runner',active:{id:'run'},paused:true,game:{over:false,phase:'running'},jumpHeld:false,releaseHop(){releases++;c.jumpHeld=false;},hop(){hops++;}},jumpKeySource);
  const event=(id,key=' ',repeat=false)=>({key,repeat,target:{id,closest(){return id==='background'?null:this;}},preventDefault(){this.prevented=true;}});
  for(const id of ['runner-pause','player-back','game-sound','music-next','runner-resume']){const down=event(id);handlers.keydown(down);a.equal(down.prevented,undefined,id);c.jumpHeld=true;const up=event(id);handlers.keyup(up);a.equal(up.prevented,undefined,id+' keyup');}a.equal(hops,0);
  const jump=event('runner-jump');handlers.keydown(jump);a.equal(jump.prevented,true);a.equal(hops,1);handlers.keydown(event('runner-jump',' ',true));a.equal(hops,1);
  c.jumpHeld=true;const up=event('runner-jump');handlers.keyup(up);a.equal(up.prevented,true);a.equal(releases,6);
  const background=event('background','ArrowUp');handlers.keydown(background);a.equal(background.prevented,true);a.equal(hops,2);
+});
+test('while the dog runs, Space and ArrowUp always jump even after a click left focus on music or sound controls',()=>{
+ const handlers={},nodes={'player-dialog':{open:true},'play-content':{hidden:false}};let hops=0;
+ const c=uiContext({document:{addEventListener:(type,fn)=>handlers[type]=fn},$:id=>nodes[id],kind:'runner',active:{id:'run'},paused:false,game:{over:false,phase:'running'},jumpHeld:false,releaseHop(){c.jumpHeld=false;},hop(){hops++;}},jumpKeySource);
+ const event=(id,key=' ',repeat=false,tag='button')=>({key,repeat,target:{id,closest(sel){return sel.includes(tag)?this:null;}},preventDefault(){this.prevented=true;}});
+ for(const id of ['game-sound','music-next','game-effects','runner-pause','runner-jump']){const down=event(id);handlers.keydown(down);a.equal(down.prevented,true,id);const up=event(id);handlers.keyup(up);a.equal(up.prevented,true,id+' keyup stops the button click');}
+ a.equal(hops,5);
+ handlers.keydown(event('music-next',' ',true));a.equal(hops,5,'held key does not repeat jumps');
+ const typing=event('nick',' ',false,'input');handlers.keydown(typing);a.equal(typing.prevented,undefined);a.equal(hops,5,'text fields keep Space');
+ c.game.phase='round-clear';const between=event('runner-resume');handlers.keydown(between);a.equal(between.prevented,undefined,'between rounds the resume button works natively');
 });
 function quizUi(pending=false){
  const nodes={};function element(){return{children:[],hidden:false,disabled:false,textContent:'',classList:{values:new Set(),add(x){this.values.add(x);}},replaceChildren(){this.children=[];},append(b){this.children.push(b);}};}const $=id=>nodes[id]||(nodes[id]=element());

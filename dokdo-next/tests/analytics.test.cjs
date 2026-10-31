@@ -18,3 +18,5 @@ test('UI event delegation reads fixed controls and never texts, form data or lin
 test('Every existing Core grade remains available in analytics',()=>{const Core=require('../assets/dokdo-core.js'),h=boot();for(const grade of Core.GRADES){h.track('grade_up',{grade,by:'lesson'});a.equal(h.events().at(-1)[2].grade,grade);}});
 
 test('Only the four existing fixed share campaign labels survive URL cleanup',()=>{for(const source of ['link','yt_live','os_share','kakao']){const h=boot({query:'?utm_source='+source+'&utm_medium=share&email=secret'}),p=h.events()[1][2];a.equal(p.campaign_source,source);a.equal(p.campaign_medium,'share');a.doesNotMatch(p.page_location,/\?/);}const h=boot({query:'?utm_source=private@example.invalid&utm_medium=share'});a.equal(h.events()[1][2].campaign_source,undefined);});
+
+test('Question dispute events carry only the question number, never the learner note or text',()=>{const h=boot();for(const name of ['dispute_open','dispute_sent','dispute_failed']){h.track(name,{qid:920063,reason:'secret note',question:'text'});const e=JSON.parse(JSON.stringify(h.events().at(-1)));a.equal(e[1],name);a.deepEqual(e[2],{qid:920063});}});

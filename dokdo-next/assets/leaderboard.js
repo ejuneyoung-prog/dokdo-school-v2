@@ -133,5 +133,32 @@ async function fetchTops(){
  }catch(e){return{state:'error',error:String(e&&e.message||e)};}
 }
 
-return{isConfigured,fetchWeekly,fetchLive,postEvent,loadProgress,saveProgress,fetchKhoaWeather,reportTopLevel,fetchTops};
+/* POST {t:'dispute',...} — a learner says a question, answer or explanation is
+ * wrong. Unlike the other writes this one reads the reply, because the learner
+ * is told it was received. No nickname, school or other personal field is
+ * sent. `id` is generated per report so the server can drop a resend of the
+ * same report. States: ok / rate_limited / unsupported (server not updated
+ * yet) / sent_unconfirmed (reply unreadable, request went out) / error. */
+async function reportDispute(d){
+ if(!isConfigured())return{state:'not_configured'};
+ const s=(v,n)=>String(v==null?'':v).slice(0,n);
+ const body=JSON.stringify({t:'dispute',id:s(d&&d.id,40),qid:s(d&&d.qid,20),question:s(d&&d.question,500),answer:s(d&&d.answer,200),reason:s(d&&d.reason,1000),lang:s(d&&d.lang,8),age:s(d&&d.age,20)});
+ const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),15000);
+ try{
+  const res=await fetch(apiUrl(),{method:'POST',credentials:'omit',body,signal:ctrl.signal});
+  let data=null;try{data=await res.json();}catch(e){data=null;}
+  if(data&&data.ok===true)return{state:'ok'};
+  if(data&&data.reason==='too_many')return{state:'rate_limited'};
+  if(data&&data.reason==='unknown_request')return{state:'unsupported'};
+  return{state:'error',error:data&&data.reason?String(data.reason):'bad_reply'};
+ }catch(e){
+  if(e&&e.name==='AbortError')return{state:'error',error:'timeout'};
+  // Reply could not be read (e.g. blocked cross-site reply). Send once more
+  // without reading; the server ignores a second copy with the same id.
+  try{await fetch(apiUrl(),{method:'POST',mode:'no-cors',credentials:'omit',body});return{state:'sent_unconfirmed'};}
+  catch(e2){return{state:'error',error:String(e2&&e2.message||e2)};}
+ }finally{clearTimeout(t);}
+}
+
+return{isConfigured,fetchWeekly,fetchLive,postEvent,loadProgress,saveProgress,fetchKhoaWeather,reportTopLevel,fetchTops,reportDispute};
 })();
