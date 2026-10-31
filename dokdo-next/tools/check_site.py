@@ -18,7 +18,7 @@ class Parser(HTMLParser):
         if tag in ['script','link','img','audio','source']:
             self.refs.extend([a[k] for k in ['src','href'] if k in a])
         if tag=='meta':self.meta.append(a)
-for name in ['index.html','demo.html','question-review.html','games.html']:
+for name in ['index.html','demo.html','question-review.html','games.html','fishing.html']:
     p=Parser();text=(ROOT/name).read_text();p.feed(text)
     check(name+' has unique element IDs',len(p.ids)==len(set(p.ids)))
     check(name+' has no inline event handlers',not p.unsafe)

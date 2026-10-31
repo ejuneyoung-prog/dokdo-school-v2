@@ -35,6 +35,7 @@ def make_preview(output):
     html=html.replace('./assets/icon.svg',data('assets/icon.svg')).replace('href="./demo.html"','href="#demo-banner"')
     html=html.replace('href="./question-review.html"', 'href="./dokdo-questions-v1.3-review.html"')
     html=html.replace('href="./games.html', 'target="_blank" rel="noopener noreferrer" href="https://dokdo-school-v2.vercel.app/dokdo-next/games.html')
+    html=html.replace('href="./fishing.html', 'target="_blank" rel="noopener noreferrer" href="https://dokdo-school-v2.vercel.app/dokdo-next/fishing.html')
     html=html.replace('MY LITTLE DOKDO · 내 독도 놀이터', '미리보기 · 게임은 운영 놀이터에서 새 창으로 열려요')
     Path(output).write_text(html,encoding='utf-8')
 if __name__=='__main__':
