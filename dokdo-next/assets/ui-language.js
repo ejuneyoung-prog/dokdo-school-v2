@@ -82,7 +82,7 @@ const dictionary={
  "삽살개 독도 달리기": "Sapsal’s Dokdo Run",
  "삽살개 달리기": "Sapsal’s Run",
  "독도 바다 낚시": "Dokdo Sea Fishing",
- "도전권 없이 자유롭게": "Free play, no tickets",
+ "도전권 없는 자유 놀이": "Free play, no tickets",
  "수심을 골라 낚싯줄을 내리고,": "Pick a depth, drop your line,",
  "독도 바다 생물을 도감에 모아요.": "and collect Dokdo sea life in your field guide.",
  "한 판 3분 · 생물 17종 · 바다 4곳": "3-minute rounds · 17 species · 4 sea zones",

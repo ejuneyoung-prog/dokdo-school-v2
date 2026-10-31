@@ -39,8 +39,8 @@ const SP=[
  {id:'yeoneo',name:'연어병치',zone:'C',d:[26,38],where:'가지초 중층',pts:60,kind:'fish',len:56,c:'#55626a',c2:'#a3b0b6',spd:1.4,fight:1.5,school:true,src:[1],note:'가지초에서 중층을 떼 지어 헤엄칩니다. 50cm 급도 있습니다.'},
  {id:'dohwa_b',name:'도화볼락',zone:'C',d:[34,40],where:'가지초 해송 주변',pts:70,kind:'fish',len:44,c:'#c46a5a',c2:'#efb59f',spd:.9,fight:1.6,spots:true,src:[1],note:'수심 40m 가지초 해송 주변에 무리 지어 삽니다.'},
  {id:'hokdom',name:'혹돔',en:'Asian sheepshead wrasse',zone:'C',d:[22,40],where:'암반 지대',pts:120,kind:'fish',len:86,c:'#9a4f45',c2:'#d39a85',spd:.8,fight:2.2,hump:true,src:[1],note:'독도 연안에서 가장 큰 물고기로 알려져 있고, 80cm가 넘는 개체도 있습니다. 밤에는 바위틈이나 굴속에서 잡니다.'},
- {id:'mullung',name:'물렁가시붉은새우',zone:'D',d:[150,260],where:'수심 150~300m (독도새우 세 종 합쳐)',pts:150,kind:'shrimp',len:40,c:'#d86a5a',c2:'#f2b39e',spd:.7,fight:1.7,src:[6,7],note:'독도새우 세 종 가운데 하나로 꽃새우라고도 부릅니다.'},
- {id:'gasibae',name:'가시배새우',zone:'D',d:[170,280],where:'수심 150~300m (독도새우 세 종 합쳐)',pts:200,kind:'shrimp',len:40,c:'#c9853a',c2:'#efd08e',spd:.7,fight:1.9,spiny:true,src:[6,7],note:'독도새우 세 종 가운데 하나로 닭새우라고도 부릅니다.'},
+ {id:'mullung',name:'물렁가시붉은새우',zone:'D',d:[150,260],where:'수심 150~300m (독도새우 세 종 전체)',pts:150,kind:'shrimp',len:40,c:'#d86a5a',c2:'#f2b39e',spd:.7,fight:1.7,src:[6,7],note:'독도새우 세 종 가운데 하나로 꽃새우라고도 부릅니다.'},
+ {id:'gasibae',name:'가시배새우',zone:'D',d:[170,280],where:'수심 150~300m (독도새우 세 종 전체)',pts:200,kind:'shrimp',len:40,c:'#c9853a',c2:'#efd08e',spd:.7,fight:1.9,spiny:true,src:[6,7],note:'독도새우 세 종 가운데 하나로 닭새우라고도 부릅니다.'},
  {id:'dohwa_s',name:'도화새우',zone:'D',d:[190,300],where:'수심 150~300m',pts:300,kind:'shrimp',len:56,c:'#e08f86',c2:'#fbd3c6',spd:.6,fight:2.4,big:true,src:[6,7],note:'독도새우 가운데 가장 크고(최대 25cm) 귀합니다. 수심 150~300m에 삽니다.'}
 ];
 const PROTECT={name:'유착나무돌산호',depth:25,note:'서도 서쪽 수심 약 25m에 국내 최대 군집이 있는 해양보호생물입니다. 건드리지 않고 지나가요.',src:[2]};
@@ -175,7 +175,7 @@ function drawBackground(){
  const gapY=yOf(40),gapH=yOf(150)-gapY;cx.fillStyle='rgba(255,255,255,.06)';cx.fillRect(0,gapY+2,W,gapH-4);cx.fillStyle='rgba(255,255,255,.75)';cx.fillText(tr('40~150m · 수심 50~80m 아래로 찬물이 깔립니다 (줄여 그림)','40~150m · Cold water lies below 50~80m (drawn compressed)'),12,gapY+gapH/2+5);
  const by=yOf(300);cx.fillStyle='rgba(255,255,255,.75)';cx.fillText(tr('해산은 약 2,000m 심해저까지 이어집니다','The seamount continues to the deep seafloor at about 2,000m'),12,by+40);
  // 낚싯줄 한계
- if(maxDepth()<300){const ly=yOf(maxDepth());cx.strokeStyle='#FFD23F';cx.setLineDash([10,8]);cx.lineWidth=2;cx.beginPath();cx.moveTo(0,ly);cx.lineTo(W,ly);cx.stroke();cx.setLineDash([]);const nn=nextNeed();const label=tr('낚싯줄 끝 · '+(nn?nn.need+' 모으면 더 깊이':''),'Line limit'+(nn?' · Collect '+nn.need+' to go deeper':''));const bw=Math.min(W-24,Math.max(360,cx.measureText(label).width+28));cx.fillStyle='rgba(35,37,40,.85)';cx.fillRect(W-12-bw,ly+6,bw,28);cx.fillStyle='#FFD23F';cx.textAlign='right';cx.fillText(label,W-20,ly+25);cx.textAlign='left';}
+ if(maxDepth()<300){const ly=yOf(maxDepth());cx.strokeStyle='#FFD23F';cx.setLineDash([10,8]);cx.lineWidth=2;cx.beginPath();cx.moveTo(0,ly);cx.lineTo(W,ly);cx.stroke();cx.setLineDash([]);const nn=nextNeed();const label=tr('낚싯줄 끝 · '+(nn?nn.need+'을 모으면 더 깊이 내려가요':''),'Line limit'+(nn?' · Collect '+nn.need+' to go deeper':''));const bw=Math.min(W-24,Math.max(360,cx.measureText(label).width+28));cx.fillStyle='rgba(35,37,40,.85)';cx.fillRect(W-12-bw,ly+6,bw,28);cx.fillStyle='#FFD23F';cx.textAlign='right';cx.fillText(label,W-20,ly+25);cx.textAlign='left';}
  cx.restore();
 }
 function weed(x,base,h,c1,c2,ph){const sy=base-camY;if(sy<-h-20||sy-h>H+20)return;cx.save();cx.translate(x,base);cx.strokeStyle=c1;cx.lineWidth=5;cx.beginPath();cx.moveTo(0,0);cx.quadraticCurveTo(Math.sin(ph)*6,-h*.5,Math.sin(ph)*10,-h*.62);cx.stroke();
@@ -304,7 +304,7 @@ function showDex(s){shownDex=s;const box=$('dex-info');box.replaceChildren();if(
  const p=el('span','',(dex[s.id]?s.note+' ':'')+tr('사는 곳: ','Lives in: ')+s.where+tr(' · 게임 속 바다: ',' · Game sea: ')+zn(z)+' · '+s.pts+tr('점',' pts'));
  const r=el('span','f-note',tr('자료: ','Sources: ')+s.src.map(i=>SRC[i-1][0].split('(')[0].trim()).join(', '));box.append(b,p,r);}
 function renderProg(){const i=levelOf(prog.xp),cur=LEVELS[i],nx=LEVELS[i+1],L=en()?2:1;$('lv-name').textContent=cur[L];$('lv-xp').textContent=prog.xp.toLocaleString('en-US')+' XP'+(nx?tr(' · 다음 '+nx[1]+' '+nx[0].toLocaleString('en-US'),' · Next: '+nx[2]+' at '+nx[0].toLocaleString('en-US')):'');$('lv-bar').style.width=(nx?100*(prog.xp-cur[0])/(nx[0]-cur[0]):100)+'%';
- const zb=$('zones');zb.replaceChildren();for(const z of ZONES){const d=el('div');const open=isOpen(z.id);d.className=open?'open':'';const b=el('span','',(open?tr('열림 · ','Open · '):tr('잠김 · ','Locked · '))+zn(z));const sm=el('small','',open?z.range:(UNLOCK_NEED[z.id]?tr(need(z.id)+' 모으면','Collect '+need(z.id)):''));d.append(b,sm);zb.append(d);}
+ const zb=$('zones');zb.replaceChildren();for(const z of ZONES){const d=el('div');const open=isOpen(z.id);d.className=open?'open':'';const b=el('span','',(open?tr('열림 · ','Open · '):tr('잠김 · ','Locked · '))+zn(z));const sm=el('small','',open?z.range:(UNLOCK_NEED[z.id]?tr('열리는 조건: '+need(z.id),'Opens with '+need(z.id)):''));d.append(b,sm);zb.append(d);}
  const m=todayMission(),done=!!prog.mission[today()],mb=$('mission');mb.className='f-mission'+(done?' done':'');mb.replaceChildren();const mt=el('b','',tr('오늘의 임무 · ',"Today's mission · ")+missionText(m));const mp=el('span','f-note',done?tr('완수했습니다. +300 XP를 받았어요.','Complete! You earned +300 XP.'):missionLine(m));mb.append(mt,mp);
  const bb=$('badges');bb.replaceChildren();for(const b of BADGES){const sp=el('span',prog.badges[b[0]]?'on':'',en()?b[2]:b[1]);bb.append(sp);}
  testLabel();}
