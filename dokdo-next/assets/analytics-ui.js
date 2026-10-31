@@ -7,7 +7,7 @@ const fixed={
  'v3-info-live':['live','info'],'header-live-link':['live','channel'],'youtube-live-link':['live','channel'],
  'header-channel-link':['channel','channel'],'youtube-channel-link':['channel','channel'],
  'v3-play-link':['play','learning'],'v3-island-link':['play','learning'],'account-link':['account','menu'],
- 'game-account-link':['account','playground'],'v3-weather-link':['weather','info']
+ 'game-account-link':['account','playground'],'fishing-card-link':['fishing','playground'],'play-entry-fishing':['fishing','main'],'v3-weather-link':['weather','info']
 };
 document.addEventListener('click',e=>{
  const el=e.target?.closest?.('a,button');if(!el||el.disabled)return;

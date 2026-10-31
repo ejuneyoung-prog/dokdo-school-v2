@@ -1,0 +1,81 @@
+/* 독도 바다 낚시: 놀이터 V3(games.css)의 밝은 화면·글꼴·단추 위에 낚시 화면만 더한다.
+   바다 단면(캔버스)은 어두운 바다색 그대로 둔다. 모든 규칙은 .fish-app 아래에만 건다. */
+.fish-app{--card:#fffef8;--panel:#edf3e8;--tile:#e4ede0;--accent:#1c6650;--warn:#a8670f;--num:Gmarket,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;display:flex;flex-direction:column;gap:18px;padding-top:32px}
+.fish-app h1,.fish-app h2{letter-spacing:-.05em}
+.fish-app .f-intro{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 20px}
+.fish-app .f-eyebrow{display:block;font-size:.875rem;letter-spacing:.12em;font-weight:700;color:#51806b}
+.fish-app h1{font-size:clamp(2rem,4.3vw,3rem);line-height:1.3;margin:8px 0 6px}
+.fish-app .f-lead{font-size:1rem;color:#486653;max-width:44rem}
+.fish-app .f-note{color:#4c6856;font-size:.875rem}
+.fish-app .f-badge{display:inline-block;background:var(--panel);border:1px solid var(--line);color:#3f5e4c;border-radius:999px;padding:5px 14px;font-size:.875rem}
+.fish-app .f-main{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;align-items:start}
+.fish-app .f-stage{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.fish-app .f-hud{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.fish-app .f-hud div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px 12px;display:flex;flex-direction:column;min-width:0}
+.fish-app .f-hud small{color:#4c6856;font-size:.875rem}
+.fish-app .f-hud strong{font-family:var(--num);font-weight:700;font-size:1.6rem;line-height:1.25;font-variant-numeric:tabular-nums;white-space:nowrap}
+.fish-app .f-hud .f-hot strong{color:var(--accent)}
+.fish-app .f-box{position:relative;border-radius:14px;overflow:hidden;background:#0e2a2e;touch-action:none}
+.fish-app .f-box canvas#sea{display:block;width:100%;height:auto}
+.fish-app .f-overlay{position:absolute;inset:0;display:flex;padding:16px;background:rgba(13,48,45,.55);overflow-y:auto}
+.fish-app .f-overlay>.f-card{margin:auto}
+.fish-app .f-card{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:16px;padding:20px;max-width:440px;width:100%;display:flex;flex-direction:column;gap:12px;text-align:center;box-shadow:0 18px 50px #072d4540}
+.fish-app .f-card h2{font-size:1.375rem;line-height:1.4}
+.fish-app .f-card .f-big{font-family:var(--num);font-weight:700;font-size:3.2rem;line-height:1;color:var(--accent)}
+.fish-app .f-card form{display:flex;flex-wrap:wrap;gap:8px}
+.fish-app .f-card form .primary{width:auto;flex:1 1 6rem}
+.fish-app .f-card input{flex:3 1 160px;min-width:0;font:inherit;background:#fff;color:var(--ink);border:2px solid var(--line);border-radius:10px;padding:10px 12px}
+.fish-app .f-card input:focus-visible{outline:3px solid #dc8c22;outline-offset:2px}
+.fish-app .f-controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fish-app .f-ctl{flex-direction:column;gap:2px;min-height:64px;padding:12px 10px;font-size:1.0625rem;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none}
+.fish-app .f-ctl>span{margin:0;font-size:inherit}
+.fish-app .f-ctl small{display:block;font-size:.875rem;font-weight:500;opacity:.9}
+.fish-app .f-secondary{display:flex;align-items:center;justify-content:center;min-height:48px;padding:12px 20px;border-radius:9px;background:#f1f5eb;border:1px solid #b9cfb9;color:#24523b;font-size:1rem;font-weight:700;width:100%}
+.fish-app .f-secondary:hover{background:#e8efe1}
+.fish-app .f-side{display:flex;flex-direction:column;gap:16px;min-width:0}
+.fish-app .f-panel{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.fish-app .f-panel h2{font-size:1.125rem;display:flex;align-items:baseline;gap:4px 8px;flex-wrap:wrap}
+.fish-app .f-panel h2 .f-eyebrow{font-size:.8rem}
+.fish-app .f-hall ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.fish-app .f-hall li{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:8px;align-items:center;background:var(--panel);border-radius:10px;padding:8px 10px}
+.fish-app .f-hall .rk{font-family:var(--num);font-weight:700;font-size:1.2rem;color:#4c6856;text-align:center}
+.fish-app .f-hall li:first-child .rk{background:var(--accent);color:#fff;border-radius:8px}
+.fish-app .f-hall .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fish-app .f-hall .nm small{display:block;color:#4c6856;font-size:.875rem}
+.fish-app .f-hall .sc{font-family:var(--num);font-weight:700;font-size:1.3rem;font-variant-numeric:tabular-nums}
+.fish-app .f-hall li.f-empty{color:#4c6856;font-size:.875rem;padding:12px}
+.fish-app .f-dex{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.fish-app .f-dex button{background:var(--panel);border:2px solid transparent;border-radius:10px;padding:6px 4px;color:var(--ink);font-size:.875rem;line-height:1.5;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
+.fish-app .f-dex button.got{border-color:#c2d6c0;background:#f7faf2}
+.fish-app .f-dex button.new{border-color:var(--accent)}
+.fish-app .f-dex canvas{width:100%;max-width:84px;height:auto}
+.fish-app .f-dex span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.fish-app .f-dex small{color:#4c6856;font-size:.8rem}
+.fish-app .f-info{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:.875rem;display:flex;flex-direction:column;gap:4px;line-height:1.7}
+.fish-app .f-info b{font-size:1rem}
+.fish-app .f-src{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 16px;color:#4c6856;font-size:.875rem;line-height:1.8}
+.fish-app .f-src summary{cursor:pointer;color:var(--ink);min-height:32px}
+.fish-app .f-src ol{margin:8px 0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.fish-app .f-src a{color:var(--green);text-decoration:underline;text-underline-offset:3px}
+.fish-app .f-lvl{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:4px 8px}
+.fish-app .f-lvl b{font-size:1.125rem;color:var(--green)}
+.fish-app .f-xp{height:8px;background:#cbdcc8;border-radius:99px;overflow:hidden}
+.fish-app .f-xp i{display:block;height:100%;background:#69a879;width:0;transition:width .4s}
+.fish-app .f-zones{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.fish-app .f-zones div{background:var(--panel);border-radius:10px;padding:8px 10px;font-size:.875rem;display:flex;flex-direction:column;gap:2px;border:2px solid transparent;min-width:0}
+.fish-app .f-zones div.open{border-color:#69a879;background:#f3f8ee}
+.fish-app .f-zones small{color:#4c6856;font-size:.8rem}
+.fish-app .f-mission{background:var(--panel);border:2px solid transparent;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.fish-app .f-mission.done{border-color:#69a879}
+.fish-app .f-badges{display:flex;flex-wrap:wrap;gap:6px}
+.fish-app .f-badges span{font-size:.8rem;background:#eef1ea;color:#5d6f63;border:1px solid #dbe3d5;border-radius:999px;padding:3px 10px}
+.fish-app .f-badges span.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.fish-app .f-test{background:transparent;border:1px dashed #a9bfa9;color:#4c6856;border-radius:10px;padding:8px;font-size:.875rem;min-height:44px}
+.fish-app .f-test[aria-pressed="true"]{border-color:var(--warn);color:var(--warn);border-style:solid}
+.fish-app .f-bonus{display:flex;flex-direction:column;gap:2px;font-size:.875rem;color:#4c6856}
+.fish-app .f-bonus b{color:var(--ink);font-weight:700}
+.fish-app .f-unlock{background:var(--accent);color:#fff;border-radius:12px;padding:10px;font-weight:700}
+.fish-page .footer{flex-wrap:wrap;align-items:center}
+@media(max-width:900px){.fish-app .f-main{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:560px){.fish-app{padding-top:20px;gap:14px}.fish-app .f-hud{grid-template-columns:repeat(2,minmax(0,1fr))}.fish-app .f-stage{padding:10px}.fish-app .f-overlay{padding:10px}.fish-app .f-card{padding:16px}.fish-app .f-ctl{font-size:1rem}}
+@media(prefers-reduced-motion:reduce){.fish-app .f-xp i{transition:none}}
