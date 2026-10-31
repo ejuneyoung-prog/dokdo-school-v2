@@ -136,3 +136,25 @@ test('playground card and home entry are plain links to fishing.html, not ticket
  a.match(games,/<a class="primary" href="\.\/fishing\.html" id="fishing-card-link">/);a.doesNotMatch(games,/data-launch="fishing"/);
  a.match(home,/<a href="\.\/fishing\.html" id="play-entry-fishing">독도 바다 낚시/);
 });
+
+test('canvas logical width follows the box (360~900) so phones are not shrunk to 0.38x',()=>{
+ a.deepEqual(F.fitSize(340),{W:360,H:450});a.deepEqual(F.fitSize(390),{W:390,H:488});
+ a.deepEqual(F.fitSize(730),{W:730,H:560});a.deepEqual(F.fitSize(1200),{W:900,H:560});a.deepEqual(F.fitSize(0),{W:900,H:560});
+ // On a 340px phone box the scene is drawn at about 0.94x instead of 900px squeezed to 0.38x.
+ a.ok(340/F.fitSize(340).W>2*(340/900));
+ a.equal(F.pixelRatio(3),2);a.equal(F.pixelRatio(2),2);a.equal(F.pixelRatio(1.5),1.5);a.equal(F.pixelRatio(undefined),1);a.equal(F.pixelRatio(0.5),1);
+});
+
+test('first-round guide appears once: only for a new player, steps 1→4 in order, and never after the first catch',()=>{
+ const fresh=F.loadSaved(F.createStore(memory()));a.equal(F.needsCoach(fresh.prog,fresh.dex),true);
+ // An older save without the new field but with catches does not see the guide again.
+ const old=F.loadSaved(F.createStore(memory({'dk-fish-dex':'{"jari":1}','dk-fish-prog':'{"xp":30,"unlocked":["A"],"badges":{},"mission":{}}'})));
+ a.equal(old.prog.coachDone,undefined);a.equal(F.needsCoach(old.prog,old.dex),false);
+ const done={...fresh.prog,coachDone:true};a.equal(F.needsCoach(done,{}),false);
+ // The new field round-trips without changing the other saved fields.
+ const ls=memory(),st=F.createStore(ls);st.set(F.KEYS.prog,done);const back=F.loadSaved(F.createStore(ls)).prog;a.equal(back.coachDone,true);a.deepEqual(back.unlocked,['A']);
+ a.equal(F.coachStep('play',false,0,null),1);a.equal(F.coachStep('play',true,120,null),1);a.equal(F.coachStep('play',false,120,null),2);a.equal(F.coachStep('bite',false,120,null),2);
+ a.equal(F.coachStep('fight',true,120,{onT:.2}),3);a.equal(F.coachStep('fight',true,60,{onT:1.5}),4);a.equal(F.coachStep('catch',false,0,null),0);a.equal(F.coachStep('over',false,0,null),0);
+ for(const n of [1,2,3,4]){a.match(F.COACH[n][0],/^\d\/4 /);a.match(F.COACH[n][1],/^\d\/4 /);a.match(F.COACH[n][0],/[.다]$/);a.doesNotMatch(F.COACH[n][1],/[가-힣]/);}
+ const src=fs.readFileSync(path.join(ROOT,'assets/fishing.js'),'utf8');a.match(src,/if\(coachOn\)\{coachOn=false;prog\.coachDone=true;\}/);
+});

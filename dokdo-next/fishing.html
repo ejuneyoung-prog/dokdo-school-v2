@@ -50,7 +50,7 @@
  </div>
 
  <div class="f-main">
-  <section class="f-stage" aria-label="낚시 화면" data-en-label="Fishing screen">
+  <section class="f-stage" id="stage" aria-label="낚시 화면" data-en-label="Fishing screen">
    <div class="f-hud">
     <div class="f-hot"><small data-en="Score">점수</small><strong id="h-score">0</strong></div>
     <div><small data-en="Time left">남은 시간</small><strong id="h-time">3:00</strong></div>
@@ -87,6 +87,7 @@
      </div>
     </div>
    </div>
+   <p class="f-coach" id="coach" role="status" hidden></p>
    <div class="f-controls">
     <button class="primary f-ctl" id="b-main" type="button" disabled><span>내리기</span><small>누르는 동안 줄이 내려가요</small></button>
     <button class="f-secondary f-ctl" id="b-up" type="button" disabled><span>올리기</span><small>누르는 동안 줄을 감아요</small></button>
@@ -99,10 +100,9 @@
     <h2><span class="f-eyebrow">ANGLER</span><span data-en="My angler record">나의 어부 기록</span></h2>
     <div class="f-lvl"><b id="lv-name">견습 어부</b><span class="f-note" id="lv-xp">0 XP</span></div>
     <div class="f-xp"><i id="lv-bar"></i></div>
-    <div class="f-zones" id="zones"></div>
     <div class="f-mission" id="mission"></div>
-    <div class="f-badges" id="badges"></div>
-    <button class="f-test" id="test" type="button" aria-pressed="false">시험 모드: 모든 바다 열기 (운영자 확인용)</button>
+    <details class="f-fold"><summary id="zones-sum">바다 단계</summary><div class="f-zones" id="zones"></div><button class="f-test" id="test" type="button" aria-pressed="false">시험 모드: 모든 바다 열기 (운영자 확인용)</button></details>
+    <details class="f-fold"><summary id="badges-sum">배지</summary><div class="f-badges" id="badges"></div></details>
    </div>
    <div class="f-panel f-hall">
     <h2><span class="f-eyebrow">HALL OF FAME</span><span data-en="Dokdo Hall of Fame">독도 명예의 전당</span></h2>
