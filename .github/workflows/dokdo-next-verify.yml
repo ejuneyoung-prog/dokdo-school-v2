@@ -40,7 +40,8 @@ jobs:
           path: dokdo-next/test-results/
   native-browser:
     needs: logic
-    runs-on: ubuntu-latest
+    # ubuntu-latest moved to Ubuntu 26 (2026-10-19~); Playwright's --with-deps fails there, so pin 24.04.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     strategy:
       fail-fast: false
