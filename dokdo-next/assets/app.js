@@ -62,7 +62,7 @@ const en={
  hallLoading:'Loading this week’s record…',
  hallRetry:'Try again',
  hallWeeklyPersonal:'Weekly personal ranking',
- hallWeeklyPersonalNote:'Sorted by correct answers, then days participated, then longest streak. Shows at most 60 people — not the full participant count.',
+ hallWeeklyPersonalNote:'Sorted by correct answers; the top 30 are shown. Each question counts once per day, and the day starts at midnight Korea time. Repeats are saved as review but do not add to your ranking score.',
  hallSchool:'School standings',
  hallRecent:'Recent participation',
  flagField:'Country (shown on the hall of fame, optional)',
@@ -158,6 +158,12 @@ const gradeLabel=code=>(GRADE_LABELS[language]&&GRADE_LABELS[language][code])||c
  * tier the tier name is the level. */
 const levelText=gp=>gp.rank>=Core.DOKKOMIN_FROM?gradeLabel(gp.grade):'Lv.'+(gp.rank+1);
 const nextLevelText=gp=>gp.rank+1>=Core.DOKKOMIN_FROM?gradeLabel(Core.GRADES[gp.rank+1]):'Lv.'+(gp.rank+2);
+/* Weekly ranking counts one correct answer per nickname, Korea-time day and question (server rule since 2026-10-12).
+   This device-only tally tells the learner whether an answer counted; it never changes the school record. */
+const RANK_TODAY_KEY='dokdo-rank-today';
+function rankQid(q){const n=Number(q);return Number.isInteger(n)&&((n>=1&&n<=1999)||(n>=920001&&n<=920999));}
+function rankTodayMark(nick,qid,now=Date.now()){const day=new Date(now+9*3600e3).toISOString().slice(0,10),who=String(nick||'').trim().normalize('NFC').toLowerCase(),id=String(qid);let r=null;try{r=JSON.parse(localStorage.getItem(RANK_TODAY_KEY)||'null');}catch(e){r=null;}if(!r||r.day!==day||r.who!==who||!Array.isArray(r.ids))r={day,who,ids:[]};const fresh=!r.ids.includes(id);if(fresh)r.ids.push(id);try{localStorage.setItem(RANK_TODAY_KEY,JSON.stringify(r));}catch(e){}return{fresh,count:r.ids.length};}
+function showRankToday(nick,qid){const el=$('rank-today');if(!el||!String(nick||'').trim()||!rankQid(qid))return;const r=rankTodayMark(nick,qid);el.textContent=r.fresh?tr('오늘 순위에 들어간 문제 '+r.count+'개','Counted toward today’s ranking: '+r.count):tr('오늘 이미 순위에 넣은 문제입니다. 다시 푼 문제는 복습 기록으로 남습니다.','Already counted today. Repeats are saved as review only.');el.hidden=false;}
 function toast(message){txt('toast',message);$('toast').hidden=false;clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('toast').hidden=true,5200);}
 function translate(){
  document.documentElement.lang=language;window.DokdoLanguage?.adopt(language);
@@ -718,7 +724,7 @@ async function choose(pick,skip=false){
   if(window.DokdoLeaderboard){const cur=getS();DokdoLeaderboard.postEvent({
    nick:cur.name||'',flag:cur.flag||'KR',grade:cur.grade||'K',qid:q.item.id,ok:ok?1:0,
    run:cur.run||0,best:cur.best||0,mode:q.mode,school:cur.school||'',schoolCode:'',schoolCat:cur.schoolCat||''
-  }).catch(()=>{});}
+  }).catch(()=>{});if(DokdoLeaderboard.isConfigured?.()){if(ok)showRankToday(cur.name,q.item.id);else{const rt=$('rank-today');if(rt)rt.hidden=true;}}}
   if(window.DokdoAnalytics)DokdoAnalytics.track('question_answered',{qid:q.item.id,correct:ok?1:0,qtype:q.item.atype||q.mode,grade:getS().grade||'K',retry:retry?1:0});
   // A delayed storage lock may finish after the learner leaves or starts again.
   // Keep its committed rewards, but never paint an abandoned lesson over a new one.
@@ -969,7 +975,7 @@ async function renderHall(cached=false){
  for(const rows of Object.values(d.schools||{}))addSchoolNames((rows||[]).map(r=>r&&r.name));
  hallShow('hall-content');
  $('hall-summary').replaceChildren();
- for(const [n,label] of [[d.today,tr('오늘 참여 시도','Attempts today')],[d.people,tr('오늘 참여자','Participants today')],[d.people_week,tr('이번 주(최대 60명)','This week (up to 60)')]]){
+ for(const [n,label] of [[d.today,tr('오늘 참여 시도','Attempts today')],[d.people,tr('오늘 참여자','Participants today')],[d.people_week,tr('이번 주 참여자','Participants this week')]]){
   const div=document.createElement('div'),v=document.createElement('strong'),t=document.createElement('small');
   v.textContent=n==null?'—':num(n);t.textContent=label;div.append(v,t);$('hall-summary').append(div);
  }
