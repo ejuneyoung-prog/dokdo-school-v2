@@ -279,7 +279,7 @@
  <section id="course-catalog" class="course-catalog"><div class="card-heading"><div><p class="eyebrow">DOKDO CORE COURSE</p><h2 id="path-name">나에게 맞는 독도 과정</h2></div><button class="text-button" id="catalog-age">시작 수준 바꾸기</button></div><p id="path-explanation" class="fine"></p><div id="course-unit-list" class="course-unit-list"></div><button id="deeper-course" class="button secondary" hidden>다음 깊이의 과정 열기</button></section>
  <article id="lesson" class="lesson" hidden>
   <div class="lesson-top"><button id="leave-lesson" class="text-button" data-i18n="leave">학습 나가기</button><progress id="lesson-progress" max="5" value="0" aria-label="학습 진행"></progress><span id="lesson-position">1 / 5</span></div>
-  <div id="lesson-grade-line" class="grade-line lesson-grade-line" hidden><b id="lesson-grade-name"></b><span id="lesson-grade-badge" class="grade-badge"></span><span id="lesson-grade-stats" class="fine"></span><progress id="lesson-grade-gauge" value="0" max="5"></progress><small id="lesson-grade-gauge-label" class="fine"></small></div>
+  <p id="rank-today" class="fine rank-today" role="status" hidden></p><div id="lesson-grade-line" class="grade-line lesson-grade-line" hidden><b id="lesson-grade-name"></b><span id="lesson-grade-badge" class="grade-badge"></span><span id="lesson-grade-stats" class="fine"></span><progress id="lesson-grade-gauge" value="0" max="5"></progress><small id="lesson-grade-gauge-label" class="fine"></small></div>
   <div class="lesson-context"><span id="lesson-mode" class="pill"></span><span id="lesson-stage"></span></div>
   <div id="teaching"><p class="eyebrow" data-i18n="beforeQuestion">문제를 풀기 전에</p><h2 data-i18n="learnTogether">먼저 함께 알아봐요</h2><p id="teaching-text"></p><details id="teaching-help" class="word-help"><summary>낯선 말 함께 읽기 · Word help</summary><dl id="teaching-help-list"></dl></details><button id="read-done" class="button primary" data-i18n="readDone">읽었어요 · 문제 풀기</button></div>
   <div id="question-area" hidden><h2 id="question-title" tabindex="-1"></h2><div id="question-context" class="question-context" hidden></div><details id="question-material" class="question-material" hidden><summary data-i18n="materialTip">TIP · 문제 자료 보기</summary><div id="question-material-body"></div></details><details id="word-help" class="word-help"><summary>낯선 말 풀이 / Word help</summary><dl id="word-help-list"></dl></details>
@@ -312,7 +312,7 @@
  <div id="hall-content" hidden>
   <div class="record-summary" id="hall-summary"></div>
   <div id="hall-ticker" class="hall-ticker" hidden aria-hidden="true"><div id="hall-ticker-track" class="hall-ticker-track"></div></div>
-  <section class="record-panel"><h2 data-i18n="hallWeeklyPersonal">이번 주 개인 순위</h2><p class="fine" data-i18n="hallWeeklyPersonalNote">정답수 내림차순 · 참여일수 · 최고연속 순. 최대 60명까지 표시하며, 전체 참가자 수와는 다릅니다.</p><div id="hall-week-list"></div></section>
+  <section class="record-panel"><h2 data-i18n="hallWeeklyPersonal">이번 주 개인 순위</h2><p class="fine" data-i18n="hallWeeklyPersonalNote">정답 수 순서로 30명까지 보여 줍니다. 같은 날(한국 시간 자정 기준) 같은 문제는 한 번만 셉니다. 다시 푼 문제는 복습 기록으로 남고 순위 점수에는 더해지지 않습니다.</p><div id="hall-week-list"></div></section>
   <section class="record-panel"><h2 data-i18n="hallSchool">학교 부문 순위</h2><div class="island-facts" id="hall-school-tabs"></div><div id="hall-school-list"></div></section>
   <section class="record-panel"><h2 data-i18n="hallRecent">최근 참여</h2><div id="hall-recent-list"></div></section>
  </div>
