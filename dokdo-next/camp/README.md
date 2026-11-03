@@ -1,1 +1,1 @@
-스쿨 입구 → 독도 캠핑장 → 동도 날씨 세 가지 관찰 → 서도 해금. ../?area=learn 으로 배움터 복귀. 시연 진행은 탭 메모리에만 유지됩니다. waves.mp3는 Geoff Bremner의 Calm Beach Shore 2에서 28초 발췌·페이드 편집한 CC BY 4.0 음원입니다. 출처 https://freesound.org/people/Geoff-Bremner-Audio/sounds/803774/ · https://creativecommons.org/licenses/by/4.0/ .
+스쿨 입구 → 독도 캠핑장 → 동도 날씨 세 가지 관찰 → 서도 해금. ../?area=learn 으로 배움터 복귀. 시연 진행은 탭 메모리에만 유지됩니다. waves.mp3와 rain.mp3는 프로젝트 책임자 제공 녹음을 반복 재생에 맞게 편집한 파일입니다. 파도는 모든 날씨에, 비는 강우 장면에서 함께 재생됩니다.
