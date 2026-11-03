@@ -21,7 +21,11 @@ try:
         a.locator('#chair').click()
         expect(b.locator('#visitors circle')).to_have_attribute('cy','-16')
         a.locator('#restToggle').click()
-        a.locator('#creator').click()
+        expect(a.locator('#creator')).to_be_hidden()
+        for weather in ['맑음', '비', '눈']:
+            a.locator('#weather').get_by_role('button', name=weather, exact=True).click()
+            a.locator('#explore').click()
+        a.locator('#west').click()
         expect(b.locator('#visitors text')).to_have_count(0)
         a.locator('#east').click()
         expect(b.locator('#visitors text')).to_have_count(1)
