@@ -21,7 +21,7 @@ def explore(page):
   more(page);page.click('#v3-explore')
 def selector_checks(page):
  check('English is discoverable without opening More',page.locator('#v3-main-language').is_visible())
- check('Main starts with only the two area choices',page.locator('#v3-entry').is_visible() and page.locator('#v3-entry .v3-choice-grid button,#v3-entry .v3-choice-grid a').count()==2 and page.locator('#start-lesson').is_hidden())
+ check('Main offers learning, playground and camping',page.locator('#v3-entry').is_visible() and page.locator('#v3-entry .v3-choice-grid button,#v3-entry .v3-choice-grid a').count()==3 and page.locator('#v3-entry a[href="./camp/"]').count()==1 and page.locator('#start-lesson').is_hidden())
  check('The two choices identify learning and playground separately','독도배움터' in re.sub(r'\s+','',page.locator('#v3-enter-learn').inner_text()) and '독도놀이터' in re.sub(r'\s+','',page.locator('#v3-enter-play').inner_text()))
  protected=page.evaluate('JSON.stringify(DokdoApp.state)')
  page.click('#v3-profile-entry')
