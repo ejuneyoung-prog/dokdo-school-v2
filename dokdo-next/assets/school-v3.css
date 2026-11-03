@@ -253,3 +253,17 @@ body.school-v3{--body:GmarketSans,"Apple SD Gothic Neo","Malgun Gothic",sans-ser
 
 @media(min-width:800px){.v3-entry .v3-choice-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .v3-choice .camp-art{display:grid;place-items:center;background:linear-gradient(#405777,#f3be98 68%,#487d87 70%);color:#fff5d6;font-size:3rem}
+
+.school-v3 .v3-choice-camp {
+  background: #eaf5f4;
+  border-color: #84b8b6;
+  color: #184c53;
+}
+.school-v3 .v3-choice-camp .v3-choice-action {
+  background: #175e66;
+  color: #fff;
+}
+.school-v3 .v3-choice-camp:focus-visible {
+  outline: 3px solid #175e66;
+  outline-offset: 3px;
+}
