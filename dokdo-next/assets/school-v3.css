@@ -250,3 +250,6 @@ body.school-v3{--body:GmarketSans,"Apple SD Gothic Neo","Malgun Gothic",sans-ser
 .school-v3 .v3-utility .nav-item>span:first-child{font-size:1rem;line-height:1.6}
 
 .school-v3 .garden-summary{padding:12px 0;border-top:1px solid #d4e3d0;font-size:.875rem;line-height:1.8}.school-v3 .garden-summary p{margin:4px 0}.school-v3 .garden-summary button{min-height:44px;font-size:.875rem;white-space:normal}
+
+@media(min-width:800px){.v3-entry .v3-choice-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.v3-choice .camp-art{display:grid;place-items:center;background:linear-gradient(#405777,#f3be98 68%,#487d87 70%);color:#fff5d6;font-size:3rem}

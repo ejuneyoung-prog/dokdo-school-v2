@@ -1,0 +1,64 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>독도 캠핑장 · 날씨 체험</title><style>
+*{box-sizing:border-box}body{margin:0;background:#102725;color:#fff;font:16px/1.6 system-ui}main{max-width:860px;margin:auto;padding:20px}header{display:flex;align-items:baseline;gap:14px}small{color:#c4d9c4}h1{font-size:clamp(26px,6vw,44px);margin:0}button{border:1px solid #9ab5aa;border-radius:18px;background:#24433f;color:white;font:inherit;padding:6px 15px;margin:3px;cursor:pointer}button[aria-pressed=true]{background:#def593;color:#172f29}button:disabled{opacity:.65}figure{margin:14px 0;border-radius:20px;overflow:hidden;background:#234843}svg{width:100%;display:block}figcaption{padding:10px 16px}.panel{background:#193530;padding:14px;border-radius:16px;margin:12px 0}#drops{animation:fall 1s linear infinite}#wave{animation:tide 5s ease-in-out infinite alternate}body.wind #wave{animation-duration:1s}body.wind #flag{animation:flutter .6s infinite alternate;transform-origin:585px 162px} @keyframes flutter{to{transform:scaleY(.55)}}@keyframes fall{to{transform:translate(-9px,24px)}}@keyframes tide{to{transform:translateX(12px)}}@media(prefers-reduced-motion:reduce){*{animation:none!important}}#flock{animation:glide 28s ease-in-out infinite alternate}#stars circle{animation:twinkle 5s ease-in-out infinite alternate} @keyframes glide{from{transform:translate(-45px,4px)}to{transform:translate(140px,-10px)}}@keyframes twinkle{to{opacity:.45}}@media(prefers-reduced-motion:reduce){#flock,#stars circle{animation:none}}</style>
+<main><nav><a style="color:#def593" href="../">← 스쿨 입구</a> · <a style="color:#def593" href="../?area=learn">배움터로 가기</a></nav><header><h1>독도 캠핑장</h1><small>체험 시안</small></header><p>오늘은 어느 자리에서 바다를 바라볼까요?</p>
+<div><button id="east">동도 · 등대 자리</button><button id="west">서도 · 주민숙소 자리</button></div>
+<figure><svg viewBox="0 0 700 340" role="img" aria-labelledby="vista"><title id="vista">동도에서 서도를 바라보는 상상 풍경</title><defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#81b6ce"/><stop offset="1" stop-color="#f5ddbc"/></linearGradient></defs><rect width="700" height="340" fill="url(#sky)"/><rect id="cloud" width="700" height="340" fill="#596475" opacity="0"/><circle cx="515" cy="70" r="25" fill="#ffecc2" id="sun"/><g id="stars"></g><g id="flock" fill="none" stroke="#425a62" stroke-width="2" stroke-linecap="round"><path d="M195 102q6 -4 10 2q5 -8 13 -7 M243 88q4 -3 8 2q5 -6 10 -6 M262 110q4 -3 8 2q4 -6 10 -6"/></g><path id="island" fill="#3e6462"/><rect y="212" width="700" height="128" fill="#367b85"/><g id="sparkle"></g><g id="wave" fill="none" stroke="#9ecbc5" stroke-width="2"><path d="M-15 225q55 -7 110 0t110 0t110 0t110 0t110 0t110 0t110 0 M-30 254q70 -9 140 0t140 0t140 0t140 0t140 0t140 0"/></g><path d="M0 257Q180 229 340 293T700 299V340H0Z" fill="#526552"/><g id="tower"><path d="M45 249l9 -105h38l10 105Z" fill="#f8ecd9"/><rect x="49" y="128" width="48" height="20" fill="#50696a"/><path d="M44 129l29 -18 29 18Z" fill="#b45443"/></g><g id="house"><path d="M0 125h103v122H0Z" fill="#dfd6bc"/><path d="M0 110h111l12 20H0Z" fill="#52616b"/><rect x="21" y="150" width="61" height="50" fill="#71949a"/></g><path d="M125 272l51 -61 54 67Z" fill="#d79754"/><path d="M176 211l23 64h-40Z" fill="#775840"/><path d="M585 235v-74" stroke="#c6bea7" stroke-width="3"/><path id="flag" d="M585 162q19 2 32 10l-32 5Z" fill="#efd683"/><g stroke="#704c39" stroke-width="5"><path d="M267 260l16 34m-1 -32l-14 32m-8 -49l9 20h22"/></g><g id="person" fill="#253c42"><circle cy="-22" r="8" fill="#d5a180"/><path id="pose"/></g><g id="umbrella"><path d="M-27 0q27 -41 54 0q-13 -4 -26 0q-13 -5 -28 0" fill="#f1bc59"/><path d="M0 0v25" stroke="#78553a" stroke-width="2"/></g><g id="drops" pointer-events="none"></g></svg><figcaption id="caption"></figcaption></figure>
+<div class="panel" id="clock">빛과 시간　</div><button id="sound" aria-pressed="false">갈매기 소리 켜기</button><section class="panel" aria-label="현장 녹음"><h2>캠핑장의 소리</h2><p>파도 듣기를 누르면 잔잔한 해변 소리가 이어집니다.</p><p><small>배경음 · <a style="color:inherit" href="https://freesound.org/people/Geoff-Bremner-Audio/sounds/803774/">Calm Beach Shore 2</a> — Geoff Bremner · <a style="color:inherit" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> · 발췌 및 반복 재생용 편집</small></p><p><label>파도 녹음 교체 <input id="surfFile" type="file" accept="audio/*"></label> <label>파도 음량 <input id="surfVol" type="range" min="0" max="100" value="55"></label></p><p><label>빗소리 녹음 <input id="rainFile" type="file" accept="audio/*"></label> <label>비 음량 <input id="rainVol" type="range" min="0" max="100" value="45"></label></p><button id="listen">파도 듣기</button> <span id="recordStatus" role="status"></span></section><div id="weather" class="panel">날씨 시연　</div><button id="chair"></button><p id="mission" aria-live="polite"></p><button id="explore">오늘의 관찰</button><p id="story" aria-live="polite"></p><small>가상 캠핑 풍경 · 태양 위치로 추정한 현지 시간대 · 수동 날씨 · 합성 갈매기 소리 · 이 탭에서만 진행되는 시연</small></main>
+<script>
+const el=id=>document.getElementById(id), ns='http://www.w3.org/2000/svg';
+let side='동도',weather='맑음',seated=false;
+const found=new Set(), weatherTypes=['맑음','비','눈','바람'];
+for(const type of weatherTypes){const b=document.createElement('button');b.textContent=type;b.onclick=()=>{weather=type;render();updateTracks()};el('weather').append(b)}
+const stories={맑음:'등대 자리에서 바다 건너 서도의 바위 윤곽을 따라가 보세요.',비:'우산 끝에서 떨어지는 빗방울 너머로 섬을 바라보세요.',눈:'눈송이 사이로 드러나는 바위 능선을 찾아보세요.',바람:'바람에 흔들리는 깃발과 바다의 물결을 함께 살펴보세요.'};
+function render(){const east=side==='동도',rain=weather==='비',snow=weather==='눈';
+for(const [id,v] of [['tower',east],['house',!east],['umbrella',rain],['sun',weather==='맑음']])el(id).style.display=v?'':'none';
+el('island').setAttribute('d',east?'M240 215L284 194 300 159 316 151 330 111 342 122 355 147 373 158 385 182 418 197 437 215Z':'M264 215L282 193 306 184 320 160 338 164 365 146 389 152 410 174 434 186 454 215Z');
+el('cloud').setAttribute('opacity',rain?.52:snow?.28:.03);document.body.classList.toggle('wind',weather==='바람');const x=seated?273:330,y=seated?256:262;
+el('person').setAttribute('transform','translate('+x+' '+y+')');el('pose').setAttribute('d',seated?'M-6 -16h12v14l14 2v15h-5V6H-6Z':'M-6 -16h12v36H2L0 2l-2 18h-4Z');el('umbrella').setAttribute('transform','translate('+x+' '+(y-35)+')');
+el('drops').replaceChildren();for(let i=0;i<(rain||snow?90:0);i++){const p=document.createElementNS(ns,snow?'circle':'path'),px=(i*83)%729,py=(i*47)%375-30;for(const [k,v] of Object.entries(snow?{cx:px,cy:py,r:2,fill:'white'}:{d:'M'+px+' '+py+'l-4 11',stroke:'#dbf2f4',opacity:.7}))p.setAttribute(k,v);el('drops').append(p)}el('drops').style.animationDuration=snow?'3s':'.65s';
+el('west').disabled=found.size<3;el('west').textContent=found.size<3?'🔒 서도 · 동도 만렙에 열림':'서도 · 주민숙소 자리';el('east').setAttribute('aria-pressed',east);el('west').setAttribute('aria-pressed',!east);for(const b of el('weather').querySelectorAll('button'))b.setAttribute('aria-pressed',b.textContent===weather);
+el('caption').textContent=(east?'동도 등대 자리에서 서도를':'서도 주민숙소 자리에서 동도를')+' 바라보는 중 · '+weather;el('vista').textContent=el('caption').textContent;el('chair').textContent=seated?'의자에서 일어나기':'텐트 밖 의자에 앉기';el('mission').textContent=found.size===3?'동도 만렙 · 서도 주민숙소 자리가 열렸어요.':'동도 날씨 관찰 '+found.size+'/3 · 서로 다른 날씨 세 가지를 관찰하면 서도가 열려요.';el('explore').disabled=!east||found.has(weather)||found.size===3;paintLight();}
+let clock='자동',soundOn=false,ctx;
+const colors={'일출':['#7187bd','#ffc8ab','#f7ab93','#97778f'], '낮':['#81b6ce','#f5ddbc','#93c9d1','#367b85'], '일몰':['#635583','#ffac77','#ffb36d','#625c7e'], '밤':['#101b39','#455478','#a8bfdb','#253951']};
+function phase(time){const jd=time.getTime()/86400000+2440587.5,d=jd-2451545,r=Math.PI/180;
+const anomaly=(357.5291+.98560028*d)*r,lon=(280.4665+.98564736*d+1.915*Math.sin(anomaly)+.020*Math.sin(2*anomaly))*r;
+const dec=Math.asin(Math.sin(lon)*Math.sin(23.44*r)),ra=Math.atan2(Math.sin(lon)*Math.cos(23.44*r),Math.cos(lon));
+const hour=(280.4606+360.98564737*d+131.87)*r-ra,lat=37.24*r;
+const alt=Math.asin(Math.sin(lat)*Math.sin(dec)+Math.cos(lat)*Math.cos(dec)*Math.cos(hour))/r;
+return alt < -6?'밤':alt>7?'낮':Math.sin(hour)<0?'일출':'일몰'}
+function mark(group,tag,attrs){const n=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,v);group.append(n)}
+for(let i=0;i<74;i++)mark(el('stars'),'circle',{cx:((i*173+i*i*3)%700),cy:(i*67)%175,r:.45+(i%5)*.22,fill:'#fff3da',style:'animation-delay:-'+(i%6)+'s'});
+for(let i=0;i<16;i++){const y=215+i*2.9,x=441+Math.sin(i*4)*9,w=5+i*2.9;mark(el('sparkle'),'path',{d:'M'+(x-w)+' '+y+'q'+w+' -2 '+(w*2)+' 0',stroke:'currentColor',opacity:.52-i*.022,fill:'none'})}
+function paintLight(){const phaseName=clock==='자동'?phase(new Date()):clock,[top,bottom,shine,sea]=colors[phaseName],night=phaseName==='밤',twilight=phaseName==='일출'||phaseName==='일몰';
+const stops=el('sky').querySelectorAll('stop');stops[0].setAttribute('stop-color',top);stops[1].setAttribute('stop-color',bottom);
+document.querySelector('rect[y="212"]').setAttribute('fill',sea);el('stars').style.display=night?'':'none';el('stars').style.opacity=weather==='맑음'?1:.24;
+el('flock').style.display=phaseName==='낮'&&weather!=='눈'?'':'none';
+el('sun').style.display=phaseName==='낮'&&weather==='맑음'?'':'none';el('sparkle').style.display=twilight?'':'none';el('sparkle').style.color=shine;
+el('caption').textContent=(side==='동도'?'동도 등대 자리에서 서도를':'서도 주민숙소 자리에서 동도를')+' 바라보는 중 · '+phaseName+' · '+weather;el('vista').textContent=el('caption').textContent;
+for(const b of el('clock').querySelectorAll('button'))b.setAttribute('aria-pressed',b.textContent===clock)}
+for(const choice of ['자동','일출','낮','일몰','밤']){const b=document.createElement('button');b.textContent=choice;b.onclick=()=>{clock=choice;paintLight();callGull()};el('clock').append(b)}
+function callGull(){if(!ctx||!soundOn||document.hidden||el('flock').style.display==='none')return;
+for(const offset of [0,.26]){const t=ctx.currentTime+offset,o=ctx.createOscillator(),g=ctx.createGain();o.type='triangle';o.frequency.setValueAtTime(1050,t);o.frequency.exponentialRampToValueAtTime(1600,t+.07);o.frequency.exponentialRampToValueAtTime(820,t+.22);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.017,t+.045);g.gain.exponentialRampToValueAtTime(.0001,t+.23);o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+.24)}}
+el('sound').onclick=async()=>{if(!soundOn){const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio){el('sound').textContent='이 브라우저는 소리를 지원하지 않아요';return}ctx??=new Audio();await ctx.resume()}soundOn=!soundOn;el('sound').setAttribute('aria-pressed',soundOn);el('sound').textContent=soundOn?'갈매기 소리 끄기':'갈매기 소리 켜기';callGull()};
+setInterval(callGull,13000);setInterval(()=>{if(clock==='자동')paintLight()},60000);
+const initialSurf=new Audio('./waves.mp3');initialSurf.loop=true;initialSurf.volume=.55;const recordings={surf:initialSurf};let listening=false;
+function updateTracks(){
+ const playing=[];
+ for(const [key,audio] of Object.entries(recordings)){
+   const active=listening&&(key==='surf'||weather==='비');
+   if(active){playing.push(key==='surf'?'파도':'빗소리');if(audio.paused)audio.play().catch(error=>{if(error.name!=='AbortError')el('recordStatus').textContent='재생할 수 없는 녹음입니다. 다른 오디오 파일을 선택해 주세요.'})}
+   else audio.pause();
+ }
+ el('listen').textContent=listening?'소리 멈추기':'파도 듣기';
+ el('recordStatus').textContent=listening?(playing.length?playing.join(' + ')+' 재생':'비를 선택하면 빗소리가 들려요.'):(Object.keys(recordings).length?'녹음 준비됨':'녹음을 선택해 주세요.');
+}
+for(const key of ['surf','rain']){
+ const pick=el(key+'File'),volume=el(key+'Vol');
+ pick.onchange=()=>{const file=pick.files[0];if(!file)return;const old=recordings[key];if(old){old.pause();URL.revokeObjectURL(old.src)}
+ const audio=new Audio(URL.createObjectURL(file));audio.loop=true;audio.volume=Number(volume.value)/100;recordings[key]=audio;updateTracks()};
+ volume.oninput=()=>{if(recordings[key])recordings[key].volume=Number(volume.value)/100};
+}
+el('listen').onclick=()=>{if(Object.keys(recordings).length)listening=!listening;updateTracks()};
+document.addEventListener('visibilitychange',()=>{if(document.hidden){listening=false;updateTracks()}});
+el('explore').onclick=()=>{found.add(weather);el('story').textContent=stories[weather];render()};el('chair').onclick=()=>{seated=!seated;render()};for(const [id,s] of [['east','동도'],['west','서도']])el(id).onclick=()=>{side=s;seated=false;el('story').textContent='';render()};render();
+</script></html>
