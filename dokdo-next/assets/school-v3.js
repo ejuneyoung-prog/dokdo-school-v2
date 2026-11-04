@@ -5,6 +5,8 @@ const App=window.DokdoApp,G=window.DokdoGames,A=window.DokdoGameArt,C=window.Dok
 if(!App||!document.body.classList.contains('school-v3'))return;
 const copy=(ko,en)=>document.documentElement.lang==='en'?en:ko;
 const label=(id,ko,en)=>{const el=$(id);if(el)el.textContent=copy(ko,en);};
+// 줄바꿈 문자로 끊으면 사파리 계열 시험에서 두 줄로 읽히지 않아, 줄마다 칸을 나눠 넣습니다.
+const lines=(id,ko,en)=>{$(id)?.replaceChildren(...copy(ko,en).split('\n').map(t=>{const line=document.createElement('span');line.textContent=t;return line;}));};
 // Area choice is presentation state only; lesson, backup and progress keys are unchanged.
 const areaParams=new URLSearchParams(location.search);
 let learningEntered=areaParams.get('area')==='learn'||areaParams.get('play')==='learn';
@@ -46,13 +48,13 @@ function refresh(){
  label('v3-channel-title','독도 코리아 채널','Dokdo Korea Channel');label('v3-channel-copy','음악과 영상으로 독도의 이야기를 전합니다.','Sharing Dokdo’s story through music and video.');label('v3-channel-home','← 메인으로','← Back to the main menu');label('v3-latest-title','최근 공개 영상','Recent public videos');label('youtube-channel-link','채널에서 전체 영상 보기 ↗','All videos on YouTube ↗');label('channel-feed-retry','다시 불러오기','Try again');label('v3-channel-feed-note','공식 공개 영상 목록은 최대 15분간 보관됩니다. 눌러서 YouTube에서 보며, 자동으로 재생하지 않습니다.','The official public feed is cached for up to 15 minutes. Open a video on YouTube to watch; nothing plays automatically.');
  label('v3-versions-link','V1 · V2 · V3 버전 안내','V1 · V2 · V3 version guide');
  label('v3-main-language','English','한국어');$('v3-main-language').setAttribute('aria-label',copy('Switch to English','한국어로 바꾸기'));
- label('v3-entry-title','어디로 가볼까요?','Where shall we go?');label('v3-entry-description','배우고, 놀며 독도와 가까워져요.','Learn, play, and get closer to Dokdo.');
- label('v3-choice-learn-title','독도 배움터','Dokdo Learning');label('v3-choice-learn-description','문제를 풀며 독도를 알아가요.','Discover Dokdo, one question at a time.');label('v3-choice-learn-action','배움터 들어가기 →','Start learning →');
- // 줄바꿈 문자로 끊으면 사파리 계열 시험에서 두 줄로 읽히지 않아, 줄마다 칸을 나눠 넣습니다.
- $('camp-title')?.replaceChildren(...copy('독도에서\n힐링하기','Dokdo Retreat').split('\n').map(t=>{const line=document.createElement('span');line.textContent=t;return line;}));label('camp-desc','파도 소리를 들으며 쉬어가요.','Rest by the waves.');label('camp-action','힐링하러 가기 →','Take a break →');
- label('v3-choice-play-title','독도 놀이터','Dokdo Playground');label('v3-choice-play-description','게임하며 나의 섬을 가꿔요.','Play games and grow your own island.');label('v3-choice-play-action','놀이터 들어가기 →','Start playing →');
+ label('v3-entry-title','내 독도 학력은 몇 학년?','What’s your Dokdo grade?');label('v3-entry-description','배우고, 놀며 독도와 가까워져요.','Learn, play, and get closer to Dokdo.');
+ lines('v3-choice-learn-title','독도\n배움터','Dokdo Learning');label('v3-choice-learn-description','문제를 풀며 독도를 알아가요.','Discover Dokdo, one question at a time.');label('v3-choice-learn-action','배움터 들어가기 →','Start learning →');
+lines('camp-title','독도에서\n힐링하기','Dokdo Retreat');label('camp-desc','파도 소리를 들으며 쉬어가요.','Rest by the waves.');label('camp-action','힐링하러 가기 →','Take a break →');
+ lines('v3-choice-play-title','독도\n놀이터','Dokdo Playground');label('v3-choice-play-description','게임하며 나의 섬을 가꿔요.','Play games and grow your own island.');label('v3-choice-play-action','놀이터 들어가기 →','Start playing →');
  label('v3-main-home','← 메인으로','← Back to the main menu');label('v3-back-learning','← 배움터로 돌아가기','← Back to Dokdo Learning');
  const s=App.state;if(!s)return;
+ label('v3-first-class',s.learningProfile?'이어서 시작하기':'1교시 시작',s.learningProfile?'Continue learning':'Start Class 1');
  // 힐링 공간은 스쿨 저장소를 읽지 않습니다. 닉네임은 주소로만 건네고, 없으면 붙이지 않습니다.
  const campNick=(s.name||'').trim();if($('camp-entry'))$('camp-entry').href='./camp/'+(campNick?'?nick='+encodeURIComponent(campNick):'');
  const en=document.documentElement.lang==='en',p=s.learningProfile,unit=C.unitInfo(p?.course?.unit||1),game=gameRecord(),summary=window.DokdoAppModel.summary(s);
@@ -106,7 +108,7 @@ function decorateResult(){
 const start=$('start-lesson');start.replaceChildren();const startLabel=document.createElement('span');startLabel.id='v3-start-label';start.append(startLabel);$('v3-start-slot').append(start);
 $('v3-review-slot').append($('start-review'));
 $('v3-island-slot').append($('play-entry-island'));
-$('v3-main-language').onclick=()=>$('language').click();$('v3-profile-entry').onclick=()=>App.editProfile();$('v3-profile-menu').onclick=()=>{$('v3-more').open=false;App.editProfile();};$('v3-enter-learn').onclick=enterLearning;$('v3-learn-nav').onclick=enterLearning;
+$('v3-main-language').onclick=()=>$('language').click();$('v3-profile-entry').onclick=()=>App.editProfile();$('v3-profile-menu').onclick=()=>{$('v3-more').open=false;App.editProfile();};$('v3-enter-learn').onclick=enterLearning;$('v3-first-class').onclick=()=>{if(enterLearning())$('start-lesson').click();};$('v3-learn-nav').onclick=enterLearning;
 $('brand-home').onclick=enterMain;$('v3-main-home').onclick=enterMain;
 $('v3-channel-home').onclick=enterMain;$('channel-feed-retry').onclick=()=>loadChannel(true);$('v3-info-sources').onclick=()=>$('open-sources').click();
 $('nav-map').onclick=()=>{const previous=learningEntered;learningEntered=true;const moved=originalMap();if(moved===false)learningEntered=previous;syncArea();};

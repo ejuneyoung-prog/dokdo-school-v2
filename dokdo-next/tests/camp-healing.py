@@ -89,6 +89,9 @@ def card(context, label):
     expect(entry).to_be_visible()
     assert entry.get_attribute('href') == './camp/'
     assert page.locator('#v3-entry .v3-choice-grid > *').count() == 3
+    assert page.locator('#v3-entry-title').inner_text() == '내 독도 학력은 몇 학년?'
+    biggest = page.evaluate("""()=>{const r=e=>{const b=document.querySelector(e).getBoundingClientRect();return b.width*b.height};return {start:r('#v3-first-class'),login:r('#account-link'),live:r('#v3-live-entry'),lang:r('#v3-main-language')}}""")
+    assert biggest['start'] == max(biggest.values()), biggest
     assert entry.locator('.v3-choice-name > span').all_inner_texts() == ['독도에서', '힐링하기']
     rows = page.evaluate("""()=>{const lines=[...document.querySelectorAll('#camp-title > span')].map(e=>e.getBoundingClientRect());
       const buttons=[...document.querySelectorAll('#v3-entry .v3-choice-action')].map(e=>e.getBoundingClientRect());
@@ -106,6 +109,13 @@ def card(context, label):
     expect(entry).to_have_attribute('href', './camp/?nick=' + quote(NICK, safe=''))
     assert '캠핑장' not in page.locator('#v3-entry').inner_text()
     page.close()
+    fresh = context.browser.new_context(viewport=context.pages[0].viewport_size if context.pages else {'width': 1280, 'height': 800})
+    first = fresh.new_page()
+    first.goto(f'{base}/')
+    expect(first.locator('#v3-first-class')).to_have_text('1교시 시작')
+    first.locator('#v3-first-class').click()
+    expect(first.locator('#age-dialog')).to_be_visible()
+    fresh.close()
     print('ok card', label)
 
 def rain(browser):
