@@ -11,5 +11,5 @@ test('no nickname or out-of-range question shows nothing',()=>{const {api,els}=l
 
 test('from 2026-11-09 the line shows n/20 and says when today\'s 20 are used up',()=>{const {api,els}=load();const now=Date.parse('2026-11-09T03:00:00Z');
  for(let i=0;i<20;i++)api.showRankToday('A',920001+i,now);assert.match(els['rank-today'].textContent,/20\/20/);
- api.showRankToday('A',920100,now);assert.match(els['rank-today'].textContent,/20개를 다 채웠습니다/);
+ api.showRankToday('A',920100,now);assert.match(els['rank-today'].textContent,/20문제를 다 채웠습니다/);
  const before=load();before.api.showRankToday('A',920001,Date.parse('2026-11-08T03:00:00Z'));assert.match(before.els['rank-today'].textContent,/1개$/);});

@@ -167,7 +167,7 @@ function rankTodayMark(nick,qid,now=Date.now()){const day=new Date(now+9*3600e3)
 const RANK_DAILY_CAP=20,RANK_CAP_FROM='2026-11-09';
 function showRankToday(nick,qid,now=Date.now()){const el=$('rank-today');if(!el||!String(nick||'').trim()||!rankQid(qid))return;const r=rankTodayMark(nick,qid,now);const capped=new Date(now+9*3600e3).toISOString().slice(0,10)>=RANK_CAP_FROM;
  if(!r.fresh)el.textContent=tr('오늘 이미 순위에 넣은 문제입니다. 다시 푼 문제는 복습 기록으로 남습니다.','Already counted today. Repeats are saved as review only.');
- else if(capped&&r.count>RANK_DAILY_CAP)el.textContent=tr('오늘 순위 점수 20개를 다 채웠습니다. 이제부터는 복습 기록으로 남습니다.','You reached today’s 20 ranking points. From now on, answers are saved as review.');
+ else if(capped&&r.count>RANK_DAILY_CAP)el.textContent=tr('오늘 순위에 넣을 20문제를 다 채웠습니다. 이제부터는 복습 기록으로 남습니다.','You have used today’s 20 ranking questions. From now on, answers are saved as review.');
  else el.textContent=capped?tr('오늘 순위에 들어간 문제 '+r.count+'/'+RANK_DAILY_CAP,'Counted toward today’s ranking: '+r.count+'/'+RANK_DAILY_CAP):tr('오늘 순위에 들어간 문제 '+r.count+'개','Counted toward today’s ranking: '+r.count);
  el.hidden=false;}
 function toast(message){txt('toast',message);$('toast').hidden=false;clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('toast').hidden=true,5200);}
