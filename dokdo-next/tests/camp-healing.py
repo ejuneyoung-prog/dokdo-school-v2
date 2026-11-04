@@ -37,6 +37,7 @@ def walk(context, label):
     expect(page.locator('#enter .note')).to_contain_text('가상 체험')
     expect(page.locator('#enter a.back')).to_have_attribute('href', '../?area=learn')
     assert page.locator('#meet').count() == 0, 'old visitor room is gone'
+    assert '사람에게도 보입니다' not in page.content(), 'solo mode does not promise shared decorations'
 
     page.locator('#start').click()
     expect(page.locator('#enter')).to_be_hidden()
