@@ -80,7 +80,14 @@ def card(context, label):
     expect(entry).to_be_visible()
     assert entry.get_attribute('href') == './camp/'
     assert page.locator('#v3-entry .v3-choice-grid > *').count() == 3
-    assert entry.locator('.v3-choice-name').inner_text().split('\n') == ['독도에서', '힐링하기']
+    assert entry.locator('.v3-choice-name > span').all_inner_texts() == ['독도에서', '힐링하기']
+    rows = page.evaluate("""()=>{const lines=[...document.querySelectorAll('#camp-title > span')].map(e=>e.getBoundingClientRect());
+      const buttons=[...document.querySelectorAll('#v3-entry .v3-choice-action')].map(e=>e.getBoundingClientRect());
+      const size=parseFloat(getComputedStyle(document.querySelector('#camp-title')).fontSize);
+      return {size,lines:lines.map(r=>Math.round(r.height)),oneRowEach:lines.every(r=>r.height<size*1.9)&&lines[1].top>=lines[0].bottom-1,
+              heights:buttons.map(r=>Math.round(r.height))}}""")
+    assert rows['oneRowEach'], rows
+    assert len(set(rows['heights'])) == 1, rows
     page.evaluate('DokdoApp.editProfile()')
     page.fill('#nickname', NICK)
     page.locator('#age-form button[type=submit]').click()

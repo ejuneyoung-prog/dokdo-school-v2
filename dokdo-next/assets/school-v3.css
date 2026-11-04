@@ -255,7 +255,8 @@ body.school-v3{--body:GmarketSans,"Apple SD Gothic Neo","Malgun Gothic",sans-ser
 .v3-choice .camp-art{display:grid;place-items:center;background:linear-gradient(#405777,#f3be98 68%,#487d87 70%);color:#fff5d6;font-size:3rem}
 /* 세 번째 문: 밝은 바탕에서 글자가 흐려지지 않게 색을 직접 정합니다. 이름은 두 줄로 끊고, 단추는 카드 맨 아래에 맞춥니다. */
 .school-v3 .v3-choice-camp{background:#E6F4F5;border-color:#A9CFD3;color:#1F5560}
-.school-v3 .v3-choice-camp .v3-choice-name{color:#1F5560;white-space:pre-line;word-break:keep-all}
+.school-v3 .v3-choice-camp .v3-choice-name{color:#1F5560;word-break:keep-all}
+.school-v3 .v3-choice-camp .v3-choice-name span{display:block}
 .school-v3 .v3-choice-camp .v3-choice-description{color:#2F6470}
 .school-v3 .v3-choice-camp .v3-choice-action{background:#2F6470;color:#FFFFFF}
 .school-v3 .v3-choice-camp:focus-visible{outline:3px solid #2F6470;outline-offset:3px}
