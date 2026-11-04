@@ -115,6 +115,20 @@ def card(context, label):
     expect(first.locator('#v3-first-class')).to_have_text('1교시 시작')
     first.locator('#v3-first-class').click()
     expect(first.locator('#age-dialog')).to_be_visible()
+    first.select_option('#age-band', '14-16')
+    first.locator('#age-form button[type=submit]').click()
+    first.locator('#read-done').click()
+    for _ in range(80):
+        if first.locator('#lesson-result .result-grade').count():
+            break
+        first.evaluate("""()=>{const seen=e=>e&&e.offsetParent&&!e.disabled;
+          const next=[document.querySelector('#read-done'),document.querySelector('#next-question')].find(seen);
+          if(next){next.click();return}
+          const option=[...document.querySelectorAll('.answer-option')].find(seen);if(option)option.click()}""")
+        first.wait_for_timeout(250)
+    expect(first.locator('#lesson-result .result-grade strong')).to_contain_text('내 독도 학력은')
+    expect(first.locator('#lesson-result .result-grade')).to_be_visible()
+    first.screenshot(path=os.environ.get('RESULT_SHOT') or '/dev/null') if os.environ.get('RESULT_SHOT') else None
     fresh.close()
     print('ok card', label)
 

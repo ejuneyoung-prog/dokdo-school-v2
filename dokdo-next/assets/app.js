@@ -820,7 +820,9 @@ function renderResult(q,outcome){
  // 틀린 문제를 넘기면 단원이 끝나지 않고 같은 단원이 다시 나옵니다. 이유를 말없이 되풀이하지 않게 여기서 알립니다.
  let open=null;
  if(q.mode==='daily'&&outcome&&outcome.completed===false&&q.items.some(it=>!getS()?.m?.[it.id]?.courseLearned)){open=document.createElement('p');open.className='fine unit-open';open.textContent=tr('틀린 문제는 다음 수업에 다시 나와요. 그 문제까지 맞히면 이 단원을 마쳐요.','The questions you missed come back next lesson. Get those right too and this unit is done.');}
- el.append(star,title,count,desc,note,...(open?[open]:[]),...(noNick?[noNick]:[]),...(done?[done]:[]),facts,row,renderShareRow());document.dispatchEvent(new Event('dokdo:result'));if(detailsOpen&&el.querySelector('.v3-result-details'))el.querySelector('.v3-result-details').open=true;el.focus();
+ // 첫 화면의 질문에 수업이 답합니다. 앱 안의 단계일 뿐 실제 학교 학년 판정은 아닙니다.
+ const gp=Core.gradeProgress(M.summary(getS()).gradeScore),grade=document.createElement('p');grade.className='result-grade';const gradeName=document.createElement('strong'),gradeNext=document.createElement('span');gradeName.textContent=tr(`내 독도 학력은 ${gradeLabel(gp.grade)}`,`My Dokdo grade: ${gradeLabel(gp.grade)}`);gradeNext.textContent=gp.graduated?tr('최고 단계 달성','Top level reached'):tr(`다음 단계 ${gradeLabel(Core.GRADES[gp.rank+1])}까지 ${Math.ceil(gp.have)}/${gp.need}`,`${Math.ceil(gp.have)}/${gp.need} to ${gradeLabel(Core.GRADES[gp.rank+1])}`);grade.append(gradeName,gradeNext);
+ el.append(star,title,count,...(q.mode==='placement'?[]:[grade]),desc,note,...(open?[open]:[]),...(noNick?[noNick]:[]),...(done?[done]:[]),facts,row,renderShareRow());document.dispatchEvent(new Event('dokdo:result'));if(detailsOpen&&el.querySelector('.v3-result-details'))el.querySelector('.v3-result-details').open=true;el.focus();
 }
 // 복사가 막히는 기기(권한, 앱 내부 브라우저)에서는 공유 목록 안에 문구 칸을 띄워 손으로 복사하게 합니다.
 // 창(prompt)은 새로 연 방송 탭 뒤에 숨거나 앱 내부 브라우저에서 무시될 수 있어 쓰지 않습니다.

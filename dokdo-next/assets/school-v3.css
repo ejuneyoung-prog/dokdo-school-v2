@@ -285,3 +285,6 @@ body.school-v3{--body:GmarketSans,"Apple SD Gothic Neo","Malgun Gothic",sans-ser
  .school-v3 .site-header>.login-entry{grid-column:2;grid-row:1;justify-self:end;width:auto;min-height:40px;padding:6px 10px;background:transparent;color:#2f5930;border:1px solid #bdcfa8;border-bottom-width:1px;box-shadow:none;font-size:.875rem;font-weight:500}
  .school-v3 .site-header>.v3-more{grid-column:3;grid-row:1}
 }
+.result-grade{display:grid;gap:2px;margin:10px 0 14px}
+.result-grade strong{font:700 1.375rem/1.4 var(--heading);word-break:keep-all}
+.result-grade span{font-size:.9375rem}
