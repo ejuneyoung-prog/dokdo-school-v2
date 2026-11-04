@@ -25,7 +25,6 @@ try:
     if url.endswith('/assets/site-config.js'):
      s=(ROOT/'assets/site-config.js').read_text();s=re.sub(r"(apiUrl|gaId):'[^']*'",r"\1:''",s);r.fulfill(status=200,content_type='application/javascript',body=s)
     elif url.endswith('/assets/account-config.js'):r.fulfill(status=200,content_type='application/javascript',body='window.DOKDO_AUTH_CONFIG={enabled:false};')
-    elif url in ['https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff','https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff']:r.continue_()
     elif url.startswith(base) and r.request.method=='GET':r.continue_()
     else:blocked.append({'url':url.split('?')[0],'method':r.request.method});r.abort()
    ctx.route('**/*',route);page=ctx.new_page();page.on('pageerror',lambda e:errors.append(str(e)));page.goto(base);page.wait_for_selector('#v3-entry');page.wait_for_function('typeof window.DokdoApp==="object"');page.evaluate('document.fonts.ready');return ctx,page
