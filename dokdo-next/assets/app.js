@@ -62,7 +62,7 @@ const en={
  hallLoading:'Loading this week’s record…',
  hallRetry:'Try again',
  hallWeeklyPersonal:'Weekly personal ranking',
- hallWeeklyPersonalNote:'Sorted by correct answers; the top 30 are shown. Each question counts once per day, and the day starts at midnight Korea time. Repeats are saved as review but do not add to your ranking score.',
+ hallWeeklyPersonalNote:'Sorted by correct answers; the top 30 are shown. Each question counts once per day, and the day starts at midnight Korea time. From Monday, November 9, up to 20 correct answers a day count. Repeats are saved as review but do not add to your ranking score.',
  hallSchool:'School standings',
  hallRecent:'Recent participation',
  flagField:'Country (shown on the hall of fame, optional)',
@@ -163,7 +163,13 @@ const nextLevelText=gp=>gp.rank+1>=Core.DOKKOMIN_FROM?gradeLabel(Core.GRADES[gp.
 const RANK_TODAY_KEY='dokdo-rank-today';
 function rankQid(q){const n=Number(q);return Number.isInteger(n)&&((n>=1&&n<=1999)||(n>=920001&&n<=920999));}
 function rankTodayMark(nick,qid,now=Date.now()){const day=new Date(now+9*3600e3).toISOString().slice(0,10),who=String(nick||'').trim().normalize('NFC').toLowerCase(),id=String(qid);let r=null;try{r=JSON.parse(localStorage.getItem(RANK_TODAY_KEY)||'null');}catch(e){r=null;}if(!r||r.day!==day||r.who!==who||!Array.isArray(r.ids))r={day,who,ids:[]};const fresh=!r.ids.includes(id);if(fresh)r.ids.push(id);try{localStorage.setItem(RANK_TODAY_KEY,JSON.stringify(r));}catch(e){}return{fresh,count:r.ids.length};}
-function showRankToday(nick,qid){const el=$('rank-today');if(!el||!String(nick||'').trim()||!rankQid(qid))return;const r=rankTodayMark(nick,qid);el.textContent=r.fresh?tr('오늘 순위에 들어간 문제 '+r.count+'개','Counted toward today’s ranking: '+r.count):tr('오늘 이미 순위에 넣은 문제입니다. 다시 푼 문제는 복습 기록으로 남습니다.','Already counted today. Repeats are saved as review only.');el.hidden=false;}
+/* From 2026-11-09 (Mon, Korea time) the server counts at most 20 correct answers per nickname per day. */
+const RANK_DAILY_CAP=20,RANK_CAP_FROM='2026-11-09';
+function showRankToday(nick,qid,now=Date.now()){const el=$('rank-today');if(!el||!String(nick||'').trim()||!rankQid(qid))return;const r=rankTodayMark(nick,qid,now);const capped=new Date(now+9*3600e3).toISOString().slice(0,10)>=RANK_CAP_FROM;
+ if(!r.fresh)el.textContent=tr('오늘 이미 순위에 넣은 문제입니다. 다시 푼 문제는 복습 기록으로 남습니다.','Already counted today. Repeats are saved as review only.');
+ else if(capped&&r.count>RANK_DAILY_CAP)el.textContent=tr('오늘 순위에 넣을 20문제를 다 채웠습니다. 이제부터는 복습 기록으로 남습니다.','You have used today’s 20 ranking questions. From now on, answers are saved as review.');
+ else el.textContent=capped?tr('오늘 순위에 들어간 문제 '+r.count+'/'+RANK_DAILY_CAP,'Counted toward today’s ranking: '+r.count+'/'+RANK_DAILY_CAP):tr('오늘 순위에 들어간 문제 '+r.count+'개','Counted toward today’s ranking: '+r.count);
+ el.hidden=false;}
 function toast(message){txt('toast',message);$('toast').hidden=false;clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('toast').hidden=true,5200);}
 function translate(){
  document.documentElement.lang=language;window.DokdoLanguage?.adopt(language);
