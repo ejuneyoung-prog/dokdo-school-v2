@@ -54,10 +54,10 @@ test('section tags are not typed and the chorus is typed once, in order Chorus �
  a.equal(history[4],'고려, 삼국사기 기록');a.equal(history.at(-1),'에헤라 디야~ 헤이! 헤이!');a.equal(history.filter(l=>l==='삼국사기 우산국').length,1);
 });
 
-test('독도는 대한민국 uses the sheet as is, minus the three lines waiting for confirmation',()=>{
- const korea=song('korea');a.equal(korea.length,33);
+test('독도는 대한민국 uses the sheet with the three dictation fixes the professor confirmed on 2026-11-04',()=>{
+ const korea=song('korea');a.equal(korea.length,35);
  for(const l of ['고종황제 칙칙령','심흥붓을 들어','삼국사기 우산국사기 우산국'])a.ok(!korea.includes(l),l);
- a.equal(T.EXCLUDE.korea.length,3);a.match(fs.readFileSync(path.join(ROOT,'assets/typing.js'),'utf8'),/TODO\(교수님 확인 필요\)[\s\S]*TODO\(교수님 확인 필요\)[\s\S]*TODO\(교수님 확인 필요\)/);
+ a.ok(korea.includes('고종황제 칙령'));a.ok(korea.includes('심흥택 붓을 들어'));a.equal(T.EXCLUDE.korea.length,0);
  a.deepEqual(korea.slice(-3),['연합국 각서 육칠칠','독도는 대한민국','에헤라 디야~ 헤이! 헤이!']);
  a.deepEqual(korea.slice(4,6),['오백십이 년 신라','이사부 나무사자']);a.equal(korea.filter(l=>l==='삼국사기 우산국').length,1);
  // Every typed line exists word for word in the sheet text.

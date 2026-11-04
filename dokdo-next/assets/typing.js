@@ -40,15 +40,15 @@ korea:`[Chorus]
 일본과 관계없다
 제 손으로 적어놓고
 제 발로 지우러 왔나
-고종황제 칙칙령
+고종황제 칙령
 울도군의 섬 석도
 전쟁 틈에 빼앗고
 거짓 종이 한 장에
-심흥붓을 들어
+심흥택 붓을 들어
 본군 소속 독도라
 
 [Outro]
-삼국사기 우산국사기 우산국
+삼국사기 우산국
 세종실록 지리지
 일본기록 태정관
 독도는 대한민국
@@ -99,15 +99,8 @@ history:`[Chorus]
 독도는 대한민국
 에헤라 디야~ 헤이! 헤이!`
 };
-// 받아쓰기 오류로 보이는 줄. 교수님 확인 전까지 치는 줄에서 뺀다.
-const EXCLUDE={korea:[
- // TODO(교수님 확인 필요): '칙칙령'이 반복된 받아쓰기 오류로 보임(예: '고종황제 칙령'?). 확인되면 시트를 고치고 이 줄을 지운다.
- {tag:'Verse 3',text:'고종황제 칙칙령'},
- // TODO(교수님 확인 필요): '심흥붓'은 '심흥택'(울도군수)의 받아쓰기 오류로 보임. 확인되면 시트를 고치고 이 줄을 지운다.
- {tag:'Verse 3',text:'심흥붓을 들어'},
- // TODO(교수님 확인 필요): Outro 첫 줄이 '삼국사기 우산국'의 반복 오류로 보임. 확인되면 이 줄을 지운다(Outro 앞 네 줄은 후렴이라 어차피 다시 치지 않음).
- {tag:'Outro',text:'삼국사기 우산국사기 우산국'}
-]};
+// 2026-11-04 교수님 확인: 시트 L08의 받아쓰기 오류 세 곳을 바로잡음 — '칙칙령'→'칙령', '심흥붓을 들어'→'심흥택 붓을 들어', Outro 첫 줄 '삼국사기 우산국사기 우산국'→'삼국사기 우산국'.
+const EXCLUDE={korea:[]};
 function parseSheet(raw){const out=[];let cur=null;for(const r of String(raw).split(/\r?\n/)){const l=r.trim();if(!l)continue;const m=l.match(/^\[(.+)\]$/);if(m){cur={tag:m[1].trim(),lines:[]};out.push(cur);continue;}if(!cur){cur={tag:'',lines:[]};out.push(cur);}cur.lines.push(l);}return out;}
 // 꼬리표([Chorus] 등)는 치지 않는다. 후렴은 처음 나온 곳에서 한 번만 치고, Outro 앞머리의 후렴 반복도 건너뛴다.
 function buildLines(raw,exclude){const skip=(tag,text)=>(exclude||[]).some(x=>x.tag===tag&&x.text===text);let chorus=null;const out=[];
