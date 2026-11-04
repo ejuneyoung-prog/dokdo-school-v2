@@ -263,7 +263,8 @@ deco(me.b,st.on);
 const el=(tg,cl,tx)=>{const e=document.createElement(tg);if(cl)e.className=cl;if(tx!=null)e.textContent=tx;return e};
 const toastE=$('#toast');let toastT=0;function toast(x){toastE.textContent=x;toastE.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{toastE.hidden=true},2600)}
 let wallet=null,busy=false,again=false;
-const PASS={camp:[1,6,'동도 정상 캠핑','e-camp','v-camp','동도 우산봉 정상에서 쉽니다'],stay:[2,6,'서도 주민숙소','e-stay','v-stay','서도 데크에서 동도를 바라봅니다']};
+// 서도는 첫날 열리고, 동도 정상은 며칠 모아야 오른다. 다음 목표가 싼 곳부터 보이도록 서도를 앞에 둔다.
+const PASS={stay:[2,6,'서도 주민숙소','e-stay','v-stay','서도 데크에서 동도를 바라봅니다'],camp:[1,30,'동도 정상 캠핑','e-camp','v-camp','동도 우산봉 정상에서 쉽니다']};
 const opened=m=>!PASS[m]||!!((st.pass|0)&PASS[m][0]);
 function passUI(){Object.keys(PASS).forEach(m=>{const p=PASS[m],x=opened(m)?p[2]:p[2]+' · 대황 '+p[1];$('#'+p[3]).textContent=x;$('#'+p[4]).textContent=x})}
 function goalUI(){const a=Object.keys(PASS).filter(m=>!opened(m)).map(m=>[PASS[m][2],PASS[m][1]]),b=ITEMS.filter(i=>!(st.own&i[0])).sort((x,y)=>(y[0]===64)-(x[0]===64)||x[2]-y[2]).map(i=>[i[1],i[2]]),g=[...a,...b][0],e=$('#goal');e.hidden=!g;if(!g)return;$('#g-text').textContent=st.c>=g[1]?g[0]+' 열 수 있습니다':'다음 목표 '+g[0]+' · 대황 '+(g[1]-st.c)+'개 더';$('#g-fill').style.width=Math.min(100,st.c/g[1]*100)+'%'}

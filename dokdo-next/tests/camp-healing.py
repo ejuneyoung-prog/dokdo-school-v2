@@ -36,6 +36,9 @@ def walk(context, label):
     expect(page.locator('#enter h2')).to_have_text('독도에서 힐링하기')
     expect(page.locator('#enter .note')).to_contain_text('가상 체험')
     expect(page.locator('#enter a.back')).to_have_attribute('href', '../?area=learn')
+    expect(page.locator('#e-camp')).to_contain_text('대황 30')
+    expect(page.locator('#e-stay')).to_contain_text('대황 6')
+    expect(page.locator('#g-text')).to_contain_text('서도 주민숙소')
     assert page.locator('#meet').count() == 0, 'old visitor room is gone'
     assert '사람에게도 보입니다' not in page.content(), 'solo mode does not promise shared decorations'
 
