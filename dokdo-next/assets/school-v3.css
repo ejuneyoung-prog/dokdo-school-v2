@@ -65,7 +65,7 @@ body.school-v3{--body:GmarketSans,"Apple SD Gothic Neo","Malgun Gothic",sans-ser
 .school-v3 :is(.button,.text-button,.profile-button,.nav-item){font-size:1rem;line-height:1.55;white-space:normal}
 .school-v3 :is(.button,.text-button){height:auto;max-width:100%}
 .school-v3 :is(.fine,.lead,.record-panel>p,.menu-course p,.question-context,.question-material,.question-feedback,.feedback-takeaway,.lesson-takeaway p){font-size:1rem;line-height:1.8;color:#42604b}
-.school-v3 .mono{font-family:var(--body)!important;font-variant-numeric:tabular-nums}
+.school-v3 .mono{font-family:"Bebas Neue",var(--body)!important;font-variant-numeric:tabular-nums}
 .school-v3 :is(.v3-eyebrow,.v3-entry-kicker,.eyebrow){font-size:.875rem;line-height:1.6;letter-spacing:.06em;color:#49634f}
 .school-v3 .site-header{flex-wrap:wrap;gap:12px}
 .school-v3 .brand{min-width:0;white-space:normal}

@@ -1244,7 +1244,7 @@ function sources(){
  ['대한민국 외교부 · 구성 및 위치','https://dokdo.mofa.go.kr/kor/introduce/location.jsp'],
  ['국토지리정보원 · 독도','https://nationalatlas.ngii.go.kr/pages/page_415.php'],
  ['대한민국 외교부 · 자연환경','https://dokdo.mofa.go.kr/kor/introduce/nature.jsp'],
- ['Gmarket Sans','https://corp.gmarket.com/fonts/'],['S-Core Dream','https://s-core.co.kr/company/font/']];
+ ['Gmarket Sans','https://corp.gmarket.com/fonts/'],['Bebas Neue','https://github.com/dharmatype/Bebas-Neue']];
  links.forEach(([title,url])=>{const a=document.createElement('a');a.textContent=title+' ↗';a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.className='source-link';wrap.append(a);});
  showDialog('sources-dialog');
 }
@@ -1253,9 +1253,9 @@ function settings(){
 }
 function fontStatus(){
  if(!document.fonts){txt('font-status',tr('시스템 글꼴로 표시 중입니다.','Using system fonts.'));return;}
- Promise.allSettled([document.fonts.load('500 15px GmarketSans','독도'),document.fonts.load('400 15px SCoreDream','독도')]).then(()=>{
-  const ok=[...document.fonts].filter(f=>['GmarketSans','SCoreDream'].includes(f.family.replace(/["']/g,''))&&f.status==='loaded').length>=2;
-  txt('font-status',ok?tr('지마켓 산스 · 에스코어 드림 적용','Gmarket Sans · S-Core Dream loaded'):tr('지정 글꼴이 연결되지 않아 시스템 글꼴을 사용합니다.','Remote fonts are unavailable; system fonts are being used.'));
+ Promise.allSettled([document.fonts.load('500 15px GmarketSans','독도'),document.fonts.load('400 15px "Bebas Neue"','123')]).then(()=>{
+  const ok=[...document.fonts].filter(f=>['GmarketSans','Bebas Neue'].includes(f.family.replace(/["']/g,''))&&f.status==='loaded').length>=2;
+  txt('font-status',ok?tr('G마켓 산스 · Bebas Neue 적용','Gmarket Sans · Bebas Neue loaded'):tr('지정 글꼴이 연결되지 않아 시스템 글꼴을 사용합니다.','Remote fonts are unavailable; system fonts are being used.'));
  }).catch(()=>{});
 }
 function beaconDialog(){
@@ -1332,11 +1332,11 @@ function drawMapReference(ctx){
  ctx.textAlign='left';
  // 설명 문장은 절반 크기로 낮추고 높이 숫자는 크게 둡니다. 읽어야 하는 값은
  // 숫자이고 문장은 그 값을 풀어 주는 곁말입니다.
- ctx.font='600 24px SCoreDream,sans-serif';ctx.fillStyle='#cfe2e6';ctx.shadowColor='#04202f';ctx.shadowBlur=10;ctx.fillText(tr('서도 · 더 높고 가파른 형태','Seodo · higher and steeper'),390,556);ctx.fillText(tr('동도 · 비교적 평탄한 상부','Dongdo · a more level upper area'),880,636);
+ ctx.font='700 24px GmarketSans,sans-serif';ctx.fillStyle='#cfe2e6';ctx.shadowColor='#04202f';ctx.shadowBlur=10;ctx.fillText(tr('서도 · 더 높고 가파른 형태','Seodo · higher and steeper'),390,556);ctx.fillText(tr('동도 · 비교적 평탄한 상부','Dongdo · a more level upper area'),880,636);
  ctx.font='700 40px GmarketSans,sans-serif';ctx.fillStyle='#f6f7ec';ctx.shadowBlur=12;ctx.fillText('168.5 m',390,600);ctx.fillText('98.6 m',880,680);
  // Sits to the right of the weather panel, which covers the top-left corner
  // on a desktop. At the foot of the plate it ran into the island captions.
- ctx.font='500 28px SCoreDream,sans-serif';ctx.fillStyle='#b7d2d9';ctx.shadowBlur=8;ctx.fillText(tr('형상 비교용 자체 도판 · 고도·시설 좌표를 측량한 모델이 아닙니다.','An authored shape comparison, not a surveyed elevation or facility model.'),520,58);ctx.restore();
+ ctx.font='500 28px GmarketSans,sans-serif';ctx.fillStyle='#b7d2d9';ctx.shadowBlur=8;ctx.fillText(tr('형상 비교용 자체 도판 · 고도·시설 좌표를 측량한 모델이 아닙니다.','An authored shape comparison, not a surveyed elevation or facility model.'),520,58);ctx.restore();
 }
 function environmentOptions(){return {phase:DokdoSolar.phase(Date.now(),timeMode),weather:weatherClient.current,width:canvas.getBoundingClientRect().width||V.W};}
 function updateEnvironment(){
@@ -1447,7 +1447,7 @@ async function musicSkip(dir){
  ensureAudio();await playCurrentTrack();
 }
 let exporting=false;
-async function waitForFonts(){if(!document.fonts)return false;try{const loads=await Promise.race([Promise.all([document.fonts.load('500 16px GmarketSans','독도 Dokdo 123'),document.fonts.load('700 16px GmarketSans','독도'),document.fonts.load('400 16px SCoreDream','독도 Dokdo 123'),document.fonts.load('600 16px SCoreDream','독도')]),new Promise(r=>setTimeout(()=>r([]),5000))]);return loads.length===4&&loads.every(arr=>arr.length>0&&arr.every(f=>f.status==='loaded'));}catch(e){return false;}}
+async function waitForFonts(){if(!document.fonts)return false;try{const loads=await Promise.race([Promise.all([document.fonts.load('500 16px GmarketSans','독도 Dokdo 123'),document.fonts.load('700 16px GmarketSans','독도'),document.fonts.load('500 16px GmarketSans','독도'),document.fonts.load('700 16px GmarketSans','Dokdo 123')]),new Promise(r=>setTimeout(()=>r([]),5000))]);return loads.length===4&&loads.every(arr=>arr.length>0&&arr.every(f=>f.status==='loaded'));}catch(e){return false;}}
 
 async function saveImage(){
  if(exporting||!guarded())return;exporting=true;$('save-image').disabled=true;await assetsReady;
@@ -1457,23 +1457,23 @@ async function saveImage(){
  const c=document.createElement('canvas');c.width=1536;c.height=930;const x=c.getContext('2d');
  x.fillStyle='#071b2b';x.fillRect(0,0,c.width,c.height);
  x.fillStyle='#f0e7cf';x.font='500 34px GmarketSans, sans-serif';x.fillText(tr('독도 코리아 스쿨','Dokdo Korea School'),48,62);
- x.fillStyle='#a9c5ca';x.font='20px SCoreDream, sans-serif';x.fillText(tr('배우는 만큼, 더 빛나는 독도','A little learning. A brighter Dokdo.'),48,96);
+ x.fillStyle='#a9c5ca';x.font='500 20px GmarketSans,sans-serif';x.fillText(tr('배우는 만큼, 더 빛나는 독도','A little learning. A brighter Dokdo.'),48,96);
  x.save();x.translate(0,123);if(mapOpen)drawMapReference(x);else V.render(x,s,when,{islands,texture,reduced:reduced(),labels:true,...environmentOptions()});x.restore();
  const a=M.summary(s);x.fillStyle='#081f2e';x.fillRect(0,770,1536,160);
  const now=new Date();
  x.fillStyle='#e8efeb';x.font='500 25px GmarketSans, sans-serif';
  let name=a.name||tr('나의 독도','My Dokdo');while(x.measureText(name).width>1000)name=name.slice(0,-2)+'…';
  x.fillText(name,48,805);
- x.font='16px SCoreDream, sans-serif';x.fillStyle='#8fa7b2';x.textAlign='right';
+ x.font='500 16px GmarketSans,sans-serif';x.fillStyle='#8fa7b2';x.textAlign='right';
  x.fillText(Core.dayKey(now.getTime())+' '+DokdoSolar.clock(now.getTime()),1488,805);x.textAlign='left';
  // What actually matters -- grade, XP, lifetime correct -- gets top billing;
  // the light-path/lap/beacon flavor text is real but secondary.
  x.fillStyle='#f5cd77';x.font='700 32px GmarketSans, sans-serif';
  const gp=Core.gradeProgress(a.gradeScore);
  x.fillText(`${levelText(gp)} · ${tr('정답','Correct')} ${num(a.correct)} · XP ${num(a.xp)}`,48,847);
- x.fillStyle='#8fa7b2';x.font='16px SCoreDream, sans-serif';const jp=M.Journey.progress(s);
+ x.fillStyle='#8fa7b2';x.font='500 16px GmarketSans,sans-serif';const jp=M.Journey.progress(s);
  x.fillText(tr(`빛의 길 ${jp.filled}/1,025 · ${jp.shownLap}바퀴 · 봉화 ${a.beacons}`,`Path ${jp.filled}/1,025 / circuit ${jp.shownLap} / beacons ${a.beacons}`),48,878);
- x.font='14px SCoreDream, sans-serif';x.fillStyle='#75909c';x.fillText(tr('학습 기록 기념사진 · 상상 풍경이며 실제 측량지도가 아닙니다.','A learning keepsake · imagined landscape, not a survey map.'),48,916);
+ x.font='500 14px GmarketSans,sans-serif';x.fillStyle='#75909c';x.fillText(tr('학습 기록 기념사진 · 상상 풍경이며 실제 측량지도가 아닙니다.','A learning keepsake · imagined landscape, not a survey map.'),48,916);
  try{
   await new Promise((resolve,reject)=>c.toBlob(blob=>{if(!blob){reject(Error('Canvas export failed.'));return;}download(blob,'my-dokdo-'+Core.dayKey()+'.png','image/png');resolve();},'image/png'));
   toast(tr('현재 풍경을 이미지로 저장했습니다. 학습 기록 백업은 별도로 보관해 주세요.','Saved the current landscape. Keep a separate learning backup, too.'));
