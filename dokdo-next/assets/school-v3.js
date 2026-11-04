@@ -5,6 +5,8 @@ const App=window.DokdoApp,G=window.DokdoGames,A=window.DokdoGameArt,C=window.Dok
 if(!App||!document.body.classList.contains('school-v3'))return;
 const copy=(ko,en)=>document.documentElement.lang==='en'?en:ko;
 const label=(id,ko,en)=>{const el=$(id);if(el)el.textContent=copy(ko,en);};
+// 줄바꿈 문자로 끊으면 사파리 계열 시험에서 두 줄로 읽히지 않아, 줄마다 칸을 나눠 넣습니다.
+const lines=(id,ko,en)=>{$(id)?.replaceChildren(...copy(ko,en).split('\n').map(t=>{const line=document.createElement('span');line.textContent=t;return line;}));};
 // Area choice is presentation state only; lesson, backup and progress keys are unchanged.
 const areaParams=new URLSearchParams(location.search);
 let learningEntered=areaParams.get('area')==='learn'||areaParams.get('play')==='learn';
@@ -46,12 +48,16 @@ function refresh(){
  label('v3-channel-title','독도 코리아 채널','Dokdo Korea Channel');label('v3-channel-copy','음악과 영상으로 독도의 이야기를 전합니다.','Sharing Dokdo’s story through music and video.');label('v3-channel-home','← 메인으로','← Back to the main menu');label('v3-latest-title','최근 공개 영상','Recent public videos');label('youtube-channel-link','채널에서 전체 영상 보기 ↗','All videos on YouTube ↗');label('channel-feed-retry','다시 불러오기','Try again');label('v3-channel-feed-note','공식 공개 영상 목록은 최대 15분간 보관됩니다. 눌러서 YouTube에서 보며, 자동으로 재생하지 않습니다.','The official public feed is cached for up to 15 minutes. Open a video on YouTube to watch; nothing plays automatically.');
  label('v3-versions-link','V1 · V2 · V3 버전 안내','V1 · V2 · V3 version guide');
  label('v3-main-language','English','한국어');$('v3-main-language').setAttribute('aria-label',copy('Switch to English','한국어로 바꾸기'));
- label('v3-entry-title','어디로 가볼까요?','Where shall we go?');label('v3-entry-description','배우고, 놀며 독도와 가까워져요.','Learn, play, and get closer to Dokdo.');
- label('v3-choice-learn-title','독도 배움터','Dokdo Learning');label('v3-choice-learn-description','문제를 풀며 독도를 알아가요.','Discover Dokdo, one question at a time.');label('v3-choice-learn-action','배움터 들어가기 →','Start learning →');
- label('camp-title','독도 캠핑장','Dokdo Camp');label('camp-desc','파도 소리를 들으며 쉬어가요.','Rest by the waves.');label('camp-action','캠핑장 들어가기 →','Enter camp →');
- label('v3-choice-play-title','독도 놀이터','Dokdo Playground');label('v3-choice-play-description','게임하며 나의 섬을 가꿔요.','Play games and grow your own island.');label('v3-choice-play-action','놀이터 들어가기 →','Start playing →');
+ label('v3-entry-title','내 독도 학력은 몇 학년?','What’s your Dokdo grade?');label('v3-entry-description','배우고, 놀며 독도와 가까워져요.','Learn, play, and get closer to Dokdo.');
+ lines('v3-choice-learn-title','독도\n배움터','Dokdo Learning');label('v3-choice-learn-description','문제를 풀며 독도를 알아가요.','Discover Dokdo, one question at a time.');label('v3-choice-learn-action','배움터 들어가기 →','Start learning →');
+lines('camp-title','독도에서\n힐링하기','Dokdo Retreat');label('camp-desc','파도 소리를 들으며 쉬어가요.','Rest by the waves.');label('camp-action','힐링하러 가기 →','Take a break →');
+ lines('v3-choice-play-title','독도\n놀이터','Dokdo Playground');label('v3-choice-play-description','게임하며 나의 섬을 가꿔요.','Play games and grow your own island.');label('v3-choice-play-action','놀이터 들어가기 →','Start playing →');
  label('v3-main-home','← 메인으로','← Back to the main menu');label('v3-back-learning','← 배움터로 돌아가기','← Back to Dokdo Learning');
- const s=App.state;if(!s)return;const en=document.documentElement.lang==='en',p=s.learningProfile,unit=C.unitInfo(p?.course?.unit||1),game=gameRecord(),summary=window.DokdoAppModel.summary(s);
+ const s=App.state;if(!s)return;
+ label('v3-first-class',s.learningProfile?'이어서 시작하기':'1교시 시작',s.learningProfile?'Continue learning':'Start Period 1');
+ // 힐링 공간은 스쿨 저장소를 읽지 않습니다. 닉네임은 주소로만 건네고, 없으면 붙이지 않습니다.
+ const campNick=(s.name||'').trim();if($('camp-entry'))$('camp-entry').href='./camp/'+(campNick?'?nick='+encodeURIComponent(campNick):'');
+ const en=document.documentElement.lang==='en',p=s.learningProfile,unit=C.unitInfo(p?.course?.unit||1),game=gameRecord(),summary=window.DokdoAppModel.summary(s);
  label('v3-area-label','DOKDO KOREA SCHOOL · 독도 배움터','DOKDO KOREA SCHOOL · LEARNING');
  label('v3-greeting','오늘도, 한 걸음만.','One little step today.');label('v3-subtitle','알아갈수록 가까워지는 나의 독도.','A little learning brings Dokdo closer.');
  label('v3-today','오늘의 독도 이야기','TODAY’S DOKDO STORY');label('v3-lesson-title',unit.ko,unit.en);label('v3-lesson-meta','짧은 이야기 · 5문제','A short story · 5 questions');
@@ -95,14 +101,14 @@ async function loadChannel(force=false){
 function decorateResult(){
  const box=$('lesson-result');if(box.querySelector('.v3-result-island'))return;
  const game=gameRecord();if(!game)return;const picture=document.createElement('canvas');picture.width=700;picture.height=265;picture.className='v3-result-island';picture.setAttribute('role','img');picture.setAttribute('aria-label',copy('이번 배움 뒤의 내 독도 상상 풍경','My imagined Dokdo after learning'));garden(picture,App.state,game);box.querySelector('.result-score')?.after(picture);
- const details=document.createElement('details'),head=document.createElement('summary');head.textContent=copy('배운 내용과 자세한 기록','What I learned & details');details.className='v3-result-details';details.append(head);for(const child of [...box.children])if(child.matches('p:not(.result-score):not(.unit-open):not(.course-done),.lesson-takeaway,.share-row'))details.append(child);box.append(details);
+ const details=document.createElement('details'),head=document.createElement('summary');head.textContent=copy('배운 내용과 자세한 기록','What I learned & details');details.className='v3-result-details';details.append(head);for(const child of [...box.children])if(child.matches('p:not(.result-score):not(.result-grade):not(.unit-open):not(.course-done),.lesson-takeaway,.share-row'))details.append(child);box.append(details);
  const row=box.querySelector('.button-row');if(row){const play=document.createElement('a'),live=App.mode==='live';play.href=live?'./games.html':'https://dokdo-school-v2.vercel.app/dokdo-next/games.html';if(!live){play.target='_blank';play.rel='noopener noreferrer';}play.className='v3-result-play';play.textContent=live?copy('받은 도전권으로 놀기 →','Play with my tickets →'):copy('운영 독도 놀이터 열기 →','Open live Dokdo Playground →');row.append(play);}
 }
 // Reuse the same controls so their existing lesson handlers and keyboard semantics survive.
 const start=$('start-lesson');start.replaceChildren();const startLabel=document.createElement('span');startLabel.id='v3-start-label';start.append(startLabel);$('v3-start-slot').append(start);
 $('v3-review-slot').append($('start-review'));
 $('v3-island-slot').append($('play-entry-island'));
-$('v3-main-language').onclick=()=>$('language').click();$('v3-profile-entry').onclick=()=>App.editProfile();$('v3-profile-menu').onclick=()=>{$('v3-more').open=false;App.editProfile();};$('v3-enter-learn').onclick=enterLearning;$('v3-learn-nav').onclick=enterLearning;
+$('v3-main-language').onclick=()=>$('language').click();$('v3-profile-entry').onclick=()=>App.editProfile();$('v3-profile-menu').onclick=()=>{$('v3-more').open=false;App.editProfile();};$('v3-enter-learn').onclick=enterLearning;$('v3-first-class').onclick=()=>{if(enterLearning())$('start-lesson').click();};$('v3-learn-nav').onclick=enterLearning;
 $('brand-home').onclick=enterMain;$('v3-main-home').onclick=enterMain;
 $('v3-channel-home').onclick=enterMain;$('channel-feed-retry').onclick=()=>loadChannel(true);$('v3-info-sources').onclick=()=>$('open-sources').click();
 $('nav-map').onclick=()=>{const previous=learningEntered;learningEntered=true;const moved=originalMap();if(moved===false)learningEntered=previous;syncArea();};

@@ -65,7 +65,7 @@ body.school-v3{--body:GmarketSans,"Apple SD Gothic Neo","Malgun Gothic",sans-ser
 .school-v3 :is(.button,.text-button,.profile-button,.nav-item){font-size:1rem;line-height:1.55;white-space:normal}
 .school-v3 :is(.button,.text-button){height:auto;max-width:100%}
 .school-v3 :is(.fine,.lead,.record-panel>p,.menu-course p,.question-context,.question-material,.question-feedback,.feedback-takeaway,.lesson-takeaway p){font-size:1rem;line-height:1.8;color:#42604b}
-.school-v3 .mono{font-family:var(--body)!important;font-variant-numeric:tabular-nums}
+.school-v3 .mono{font-family:"Bebas Neue",var(--body)!important;font-variant-numeric:tabular-nums}
 .school-v3 :is(.v3-eyebrow,.v3-entry-kicker,.eyebrow){font-size:.875rem;line-height:1.6;letter-spacing:.06em;color:#49634f}
 .school-v3 .site-header{flex-wrap:wrap;gap:12px}
 .school-v3 .brand{min-width:0;white-space:normal}
@@ -253,3 +253,38 @@ body.school-v3{--body:GmarketSans,"Apple SD Gothic Neo","Malgun Gothic",sans-ser
 
 @media(min-width:800px){.v3-entry .v3-choice-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .v3-choice .camp-art{display:grid;place-items:center;background:linear-gradient(#405777,#f3be98 68%,#487d87 70%);color:#fff5d6;font-size:3rem}
+/* 세 번째 문: 밝은 바탕에서 글자가 흐려지지 않게 색을 직접 정합니다. 이름은 두 줄로 끊고, 단추는 카드 맨 아래에 맞춥니다. */
+.school-v3 .v3-choice-camp{background:#E6F4F5;border-color:#A9CFD3;color:#1F5560}
+.school-v3 .v3-choice-camp .v3-choice-name{color:#1F5560;word-break:keep-all}
+.school-v3 .v3-choice-camp .v3-choice-name span{display:block}
+.school-v3 .v3-choice-camp .v3-choice-description{color:#2F6470}
+.school-v3 .v3-choice-camp .v3-choice-action{background:#2F6470;color:#FFFFFF}
+.school-v3 .v3-choice-camp:focus-visible{outline:3px solid #2F6470;outline-offset:3px}
+.school-v3 .v3-choice .v3-choice-action{margin-top:auto}
+
+/* 첫 화면: 가장 눈에 띄는 단추는 1교시 시작 하나. 세 공간과 실시간·영어는 그 아래에 작게 둡니다. */
+.school-v3 .v3-entry-welcome{margin:0 auto 16px}
+.school-v3 .v3-entry-welcome h1{font-size:clamp(1.875rem,4.2vw,2.75rem);line-height:1.3;margin-bottom:8px;word-break:keep-all}
+.v3-first-class{display:block;width:100%;max-width:420px;margin:18px auto 0;padding:18px 16px;border:0;border-bottom:5px solid #2c6433;border-radius:16px;background:#3f7c40;color:#fff;font:700 1.375rem/1.4 var(--heading);text-align:center;cursor:pointer}
+.v3-first-class:active{transform:translateY(1px)}
+.v3-first-class:focus-visible{outline:3px solid #2c6433;outline-offset:3px}
+.school-v3 .v3-entry .v3-choice-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:560px;margin:20px auto 12px}
+.school-v3 .v3-entry .v3-choice{padding:10px 6px 12px;border-width:2px 2px 4px;border-radius:14px;gap:0}
+.school-v3 .v3-entry .v3-choice-art{height:58px;margin:0 0 6px}
+.school-v3 .v3-entry .v3-choice-art :is(svg,canvas){max-height:58px}
+.school-v3 .v3-entry .camp-art{font-size:1.75rem;border-radius:8px}
+.school-v3 .v3-entry .v3-choice-name,.school-v3:lang(en) .v3-entry .v3-choice-name{font-size:1rem;line-height:1.35;margin:0}
+.school-v3 .v3-entry .v3-choice-name span{display:block}
+.school-v3 .v3-entry :is(.v3-choice-description,.v3-choice-action){display:none}
+.v3-entry-links{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;margin:0 auto 8px}
+.school-v3 .v3-entry-links>*{margin:0}
+.school-v3 .v3-profile-entry{margin:4px auto 0}
+@media(max-width:760px){
+ .school-v3.v3-choosing .site-header>.v3-nav,.school-v3 .site-header>.v3-version,.school-v3 .brand small{display:none}
+ .school-v3 .site-header{grid-template-columns:minmax(0,1fr) auto auto;padding-bottom:6px}
+ .school-v3 .site-header>.login-entry{grid-column:2;grid-row:1;justify-self:end;width:auto;min-height:40px;padding:6px 10px;background:transparent;color:#2f5930;border:1px solid #bdcfa8;border-bottom-width:1px;box-shadow:none;font-size:.875rem;font-weight:500}
+ .school-v3 .site-header>.v3-more{grid-column:3;grid-row:1}
+}
+.result-grade{display:grid;gap:2px;margin:10px 0 14px}
+.result-grade strong{font:700 1.375rem/1.4 var(--heading);word-break:keep-all}
+.result-grade span{font-size:.9375rem}

@@ -396,7 +396,7 @@ function render(ctx,s,t,options={}){
   // The coordinates are a caption, not a third island name: half the size of
   // the names and in the monospaced face, which reads as map data and cannot
   // be mistaken for one of the two labels it used to run into.
-  ctx.font='600 28px "IBM Plex Mono", monospace';ctx.fillStyle='rgba(230,240,242,.8)';ctx.shadowBlur=10;
+  ctx.font='400 28px "Bebas Neue",GmarketSans,sans-serif';ctx.fillStyle='rgba(230,240,242,.8)';ctx.shadowBlur=10;
   ctx.fillText('37°14′N 131°52′E',W/2,H-22);ctx.textAlign='left';ctx.shadowBlur=0;
  }
  ctx.restore();

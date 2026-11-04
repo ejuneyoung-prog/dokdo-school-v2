@@ -21,7 +21,7 @@ def explore(page):
   more(page);page.click('#v3-explore')
 def selector_checks(page):
  check('English is discoverable without opening More',page.locator('#v3-main-language').is_visible())
- check('Main offers learning, playground and camping',page.locator('#v3-entry').is_visible() and page.locator('#v3-entry .v3-choice-grid button,#v3-entry .v3-choice-grid a').count()==3 and page.locator('#v3-entry a[href="./camp/"]').count()==1 and page.locator('#start-lesson').is_hidden())
+ check('Main offers learning, playground and camping',page.locator('#v3-entry').is_visible() and page.locator('#v3-entry .v3-choice-grid button,#v3-entry .v3-choice-grid a').count()==3 and page.locator('#camp-entry').count()==1 and page.locator('#start-lesson').is_hidden())
  check('The two choices identify learning and playground separately','독도배움터' in re.sub(r'\s+','',page.locator('#v3-enter-learn').inner_text()) and '독도놀이터' in re.sub(r'\s+','',page.locator('#v3-enter-play').inner_text()))
  protected=page.evaluate('JSON.stringify(DokdoApp.state)')
  page.click('#v3-profile-entry')
@@ -194,7 +194,7 @@ try:
   # page-side predicate, which this site's CSP blocks for lacking unsafe-eval.
   wait_until(page,'!!(window.DokdoApp&&DokdoApp.lesson&&DokdoApp.lesson.item)')
   check('Middle-school track begins at its real starting unit (no placement test)',page.evaluate('DokdoApp.lesson.item.unit===8'))
-  expected_body_font='GmarketSans' if page.locator('body.school-v3').count() else 'SCoreDream'
+  expected_body_font='GmarketSans'
   check('Question uses the body font specified for its theme',page.eval_on_selector('#question-title','e=>getComputedStyle(e).fontFamily').startswith(expected_body_font))
   page.evaluate("DokdoApp.view('home')");page.click('#start-lesson');page.click('#read-done')
   check('Ordinary history lesson displays why-Dokdo background',page.evaluate('DokdoApp.lesson.item.unit===8 && !document.querySelector("#question-context").hidden && document.querySelector("#question-context").textContent.includes("1900")'))

@@ -20,12 +20,15 @@
   https://dokdo.mofa.go.kr/kor/introduce/facility.jsp
   https://dokdo.mofa.go.kr/kor/introduce/nature.jsp
 
+## 날씨 자료
+- 힐링 공간 날씨: Open-Meteo 예측값, CC BY 4.0. https://open-meteo.com/
+- 무료 API는 광고나 유료 구독이 없는 비상업 이용에 한합니다. 어느 쪽이든 넣기 전에 유료 방식으로 바꿔야 합니다.
+
 ## 글꼴
 - Gmarket Sans: https://corp.gmarket.com/fonts/
-- S-Core Dream: https://s-core.co.kr/company/font/
+- Bebas Neue: SIL OFL 1.1, @fontsource/bebas-neue. 원문 assets/fonts/BebasNeue-OFL.txt
 - CSS에서 웹폰트 URL만 참조하며 폰트 바이너리는 포함하지 않습니다.
 - 네트워크 차단 시 대체 글꼴로 모든 기능이 작동해야 합니다.
-- 이번 빌드 환경은 외부 글꼴 요청을 차단했으므로 실제 두 웹폰트의 다운로드/최종 외형을 검증하지 않았습니다.
 
 ## 소리
 - `ambient.wav`는 이번 작업에서 수학적으로 합성한 24초 단일 채널 루프입니다.
@@ -47,5 +50,5 @@ RC3에서 이어받은 사용자 제공 코드/문항과 이번 수정 코드입
 - `assets/dongdo-facilities.png`: a prior conversation-generated edited facility crop, composited onto the existing generated landscape with the affine transform documented in `data/facilities-overlay.json`. Not a survey or third-party field photograph.
 - `assets/solar.js`: solar-only adaptation of SunCalc 1.9.0; BSD-2-Clause notice in `SUNCALC-LICENSE.txt`.
 - Taegeukgi reward markers and route/rain/snow drawing code authored for this application.
-- Gmarket Sans and S-Core Dream are referenced via remote CSS font resources, not redistributed as font files.
+- Gmarket Sans (SIL OFL 1.1, Reserved Font Name) and Bebas Neue (SIL OFL 1.1) ship in assets/fonts. Gmarket files are the official OTFs converted to WOFF2 without subsetting, so the name stays valid. License text sits next to the files.
 - Open-Meteo weather is a separate opt-in external service subject to its terms; data attribution remains visible.

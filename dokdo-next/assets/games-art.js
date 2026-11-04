@@ -30,6 +30,19 @@ function guard(c){
 }
 function flag(c){line(c,0,0,0,-68,'#658578',3);round(c,1,-67,43,29,1,'#fffdf5');c.save();c.translate(23,-53);ellipse(c,0,0,7,7,'#cd4b4b');path(c,'M-7 0A7 7 0 0 0 7 0Q3.5 7 0 0Q-3.5 -7 -7 0','#3476a2');c.restore();for(const[x,y,a,pattern]of[[10,-60,-.55,'111'],[35,-60,.55,'010'],[10,-46,.55,'101'],[35,-46,-.55,'000']]){c.save();c.translate(x,y);c.rotate(a);for(let i=0;i<3;i++){const yy=-3+i*2.4;if(pattern[i]==='1')line(c,-3,yy,3,yy,'#263d36',1.2);else{line(c,-3,yy,-.9,yy,'#263d36',1.2);line(c,.9,yy,3,yy,'#263d36',1.2);}}c.restore();}}
 function sprite(c,id,x,y,s=1,phase=0){c.save();c.translate(x,y);c.scale(s,s);({flower,shrimp,gull,seal,dog,guard,flag,tree}[id]||flower)(c,phase);c.restore();}
+function seaSwell(c,time){
+ c.save();
+ for(let row=0;row<4;row++){
+  const depth=row/3, baseline=249+row*54;
+  c.beginPath();
+  for(let x=-16;x<=1136;x+=12){
+   const y=baseline+(3+depth*3)*Math.sin(x/79-time*.65+row)+(1+depth)*Math.sin(x/143-time*.34);
+   if(x===-16)c.moveTo(x,y);else c.lineTo(x,y);
+  }
+  c.strokeStyle='#d8f4ef';c.globalAlpha=.15+depth*.10;c.lineWidth=1+depth*1.5;c.stroke();
+ }
+ c.restore();
+}
 function waves(c,w,h,time=0){c.strokeStyle='#daf2e272';c.lineWidth=1.4;for(let i=0;i<32;i++){const x=(i*113+time*4)%(w+100)-40,y=h*.52+(i*37)%(h*.44);c.beginPath();c.moveTo(x,y);c.quadraticCurveTo(x+12,y+3,x+27,y);c.stroke();}}
 function rock(c,x,y,s,west){c.save();c.translate(x,y);c.scale(s,s);ellipse(c,0,8,west?132:143,28,'#b4e0d0');ellipse(c,0,8,west?111:122,17,'#ecf7df');if(west){path(c,'M-111 0 -85 -43 -67 -92 -48 -111 -24 -178 -5 -191 10 -150 34 -127 42 -87 71 -59 108 1 39 23 -46 20Z','#83917b');path(c,'M-111 0 -67 -92 -48 -111 -24 -178 -5 -191 -14 -105 9 -70 -4 18 -46 20Z','#a9b399');path(c,'M-68 -89 -48 -110 -25 -175 -5 -187 9 -151 33 -127 39 -91 13 -99 -10 -128 -27 -119 -44 -73Z','#668d68');path(c,'M-23 -157 -14 -106 9 -69 -3 6M42 -84 30 -35 45 13M-73 -41 -39 -25 -49 8',null,'#657c69',3);}else{path(c,'M-126 0 -105 -39 -73 -65 -65 -106 -44 -119 46 -118 69 -97 86 -61 110 -45 130 4 71 26 -27 24Z','#a0aa90');path(c,'M-65 -106 -43 -119 46 -118 69 -97 54 -84 -32 -82Z','#77976f');path(c,'M-126 0 -105 -39 -72 -65 -64 -106 -31 -82 -23 -29 7 22 -27 24Z','#b8bea2');path(c,'M-74 -64 -31 -32 -39 16M65 -91 54 -49 85 7M-6 -81 12 -47 19 -5',null,'#7d8e75',3);}c.restore();}
 function tree(c){line(c,0,0,0,-29,'#786c4e',4);for(const[x,y,r]of[[-15,-24,13],[12,-25,14],[0,-35,16],[-23,-16,9],[23,-16,9]]){ellipse(c,x,y,r,r*.7,'#447956');for(let i=0;i<3;i++)ellipse(c,x-6+i*5,y-3+(i%2)*5,5,2.5,'#80a26d',i*.6);}}
@@ -57,7 +70,7 @@ function dogWalk(time){
 }
 function roamingDog(c,time){
  const p=dogWalk(time),swim=p.swim;
- c.save();c.translate(p.x,p.y+Math.sin(time*3)*swim);c.scale(p.direction,1);
+ c.save();c.translate(p.x,p.y+Math.sin(time*3)*swim);c.scale(p.direction*.45,.45);
  if(swim){ellipse(c,-5,-10*swim,27*swim,3,'#d7f3eb91');line(c,-35*swim,-8*swim,-22*swim,-9*swim,'#dbf4e5',1.5);}
  c.save();if(swim){c.beginPath();c.rect(-65,-85,130,85-12*swim);c.clip();}
  const size=.58-Math.max(0,140-p.y)*.001;
@@ -71,7 +84,7 @@ function island(canvas,state,time=0,now=Date.now()){
  c.clearRect(0,0,w,h);c.save();c.scale(w/1120,h/430);const sky=c.createLinearGradient(0,0,0,430);sky.addColorStop(0,p[0]);sky.addColorStop(.47,p[1]);sky.addColorStop(.48,mix(p[1],p[2],.5));sky.addColorStop(1,p[2]);c.fillStyle=sky;c.fillRect(0,0,1120,430);
  ellipse(c,959,62,21,21,night?'#f3e9c5':'#f8ecc9');if(night){for(let i=0;i<12;i++){c.globalAlpha=.28;ellipse(c,55+(i*173)%1010,25+(i*37)%103,1.1,1.1,'#f7edd3');}c.globalAlpha=1;ellipse(c,954,345,43,3,'#fff0c52a');}
  if(count('star'))for(let i=0;i<20;i++){const x=90+(i*149)%930,y=24+(i*29)%95;c.globalAlpha=.6+Math.sin(time*.7+i)*.22;ellipse(c,x,y,5,5,'#fff4ba24');star(c,x,y,i===19?5:2.4,'#fff3bc');}c.globalAlpha=1;
- if(!night){cloud(c,128+Math.sin(time*.018)*15,68,.7);cloud(c,704+Math.sin(time*.015)*13,44,.5);cloud(c,1042,115,.4);}waves(c,1120,430,time);
+ if(!night){cloud(c,128+Math.sin(time*.018)*15,68,.7);cloud(c,704+Math.sin(time*.015)*13,44,.5);cloud(c,1042,115,.4);}seaSwell(c,time);waves(c,1120,430,time);
  // Two main islands dominate. Surrounding rocks are illustrative, not labelled real islets.
  ellipse(c,557,310,441,60,'#c4e5d138');rock(c,335,300,1.23,true);rock(c,770,315,1.25,false);
  for(const[x,y,rx,ry]of[[113,340,29,8],[183,365,16,6],[984,336,30,9],[1030,362,15,6]]){ellipse(c,x,y+4,rx+9,ry+3,'#d2edda55');ellipse(c,x,y,rx,ry,'#8d9d89');}
