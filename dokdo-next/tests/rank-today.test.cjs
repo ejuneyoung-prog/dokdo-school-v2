@@ -8,3 +8,8 @@ function load(){const store={},els={'rank-today':{textContent:'',hidden:true}};c
 test('same question on the same Korea day counts once',()=>{const {api,els}=load();api.showRankToday('Tester',920001);assert.match(els['rank-today'].textContent,/1개/);api.showRankToday(' tester',920001);assert.match(els['rank-today'].textContent,/이미 순위에/);api.showRankToday('Tester',920006);assert.match(els['rank-today'].textContent,/2개/);});
 test('new Korea day, other nickname or broken storage starts fresh',()=>{const {api,store}=load();assert.equal(api.rankTodayMark('A',920001).count,1);assert.equal(api.rankTodayMark('A',920001,Date.now()+864e5).fresh,true);assert.equal(api.rankTodayMark('B',920001).fresh,true);store['dokdo-rank-today']='{bad';assert.equal(api.rankTodayMark('A',920001).count,1);});
 test('no nickname or out-of-range question shows nothing',()=>{const {api,els}=load();api.showRankToday('',920001);api.showRankToday('A','abc');api.showRankToday('A',5000);assert.equal(els['rank-today'].hidden,true);assert.equal(api.rankQid(1999),true);assert.equal(api.rankQid(920999),true);assert.equal(api.rankQid(921000),false);});
+
+test('from 2026-11-09 the line shows n/20 and says when today\'s 20 are used up',()=>{const {api,els}=load();const now=Date.parse('2026-11-09T03:00:00Z');
+ for(let i=0;i<20;i++)api.showRankToday('A',920001+i,now);assert.match(els['rank-today'].textContent,/20\/20/);
+ api.showRankToday('A',920100,now);assert.match(els['rank-today'].textContent,/20개를 다 채웠습니다/);
+ const before=load();before.api.showRankToday('A',920001,Date.parse('2026-11-08T03:00:00Z'));assert.match(before.els['rank-today'].textContent,/1개$/);});
