@@ -22,6 +22,10 @@ def use_three(context):
     if three:
         context.route(CDN, lambda r: r.fulfill(path=three, content_type='text/javascript', headers={'Access-Control-Allow-Origin': '*'}))
 
+def weather(context, code):
+    body = json.dumps({'current': {'weather_code': code, 'temperature_2m': 11.5}})
+    context.route('**/api.open-meteo.com/**', lambda r: r.fulfill(body=body, content_type='application/json', headers={'Access-Control-Allow-Origin': '*'}))
+
 def heal_state(page):
     return json.loads(page.evaluate("localStorage.getItem('dokdo-heal')||'{}'"))
 
@@ -34,7 +38,7 @@ def walk(context, label):
 
     page.goto(f'{base}/camp/?nick={quote(NICK)}')
     expect(page.locator('#enter h2')).to_have_text('독도에서 힐링하기')
-    expect(page.locator('#enter .note')).to_contain_text('가상 체험')
+    expect(page.locator('#enter .note').first).to_contain_text('가상 체험')
     expect(page.locator('#enter a.back')).to_have_attribute('href', '../?area=learn')
     expect(page.locator('#e-camp')).to_contain_text('대황 30')
     expect(page.locator('#e-stay')).to_contain_text('대황 6')
@@ -69,7 +73,8 @@ def walk(context, label):
     page.reload()
     assert heal_state(page)['own'] & 1 and page.input_value('#nick') == NICK[:8]
 
-    assert all('cdn.jsdelivr.net' in u for u in external), external
+    assert all('cdn.jsdelivr.net' in u or 'api.open-meteo.com' in u for u in external), external
+    assert all('nick' not in u for u in external), 'nickname stays out of outside requests'
     page.locator('#enter a.back').click()
     page.wait_for_url('**/?area=learn')
     expect(page.locator('.v3-home')).to_be_visible()
@@ -103,6 +108,27 @@ def card(context, label):
     page.close()
     print('ok card', label)
 
+def rain(browser):
+    results = {}
+    for code, name in [(0, 'clear'), (63, 'rain')]:
+        context = browser.new_context()
+        use_three(context)
+        weather(context, code)
+        page = context.new_page()
+        # 비 소리 음량은 1.2초에 걸쳐 바뀌는 값으로만 설정된다. 그 값을 모아 소리가 났는지 판단한다.
+        page.add_init_script("window.__gain=[];const o=AudioParam.prototype.setTargetAtTime;AudioParam.prototype.setTargetAtTime=function(v,t,c){if(c===1.2)window.__gain.push(v);return o.call(this,v,t,c)}")
+        page.goto(f'{base}/camp/')
+        page.locator('#start').click()
+        expect(page.locator('#now')).to_contain_text('비' if name == 'rain' else '맑음', timeout=25000)
+        page.wait_for_function('window.__gain.length>20', timeout=25000)
+        if name == 'rain':
+            page.wait_for_function('Math.max(...window.__gain)>.05', timeout=30000)
+        results[name] = page.evaluate('Math.max(...window.__gain)')
+        assert page.evaluate("JSON.parse(localStorage.getItem('dokdo-heal-weather')).code") == code
+        context.close()
+    assert results['clear'] == 0 and results['rain'] > .05, results
+    print('ok rain follows the weather', results)
+
 def blocked(browser):
     context = browser.new_context()
     context.route(CDN, lambda r: r.abort())
@@ -122,9 +148,11 @@ try:
             options = {k: v for k, v in options.items() if k != 'default_browser_type'}
             context = browser.new_context(**options)
             use_three(context)
+            weather(context, 0)
             walk(context, label)
             card(context, label)
             context.close()
+        rain(browser)
         blocked(browser)
         browser.close()
 finally:

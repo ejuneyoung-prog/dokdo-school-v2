@@ -20,6 +20,10 @@
   https://dokdo.mofa.go.kr/kor/introduce/facility.jsp
   https://dokdo.mofa.go.kr/kor/introduce/nature.jsp
 
+## 날씨 자료
+- 힐링 공간 날씨: Open-Meteo 예측값, CC BY 4.0. https://open-meteo.com/
+- 무료 API는 광고나 유료 구독이 없는 비상업 이용에 한합니다. 어느 쪽이든 넣기 전에 유료 방식으로 바꿔야 합니다.
+
 ## 글꼴
 - Gmarket Sans: https://corp.gmarket.com/fonts/
 - S-Core Dream: https://s-core.co.kr/company/font/
