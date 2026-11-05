@@ -209,7 +209,6 @@ const dictionary={
  "더 놓을 자리가 없어요": "There is no room for another block",
  "문제 풀고 한 번 더 도전하기": "Answer a question for another try",
  "문제 풀고 도전권 받기": "Earn a ticket with a question",
- "내 독도로 돌아가기": "Back to my island",
  "내 독도 보기": "See my island",
  "오늘의 도전권": "Today’s tickets",
  "도전권 문제": "Ticket quiz",

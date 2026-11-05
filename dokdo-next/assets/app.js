@@ -29,7 +29,7 @@ const en={
  myLights:'Lights I have earned',lifetime:'Lifetime correct',discoveries:'Encounters with life',gullJournal:'Black-tailed gull journal',
  placeBeacons:'Place beacons',openJournal:'Open journal',journey:'🗺️ My learning journey',seaVisitors:'🦭 Call the legendary gangchi',
  visitRule:'Earn invitations through correct answers. Gangchi then visit the water between the islands for one minute.',
- visitCount:'Number of gangchi to invite',invite:'Invite gangchi',backHome:'Back to my Dokdo',
+ visitCount:'Number of gangchi to invite',invite:'Invite gangchi',backHome:'To Dokdo Learning',
  dailyTitle:'Learn a little',dailyDesc:'Read a short explanation, then try the questions. Revisit mistakes with help.',
  reviewTitle:'Recall what you learned',reviewDesc:'Check what you remember on different days. Repeating one answer is not mastery.',
  placementTitle:'Find your starting point',placementDesc:'Select an age band, then explore five questions at a comfortable level.',
@@ -816,13 +816,13 @@ function renderResult(q,outcome){
    :tr('이 과정의 열두 단원을 모두 마쳤어요. 학습하기에서 더 깊은 과정을 열 수 있습니다.','You have finished all twelve units. Open a deeper pathway from the learning menu.');
  }
  const row=document.createElement('div');row.className='button-row';
- const home=document.createElement('button');home.className='button primary';home.textContent=tr('내 독도로 돌아가기','Back to my Dokdo');home.onclick=()=>view('home');
+ const home=document.createElement('button');home.className='button primary';home.textContent=tr('배움터로','To Dokdo Learning');home.onclick=()=>view('home');
  const more=document.createElement('button');more.className='button secondary';more.textContent=tr('한 번 더 배우기','Learn a little more');more.onclick=()=>start('daily');row.append(home,more);
  if(done&&getS()?.learningProfile?.course?.track==='adult'){const go=document.createElement('button');go.className='button secondary';go.textContent=tr('복습으로 계속하기','Keep going with review');go.onclick=()=>start('review');row.append(go);}
  else if(done){const go=document.createElement('button');go.className='button secondary';go.textContent=tr('과정 목록 보기','Open the course list');go.onclick=()=>{view('learn');renderCatalog();};row.append(go);}
  // 별명이 비어 있으면 서버가 풀이 기록을 받지 않습니다(Code.gs handleEvent_). 그 사실을 여기서만 알립니다.
  let noNick=null;
- if(!(getS()?.name||'').trim()){noNick=document.createElement('p');noNick.className='fine';noNick.textContent=tr('별명이 없어 명예의 전당 기록에는 남지 않아요. 이 기기에는 저장돼요.','No nickname, so this is not added to the Hall of Fame. It is still saved on this device.');}
+ if(!(getS()?.name||'').trim()){noNick=document.createElement('p');noNick.className='fine';noNick.textContent=tr('닉네임이 없어 명예의 전당 기록에는 남지 않아요. 이 기기에는 저장돼요.','No nickname, so this is not added to the Hall of Fame. It is still saved on this device.');}
  // 틀린 문제를 넘기면 단원이 끝나지 않고 같은 단원이 다시 나옵니다. 이유를 말없이 되풀이하지 않게 여기서 알립니다.
  let open=null;
  if(q.mode==='daily'&&outcome&&outcome.completed===false&&q.items.some(it=>!getS()?.m?.[it.id]?.courseLearned)){open=document.createElement('p');open.className='fine unit-open';open.textContent=tr('틀린 문제는 다음 수업에 다시 나와요. 그 문제까지 맞히면 이 단원을 마쳐요.','The questions you missed come back next lesson. Get those right too and this unit is done.');}
@@ -865,7 +865,7 @@ function bragText(){
 }
 function renderShareRow(){
  const wrap=document.createElement('div');wrap.className='share-row';
- const label=document.createElement('p');label.className='fine';label.textContent=tr('독도 코리아 스쿨을 다른 사람에게 알려주세요. "라이브에 공유하기"만 내 별명과 기록이 포함되고, 나머지는 점수·이름이 포함되지 않습니다.','Tell someone else about Dokdo Korea School. Only "Share to the live chat" includes your nickname and record — the rest never include your score or name.');
+ const label=document.createElement('p');label.className='fine';label.textContent=tr('독도 코리아 스쿨을 다른 사람에게 알려주세요. "라이브에 공유하기"만 내 닉네임과 기록이 포함되고, 나머지는 점수·이름이 포함되지 않습니다.','Tell someone else about Dokdo Korea School. Only "Share to the live chat" includes your nickname and record — the rest never include your score or name.');
  const row=document.createElement('div');row.className='share-list';
  row.append(shareButton(tr('링크 복사','Copy link'),async()=>{
   shareTrack('link');const res=await DokdoShare.copyLink();
@@ -1005,7 +1005,7 @@ async function renderHall(cached=false){
   }else $('hall-ticker').hidden=true;
  }
  hallRenderList($('hall-week-list'),d.week,[
-  {key:'nick',label:tr('별명','Nickname')},{key:'school',label:tr('학교','School')},
+  {key:'nick',label:tr('닉네임','Nickname')},{key:'school',label:tr('학교','School')},
   {key:'correct',label:tr('정답','Correct')},{key:'days',label:tr('참여일','Days')}
  ]);
  const tabs=$('hall-school-tabs');tabs.replaceChildren();
@@ -1018,7 +1018,7 @@ async function renderHall(cached=false){
   {key:'name',label:tr('학교','School')},{key:'correct',label:tr('정답','Correct')},{key:'people',label:tr('인원','People')}
  ]);
  hallRenderList($('hall-recent-list'),d.recent,[
-  {key:'nick',label:tr('별명','Nickname')},{key:'flag',label:tr('국가','Country')},{key:'min',label:tr('분 전','Min. ago')}
+  {key:'nick',label:tr('닉네임','Nickname')},{key:'flag',label:tr('국가','Country')},{key:'min',label:tr('분 전','Min. ago')}
  ]);
 }
 function renderRecords(){
@@ -1091,7 +1091,7 @@ function renderCloudPanel(s){
  // BETA: matching by nickname alone, not nickname+code -- see mergeStates()
  // in app-model.js. Anyone using the same nickname shares one server slot;
  // that tradeoff is intentional for now and expected to be revisited.
- $('cloud-key-display').textContent=nick?tr(`내 별명: ${nick} (다른 기기에서 같은 별명으로 불러오면 기록이 합쳐져요)`,`Your nickname: ${nick} (loading with the same nickname on another device merges the records)`):tr('별명을 먼저 설정해 주세요.','Set a nickname first.');
+ $('cloud-key-display').textContent=nick?tr(`내 닉네임: ${nick} (다른 기기에서 같은 닉네임으로 불러오면 기록이 합쳐져요)`,`Your nickname: ${nick} (loading with the same nickname on another device merges the records)`):tr('닉네임을 먼저 설정해 주세요.','Set a nickname first.');
  $('cloud-save').disabled=!nick;
  $('cloud-key-copy').hidden=!nick;
 }
@@ -1105,13 +1105,13 @@ wire('cloud-key-copy','onclick',async()=>{
  const s=getS();if(!s)return;
  const nick=(s.name||'').trim().normalize('NFC');if(!nick)return;
  const ok=await copyPlainText(nick);
- toast(ok?tr('별명을 복사했습니다. 다른 기기의 입력칸에 그대로 붙여넣으세요.','Nickname copied. Paste it exactly into the field on the other device.'):tr('복사하지 못했습니다.','Could not copy.'));
+ toast(ok?tr('닉네임을 복사했습니다. 다른 기기의 입력칸에 그대로 붙여넣으세요.','Nickname copied. Paste it exactly into the field on the other device.'):tr('복사하지 못했습니다.','Could not copy.'));
 });
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 wire('cloud-save','onclick',async()=>{
  const s=getS();if(!s)return;
  const nick=(s.name||'').trim().normalize('NFC');
- if(!nick){txt('cloud-save-status',tr('별명을 먼저 설정해 주세요.','Set a nickname first.'));return;}
+ if(!nick){txt('cloud-save-status',tr('닉네임을 먼저 설정해 주세요.','Set a nickname first.'));return;}
  $('cloud-save').disabled=true;txt('cloud-save-status',tr('전송 중…','Sending…'));
  const key=nick,payload=store.blocked?store.recovery():M.backupText(s);
  const res=await DokdoLeaderboard.saveProgress(key,nick,s.grade||'K',payload);
@@ -1151,7 +1151,7 @@ function autoLoadFromLink(){
 }
 wire('cloud-load','onclick',async()=>{
  const nick=$('cloud-load-nick').value.trim().normalize('NFC');
- if(!nick){txt('cloud-load-status',tr('불러올 별명을 입력해 주세요.','Enter the nickname to load.'));return;}
+ if(!nick){txt('cloud-load-status',tr('불러올 닉네임을 입력해 주세요.','Enter the nickname to load.'));return;}
  if(store.blocked&&getS()!==null){guarded();return;}
  $('cloud-load').disabled=true;txt('cloud-load-status',tr('불러오는 중…','Loading…'));
  const res=await DokdoLeaderboard.loadProgress(nick);
@@ -1164,7 +1164,7 @@ wire('cloud-load','onclick',async()=>{
    importOriginal=res.data.payload;
    txt('cloud-load-status','');showImport();
   }catch(e){txt('cloud-load-status',tr('서버 기록의 구조를 확인할 수 없어 불러오지 않았습니다.','The server record could not be validated, so nothing was loaded.'));}
- }else if(res.state==='not_found')txt('cloud-load-status',tr('해당 별명으로 저장된 기록이 없습니다.','No record found for that nickname.'));
+ }else if(res.state==='not_found')txt('cloud-load-status',tr('해당 닉네임으로 저장된 기록이 없습니다.','No record found for that nickname.'));
  else if(res.state==='unsupported')txt('cloud-load-status',tr('서버가 기록 불러오기를 아직 지원하지 않습니다. (운영자 확인 필요)','The server does not support record loading yet.'));
  else if(res.state==='not_configured')txt('cloud-load-status',tr('서버가 연결되지 않았습니다.','No server is configured.'));
  else txt('cloud-load-status',tr('기록을 불러오지 못했어요. 잠시 뒤 다시 시도해 주세요.','We could not load the records. Please try again in a moment.'));
@@ -1229,7 +1229,7 @@ $('import-file').onchange=async event=>{
 };
 wire('reset-record','onclick',async()=>{
  if(!getS()||busy)return;
- if(!confirm(tr('이 기기의 모든 기록을 지우고 빈 상태로 시작합니다. 직전 기록은 이 브라우저에 한 번 더 보관되지만, 화면에서는 되돌릴 수 없습니다. 백업 파일을 저장했거나 별명을 알고 계신가요? 계속할까요?','This clears every record on this device and starts empty. The previous record is kept once more in this browser, but there is no undo button here. Have you saved a backup, or do you know your nickname? Continue?')))return;
+ if(!confirm(tr('이 기기의 모든 기록을 지우고 빈 상태로 시작합니다. 직전 기록은 이 브라우저에 한 번 더 보관되지만, 화면에서는 되돌릴 수 없습니다. 백업 파일을 저장했거나 닉네임을 알고 계신가요? 계속할까요?','This clears every record on this device and starts empty. The previous record is kept once more in this browser, but there is no undo button here. Have you saved a backup, or do you know your nickname? Continue?')))return;
  busy=true;
  try{
   await scheduleWrite(()=>store.importState(M.fresh()));

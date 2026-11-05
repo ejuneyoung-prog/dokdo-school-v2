@@ -51,7 +51,7 @@ function refresh(){
  lines('v3-choice-learn-title','독도\n배움터','Dokdo Learning');label('v3-choice-learn-description','문제를 풀며 독도를 알아가요.','Discover Dokdo, one question at a time.');label('v3-choice-learn-action','배움터 들어가기 →','Start learning →');
 lines('camp-title','독도에서\n힐링하기','Dokdo Retreat');label('camp-desc','파도 소리를 들으며 쉬어가요.','Rest by the waves.');label('camp-action','힐링하러 가기 →','Take a break →');
  lines('v3-choice-play-title','독도\n놀이터','Dokdo Playground');label('v3-choice-play-description','게임하며 나의 섬을 가꿔요.','Play games and grow your own island.');label('v3-choice-play-action','놀이터 들어가기 →','Start playing →');
- label('v3-main-home','← 메인으로','← Back to the main menu');label('v3-back-learning','← 배움터로 돌아가기','← Back to Dokdo Learning');
+ label('v3-main-home','← 메인으로','← Back to the main menu');label('v3-back-learning','← 배움터로','← To Dokdo Learning');
  const s=App.state;if(!s)return;
  label('v3-first-class',s.learningProfile?'이어서 시작하기':'1교시 시작',s.learningProfile?'Continue learning':'Start Period 1');
  // 힐링 공간은 스쿨 저장소를 읽지 않습니다. 닉네임은 주소로만 건네고, 없으면 붙이지 않습니다.
