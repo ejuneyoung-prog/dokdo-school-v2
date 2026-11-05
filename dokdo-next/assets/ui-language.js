@@ -125,6 +125,7 @@ const dictionary={
  "기존 240문항과 출처 보기 ↗": "View all 240 questions and sources ↗",
  "나의 독도 상상 풍경": "My imagined Dokdo",
  "놓은 선물:": "Gifts shown:",
+ "독도 시간": "Dokdo time",
  "게임을 보관하고 내 독도로 돌아가기": "Save this run and return to my island",
  "독도코리아 음악 켜기": "Turn on Dokdo Korea music",
  "독도코리아 음악 끄기": "Turn off Dokdo Korea music",
