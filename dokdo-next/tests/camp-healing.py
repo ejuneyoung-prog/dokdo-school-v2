@@ -1,6 +1,6 @@
 """세 번째 문 '독도에서 힐링하기'의 입구와 복귀 길을 실제 브라우저로 확인합니다.
 THREE_MIN_JS를 주면 CDN 대신 그 파일을 씁니다(외부 접속이 막힌 환경에서 쓰는 값)."""
-import json, os, sys, threading
+import json, os, re, sys, threading
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -18,6 +18,34 @@ three = os.environ.get('THREE_MIN_JS')
 NICK = '독코 #1'
 CDN = '**/npm/three@0.160.0/build/three.min.js'
 
+def unconfigured():
+    """운영 주소를 비운 site-config. 요청을 끊는 것만으로는 부족합니다. 끊긴 시도도 나가기 때문입니다."""
+    return re.sub(r"(apiUrl|gaId):'[^']*'", r"\1:''", (ROOT / 'assets/site-config.js').read_text(encoding='utf-8'))
+
+ALLOWED = (base + '/', 'data:', 'blob:', 'https://cdn.jsdelivr.net/npm/three@0.160.0/')
+strays = []
+
+def guard(route):
+    url = route.request.url
+    if url.startswith(ALLOWED):
+        route.continue_()
+    else:
+        strays.append(url)
+        route.abort()
+
+def seal(browser):
+    """이 브라우저로 여는 모든 창에서 운영 저장소와 분석으로 가는 길을 막습니다. 나중에 건 경로가 먼저 처리됩니다."""
+    opened = browser.new_context
+    def new_context(**options):
+        context = opened(**options)
+        context.route('**/*', guard)
+        context.route('**/assets/site-config.js', lambda r: r.fulfill(body=unconfigured(), content_type='text/javascript'))
+        sealed.append(context)
+        return context
+    browser.new_context = new_context
+
+sealed = []
+
 def use_three(context):
     if three:
         context.route(CDN, lambda r: r.fulfill(path=three, content_type='text/javascript', headers={'Access-Control-Allow-Origin': '*'}))
@@ -26,6 +54,14 @@ def weather(context, code):
     body = json.dumps({'current': {'weather_code': code, 'temperature_2m': 11.5}})
     context.route('**/api.open-meteo.com/**', lambda r: r.fulfill(body=body, content_type='application/json', headers={'Access-Control-Allow-Origin': '*'}))
 
+def until(page, script, timeout=30000):
+    """힐링존 CSP가 문자열 실행을 막아 wait_for_function을 쓸 수 없습니다. evaluate로 살핍니다."""
+    for _ in range(timeout // 100):
+        if page.evaluate(script):
+            return
+        page.wait_for_timeout(100)
+    raise AssertionError(script)
+
 def heal_state(page):
     return json.loads(page.evaluate("localStorage.getItem('dokdo-heal')||'{}'"))
 
@@ -33,6 +69,7 @@ def walk(context, label):
     page = context.new_page()
     errors, sounds, external = [], [], []
     page.on('pageerror', lambda e: errors.append(str(e)))
+    page.on('console', lambda m: errors.append(m.text) if 'Content Security Policy' in m.text else None)
     page.on('response', lambda r: sounds.append((r.url.rsplit('/', 1)[-1], r.status)) if r.url.endswith('.mp3') else None)
     page.on('request', lambda r: external.append(r.url) if '127.0.0.1' not in r.url and not r.url.startswith(('data:', 'blob:')) else None)
 
@@ -40,6 +77,8 @@ def walk(context, label):
     expect(page.locator('#enter h2')).to_have_text('독도에서 힐링하기')
     expect(page.locator('#enter .note').first).to_contain_text('가상 체험')
     expect(page.locator('#enter a.back')).to_have_attribute('href', '../?area=learn')
+    expect(page.locator('#login-cta')).to_have_attribute('href', '../account.html?next=camp%2F')
+    expect(page.locator('#start')).to_have_text('로그인 없이 둘러보기')
     expect(page.locator('#e-camp')).to_contain_text('대황 30')
     expect(page.locator('#e-stay')).to_contain_text('대황 6')
     expect(page.locator('#g-text')).to_contain_text('서도 주민숙소')
@@ -48,12 +87,14 @@ def walk(context, label):
 
     page.locator('#start').click()
     expect(page.locator('#enter')).to_be_hidden()
+    assert page.evaluate("getComputedStyle(document.querySelector('.rock')).backgroundColor") == 'rgba(0, 0, 0, 0)'
+    assert page.evaluate("parseFloat(getComputedStyle(document.querySelector('.rock')).fontSize)") >= 16
     expect(page.locator('#count')).to_contain_text('혼자 쉬는 중')
     expect(page.locator('#tags .tag:not(.me) .name')).to_have_count(0)
     expect(page.locator('#tags .tag:not(.me) .bubble:visible')).to_have_count(0)
     assert 'nick' not in page.url, 'nickname leaves the address after it is read'
     assert page.input_value('#nick') == NICK[:8]
-    page.wait_for_function("performance.getEntriesByType('resource').some(e=>e.name.endsWith('rain.mp3'))", timeout=15000)
+    until(page, "performance.getEntriesByType('resource').some(e=>e.name.endsWith('rain.mp3'))", timeout=15000)
     assert ('waves.mp3', 200) in sounds and ('rain.mp3', 200) in sounds, sounds
 
     page.locator('#t-deck').click()
@@ -144,14 +185,34 @@ def rain(browser):
         page.goto(f'{base}/camp/')
         page.locator('#start').click()
         expect(page.locator('#now')).to_contain_text('비' if name == 'rain' else '맑음', timeout=25000)
-        page.wait_for_function('window.__gain.length>20', timeout=25000)
+        until(page, 'window.__gain.length>20', timeout=25000)
         if name == 'rain':
-            page.wait_for_function('Math.max(...window.__gain)>.05', timeout=30000)
+            until(page, 'Math.max(...window.__gain)>.05', timeout=30000)
         results[name] = page.evaluate('Math.max(...window.__gain)')
         assert page.evaluate("JSON.parse(localStorage.getItem('dokdo-heal-weather')).code") == code
         context.close()
     assert results['clear'] == 0 and results['rain'] > .05, results
     print('ok rain follows the weather', results)
+
+def member(browser):
+    context = browser.new_context()
+    use_three(context)
+    weather(context, 0)
+    context.add_init_script("localStorage.setItem('dokdo-account-session-v1',JSON.stringify({user:{id:'fixture'}}));localStorage.setItem('nick','독코')")
+    page = context.new_page()
+    page.goto(f'{base}/camp/')
+    expect(page.locator('#login-cta')).to_be_hidden()
+    expect(page.locator('#start')).to_have_text('바다에서 독도 보기')
+    page.goto(f'{base}/')
+    expect(page.locator('#account-link')).to_have_text('내 기록')
+    page.evaluate('DokdoApp.editProfile()')
+    page.fill('#nickname', '독코')
+    page.locator('#age-form button[type=submit]').click()
+    expect(page.locator('#account-link')).to_have_text('독코')
+    page.goto(f'{base}/games.html')
+    expect(page.locator('#game-account-link')).to_have_text('독코')
+    context.close()
+    print('ok signed-in header and camp entry')
 
 def blocked(browser):
     context = browser.new_context()
@@ -168,6 +229,7 @@ def blocked(browser):
 try:
     with sync_playwright() as pw:
         browser = getattr(pw, engine).launch(args=['--use-gl=swiftshader', '--enable-webgl', '--ignore-gpu-blocklist'] if engine == 'chromium' else [])
+        seal(browser)
         for label, options in [('pc', {'viewport': {'width': 1280, 'height': 800}}), ('phone', {**pw.devices['iPhone 13'], 'default_browser_type': None})]:
             options = {k: v for k, v in options.items() if k != 'default_browser_type'}
             context = browser.new_context(**options)
@@ -177,7 +239,10 @@ try:
             card(context, label)
             context.close()
         rain(browser)
+        member(browser)
         blocked(browser)
         browser.close()
+    assert len(sealed) >= 6 and not strays, (len(sealed), strays)
+    print('ok nothing left this machine for the operating servers')
 finally:
     server.shutdown()

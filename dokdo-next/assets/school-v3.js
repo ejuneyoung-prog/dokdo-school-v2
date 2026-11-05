@@ -16,7 +16,7 @@ function syncArea(){
  const info=document.body.classList.contains('v3-exploring'),channel=!$('view-channel').hidden;
  const nav=$('v3-learn-nav'),active=learningEntered&&!$('view-home').hidden&&!info;
  nav.classList.toggle('active',active);if(active)nav.setAttribute('aria-current','page');else nav.removeAttribute('aria-current');
- document.title=channel?copy('독도 코리아 채널 · 독도 코리아 스쿨','Dokdo Korea Channel · Dokdo Korea School'):info?copy('독도 알아보기 · 독도 코리아 스쿨','Discover Dokdo · Dokdo Korea School'):learningEntered?copy('독도 배움터 · 독도 코리아 스쿨 V3','Dokdo Learning · Dokdo Korea School V3'):copy('독도 코리아 스쿨 V3 · 배움터와 놀이터','Dokdo Korea School V3 · Learn and Play');
+ document.title=channel?copy('독도 코리아 채널 · 독도 코리아 스쿨','Dokdo Korea Channel · Dokdo Korea School'):info?copy('독도 알아보기 · 독도 코리아 스쿨','Discover Dokdo · Dokdo Korea School'):learningEntered?copy('독도 배움터 · 독도 코리아 스쿨','Dokdo Learning · Dokdo Korea School'):copy('독도 코리아 스쿨 · 배움터와 놀이터','Dokdo Korea School · Learn and Play');
 }
 function enterLearning(){
  const previous=learningEntered;learningEntered=true;
@@ -43,25 +43,28 @@ function garden(canvas,s,game){if(!canvas||!game)return;A.animateIsland(canvas,(
 function refresh(){
  syncArea();
  label('v3-live-entry-label','실시간 독도 보러 가기 ↗','Watch Dokdo live ↗');label('v3-channel-live-label','실시간 독도 보러 가기 ↗','Watch Dokdo live ↗');label('v3-info-live','실시간 독도 보러 가기 ↗','Watch Dokdo live ↗');
- label('v3-info-menu-title','독도 알아보기','Discover Dokdo');label('v3-info-menu-copy','위치·역사·생명·오늘의 날씨','Place, history, wildlife & weather');label('v3-channel-menu-title','독도 코리아 채널','Dokdo Korea Channel');label('v3-channel-menu-copy','최근 영상·라이브·음악과 이야기','Recent videos, live & music');
- label('v3-info-title','독도 알아보기','Discover Dokdo');label('v3-info-copy','독도의 위치와 모습, 살아가는 생명과 오늘의 날씨를 만나요.','Explore Dokdo’s location, landscape, wildlife and today’s weather.');label('v3-weather-link','오늘의 날씨','Today’s weather');label('v3-question-link','240문항과 출처','240 questions & sources');label('v3-info-sources','그림·자료 출처','Artwork & sources');
- label('v3-channel-title','독도 코리아 채널','Dokdo Korea Channel');label('v3-channel-copy','음악과 영상으로 독도의 이야기를 전합니다.','Sharing Dokdo’s story through music and video.');label('v3-channel-home','← 메인으로','← Back to the main menu');label('v3-latest-title','최근 공개 영상','Recent public videos');label('youtube-channel-link','채널에서 전체 영상 보기 ↗','All videos on YouTube ↗');label('channel-feed-retry','다시 불러오기','Try again');label('v3-channel-feed-note','공식 공개 영상 목록은 최대 15분간 보관됩니다. 눌러서 YouTube에서 보며, 자동으로 재생하지 않습니다.','The official public feed is cached for up to 15 minutes. Open a video on YouTube to watch; nothing plays automatically.');
- label('v3-versions-link','V1 · V2 · V3 버전 안내','V1 · V2 · V3 version guide');
+ label('v3-info-menu-title','독도 알아보기','Discover Dokdo');label('v3-info-menu-copy','위치·역사·생명·독도 시간','Place, history, wildlife & Dokdo time');label('v3-channel-menu-title','독도 코리아 채널','Dokdo Korea Channel');label('v3-channel-menu-copy','최근 영상·라이브·음악과 이야기','Recent videos, live & music');
+ label('v3-info-title','독도 알아보기','Discover Dokdo');label('v3-info-copy','독도의 위치와 모습, 살아가는 생명과 독도 시간을 만나요.','Explore Dokdo’s location, landscape, wildlife and Dokdo time.');label('v3-weather-link','독도 시간','Dokdo time');label('v3-question-link','240문항과 출처','240 questions & sources');label('v3-info-sources','그림·자료 출처','Artwork & sources');
+ label('v3-channel-title','독도 코리아 채널','Dokdo Korea Channel');label('v3-channel-copy','음악과 영상으로 독도의 이야기를 전합니다.','Sharing Dokdo’s story through music and video.');label('v3-channel-home','← 메인으로 돌아가기','← Back to the main menu');label('v3-latest-title','최근 공개 영상','Recent public videos');label('youtube-channel-link','채널에서 전체 영상 보기 ↗','All videos on YouTube ↗');label('channel-feed-retry','다시 불러오기','Try again');label('v3-channel-feed-note','공식 공개 영상 목록은 최대 15분간 보관됩니다. 눌러서 YouTube에서 보며, 자동으로 재생하지 않습니다.','The official public feed is cached for up to 15 minutes. Open a video on YouTube to watch; nothing plays automatically.');
  label('v3-main-language','English','한국어');$('v3-main-language').setAttribute('aria-label',copy('Switch to English','한국어로 바꾸기'));
  label('v3-entry-title','내 독도 학력은 몇 학년?','What’s your Dokdo grade?');label('v3-entry-description','배우고, 놀며 독도와 가까워져요.','Learn, play, and get closer to Dokdo.');
  lines('v3-choice-learn-title','독도\n배움터','Dokdo Learning');label('v3-choice-learn-description','문제를 풀며 독도를 알아가요.','Discover Dokdo, one question at a time.');label('v3-choice-learn-action','배움터 들어가기 →','Start learning →');
 lines('camp-title','독도에서\n힐링하기','Dokdo Retreat');label('camp-desc','파도 소리를 들으며 쉬어가요.','Rest by the waves.');label('camp-action','힐링하러 가기 →','Take a break →');
  lines('v3-choice-play-title','독도\n놀이터','Dokdo Playground');label('v3-choice-play-description','게임하며 나의 섬을 가꿔요.','Play games and grow your own island.');label('v3-choice-play-action','놀이터 들어가기 →','Start playing →');
- label('v3-main-home','← 메인으로','← Back to the main menu');label('v3-back-learning','← 배움터로 돌아가기','← Back to Dokdo Learning');
+ label('v3-main-home','← 메인으로 돌아가기','← Back to the main menu');label('v3-back-learning','← 배움터로 돌아가기','← Back to Dokdo Learning');
  const s=App.state;if(!s)return;
- label('v3-first-class',s.learningProfile?'이어서 시작하기':'1교시 시작',s.learningProfile?'Continue learning':'Start Period 1');
+ // 나이대만 고른 사람은 아직 이어갈 수업이 없습니다. 푼 문제가 있어야 '이어서'입니다.
+ const begun=Object.values(s.m||{}).some(r=>r&&(r.att>0||r.cor>0||r.courseLearned));
+ label('v3-first-class',begun?'이어서 시작하기':'1교시 시작',begun?'Continue learning':'Start Period 1');
  // 힐링 공간은 스쿨 저장소를 읽지 않습니다. 닉네임은 주소로만 건네고, 없으면 붙이지 않습니다.
  const campNick=(s.name||'').trim();if($('camp-entry'))$('camp-entry').href='./camp/'+(campNick?'?nick='+encodeURIComponent(campNick):'');
  const en=document.documentElement.lang==='en',p=s.learningProfile,unit=C.unitInfo(p?.course?.unit||1),game=gameRecord(),summary=window.DokdoAppModel.summary(s);
  label('v3-area-label','DOKDO KOREA SCHOOL · 독도 배움터','DOKDO KOREA SCHOOL · LEARNING');
  label('v3-greeting','오늘도, 한 걸음만.','One little step today.');label('v3-subtitle','알아갈수록 가까워지는 나의 독도.','A little learning brings Dokdo closer.');
- label('v3-today','오늘의 독도 이야기','TODAY’S DOKDO STORY');label('v3-lesson-title',unit.ko,unit.en);label('v3-lesson-meta','짧은 이야기 · 5문제','A short story · 5 questions');
- label('v3-start-label',p?'이어서 시작하기':'첫 이야기 시작하기',p?'Continue learning':'Start my first story');
+ label('v3-today','오늘의 독도 이야기','TODAY’S DOKDO STORY');// 첫 단원은 나이대마다 다릅니다(course-meta의 startUnit). 나이대를 고르기 전에는 단원 이름을 미리 말하지 않습니다.
+ if(p)label('v3-lesson-title',unit.ko,unit.en);else label('v3-lesson-title','나에게 맞는 첫 이야기','Your first story');
+ label('v3-lesson-meta','짧은 이야기 · 5문제','A short story · 5 questions');
+ label('v3-start-label',begun?'이어서 시작하기':'첫 이야기 시작하기',begun?'Continue learning':'Start my first story');
  label('v3-path-title','나의 배움길','My learning path');label('v3-all-units','전체 이야기 보기 →','All stories →');label('v3-island-title','배운 만큼 자라는 내 독도','My growing Dokdo');label('v3-island-link','내 독도 꾸미기 →','Decorate my Dokdo →');
  label('v3-snapshot-note','문제를 풀면 해국이, 달리면 잔디가 자라요.','Answer questions to grow flowers. Run to grow grass.');
  label('v3-review-title','배운 이야기, 기억나나요?','Remember this story?');label('v3-review-copy','전에 만난 문제로 가볍게 떠올려요.','Recall what you learned before.');
@@ -74,7 +77,8 @@ lines('camp-title','독도에서\n힐링하기','Dokdo Retreat');label('camp-des
  if(game){garden($('play-entry-island'),s,game);const lv=G.islandLevel(game),done=G.islandComplete(game);label('v3-island-level',done?'★ 별 · 완성':'섬 '+lv+'단계',done?'Star · Complete':'Island stage '+lv);$('v3-garden-progress').max=20;$('v3-garden-progress').value=game.growth.cleared;label('v3-next-gift','강치 '+game.growth.seals+'/10마리 · '+game.xp+' XP','Gangchi '+game.growth.seals+'/10 · '+game.xp+' XP');}
  else label('v3-next-gift','놀이터 기록을 확인해 주세요.','Please check your playground record.');
  const list=$('v3-path');list.replaceChildren();const n=unit.id;
- for(let i=0;i<3;i++){const id=(n-1+i)%12+1,u=C.unitInfo(id),done=!!p?.course?.completed[p.course.track+':'+id],row=document.createElement('div');row.className='v3-stop'+(i===0?' current':'')+(done?' done':'');const icon=document.createElement('span');icon.className='v3-stop-icon';icon.textContent=done?'✓':i===0?'★':String(id).padStart(2,'0');icon.setAttribute('aria-hidden','true');const text=document.createElement('div'),small=document.createElement('small'),name=document.createElement('b');small.textContent=copy(i===0?'지금 만날 이야기':'다음 이야기',i===0?'YOUR NEXT STEP':'UP NEXT');name.textContent=en?u.en:u.ko;text.append(small,name);row.append(icon,text);if(i===0){row.setAttribute('aria-current','step');const tag=document.createElement('span');tag.className='v3-now';tag.textContent=copy('여기부터','START HERE');row.append(tag);}list.append(row);}
+ if(!p){const empty=document.createElement('p');empty.className='fine';empty.textContent=copy('나이대를 고르면 첫 이야기와 배움길을 보여 드려요.','Choose your age band to see your first story and path.');list.append(empty);}
+ else for(let i=0;i<3;i++){const id=(n-1+i)%12+1,u=C.unitInfo(id),done=!!p?.course?.completed[p.course.track+':'+id],row=document.createElement('div');row.className='v3-stop'+(i===0?' current':'')+(done?' done':'');const icon=document.createElement('span');icon.className='v3-stop-icon';icon.textContent=done?'✓':i===0?'★':String(id).padStart(2,'0');icon.setAttribute('aria-hidden','true');const text=document.createElement('div'),small=document.createElement('small'),name=document.createElement('b');small.textContent=copy(i===0?'지금 만날 이야기':'다음 이야기',i===0?'YOUR NEXT STEP':'UP NEXT');name.textContent=en?u.en:u.ko;text.append(small,name);row.append(icon,text);if(i===0){row.setAttribute('aria-current','step');const tag=document.createElement('span');tag.className='v3-now';tag.textContent=copy('여기부터','START HERE');row.append(tag);}list.append(row);}
  const mascot=$('v3-mascot');if(mascot){const c=mascot.getContext('2d');c.clearRect(0,0,mascot.width,mascot.height);A.sprite(c,'dog',97,132,1.9,.3);}
  if($('lesson-result')&&!$('lesson-result').hidden)decorateResult();
  if(!$('view-channel').hidden){renderChannel();loadChannel();}

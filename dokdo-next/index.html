@@ -9,7 +9,7 @@
 <meta name="description" content="퀴즈는 독도 배움터, 게임은 독도 놀이터! 바다를 청소하고 삽살개와 달리며 나만의 독도를 키워요. 한국어·English 지원.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="독도 코리아 스쿨">
-<meta property="og:title" content="독도 코리아 스쿨 V3 | 배우고, 놀고, 나의 독도를 키워요">
+<meta property="og:title" content="독도 코리아 스쿨 | 배우고, 놀고, 나의 독도를 키워요">
 <meta property="og:description" content="퀴즈는 독도 배움터, 게임은 독도 놀이터! 바다를 청소하고 삽살개와 달리며 나만의 독도를 키워요. 한국어·English 지원.">
 <meta property="og:locale" content="ko_KR">
 <meta property="og:url" content="https://dokdo-school-v2.vercel.app/dokdo-next/">
@@ -18,16 +18,16 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1731">
 <meta property="og:image:height" content="908">
-<meta property="og:image:alt" content="독도 코리아 스쿨 V3: 배우고, 놀고, 나의 독도를 키워요. 공식 자료의 형태를 참고한 서도·동도와 바다, 삽살개·강치 마스코트를 담은 일러스트.">
+<meta property="og:image:alt" content="독도 코리아 스쿨: 배우고, 놀고, 나의 독도를 키워요. 공식 자료의 형태를 참고한 서도·동도와 바다, 삽살개·강치 마스코트를 담은 일러스트.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="독도 코리아 스쿨 V3 | 배우고, 놀고, 나의 독도를 키워요">
+<meta name="twitter:title" content="독도 코리아 스쿨 | 배우고, 놀고, 나의 독도를 키워요">
 <meta name="twitter:description" content="퀴즈는 독도 배움터, 게임은 독도 놀이터! 바다를 청소하고 삽살개와 달리며 나만의 독도를 키워요. 한국어·English 지원.">
 <meta name="twitter:image" content="https://dokdo-school-v2.vercel.app/dokdo-next/assets/share/dokdo-school-v3-20261019-geography-v2.png">
-<meta name="twitter:image:alt" content="독도 코리아 스쿨 V3: 배우고, 놀고, 나의 독도를 키워요. 공식 자료의 형태를 참고한 서도·동도와 바다, 삽살개·강치 마스코트를 담은 일러스트.">
+<meta name="twitter:image:alt" content="독도 코리아 스쿨: 배우고, 놀고, 나의 독도를 키워요. 공식 자료의 형태를 참고한 서도·동도와 바다, 삽살개·강치 마스코트를 담은 일러스트.">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com https://t1.kakaocdn.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://i.ytimg.com; media-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://api.open-meteo.com https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://*.analytics.google.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'none'; worker-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="dokdo-mode" content="live">
-<title>독도 코리아 스쿨 V3 · 배움터와 놀이터</title>
+<title>독도 코리아 스쿨 · 배움터와 놀이터</title>
 <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./assets/app.css">
 <link rel="stylesheet" href="./assets/games-entry.css">
@@ -55,6 +55,7 @@
 <script defer src="./assets/app.js"></script>
 <script defer src="./assets/school-v3.js"></script>
 <script defer src="./assets/garden-ui.js"></script>
+<script defer src="./assets/account-config.js"></script>
 <script defer src="./assets/account-entry.js"></script>
 </head>
 <body class="has-playground school-v3 v3-choosing">
@@ -67,12 +68,10 @@
   <svg viewBox="0 0 70 54" aria-hidden="true"><path d="M3 40 13 30 18 14 25 22 34 4 43 26 46 37 54 24 61 30 66 42Z" fill="#C5E4E4"/><path d="m12 40 14-7 13 7 9-3 9 5M5 48q8-6 16 0t16 0t16 0t16 0" fill="none" stroke="#5FACBD" stroke-width="3"/></svg>
   <span><small data-i18n="tagline">배우는 만큼, 더 빛나는 독도</small><strong><span class="brand-main" data-i18n="brandMain">독도 코리아</span> <span class="brand-sub" data-i18n="brandSub">스쿨</span></strong></span>
  </button>
- <span class="v3-version" aria-label="버전 3">V3</span>
  <nav class="v3-nav" aria-label="주 메뉴"><button class="nav-item" id="v3-learn-nav" data-view="home"><span aria-hidden="true">✦</span><span data-i18n="v3Learn">독도 배움터</span></button><a class="nav-item" href="./games.html"><span aria-hidden="true">♧</span><span data-i18n="v3Play">독도 놀이터</span></a></nav>
  <a id="account-link" href="./account.html?next=./" class="login-entry">로그인</a>
  <details class="v3-more" id="v3-more"><summary><span id="v3-more-label">더보기</span> <span aria-hidden="true">⌄</span></summary><div class="v3-more-panel">
- <div class="v3-more-destinations"><button class="v3-more-destination" id="v3-explore"><span aria-hidden="true">⌖</span><span><strong id="v3-info-menu-title">독도 알아보기</strong><small id="v3-info-menu-copy">위치·역사·생명·오늘의 날씨</small></span><span aria-hidden="true">→</span></button><button class="v3-more-destination v3-more-channel" id="v3-open-channel" data-view="channel"><span aria-hidden="true">▷</span><span><strong id="v3-channel-menu-title">독도 코리아 채널</strong><small id="v3-channel-menu-copy">최근 영상·라이브·음악과 이야기</small></span><span aria-hidden="true">→</span></button></div>
- <a href="./versions.html" id="v3-versions-link" class="v3-versions-link">V1 · V2 · V3 버전 안내</a>
+ <div class="v3-more-destinations"><button class="v3-more-destination" id="v3-explore"><span aria-hidden="true">⌖</span><span><strong id="v3-info-menu-title">독도 알아보기</strong><small id="v3-info-menu-copy">위치·역사·생명·독도 시간</small></span><span aria-hidden="true">→</span></button><button class="v3-more-destination v3-more-channel" id="v3-open-channel" data-view="channel"><span aria-hidden="true">▷</span><span><strong id="v3-channel-menu-title">독도 코리아 채널</strong><small id="v3-channel-menu-copy">최근 영상·라이브·음악과 이야기</small></span><span aria-hidden="true">→</span></button></div>
  <button type="button" class="v3-profile-menu" id="v3-profile-menu">닉네임·국가·학교</button><div class="v3-utility"><button class="nav-item" data-view="hall"><span data-i18n="hallOfFame">명예의 전당</span></button><button class="nav-item" data-view="grade"><span data-i18n="gradeTab">학년</span></button><div class="header-actions"><button id="language" class="icon-button" aria-label="Switch to English">EN</button><button id="open-settings" class="icon-button" aria-label="설정">⚙</button><button class="profile-button" data-view="records"><span data-i18n="myRecords">내 기록</span></button></div></div>
 </div></details>
 </header>
@@ -96,7 +95,7 @@
  <button type="button" id="v3-profile-entry" class="v3-profile-entry">닉네임·국가·학교 설정</button>
 </section>
 <section class="v3-home" aria-labelledby="v3-greeting">
- <button type="button" id="v3-main-home" class="text-button v3-main-home">← 메인으로</button>
+ <button type="button" id="v3-main-home" class="text-button v3-main-home">← 메인으로 돌아가기</button>
  <div class="v3-welcome"><div><p class="v3-eyebrow" id="v3-area-label">DOKDO KOREA SCHOOL · 독도 배움터</p><h1 id="v3-greeting">오늘도, 한 걸음만.</h1><p id="v3-subtitle">알아갈수록 가까워지는 나의 독도.</p></div><canvas id="v3-mascot" width="200" height="150" aria-hidden="true"></canvas></div>
  <div class="v3-columns"><div class="v3-main-column">
   <section class="v3-next" aria-labelledby="v3-lesson-title"><div class="v3-next-top"><span id="v3-today">오늘의 독도 이야기</span><span id="v3-lesson-meta">짧은 이야기 · 5문제</span></div><h2 id="v3-lesson-title">독도는 어디에 있을까</h2><div id="v3-start-slot"></div></section>
@@ -107,9 +106,9 @@
   <section class="v3-play-card"><h2 id="v3-play-title">이제, 독도에서 놀까요?</h2><p id="v3-play-copy">삽살개와 달리고, 바다를 깨끗하게.</p><a href="./games.html" id="v3-play-link">독도 놀이터 가기 →</a></section>
  </aside></div><p class="v3-home-note" id="v3-home-note">기록은 이 브라우저에 저장돼요.</p>
 </section>
-<div class="v3-legacy-home"><button id="v3-back-learning" class="button secondary">← 배움길로 돌아가기</button>
- <div class="v3-info-heading"><p class="v3-eyebrow">DISCOVER DOKDO</p><h1 id="v3-info-title">독도 알아보기</h1><p id="v3-info-copy">독도의 위치와 모습, 살아가는 생명과 오늘의 날씨를 만나요.</p></div>
- <nav class="v3-info-links" aria-label="독도 정보"><button id="nav-map" class="button secondary"><span data-i18n="map">지도 살펴보기</span></button><a href="#dokdo-weather" id="v3-weather-link">오늘의 날씨</a><button data-view="journal" class="text-button"><span data-i18n="journal">생명 도감</span></button><a href="./question-review.html" id="v3-question-link">240문항과 출처</a><button id="v3-info-sources" class="text-button">그림·자료 출처</button><a href="https://www.youtube.com/@독도코리아/live" target="_blank" rel="noopener noreferrer" id="v3-info-live">실시간 독도 보러 가기 ↗</a></nav>
+<div class="v3-legacy-home"><button id="v3-back-learning" class="button secondary">← 배움터로 돌아가기</button>
+ <div class="v3-info-heading"><p class="v3-eyebrow">DISCOVER DOKDO</p><h1 id="v3-info-title">독도 알아보기</h1><p id="v3-info-copy">독도의 위치와 모습, 살아가는 생명과 독도 시간을 만나요.</p></div>
+ <nav class="v3-info-links" aria-label="독도 정보"><button id="nav-map" class="button secondary"><span data-i18n="map">지도 살펴보기</span></button><a href="#dokdo-weather" id="v3-weather-link">독도 시간</a><button data-view="journal" class="text-button"><span data-i18n="journal">생명 도감</span></button><a href="./question-review.html" id="v3-question-link">240문항과 출처</a><button id="v3-info-sources" class="text-button">그림·자료 출처</button><a href="https://www.youtube.com/@독도코리아/live" target="_blank" rel="noopener noreferrer" id="v3-info-live">실시간 독도 보러 가기 ↗</a></nav>
 
  <section class="play-entry" lang="ko" aria-labelledby="play-entry-title">
   <div class="play-entry-copy"><p class="play-entry-eyebrow">MY LITTLE DOKDO · 독도 놀이터</p><h2 id="play-entry-title">놀고, 지키고,<br>내 독도를 가꿔요.</h2><p>블록으로 바다를 정리하고, 삽살개와 폴짝!<br>레벨이 오르면 내 섬에 작은 선물이 도착해요.</p><div class="play-entry-actions"><a href="./games.html?game=blocks">독도 바다 청소 <span aria-hidden="true">→</span></a><a href="./games.html?game=runner">삽살개 달리기 <span aria-hidden="true">→</span></a><a href="./fishing.html" id="play-entry-fishing">독도 바다 낚시 <span aria-hidden="true">→</span></a><a href="./typing.html" id="play-entry-typing">독도 노래 타자연습 <span aria-hidden="true">→</span></a></div><a class="play-entry-more" href="./games.html">내 독도 꾸미기 · <span id="play-entry-level">Lv. 1</span> ↗</a></div>
@@ -140,7 +139,7 @@
    <div class="canvas-shell" id="canvas-shell"><canvas id="island-canvas" width="1536" height="704" role="img" aria-label="독도를 표현한 학습 풍경. 불빛과 동물은 나의 학습 보상입니다."></canvas><div id="bird-toast" class="bird-toast" hidden><span aria-hidden="true">🐦</span><div><b data-i18n="birdsHere">독도에 새가 찾아왔어요</b><small data-i18n="birdsHereSub">🦭 강치도 함께 1분 동안 머물러요</small></div></div></div>
    <div class="scene-empty" id="first-light"><span aria-hidden="true">💡</span><span data-i18n="firstLight">첫 배움이 첫 불빛이 됩니다.</span></div>
    <div class="scene-bottom" id="scene-bottom" hidden><button class="text-button" id="open-sources" data-i18n="sources">그림과 자료 출처</button></div>
-   <section class="environment-panel" id="dokdo-weather" aria-label="Dokdo time and weather">
+   <section class="environment-panel" id="dokdo-weather" aria-label="독도 시간">
    <div><strong id="dokdo-clock"></strong><small id="dokdo-sun"></small></div>
    <label><span id="time-mode-label">그림 시간</span><select id="time-mode"><option value="auto">독도 실제 시간</option><option value="day">낮 미리보기</option><option value="sunset">노을 미리보기</option><option value="night">야경 미리보기</option></select></label>
    <div class="weather-status"><span id="weather-status"></span><button id="weather-refresh" type="button" class="text-button">날씨 연결 확인</button><a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo · 예보 기반</a></div>
@@ -161,26 +160,21 @@
    <div class="map-card-top"><div><p class="eyebrow">DOKDO AT A GLANCE</p><h2 data-i18n="map">지도 살펴보기</h2></div><button id="close-map" class="icon-button" aria-label="지도 정보 닫기">×</button></div>
    <div class="locator-map">
     <svg viewBox="0 0 320 190" role="img" aria-label="독도 위치: 울릉도에서 87.4km, 일본 오키 제도에서 157.5km">
-     <rect width="320" height="190" rx="14" fill="#081b28"/>
-     <path d="M0,0 L48,0 L40,58 L56,94 L32,148 L46,190 L0,190 Z" fill="#123950"/>
-     <path d="M320,64 L272,102 L302,138 L262,190 L320,190 Z" fill="#1b303c"/>
-     <text x="160" y="30" text-anchor="middle" fill="#8fb4c4" font-size="12">동해 · East Sea</text>
-     <line x1="118" y1="98" x2="152" y2="90" stroke="#f5cd77" stroke-width="1.4" stroke-dasharray="3 3"/>
-     <line x1="168" y1="90" x2="240" y2="120" stroke="#8aa6b3" stroke-width="1.4" stroke-dasharray="3 3"/>
-     <text x="132" y="86" text-anchor="middle" fill="#f5cd77" font-size="7" font-weight="700" letter-spacing="-.3">87.4km</text>
-     <text x="206" y="98" text-anchor="middle" fill="#9fb9c4" font-size="7" font-weight="700" letter-spacing="-.3">157.5km</text>
-     <circle cx="112" cy="100" r="4" fill="#8fd9c3"/>
-     <text x="112" y="118" text-anchor="middle" fill="#cfe3e8" font-size="11">울릉도 · Ulleungdo</text>
-     <circle cx="160" cy="88" r="6" fill="#f5cd77"/>
-     <circle cx="160" cy="88" r="11" fill="none" stroke="#f5cd77" stroke-opacity=".5"/>
-     <text x="160" y="68" text-anchor="middle" fill="#f5cd77" font-size="13" font-weight="600">독도 · Dokdo</text>
-     <circle cx="244" cy="122" r="4" fill="#8aa6b3"/>
-     <text x="244" y="141" text-anchor="middle" fill="#cfe3e8" font-size="11">오키 제도(일본)</text>
-     <text x="244" y="153" text-anchor="middle" fill="#cfe3e8" font-size="10">Oki Islands, Japan</text>
-     <text x="22" y="150" fill="#6f8794" font-size="12">한국</text>
-     <text x="14" y="165" fill="#6f8794" font-size="11" letter-spacing="1">KOREA</text>
-     <text x="288" y="170" fill="#6f8794" font-size="12">일본</text>
-     <text x="278" y="185" fill="#6f8794" font-size="11" letter-spacing="1">JAPAN</text>
+     <rect width="320" height="190" rx="14" fill="#dcecee"/>
+     <path d="M0,0 L48,0 L40,58 L56,94 L32,148 L46,190 L0,190 Z" fill="#c9dcbc"/>
+     <path d="M320,64 L272,102 L302,138 L262,190 L320,190 Z" fill="#d9e2cf"/>
+     <text x="172" y="26" text-anchor="middle" fill="#2a5560" font-size="16">동해 · East Sea</text>
+     <line x1="118" y1="98" x2="152" y2="90" stroke="#2f7144" stroke-width="1.6" stroke-dasharray="3 3"/>
+     <line x1="168" y1="90" x2="240" y2="120" stroke="#5a7468" stroke-width="1.6" stroke-dasharray="3 3"/>
+     <circle cx="112" cy="100" r="4" fill="#3f7c40"/>
+     <text x="100" y="126" text-anchor="middle" fill="#203f35" font-size="16">울릉도 · Ulleungdo</text>
+     <circle cx="160" cy="88" r="6" fill="#2f7144"/>
+     <circle cx="160" cy="88" r="11" fill="none" stroke="#2f7144" stroke-opacity=".5"/>
+     <text x="172" y="66" text-anchor="middle" fill="#1f5a3c" font-size="16" font-weight="700">독도 · Dokdo</text>
+     <circle cx="244" cy="122" r="4" fill="#5a7468"/>
+     <text x="238" y="148" text-anchor="middle" fill="#203f35" font-size="16">오키 제도(일본)</text>
+     <text x="8" y="182" fill="#203f35" font-size="16">한국 · KOREA</text>
+     <text x="312" y="182" text-anchor="end" fill="#203f35" font-size="16">일본 · JAPAN</text>
     </svg>
     <div class="locator-stats">
      <div><b>87.4km</b><span data-i18n="locatorUlleung">울릉도에서</span></div>
@@ -214,7 +208,7 @@
 
 
 <section id="view-channel" class="view v3-channel-view" hidden aria-labelledby="v3-channel-title">
- <button type="button" id="v3-channel-home" class="text-button v3-main-home">← 메인으로</button>
+ <button type="button" id="v3-channel-home" class="text-button v3-main-home">← 메인으로 돌아가기</button>
  <div class="v3-info-heading"><p class="v3-eyebrow">DOKDO KOREA CHANNEL</p><h1 id="v3-channel-title">독도 코리아 채널</h1><p id="v3-channel-copy">음악과 영상으로 독도의 이야기를 전합니다.</p></div>
  <div class="v3-channel-actions"><a id="header-live-link" class="v3-live-entry" href="https://www.youtube.com/@독도코리아/live" target="_blank" rel="noopener noreferrer"><span class="v3-live-dot" aria-hidden="true"></span><span id="v3-channel-live-label">실시간 독도 보러 가기 ↗</span></a><a id="header-channel-link" class="button secondary" href="https://www.youtube.com/@독도코리아" target="_blank" rel="noopener noreferrer" data-i18n="headerChannel">YouTube 채널 열기 ↗</a></div>
  <section class="youtube-card v3-latest" id="youtube-card" aria-labelledby="v3-latest-title">
@@ -273,7 +267,7 @@
 </section>
 
 <section id="view-learn" class="view narrow" hidden>
- <div class="section-heading"><div><p class="eyebrow">A SMALL STEP, A LASTING LIGHT</p><h1 data-i18n="learn">학습하기</h1></div><button class="text-button" data-view="home" data-i18n="backHome">내 독도로</button></div>
+ <div class="section-heading"><div><p class="eyebrow">A SMALL STEP, A LASTING LIGHT</p><h1 data-i18n="learn">학습하기</h1></div><button class="text-button" data-view="home" data-i18n="backHome">배움터로 돌아가기</button></div>
  <div id="learning-menu" class="learning-menu">
   <article class="menu-course"><span>01</span><h2 data-i18n="dailyTitle">짧게 배우기</h2><p data-i18n="dailyDesc">설명을 읽고 문제를 풀어요. 틀린 부분은 해설 뒤에 다시 확인해요.</p><button class="button primary" data-start="daily" data-i18n="start">시작하기</button></article>
   <article class="menu-course"><span>02</span><h2 data-i18n="reviewTitle">기억 꺼내기</h2><p data-i18n="reviewDesc">배운 내용을 다른 날에도 기억하는지 살펴봐요. 같은 문제 반복만으로 진급하지 않아요.</p><button class="button secondary" data-start="review" data-i18n="start">시작하기</button></article>
@@ -293,7 +287,7 @@
 </section>
 
 <section id="view-journal" class="view narrow" hidden>
- <div class="section-heading"><div><p class="eyebrow">LIFE FINDS A HOME HERE</p><h1 data-i18n="journal">생명 도감</h1></div><button class="text-button" data-view="home" data-i18n="backHome">내 독도로</button></div>
+ <div class="section-heading"><div><p class="eyebrow">LIFE FINDS A HOME HERE</p><h1 data-i18n="journal">생명 도감</h1></div><button class="text-button" data-view="home" data-i18n="backHome">배움터로 돌아가기</button></div>
  <p class="lead" data-i18n="journalIntro">독도는 생명이 쉬고 머무는 곳입니다. 배움의 한 단계를 마치면 짧은 방문이 기록으로 남아요.</p>
  <article class="species-card"><div class="species-art" aria-hidden="true"><svg viewBox="0 0 280 210"><path d="M122 101 Q55 45 19 70Q60 87 105 117L92 139L130 129Q174 124 231 48Q193 63 152 94Z" fill="#dce9e7"/><path d="m130 97q27-28 42-7l21 10-27 7-22 11Z" fill="#f6f4e9"/><path d="m168 88 24 12-24 1" fill="#d9ba70"/><path d="m93 123-27 19 28-3" fill="#31535f"/><circle cx="164" cy="89" r="3" fill="#09283b"/></svg></div>
  <div><span id="bird-unlocked" class="pill"></span><h2 data-i18n="gull">괭이갈매기</h2><p data-i18n="gullText">외교부의 독도 자연환경 자료에서 소개하는 새입니다. 독도는 철새가 쉬어 가는 곳이기도 합니다.</p><p id="bird-unlock-rule" class="fine"></p><button id="bird-replay" class="button secondary" data-i18n="birdReplay">새의 방문 다시 보기</button><a class="source-link" href="https://dokdo.mofa.go.kr/kor/introduce/nature.jsp" target="_blank" rel="noopener noreferrer" data-i18n="ecologySource">독도 자연환경 자료 ↗</a></div></article>
@@ -303,7 +297,7 @@
 </section>
 
 <section id="view-hall" class="view narrow" hidden>
- <div class="section-heading"><div><p class="eyebrow">WEEKLY HALL OF FAME</p><h1 data-i18n="hallOfFame">명예의 전당</h1></div><button class="text-button" data-view="home" data-i18n="backHome">내 독도로</button></div>
+ <div class="section-heading"><div><p class="eyebrow">WEEKLY HALL OF FAME</p><h1 data-i18n="hallOfFame">명예의 전당</h1></div><button class="text-button" data-view="home" data-i18n="backHome">배움터로 돌아가기</button></div>
  <div id="hall-not-configured" class="record-panel" hidden>
   <h2 data-i18n="hallNotConfiguredTitle">아직 서버에 연결되지 않았어요</h2>
   <p data-i18n="hallNotConfiguredBody">이번 주 순위·학교 부문·방송 화면은 실제 집계 서버가 연결된 뒤에 표시됩니다. 지금은 빈 화면을 실제 참가자 0명으로 보여주지 않기 위해 상태만 안내합니다.</p>
@@ -330,7 +324,7 @@
 </section>
 
 <section id="view-grade" class="view narrow" hidden>
- <div class="section-heading"><div><p class="eyebrow">YOUR LEARNING GRADE</p><h1 data-i18n="gradeTab">학년</h1></div><button class="text-button" data-view="home" data-i18n="backHome">내 독도로</button></div>
+ <div class="section-heading"><div><p class="eyebrow">YOUR LEARNING GRADE</p><h1 data-i18n="gradeTab">학년</h1></div><button class="text-button" data-view="home" data-i18n="backHome">배움터로 돌아가기</button></div>
  <section class="record-panel">
   <div class="card-heading"><h2 id="grade-view-current"></h2><span id="grade-view-stats" class="fine"></span></div>
   <div class="gangchi-gauge"><progress id="grade-view-gauge" value="0" max="5"></progress><small id="grade-view-gauge-label" class="fine"></small></div>
@@ -340,20 +334,20 @@
 </section>
 
 <section id="view-records" class="view narrow" hidden>
- <div class="section-heading"><div><p class="eyebrow">YOUR LEARNING STAYS WITH YOU</p><h1 data-i18n="myRecords">내 기록</h1></div><button class="text-button" data-view="home" data-i18n="backHome">내 독도로</button></div>
+ <div class="section-heading"><div><p class="eyebrow">YOUR LEARNING STAYS WITH YOU</p><h1 data-i18n="myRecords">내 기록</h1></div><button class="text-button" data-view="home" data-i18n="backHome">배움터로 돌아가기</button></div>
  <div class="record-summary" id="record-summary"></div>
  <section class="record-panel"><div class="card-heading"><h2 data-i18n="badgesTitle"><span class="card-emoji" aria-hidden="true">🏅</span> 성취 배지</h2><span id="badges-count" class="fine"></span></div><div id="badges-grid" class="badges-grid"></div></section>
  <section class="record-panel"><h2 data-i18n="backupTitle">기록 보관과 복원</h2><p data-i18n="localOnly">새 화면은 이 브라우저에 저장됩니다. 클라우드 계정과 자동 동기화되지 않으니 백업 파일도 보관해 주세요.</p><div class="button-row"><button id="export-records" class="button primary" data-i18n="backupFile">학습 기록 파일 저장</button><label class="button secondary file-label"><span data-i18n="importFile">백업 파일 불러오기</span><input id="import-file" type="file" accept=".json,application/json"></label></div><p class="fine" data-i18n="backupWarning">이미지 저장은 기록 백업이 아닙니다. 백업 파일에는 이름·학교·구형 복원 코드·학습 내역이 들어갈 수 있으니 비공개로 보관하세요.</p><div id="import-preview" class="import-preview" hidden></div>
- <div class="reset-row"><button id="reset-record" class="button secondary danger" data-i18n="resetRecord">기록 초기화</button><p class="fine" data-i18n="resetWarning">이 기기의 기록을 지우고 빈 상태로 시작합니다. 먼저 위에서 백업 파일을 저장하거나, 별명을 기억해 두면 초기화 후에도 "다른 기기 기록 불러오기"로 되돌릴 수 있습니다.</p></div>
+ <div class="reset-row"><button id="reset-record" class="button secondary danger" data-i18n="resetRecord">기록 초기화</button><p class="fine" data-i18n="resetWarning">이 기기의 기록을 지우고 빈 상태로 시작합니다. 먼저 위에서 백업 파일을 저장하거나, 닉네임을 기억해 두면 초기화 후에도 "다른 기기 기록 불러오기"로 되돌릴 수 있습니다.</p></div>
  </section>
  <section class="record-panel" id="cloud-panel" hidden>
   <h2 data-i18n="cloudBackupTitle">서버 백업 · 다른 기기에서 이어하기</h2>
-  <p class="fine" data-i18n="cloudBackupWarning">전송 자체는 저장을 보장하지 않는 구형 서버 방식이라, 전송 후 몇 초간 자동으로 실제 저장 여부를 다시 확인합니다. 확인되지 않으면 그렇게 알려드립니다.</p>
+  <p class="fine" data-i18n="cloudBackupWarning">보낸 뒤 몇 초 동안 서버에 잘 저장됐는지 확인합니다. 확인되지 않으면 알려 드릴게요.</p>
   <p id="cloud-key-display" class="fine"></p>
-  <div class="button-row"><button id="cloud-save" class="button secondary" data-i18n="cloudSaveBtn">서버로 백업 전송</button><button id="cloud-key-copy" type="button" class="text-button" hidden data-i18n="cloudKeyCopy">별명 복사</button></div>
+  <div class="button-row"><button id="cloud-save" class="button secondary" data-i18n="cloudSaveBtn">서버로 백업 전송</button><button id="cloud-key-copy" type="button" class="text-button" hidden data-i18n="cloudKeyCopy">닉네임 복사</button></div>
   <p id="cloud-save-status" class="fine" role="status"></p>
   <div class="button-row">
-   <label class="field"><span data-i18n="cloudLoadNick">불러올 별명</span><input id="cloud-load-nick" maxlength="40"></label>
+   <label class="field"><span data-i18n="cloudLoadNick">불러올 닉네임</span><input id="cloud-load-nick" maxlength="40"></label>
   </div>
   <button id="cloud-load" class="button secondary" data-i18n="cloudLoadBtn">다른 기기 기록 불러오기</button>
   <p id="cloud-load-status" class="fine" role="status"></p>
@@ -376,15 +370,15 @@
    <a id="contact-link" href="https://docs.google.com/forms/d/e/1FAIpQLScaHvpXQJ-3b4xprSVbIc0LWlAvKsrdiyBsYvepJeTw18SIlw/viewform" target="_blank" rel="noopener noreferrer" data-i18n="contactCollab">문의 · 협업 ↗</a>
   </section>
  </div>
- <div class="footer-base"><span data-i18n="footer">작은 배움이 모여, 독도가 더 빛납니다.</span><span>V3 · DOKDO KOREA SCHOOL</span></div>
+ <div class="footer-base"><span data-i18n="footer">작은 배움이 모여, 독도가 더 빛납니다.</span><span>DOKDO KOREA SCHOOL</span></div>
 </footer>
 <div id="toast" class="toast" role="status" hidden></div>
 
 <dialog id="age-dialog" class="dialog">
- <form id="age-form"><div class="dialog-top"><span class="eyebrow">YOUR STARTING POINT</span><button type="button" class="icon-button" data-close="age-dialog" aria-label="닫기">×</button></div><h2 data-i18n="ageTitle">어디서부터 함께 배울까요?</h2><p data-i18n="ageDesc">나이대는 설명을 고르는 참고값이에요. 생년월일은 받지 않아요.</p>
- <button type="button" class="text-button" id="age-recover-link" data-i18n="ageRecoverLink">이미 별명이 있나요? 여기서 기록 불러오기 ↗</button>
- <label class="field"><span data-i18n="nickname">별명 (기록을 이어가려면 적어 주세요)</span><input id="nickname" maxlength="40" autocomplete="nickname" placeholder="독도 탐험가"></label>
- <p class="fine" data-i18n="nicknamePublic">이 별명은 명예의 전당에 공개돼요. 실명·전화번호는 쓰지 마세요.</p>
+ <form id="age-form"><div class="dialog-top"><span class="eyebrow">BEFORE WE BEGIN</span><button type="button" class="icon-button" data-close="age-dialog" aria-label="닫기">×</button></div><h2 data-i18n="ageTitle">나이대를 알려 주세요</h2><p data-i18n="ageDesc">나이대에 맞춰 첫 이야기와 설명을 골라 드려요. 학년은 누구나 유치원부터 시작해요. 생년월일은 받지 않아요.</p>
+ <button type="button" class="text-button" id="age-recover-link" data-i18n="ageRecoverLink">이미 닉네임이 있나요? 여기서 기록 불러오기 ↗</button>
+ <label class="field"><span data-i18n="nickname">닉네임 (기록을 이어가려면 적어 주세요)</span><input id="nickname" maxlength="40" autocomplete="nickname" placeholder="독도 탐험가"></label>
+ <p class="fine" data-i18n="nicknamePublic">이 닉네임은 명예의 전당에 공개돼요. 실명·전화번호는 쓰지 마세요.</p>
  <label class="field"><span data-i18n="flagField">국가 (명예의 전당 표시용, 선택)</span><select id="flag-select">
   <option value="KR">🇰🇷 대한민국</option><option value="US">🇺🇸 미국</option><option value="JP">🇯🇵 일본</option>
   <option value="CN">🇨🇳 중국</option><option value="GB">🇬🇧 영국</option><option value="CA">🇨🇦 캐나다</option>
@@ -410,7 +404,7 @@
  <label class="check-row"><input type="checkbox" id="reduce-motion"><span data-i18n="reduceMotion">움직임 줄이기</span></label>
  <label class="check-row"><input type="checkbox" id="enable-birds"><span data-i18n="enableBirds">성취 후 새의 방문 보기</span></label>
  <label class="field"><span data-i18n="seaDensity">바다의 생동감</span><select id="sea-density"><option value="calm" data-i18n="calm">차분하게</option><option value="rich" data-i18n="rich">풍성하게</option><option value="full" data-i18n="full">더 풍성하게</option></select></label>
- <button id="change-age" class="button secondary" data-i18n="changeAge">나이대·시작점 다시 설정</button><p id="font-status" class="fine"></p>
+ <button id="change-age" class="button secondary" data-i18n="changeAge">나이대·시작점 다시 설정</button>
  <p class="fine" data-i18n="soundRule">음악은 직접 켤 때만 재생되며, 다른 앱을 보는 동안에도 이어집니다. 소리를 끄거나 이 페이지를 닫거나 다른 웹페이지로 이동하면 멈춥니다. 돌아와도 저절로 켜지지 않습니다.</p>
 </dialog>
 <dialog id="sources-dialog" class="dialog wide-dialog">

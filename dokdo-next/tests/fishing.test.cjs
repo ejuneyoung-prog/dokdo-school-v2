@@ -158,3 +158,10 @@ test('first-round guide appears once: only for a new player, steps 1→4 in orde
  for(const n of [1,2,3,4]){a.match(F.COACH[n][0],/^\d\/4 /);a.match(F.COACH[n][1],/^\d\/4 /);a.match(F.COACH[n][0],/[.다]$/);a.doesNotMatch(F.COACH[n][1],/[가-힣]/);}
  const src=fs.readFileSync(path.join(ROOT,'assets/fishing.js'),'utf8');a.match(src,/if\(coachOn\)\{coachOn=false;prog\.coachDone=true;\}/);
 });
+
+test('the test-mode button is for operators: hidden unless the address has ?operator=1',()=>{
+ const F=require('../assets/fishing.js'),page=fs.readFileSync(path.join(__dirname,'../fishing.html'),'utf8');
+ a.match(page,/id="test"[^>]*\bhidden\b/);
+ a.equal(F.operatorView(''),false);a.equal(F.operatorView('?operator=0'),false);a.equal(F.operatorView('?x=1'),false);a.equal(F.operatorView('?operator=1'),true);
+ a.ok(!page.includes('시험판'));a.ok(!page.includes('Trial version'));
+});

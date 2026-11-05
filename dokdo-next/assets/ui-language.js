@@ -6,6 +6,17 @@ const dictionary={
  "놀이별 성장 기록을 확인해 주세요.":"Please check your activity growth record.",
  "로그인 링크를 확인하지 못했어요. 이메일로 로그인하거나 이 브라우저에서 새 링크를 요청해 주세요.":"This sign-in link could not be verified. Sign in with email or request a new link in this browser.",
  "카카오 로그인 요청 시간이 지났어요. 카카오 로그인 버튼을 눌러 새로 시작해 주세요.":"Your Kakao sign-in request expired. Select Sign in with Kakao to start again.",
+ "만 14세 이상입니다":"I am 14 or older",
+ "만 14세 미만은 보호자 동의 절차가 준비될 때까지 로그인 없이 이용해 주세요.":"If you are under 14, please use the school without signing in until parental consent is ready.",
+ "만 14세 이상인지 먼저 확인해 주세요.":"Please confirm that you are 14 or older first.",
+ "Google로 로그인":"Sign in with Google",
+ "이메일 로그인":"Sign in with email",
+ "구글 로그인으로 이동하고 있어요.":"Going to Google sign-in.",
+ "구글 로그인을 열지 못했어요. 다시 시도해 주세요.":"We could not open Google sign-in. Please try again.",
+ "구글 로그인을 마치지 못했어요. 다시 시도하거나 이메일로 로그인해 주세요.":"Google sign-in did not finish. Please try again or sign in with email.",
+ "구글 로그인 요청 시간이 지났어요. 구글 로그인 단추를 눌러 새로 시작해 주세요.":"Your Google sign-in request timed out. Press the Google button to start again.",
+ "구글 계정으로 로그인했어요.":"Signed in with Google.",
+ "독도에서 힐링하기로 돌아가기":"Back to Dokdo Retreat",
  "카카오 로그인 요청 시간이 지났어요. 지금은 이메일로 로그인해 주세요.":"Your Kakao sign-in request expired. Please sign in with email for now.",
  "이 기기의 독도 기록":"Dokdo records on this device",
  "이 기기에 쌓인 기록이에요. 로그인 계정에 자동으로 연결되지 않아요. 공용 기기에서는 다른 사람의 기록일 수 있어요.":"These are device records, not automatically linked to the signed-in account. On a shared device, they may belong to someone else.",
@@ -125,6 +136,7 @@ const dictionary={
  "기존 240문항과 출처 보기 ↗": "View all 240 questions and sources ↗",
  "나의 독도 상상 풍경": "My imagined Dokdo",
  "놓은 선물:": "Gifts shown:",
+ "독도 시간": "Dokdo time",
  "게임을 보관하고 내 독도로 돌아가기": "Save this run and return to my island",
  "독도코리아 음악 켜기": "Turn on Dokdo Korea music",
  "독도코리아 음악 끄기": "Turn off Dokdo Korea music",
@@ -208,7 +220,6 @@ const dictionary={
  "더 놓을 자리가 없어요": "There is no room for another block",
  "문제 풀고 한 번 더 도전하기": "Answer a question for another try",
  "문제 풀고 도전권 받기": "Earn a ticket with a question",
- "내 독도로 돌아가기": "Back to my island",
  "내 독도 보기": "See my island",
  "오늘의 도전권": "Today’s tickets",
  "도전권 문제": "Ticket quiz",
@@ -412,7 +423,7 @@ function adopt(lang){current=lang==='en'?'en':'ko';if(host)host.document.documen
 function set(lang){adopt(lang);if(canPersist)try{host.localStorage.setItem(KEY,current);}catch(e){}for(const render of renderers)render();host?.document.dispatchEvent(new host.Event('dokdo:language'));}
 function init(root){host=root;const mode=root.document.querySelector('meta[name="dokdo-mode"]')?.content;canPersist=mode==='live'||(!mode&&/\/account\.html$/.test(root.location.pathname));adopt(saved()||'ko');}
 function mount(container){const sources=new WeakMap(),attributes=new WeakMap();let painting=false;
- function paint(){if(painting)return;if(host.document.body.classList.contains('play-page'))host.document.title=current==='en'?'Dokdo Playground · Dokdo Korea School V3':'독도 놀이터 · 독도 코리아 스쿨 V3';else if(host.document.getElementById('account-form'))host.document.title=current==='en'?'My account · Dokdo Korea School V3':'내 계정 · 독도 코리아 스쿨 V3';painting=true;observer.disconnect();
+ function paint(){if(painting)return;if(host.document.body.classList.contains('play-page'))host.document.title=current==='en'?'Dokdo Playground · Dokdo Korea School':'독도 놀이터 · 독도 코리아 스쿨';else if(host.document.getElementById('account-form'))host.document.title=current==='en'?'My account · Dokdo Korea School':'내 계정 · 독도 코리아 스쿨';painting=true;observer.disconnect();
   const walk=host.document.createTreeWalker(container,host.NodeFilter.SHOW_TEXT);let node;while(node=walk.nextNode()){if(node.parentElement?.closest('script,style,noscript,[data-no-translate]'))continue;const old=sources.get(node),value=node.nodeValue,source=old&&old.rendered===value?old.source:value,rendered=translate(source,current);if(value!==rendered)node.nodeValue=rendered;sources.set(node,{source,rendered});}
   for(const el of container.querySelectorAll('[aria-label],[title],[placeholder]')){const record=attributes.get(el)||{};for(const name of ['aria-label','title','placeholder'])if(el.hasAttribute(name)){const value=el.getAttribute(name),old=record[name],source=old&&old.rendered===value?old.source:value,rendered=translate(source,current);if(value!==rendered)el.setAttribute(name,rendered);record[name]={source,rendered};}attributes.set(el,record);}
   for(const button of container.querySelectorAll('[data-language-toggle]')){button.textContent=current==='en'?'한국어':'English';button.setAttribute('aria-label',current==='en'?'한국어로 바꾸기':'Switch to English');}

@@ -180,8 +180,10 @@ function hallData(){return cleanHall(store.get(KEYS.hall,{}));}
 
 function renderSongs(){const box=$('songs');box.replaceChildren();for(const s of SONGS){const b=doc.createElement('button');b.type='button';b.className='song';b.disabled=!s.lines.length;b.setAttribute('aria-pressed',String(!!song&&song.id===s.id));
  const no=doc.createElement('span');no.className='no';no.textContent=s.no;const t=doc.createElement('b');t.textContent=titleOf(s);const sub=doc.createElement('span');sub.className='sub';sub.textContent=(en()?s.subEn:s.sub)+' · '+s.lines.length+tr('줄',' lines');const src=doc.createElement('small');src.className='src';src.textContent=en()?s.srcEn:s.src;
- b.append(no,t,sub,src);b.onclick=()=>pick(s.id);box.append(b);}}
-function pick(id){song=SONGS.find(s=>s.id===id);hallSong=id;renderSongs();renderHall();reset();}
+ b.append(no,t,sub,src);b.onclick=()=>pick(s.id,true);box.append(b);}}
+// 곡을 눌렀을 때만 가사와 입력칸을 화면으로 올립니다. 처음 들어올 때 고르는 기본 곡은 스크롤하지 않습니다.
+function pick(id,reveal=false){song=SONGS.find(s=>s.id===id);hallSong=id;renderSongs();renderHall();reset();if(reveal)showBoard();}
+function showBoard(){const lines=doc.querySelector('.t-lines'),top=lines.getBoundingClientRect().top,bottom=$('typing').getBoundingClientRect().bottom;if(top<0||bottom>root.innerHeight)lines.scrollIntoView({block:'start'});}
 function reset(){li=0;startAt=0;goodStrokes=0;goodChars=0;typedChars=0;T=newTally();done=false;clearInterval(timer);$('typing').value='';$('typing').disabled=false;$('result').hidden=true;$('save-msg').textContent='';draw();stats();setTimeout(()=>$('typing').focus({preventScroll:true}),0);}
 function draw(){if(done){$('target').textContent=tr('모든 줄을 쳤습니다.','All lines typed.');return;}const t=$('target'),line=norm(song.lines[li]?song.lines[li][0]:''),typed=norm($('typing').value);t.replaceChildren();[...line].forEach((ch,i)=>{const sp=doc.createElement('span');sp.textContent=ch;if(i<typed.length){const last=i===typed.length-1&&composing;sp.className=last?'y':(typed[i]===ch?'y':'n');}else sp.className='c';if(i===typed.length)sp.classList.add('cur');t.append(sp);});
  $('meaning').textContent=song.lines[li]?song.lines[li][1]:'';const nx=song.lines[li+1],next=$('next');next.replaceChildren();const em=doc.createElement('em');em.textContent=nx?'NEXT':'END';next.append(em,doc.createTextNode(nx?nx[0]:tr('마지막 줄입니다','Last line')));}
@@ -231,7 +233,7 @@ function applyStatic(){const E=en();for(const n of doc.querySelectorAll('[data-e
  for(const n of doc.querySelectorAll('[data-en-label]')){if(!n.dataset.koLabel)n.dataset.koLabel=n.getAttribute('aria-label');n.setAttribute('aria-label',E?n.dataset.enLabel:n.dataset.koLabel);}
  for(const n of doc.querySelectorAll('[data-en-ph]')){if(!n.dataset.koPh)n.dataset.koPh=n.getAttribute('placeholder');n.setAttribute('placeholder',E?n.dataset.enPh:n.dataset.koPh);}
  for(const b of doc.querySelectorAll('[data-language-toggle]')){b.textContent=E?'한국어':'English';b.setAttribute('aria-label',E?'한국어로 바꾸기':'Switch to English');}
- doc.title=E?'Dokdo Song Typing · Dokdo Korea School V3':'독도 노래 타자연습 · 독도 코리아 스쿨 V3';}
+ doc.title=E?'Dokdo Song Typing · Dokdo Korea School':'독도 노래 타자연습 · 독도 코리아 스쿨';}
 function relabel(){applyStatic();renderSongs();renderHall();if(song){draw();if(done){$('meaning').textContent='';$('next').textContent='';if(lastResult){$('r-detail').textContent=detail(lastResult);if(lastResult.acc<90)$('save-msg').textContent=lowMsg();}}}}
 for(const b of doc.querySelectorAll('[data-language-toggle]')){if(!root.DokdoLanguage){b.hidden=true;continue;}b.addEventListener('click',()=>root.DokdoLanguage.set(en()?'ko':'en'));}
 doc.addEventListener('dokdo:language',relabel);

@@ -112,6 +112,8 @@ function missionDone(m,run){if(m.k==='sp')return (run.runCount[m.id]||0)>=m.n;if
 function missionProgress(m,run){if(m.k==='sp')return Math.min(m.n,run.runCount[m.id]||0);if(m.k==='score')return Math.min(m.n,run.score);if(m.k==='combo')return Math.min(m.n,run.bestCombo);if(m.k==='kinds')return Math.min(m.n,new Set(run.caughtRun).size);if(m.k==='shrimp')return Math.min(m.n,shrimpCount(run.runCount));return 0;}
 
 // ── 화면 ──
+// 시험 모드 단추는 주소에 ?operator=1 이 있을 때만 운영자에게 보입니다.
+function operatorView(search){try{return new URLSearchParams(search||'').get('operator')==='1';}catch(e){return false;}}
 function boot(doc){
 const $=id=>doc.getElementById(id);
 let ls=null;try{ls=root.localStorage;}catch(e){}
@@ -322,7 +324,8 @@ function renderProg(){const i=levelOf(prog.xp),cur=LEVELS[i],nx=LEVELS[i+1],L=en
  const openN=ZONES.filter(z=>isOpen(z.id)).length,badgeN=BADGES.filter(b=>prog.badges[b[0]]).length;$('zones-sum').textContent=tr('바다 단계 · '+openN+'/4 열림','Sea stages · '+openN+'/4 open');$('badges-sum').textContent=tr('배지 · '+badgeN+'/'+BADGES.length,'Badges · '+badgeN+'/'+BADGES.length);
  testLabel();}
 function missionLine(m){return tr('이번 판 '+missionProgress(m,run())+' / '+m.n+' · 완수하면 +300 XP','This round '+missionProgress(m,run())+' / '+m.n+' · +300 XP when complete');}
-function testLabel(){$('test').textContent=testMode?tr('시험 모드 켜짐: 모든 바다 열림 (저장된 진행은 그대로)','Test mode on: all seas open (saved progress unchanged)'):tr('시험 모드: 모든 바다 열기 (운영자 확인용)','Test mode: open all seas (for operator checks)');}
+function testLabel(){$('test').textContent=testMode?tr('시험 모드 켜짐: 모든 바다 열림 (잡은 기록은 저장됩니다)','Test mode on: all seas open (catches are still saved)'):tr('시험 모드: 모든 바다 열기 (운영자 확인용)','Test mode: open all seas (for operator checks)');}
+$('test').hidden=!operatorView(root.location?.search);
 $('test').onclick=()=>{testMode=!testMode;$('test').setAttribute('aria-pressed',String(testMode));renderProg();};
 function renderHall(){const ol=$('hall');ol.replaceChildren();if(!hall.length){const e=el('li','f-empty',tr('아직 기록이 없습니다. 첫 번째 이름을 남겨 보세요.','No records yet. Be the first to leave your name.'));e.style.display='block';ol.append(e);return;}
  hall.slice(0,10).forEach((r,i)=>{const li=doc.createElement('li');li.innerHTML='<span class="rk"></span><span class="nm"><span></span><small></small></span><span class="sc"></span>';li.querySelector('.rk').textContent=i+1;li.querySelector('.nm span').textContent=r.name;li.querySelector('.nm small').textContent=tr(r.kinds+'종 · ',r.kinds+' species · ')+r.date;li.querySelector('.sc').textContent=r.score;ol.append(li);});}
@@ -344,7 +347,7 @@ function applyStatic(){const E=en();for(const n of doc.querySelectorAll('[data-e
  for(const n of doc.querySelectorAll('[data-en-label]')){if(!n.dataset.koLabel)n.dataset.koLabel=n.getAttribute('aria-label');n.setAttribute('aria-label',E?n.dataset.enLabel:n.dataset.koLabel);}
  for(const n of doc.querySelectorAll('[data-en-ph]')){if(!n.dataset.koPh)n.dataset.koPh=n.getAttribute('placeholder');n.setAttribute('placeholder',E?n.dataset.enPh:n.dataset.koPh);}
  for(const b of doc.querySelectorAll('[data-language-toggle]')){b.textContent=E?'한국어':'English';b.setAttribute('aria-label',E?'한국어로 바꾸기':'Switch to English');}
- doc.title=E?'Dokdo Sea Fishing · Dokdo Korea School V3':'독도 바다 낚시 · 독도 코리아 스쿨 V3';
+ doc.title=E?'Dokdo Sea Fishing · Dokdo Korea School':'독도 바다 낚시 · 독도 코리아 스쿨';
  if(st==='over')$('e-detail').textContent=endDetail();}
 function relabel(){applyStatic();mainLabel();renderDex();renderHall();renderProg();showDex(shownDex);setInfo();}
 for(const b of doc.querySelectorAll('[data-language-toggle]')){if(!root.DokdoLanguage){b.hidden=true;continue;}b.addEventListener('click',()=>root.DokdoLanguage.set(en()?'ko':'en'));}
@@ -363,5 +366,5 @@ SRC.forEach(([text,u])=>{const li=doc.createElement('li');const a=doc.createElem
 relabel();hud();fit();camY=-SKY;root.requestAnimationFrame(loop);
 }
 
-return{SRC,ZONES,SP,PROTECT,KEYS,LEVELS,BADGES,MISSIONS,UNLOCK_NEED,createStore,loadSaved,unlockReady,newlyUnlocked,maxDepthFor,dayKey,todayMission,levelOf,yOf,mOf,mult,sizeFor,isGolden,isPerfect,scoreCatch,startFight,fightStep,keyAction,missionDone,missionProgress,fitSize,pixelRatio,needsCoach,coachStep,COACH,boot};
+return{SRC,ZONES,SP,PROTECT,KEYS,LEVELS,BADGES,MISSIONS,UNLOCK_NEED,createStore,loadSaved,unlockReady,newlyUnlocked,maxDepthFor,dayKey,todayMission,levelOf,yOf,mOf,mult,sizeFor,isGolden,isPerfect,scoreCatch,startFight,fightStep,keyAction,missionDone,missionProgress,fitSize,pixelRatio,needsCoach,coachStep,COACH,operatorView,boot};
 });

@@ -18,6 +18,7 @@ REST API 키와 Client Secret은 서버 설정에만 입력합니다. 새 비밀
 
 - https://dokdo-school-v2.vercel.app/dokdo-next/account.html?oauth=kakao&next=.%2F
 - https://dokdo-school-v2.vercel.app/dokdo-next/account.html?oauth=kakao&next=games.html
+- https://dokdo-school-v2.vercel.app/dokdo-next/account.html?oauth=kakao&next=camp%2F
 
 ## 계정·안전 경계
 
