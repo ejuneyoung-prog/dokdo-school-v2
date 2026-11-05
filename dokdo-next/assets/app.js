@@ -45,8 +45,8 @@ const en={
  backupWarning:'A saved image is not a learning backup. Backup files may contain a name, school, old recovery code and learning history. Keep them private.',
  oldRecords:'Previous Dokdo School records',oldRecordWarning:'Only records under the same site and browser can be read. Original records and the old cloud are not modified. The two versions do not sync automatically.',
  weeklyHistory:'Weekly learning history',weeklyRule:'Only the weekly tally restarts each Monday in Korea time. Your lifetime learning, lights and beacons stay.',
- footer:'Small moments of learning make Dokdo shine.',demoLink:'Separate demo',ageTitle:'Where shall we begin together?',
- ageDesc:'Your age band helps us choose explanations. We do not ask for a birth date.',
+ footer:'Small moments of learning make Dokdo shine.',demoLink:'Separate demo',ageTitle:'Tell us your age band',
+ ageDesc:'We use your age band to pick your first story and explanations. Everyone starts at Kindergarten. We do not collect your date of birth.',
  ageRecoverLink:'Already have a nickname? Load your record here ↗',
  nickname:'Nickname (needed to keep your record)',nicknamePublic:'This nickname appears in the Hall of Fame. Do not use your real name or phone number.',schoolPublic:'Your school name appears in the school ranking.',ageBand:'Age band',
  selectAge:'Select your age band',easyStart:'Start with very simple language, regardless of age.',continue:'Continue',
@@ -493,14 +493,16 @@ function toggleMap(on){
  // 견주어 보는 자리라, 출처가 필요한 유일한 화면입니다.
  if($('scene-bottom'))$('scene-bottom').hidden=!on;
  txt('save-image',on?tr('지도 저장','Save map'):tr('이미지 저장','Save image'));
+ // 지도 칸은 풍경 아래에서 열립니다. 올려 주지 않으면 눌러도 아무 일이 없는 것처럼 보입니다.
+ if(on)$('map-card').scrollIntoView({block:'start'});
 }
 function setupAge(callback,force=false,profileOnly=false){
  if(!guarded())return;ageSetupRevision++;
  if(C.valid(getS().learningProfile)&&!force){callback();return;}
  const optional=$('age-form').querySelector('.v3-optional-profile');if(profileOnly&&optional)optional.open=true;
  profileEditing=profileOnly;$('age-dialog').classList.toggle('profile-only',profileOnly);$('age-band').required=!profileOnly;$('age-band').closest('label').hidden=profileOnly;$('age-easy').closest('label').hidden=profileOnly;$('age-recover-link').hidden=profileOnly;
- $('age-form').querySelector('h2').textContent=profileOnly?tr('닉네임·국가·학교','Nickname, country, and school'):tr('어디서부터 함께 배울까요?','Where shall we start learning?');
- $('age-form').querySelector('[data-i18n="ageDesc"]').textContent=profileOnly?tr('모두 선택 사항입니다. 아래 공개 안내를 확인하고 편하게 정해 주세요.','All fields are optional. Check the visibility notes below before saving.'):tr('나이대는 설명을 고르는 참고값이에요. 생년월일은 받지 않아요.','Your age band helps us choose an explanation. We do not collect your date of birth.');
+ $('age-form').querySelector('h2').textContent=profileOnly?tr('닉네임·국가·학교','Nickname, country, and school'):tr('나이대를 알려 주세요','Tell us your age band');
+ $('age-form').querySelector('[data-i18n="ageDesc"]').textContent=profileOnly?tr('모두 선택 사항입니다. 아래 공개 안내를 확인하고 편하게 정해 주세요.','All fields are optional. Check the visibility notes below before saving.'):tr('나이대에 맞춰 첫 이야기와 설명을 골라 드려요. 학년은 누구나 유치원부터 시작해요. 생년월일은 받지 않아요.','We use your age band to pick your first story and explanations. Everyone starts at Kindergarten. We do not collect your date of birth.');
  $('age-form').querySelector('[type="submit"]').textContent=profileOnly?tr('저장하기','Save'):tr('계속하기','Continue');
  ageNext=callback;$('age-band').replaceChildren();const empty=document.createElement('option');empty.value='';empty.textContent=tr('나이대를 골라 주세요','Select your age band');$('age-band').append(empty);
  C.BANDS.forEach(b=>{const o=document.createElement('option');o.value=b.id;o.textContent=b[language];$('age-band').append(o);});
@@ -622,7 +624,9 @@ function begin(mode){
  if(document.body.classList.contains('school-v3')&&items.length>1){if(items[0].id===lastLessonFirst)[items[0],items[1]]=[items[1],items[0]];lastLessonFirst=items[0].id;try{if(!isolated)sessionStorage.setItem('dokdo-v3-last-first',String(lastLessonFirst));}catch(e){}}
  if(mode==='review'&&!items.length){toast(tr('새 독도 과정에서 배운 내용이 아직 없어요. 먼저 한 단원을 배워 주세요.','Learn a unit in the new Dokdo course before reviewing it.'));return;}
  lastResult=null;
- lesson={mode,items,diagnostic:mode==='placement'?C.createPlacement(s.learningProfile):null,index:0,total:mode==='placement'?5:items.length,first:0,corrected:0,xp:0,answered:false,retrying:false,needsRetry:false};
+ // 처음 푸는 수업에는 사고 활동 이름('이어보기' 등)을 붙이지 않습니다. 이어서 보는 영상처럼 읽힙니다.
+ const firstClass=mode==='daily'&&!Object.values(s.m||{}).some(r=>r&&(r.att>0||r.cor>0||r.courseLearned));
+ lesson={mode,firstClass,items,diagnostic:mode==='placement'?C.createPlacement(s.learningProfile):null,index:0,total:mode==='placement'?5:items.length,first:0,corrected:0,xp:0,answered:false,retrying:false,needsRetry:false};
  view('learn',true);$('learning-menu').hidden=true;$('course-catalog').hidden=true;$('lesson').hidden=false;$('lesson-result').hidden=true;nextItem();
 }
 function renderCatalog(){
@@ -667,7 +671,7 @@ function renderQuestion(teach=false){
  const s0=getS();if(s0)renderGradeLine('lesson-grade',s0,M.summary(s0));
  txt('lesson-position',`${q.index+1} / ${q.total}`);$('lesson-progress').max=q.total;$('lesson-progress').value=q.index;
  txt('lesson-mode',q.mode==='placement'?tr('시작점 찾기','Starting check'):q.mode==='review'?tr('기억 꺼내기','Recall'):tr('함께 익히기','Learn together'));
- txt('lesson-stage',C.unitInfo(q.item.unit)[language]+' · '+C.COG[language][q.item.cognitive]);
+ txt('lesson-stage',C.unitInfo(q.item.unit)[language]+(q.firstClass?'':' · '+C.COG[language][q.item.cognitive]));
  $('teaching').hidden=!teach;$('question-area').hidden=teach;$('question-feedback').hidden=true;$('retry-question').hidden=true;$('next-question').hidden=true;
  txt('teaching-text',C.unitInfo(q.item.unit).reading[language]);txt('question-title',q.item.q);
  $('question-options').replaceChildren();
