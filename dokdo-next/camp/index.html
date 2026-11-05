@@ -34,7 +34,7 @@ button[aria-pressed=true],#send{background:var(--lime);color:var(--ink)}
 #say{display:flex;gap:6px}
 #text{flex:1;min-width:0;background:var(--ink);border:0;border-radius:10px;color:var(--white);font:500 15px var(--ko);padding:9px 12px}
 #hint{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--dk,170px) + 20px + env(safe-area-inset-bottom,0px));background:rgba(35,37,40,.75);padding:6px 12px;border-radius:10px;font-size:14px;white-space:nowrap;pointer-events:none;transition:opacity .6s}
-#enter{position:fixed;inset:0;display:grid;place-items:center;background:rgba(35,37,40,.55);padding-inline:max(16px,env(safe-area-inset-left,0px));text-align:center;z-index:5}
+#enter{position:fixed;inset:0;display:grid;place-items:safe center;overflow-y:auto;padding-block:12px;box-sizing:border-box;background:rgba(35,37,40,.55);padding-inline:max(16px,env(safe-area-inset-left,0px));text-align:center;z-index:5}
 #enter>div{background:var(--panel);border-radius:16px;padding:22px 26px;display:grid;gap:12px;max-width:340px}
 #enter h2{margin:0;font-size:24px;font-weight:500}
 #enter p{margin:0;color:var(--mute)}
@@ -87,7 +87,11 @@ body.resting #dock,body.resting #me,body.resting #top,body.resting #info,body.re
 #enter.guest #start{background:none;color:var(--mute);font-size:14px;text-decoration:underline;padding:6px}
 .back{display:inline-flex;align-items:center;min-height:44px}
 .row button,.tabs button{min-height:44px}
-@media (max-width:520px){.row{flex-wrap:wrap;overflow-x:visible;justify-content:center;touch-action:auto}.row button{flex:1 1 auto}#hint{display:block;white-space:normal;width:calc(100vw - 48px);max-width:340px;text-align:center}}
+body{word-break:keep-all;overflow-wrap:break-word}
+body:has(#deck:not([hidden])) #hint{display:none!important}
+body:has(#deck:not([hidden])) #toast{top:calc(14px + env(safe-area-inset-top,0px));bottom:auto}
+@media (max-width:520px){.row{flex-wrap:wrap;overflow-x:visible;justify-content:center;touch-action:auto}.row button{flex:1 1 40%;min-width:0;padding-inline:8px}#hint{display:block;white-space:normal;width:calc(100vw - 48px);max-width:340px;text-align:center}#snd,#nick,#enter button{min-height:44px}.vol{height:32px}}
+@media (max-width:520px),(max-height:480px){#dock:has(#p-talk[hidden]) #say{display:none}}
 </style>
 </head><body>
 <canvas id="stage" aria-label="독도에서 힐링하기 3D 장면"></canvas>

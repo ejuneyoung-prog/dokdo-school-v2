@@ -291,10 +291,15 @@ body.school-v3{--body:GmarketSans,"Apple SD Gothic Neo","Malgun Gothic",sans-ser
 
 /* 화면 정리. 흰 카드 위에 남아 있던 옛 다크 테마의 밝은 글자와 남색 칸을 밝은 화면 색으로 덮습니다.
    본문 #203f35, 보조 #42604b, 강조 #1f5a3c. 흰 바탕에서 모두 대비 4.5:1 이상입니다. */
-body.school-v3{word-break:keep-all;overflow-wrap:anywhere}
+body.school-v3{word-break:keep-all;overflow-wrap:break-word}
 .school-v3 .v3-stop b,.school-v3 .v3-choice-name,.school-v3 .grade-row-name,.school-v3:lang(en) .v3-choice-name{word-break:keep-all}
 :where(.school-v3) a{color:#2f6238}
 .school-v3 button:disabled{opacity:1}
+.school-v3 #arrange-beacon:disabled,.school-v3 #save-image:disabled{background:#e3ead9!important;color:#566b5a!important;border-color:#cfdbc8!important;box-shadow:none!important;cursor:not-allowed}
+.school-v3 td{overflow-wrap:anywhere}
+.school-v3 th,.school-v3 td.cell-number{white-space:nowrap;overflow-wrap:normal}
+.school-v3 #weekly-history th{white-space:normal}
+.school-v3 .question-material summary{color:#42604b}
 .school-v3 .button:disabled,.school-v3 .button.primary:disabled,.school-v3 .button.secondary:disabled{background:#eef2e8;color:#566b5a;border-color:#d5e1cd}
 .school-v3 .dialog::backdrop{background:#1d3a2bb3}
 
@@ -407,4 +412,5 @@ body.school-v3{word-break:keep-all;overflow-wrap:anywhere}
 @media(max-width:400px){.school-v3 .course-unit-list{grid-template-columns:minmax(0,1fr)}}
 
 /* 로그인 뒤에는 닉네임이 보입니다. 긴 이름은 줄여서 머리줄을 밀지 않게 합니다. */
-.school-v3 .login-entry.signed-in{display:inline-block;background:transparent;color:#2f5930;border-color:#bdcfa8;max-width:9.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.5}
+.school-v3 .login-entry.signed-in{display:inline-block;background:transparent;color:#2f5930;border-color:#bdcfa8;max-width:9.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.5;box-shadow:none}
+@media(min-width:761px) and (max-width:1000px){.school-v3 .site-header>.login-entry.signed-in{width:100%;max-width:100%;text-align:center}}

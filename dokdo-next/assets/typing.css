@@ -68,4 +68,4 @@
 @media(max-width:560px){.type-app{padding-top:20px;gap:14px}.type-app .t-board{padding:12px}.type-app .t-stats{gap:6px}.type-app .t-stat{padding:4px 8px}.type-app .t-stat small{font-size:.875rem}.type-app .t-stat strong{font-size:1.15rem}.type-app .song{padding:10px 12px}.type-app .song .no{font-size:1.8rem}}
 @media(prefers-reduced-motion:reduce){.type-app .t-bar i{transition:none}}
 /* 좁은 화면에서도 기록 칸 이름이 잘리지 않게 두 줄까지 허용합니다. */
-@media(max-width:560px){.type-app .t-stat small{white-space:normal;overflow:visible;line-height:1.35}}
+@media(max-width:560px){.type-app .t-stat small{white-space:normal;overflow:visible;line-height:1.35}html[lang=en] .type-app .t-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}

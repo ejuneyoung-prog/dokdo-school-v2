@@ -970,7 +970,7 @@ function hallRenderList(container,rows,cols){
   if(c.key==='school'||c.key==='name'){
    const has=v!=null&&String(v).trim()!=='';
    td.textContent=has?String(v):'—';td.className=has?'hall-affil':'hall-affil-none';
-  }else td.textContent=v??'';
+  }else{td.textContent=v??'';if(/^[\d,.]+$/.test(String(v??'')))td.className='cell-number';}
   tr2.append(td);}tbody.append(tr2);}
  table.append(tbody);container.append(table);
 }

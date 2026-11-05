@@ -154,7 +154,7 @@ const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(
 const WK='dokdo-heal';let st={c:0,t:0,own:0,on:0,pass:0,seen:[],qD:'',qN:0,rD:'',rN:0};try{Object.assign(st,JSON.parse(load(WK)||'{}'))}catch(e){}if(!Array.isArray(st.seen))st.seen=[];for(const k of ['c','t','own','on','pass','qN','rN'])if(!Number.isFinite(st[k]))st[k]=0;
 deco(me.b,st.on);
 const el=(tg,cl,tx)=>{const e=document.createElement(tg);if(cl)e.className=cl;if(tx!=null)e.textContent=tx;return e};
-const toastE=$('#toast');let toastT=0;function toast(x){toastE.textContent=x;toastE.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{toastE.hidden=true},2600)}
+const toastE=$('#toast');let toastT=0;function toast(x){toastE.textContent=x;toastE.hidden=false;$('#hint').hidden=true;clearTimeout(toastT);toastT=setTimeout(()=>{toastE.hidden=true},2600)}
 let wallet=null,busy=false,again=false;
 // 서도는 첫날 열리고, 동도 정상은 며칠 모아야 오른다. 다음 목표가 싼 곳부터 보이도록 서도를 앞에 둔다.
 const PASS={stay:[2,6,'서도 주민숙소','e-stay','v-stay','서도 데크에서 동도를 바라봅니다'],camp:[1,30,'동도 정상 캠핑','e-camp','v-camp','동도 우산봉 정상에서 쉽니다']};

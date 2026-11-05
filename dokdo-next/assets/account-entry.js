@@ -20,7 +20,7 @@
    link.href=(isolated?'https://dokdo-school-v2.vercel.app/dokdo-next/account.html':'./account.html')+'?next='+encodeURIComponent(id==='game-account-link'?'games.html':'./');
    if(isolated){link.target='_blank';link.rel='noopener noreferrer';}
    const member=!isolated&&signedIn(),name=member?nickname():'',label=member?(name||(en?'My records':'내 기록')):(en?'Sign in':'로그인');
-   link.textContent=label;link.classList?.toggle('signed-in',member);
+   link.textContent=label;link.title=member?label:'';link.classList?.toggle('signed-in',member);
    link.setAttribute('aria-label',member?(en?`${label} · my account and records`:`${label} · 내 계정과 기록`):(en?'Sign in · my account':'로그인 · 내 계정'));
   }
  }

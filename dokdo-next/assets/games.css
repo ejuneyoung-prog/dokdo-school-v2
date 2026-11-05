@@ -118,12 +118,13 @@
 .play-page #block-board{scroll-margin-top:calc(var(--player-header,5.5rem) + 8px)}
 
 /* 화면 정리: 음절이 끊기지 않게 하고, 작은 글자도 대비 4.5:1 이상을 지킵니다. 주황 단추는 초록으로 맞췄습니다. */
-.play-page{word-break:keep-all;overflow-wrap:anywhere}
+.play-page{word-break:keep-all;overflow-wrap:break-word}
 .eyebrow{color:#3f6d59}
 .how b{color:#3f6d59}
 .play-page .stage-label span{color:#42604b}
 .play-page .gift:disabled{color:#566355}
 .play-page button:disabled{opacity:1}
+.play-page :is(#b-up,#block-finish,#player-back):disabled{background:#e3ead9!important;color:#566b5a!important;border-color:#cfdbc8!important;box-shadow:none!important;cursor:not-allowed}
 .play-page #block-hammer:disabled,.play-page #block-help:disabled{color:#566b5a}
 .play-page .primary:disabled{background:#e3ead9;color:#42604b}
 .play-page .jump:disabled{background:#e3ead9;color:#42604b;box-shadow:none}
@@ -133,4 +134,4 @@
 @media(max-width:540px){.play-page .runner-cover .eyebrow{display:none}.play-page .runner-cover p{line-height:1.5}.play-page .runner-cover>div{padding:0}}
 
 /* 로그인 뒤에는 닉네임이 보입니다. 긴 이름은 줄여서 머리줄을 밀지 않게 합니다. */
-.header>.login-entry.signed-in{display:inline-block;background:transparent;color:#2f5930;border-color:#bdcfa8;max-width:9.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.5}
+.header>.login-entry.signed-in{display:inline-block;background:transparent;color:#2f5930;border-color:#bdcfa8;max-width:9.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.5;box-shadow:none}
