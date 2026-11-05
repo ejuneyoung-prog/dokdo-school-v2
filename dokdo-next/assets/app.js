@@ -71,7 +71,7 @@ const en={
  schoolCatE:'Elementary school',schoolCatM:'Middle school',schoolCatH:'High school',schoolCatW:'Korean school abroad',
  schoolField:'School / organization name (optional — type two letters to search)',
  cloudBackupTitle:'Server backup · continue on another device',
- cloudBackupWarning:'Sending alone does not guarantee storage on this legacy server, so it is automatically double-checked for a few seconds after sending. You will be told if it could not be confirmed.',
+ cloudBackupWarning:'After sending, we check for a few seconds that your backup reached the server. If we cannot confirm it, we will let you know.',
  cloudSaveBtn:'Send a backup to the server',
  cloudKeyCopy:'Copy nickname',
  cloudLoadNick:'Nickname to load',
@@ -976,7 +976,7 @@ async function renderHall(cached=false){
  hallShow('hall-loading');
  const res=cached?hallResponse:await DokdoLeaderboard.fetchWeekly();
  if(!cached)hallResponse=res;
- if(res.state==='error'){hallShow('hall-error');$('hall-error-text').textContent=tr('이번 주 기록을 불러오지 못했습니다: ','Could not load this week’s data: ')+res.error;return;}
+ if(res.state==='error'){hallShow('hall-error');$('hall-error-text').textContent=tr('기록을 불러오지 못했어요. 잠시 뒤 다시 시도해 주세요.','We could not load the records. Please try again in a moment.');return;}
  if(res.state==='not_configured'){hallShow('hall-not-configured');return;}
  const d=res.data||{};
  // Real school names already entered by participants feed the setup-form search.
@@ -1134,7 +1134,7 @@ wire('cloud-save','onclick',async()=>{
  }
  else if(res.state==='too_large')txt('cloud-save-status',tr(`기록이 너무 커서(${res.length}자) 보내지 않았습니다.`,`Not sent — the record is too large (${res.length} chars).`));
  else if(res.state==='not_configured')txt('cloud-save-status',tr('서버가 연결되지 않았습니다.','No server is configured.'));
- else txt('cloud-save-status',tr('전송하지 못했습니다: ','Could not send: ')+(res.error||''));
+ else txt('cloud-save-status',tr('전송하지 못했어요. 잠시 뒤 다시 시도해 주세요.','We could not send it. Please try again in a moment.'));
  $('cloud-save').disabled=false;
 });
 /* 주소에 ?기록=별명 이 붙어 있으면 입력칸을 채우고 바로 불러옵니다. 직접
@@ -1167,7 +1167,7 @@ wire('cloud-load','onclick',async()=>{
  }else if(res.state==='not_found')txt('cloud-load-status',tr('해당 별명으로 저장된 기록이 없습니다.','No record found for that nickname.'));
  else if(res.state==='unsupported')txt('cloud-load-status',tr('서버가 기록 불러오기를 아직 지원하지 않습니다. (운영자 확인 필요)','The server does not support record loading yet.'));
  else if(res.state==='not_configured')txt('cloud-load-status',tr('서버가 연결되지 않았습니다.','No server is configured.'));
- else txt('cloud-load-status',tr('불러오지 못했습니다: ','Could not load: ')+(res.error||''));
+ else txt('cloud-load-status',tr('기록을 불러오지 못했어요. 잠시 뒤 다시 시도해 주세요.','We could not load the records. Please try again in a moment.'));
  $('cloud-load').disabled=false;
 });
 function renderWeeks(s){
@@ -1257,14 +1257,7 @@ function sources(){
  showDialog('sources-dialog');
 }
 function settings(){
- if(!getS())return;$('reduce-motion').checked=getS().visual.reduceMotion;$('enable-birds').checked=getS().visual.birdsEnabled;$('sea-density').value=getS().seaDensity||'rich';showDialog('settings-dialog');fontStatus();
-}
-function fontStatus(){
- if(!document.fonts){txt('font-status',tr('시스템 글꼴로 표시 중입니다.','Using system fonts.'));return;}
- Promise.allSettled([document.fonts.load('500 15px GmarketSans','독도'),document.fonts.load('400 15px "Bebas Neue"','123')]).then(()=>{
-  const ok=[...document.fonts].filter(f=>['GmarketSans','Bebas Neue'].includes(f.family.replace(/["']/g,''))&&f.status==='loaded').length>=2;
-  txt('font-status',ok?tr('G마켓 산스 · Bebas Neue 적용','Gmarket Sans · Bebas Neue loaded'):tr('지정 글꼴이 연결되지 않아 시스템 글꼴을 사용합니다.','Remote fonts are unavailable; system fonts are being used.'));
- }).catch(()=>{});
+ if(!getS())return;$('reduce-motion').checked=getS().visual.reduceMotion;$('enable-birds').checked=getS().visual.birdsEnabled;$('sea-density').value=getS().seaDensity||'rich';showDialog('settings-dialog');
 }
 function beaconDialog(){
  if(!guarded())return;const lights=V.lightPositions(getS()).filter(p=>p.lv===4);if(!lights.length){toast(tr('아직 획득한 봉화가 없어요.','You have not earned a beacon yet.'));return;}
