@@ -2,6 +2,7 @@
 window.DOKDO_AUTH_CONFIG=Object.freeze({
  enabled:true, // Operator verified actual email confirmation and password sign-in on 2026-10-19.
  privateRecordsEnabled:false, // Activate only after private SQL/RLS and owner tests.
+ googleEnabled:false, // Activate after the operator finishes Google Cloud and Supabase setup and a live sign-in test.
  kakaoEnabled:false, // Activate after provider setup and the operator's live sign-in test.
  supabaseUrl:'https://cqlvhrodebmhxbrhlmzu.supabase.co',
  publishableKey:'sb_publishable_ZdI6xlAx-wflWEebVpp2tw_-bpfxz_m',

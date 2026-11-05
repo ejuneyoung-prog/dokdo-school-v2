@@ -11,12 +11,10 @@ body{margin:0;background:var(--ink);color:var(--white);font:500 15px/1.35 var(--
 #tags{position:fixed;inset:0;pointer-events:none;overflow:hidden}
 .tag{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:4px;will-change:transform}
 .bubble{max-width:220px;background:var(--white);color:var(--ink);padding:8px 12px;border-radius:14px;font-size:15px;text-align:center;word-break:keep-all;overflow-wrap:anywhere}
-.name{background:rgba(35,37,40,.82);padding:3px 9px;border-radius:9px;font-size:14px;white-space:nowrap}
-.tag.me .name{background:var(--lime);color:var(--ink)}
-.rock{background:rgba(255,255,255,.92);color:var(--ink);padding:3px 9px;border-radius:9px;font-size:14px;white-space:nowrap}
+.name,.rock,.place{background:none;padding:0;font-size:17px;white-space:nowrap;color:var(--white);text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 10px rgba(0,0,0,.65)}
+.tag.me .name{color:var(--lime)}
 #info{left:50%;transform:translateX(-50%);bottom:calc(var(--dk,170px) + 20px + env(safe-area-inset-bottom,0px));padding:8px 14px;width:min(420px,calc(100vw - 32px));box-sizing:border-box;display:grid;gap:2px}
 #info b{font-weight:500;color:var(--lime)}
-.place{background:rgba(35,37,40,.72);padding:4px 10px;border-radius:9px;font-size:14px;white-space:nowrap}
 .place b{font:400 18px var(--num);color:var(--lime);margin-left:6px;letter-spacing:.03em}
 .card{position:fixed;background:rgba(46,49,53,.93);border-radius:14px}
 #top{top:calc(12px + env(safe-area-inset-top,0px));left:max(16px,env(safe-area-inset-left,0px));padding:10px 14px;display:grid;gap:2px;max-width:calc(100vw - 32px)}
@@ -85,6 +83,11 @@ body.resting #dock,body.resting #me,body.resting #top,body.resting #info,body.re
 #enter .note a{color:var(--mute)}
 #err{z-index:9;background:var(--ink);align-content:center;gap:14px}
 #dock{grid-template-columns:minmax(0,1fr)}
+.login-cta{display:block;background:var(--lime);color:var(--ink);font-size:16px;padding:12px;border-radius:10px;text-decoration:none}
+#enter.guest #start{background:none;color:var(--mute);font-size:14px;text-decoration:underline;padding:6px}
+.back{display:inline-flex;align-items:center;min-height:44px}
+.row button,.tabs button{min-height:44px}
+@media (max-width:520px){.row{flex-wrap:wrap;overflow-x:visible;justify-content:center;touch-action:auto}.row button{flex:1 1 auto}#hint{display:block;white-space:normal;width:calc(100vw - 48px);max-width:340px;text-align:center}}
 </style>
 </head><body>
 <canvas id="stage" aria-label="독도에서 힐링하기 3D 장면"></canvas>
@@ -94,7 +97,7 @@ body.resting #dock,body.resting #me,body.resting #top,body.resting #info,body.re
 <div id="hint" hidden>바다를 누르면 이동, 끌면 둘러보기, 휠이나 두 손가락으로 가까이 보기</div>
 <div id="toast" role="status" hidden></div>
 <div id="rest" hidden><div id="r-dot"><span id="r-word">들이쉬고</span></div><div id="r-left">3:00</div><input class="vol" type="range" min="0" max="100" aria-label="소리 크기"><button id="r-end">끝내기</button></div>
-<div id="enter"><div><h2>독도에서 힐링하기</h2><p>파도 소리를 들으며 쉬어 가는 곳입니다. 대황을 모으면 동도와 서도에 오를 수 있습니다.</p><button id="start">바다에서 독도 보기</button><button id="e-camp">동도 정상 캠핑</button><button id="e-stay">서도 주민숙소</button><p class="note">화면 속 가상 체험입니다. 실제 독도는 천연보호구역이라 머물 수 있는 곳과 시간이 제한됩니다.</p><p class="note">날씨 자료 <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></p><a class="back" href="../?area=learn">← 스쿨로 돌아가기</a></div></div>
+<div id="enter"><div><h2>독도에서 힐링하기</h2><p>파도 소리를 들으며 쉬어 가는 곳입니다. 대황을 모으면 동도와 서도에 오를 수 있습니다.</p><a id="login-cta" class="login-cta" href="../account.html?next=camp%2F" hidden>로그인하고 들어가기</a><button id="start">바다에서 독도 보기</button><button id="e-camp">동도 정상 캠핑</button><button id="e-stay">서도 주민숙소</button><p class="note">화면 속 가상 체험입니다. 실제 독도는 천연보호구역이라 머물 수 있는 곳과 시간이 제한됩니다.</p><p class="note">날씨 자료 <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></p><a class="back" href="../?area=learn">← 스쿨로 돌아가기</a></div></div>
 <div id="info" class="card" hidden><b></b><span></span></div>
 <div id="dock" class="card">
  <div class="tabs" role="tablist" aria-label="메뉴"><button role="tab" id="t-rest" aria-selected="true">쉼터</button><button role="tab" id="t-sail" aria-selected="false">항해</button><button role="tab" id="t-talk" aria-selected="false">인사</button><button id="t-deck">대황 <b id="shell">0</b></button></div>
@@ -325,7 +328,7 @@ if(!window.claude){const WKEY='dokdo-heal-weather',WTTL=18e5,wcode=c=>c===0?'cle
  wget();setInterval(wget,WTTL)}
 if(window.claude&&claude.use)claude.use('db').then(db=>{if(!db)return;db.doc('sea/now').onSnapshot(sn=>{const v=sn&&sn.data&&sn.data();if(v&&typeof v.cond==='string'){const old=Date.now()-Date.parse(v.at||'')>432e5;WX.cond=old?'':v.cond;WX.temp=old?null:v.temp;clock()}},()=>{})}).catch(()=>{});
 // 소리
-let fireOn=false,AC=null,mix=null,bed=null,snd={},on=true,silent=null;const VOL=2.6,REC={},WV=.65,RV=.6;let level=Math.min(100,Math.max(0,parseFloat(load('vol'))));if(!(level>=0))level=45;const volNow=()=>on?VOL*Math.pow(level/45,1.6):0;
+let fireOn=false,AC=null,mix=null,bed=null,snd={},on=true,silent=null;const VOL=.8,REC={},WV=.65,RV=.6;let level=Math.min(100,Math.max(0,parseFloat(load('vol'))));if(!(level>=0))level=45;const volNow=()=>on?VOL*Math.pow(level/45,1.6):0;
 const wavQuiet=()=>{const N=4000,b=new Uint8Array(44+N).fill(128),v=new DataView(b.buffer);[...'RIFF'].forEach((c,i)=>b[i]=c.charCodeAt(0));v.setUint32(4,36+N,true);[...'WAVEfmt '].forEach((c,i)=>b[8+i]=c.charCodeAt(0));v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,8000,true);v.setUint32(28,8000,true);v.setUint16(32,1,true);v.setUint16(34,8,true);[...'data'].forEach((c,i)=>b[36+i]=c.charCodeAt(0));v.setUint32(40,N,true);return URL.createObjectURL(new Blob([b],{type:'audio/wav'}))};
 function startAudio(){if(!silent){try{if(navigator.audioSession)navigator.audioSession.type='playback';silent=new Audio(wavQuiet());silent.loop=true;silent.setAttribute('playsinline','');silent.play().catch(()=>{})}catch(e){}}if(AC){AC.resume();return}const A=window.AudioContext||window.webkitAudioContext;if(!A)return;AC=new A();AC.resume();AC.onstatechange=()=>{if(AC.state==='running')sb.textContent=on?'소리 켜짐':'소리 꺼짐'};setTimeout(()=>{if(AC.state!=='running')sb.textContent='눌러서 소리 켜기'},1500);mix=AC.createGain();mix.gain.value=0;mix.gain.setTargetAtTime(volNow(),AC.currentTime,2.2);const lim=AC.createDynamicsCompressor();lim.threshold.value=-14;lim.ratio.value=6;lim.attack.value=.005;lim.release.value=.25;mix.connect(lim);lim.connect(AC.destination);
  const L=AC.sampleRate*5,B=AC.createBuffer(2,L,AC.sampleRate);for(let c=0;c<2;c++){const d=B.getChannelData(c);for(let i=0;i<L;i++)d[i]=Math.random()*2-1}
@@ -340,6 +343,10 @@ function chime(){if(!AC||!on)return;const t=AC.currentTime,o=AC.createOscillator
 function sound(mv,seated,dn){if(!AC)return;const t=AC.currentTime,set=(k,v)=>snd[k]&&snd[k].gain.setTargetAtTime(v,t,.4);set('surf',seated?(mode==='stay'?.24:.13):Math.max(0,1-dn/820)*.34);if(REC.waves){bed.gain.setTargetAtTime(0,t,1.2);REC.waves.gain.setTargetAtTime(seated?(mode==='stay'?WV*1.15:WV*.7):WV*(.72+.5*Math.max(0,1-dn/820)),t,1)}if(REC.rain)REC.rain.gain.setTargetAtTime(sky.r*RV,t,1.2);set('wake',seated?0:Math.abs(mv)*.09);set('fire',mode==='camp'&&fireOn?.02:0);set('rain',REC.rain?0:sky.r*.07);snd.wind&&snd.wind.gain.setTargetAtTime(seated?.08:.03,t,.6)}
 const sb=$('#snd');sb.onclick=()=>{startAudio();on=!on;sb.setAttribute('aria-pressed',on);sb.textContent=on?'소리 켜짐':'소리 꺼짐';if(mix)mix.gain.setTargetAtTime(volNow(),AC.currentTime,.1)};
 document.querySelectorAll('.vol').forEach((x,i,all)=>{x.value=level;x.addEventListener('input',()=>{startAudio();level=+x.value;all.forEach(y=>{if(y!==x)y.value=level});save('vol',level);if(mix)mix.gain.setTargetAtTime(volNow(),AC.currentTime,.08)})});
+// 세션 확인에 SDK를 쓰지 않습니다. 이 페이지는 계정 서버에 접속하지 않고 브라우저의 로그인 표시만 읽습니다.
+function signedIn(){for(const k of ['dokdo-account-session-v2','dokdo-account-session-v1']){try{const v=JSON.parse(localStorage.getItem(k)||'null');if(v&&v.user&&v.user.id)return true}catch(e){}}return false}
+if(!signedIn()){$('#enter').classList.add('guest');$('#login-cta').hidden=false;$('#start').textContent='로그인 없이 둘러보기'}
+if(matchMedia('(pointer:coarse)').matches)hint.textContent='바다를 누르면 이동, 끌면 둘러보기, 두 손가락으로 가까이 보기';
 const enter=m=>{startAudio();$('#enter').hidden=true;if(!tryGo(m))heal('sea');hint.hidden=false;setTimeout(()=>{hint.style.opacity=0},9000)};$('#start').onclick=()=>enter('sea');$('#e-camp').onclick=()=>enter('camp');$('#e-stay').onclick=()=>enter('stay');
 addEventListener('pointerdown',()=>{if(AC&&AC.state!=='running')AC.resume()});document.addEventListener('visibilitychange',()=>{if(!document.hidden&&AC)AC.resume();if(!document.hidden&&silent)silent.play().catch(()=>{})});
 if(window.claude&&claude.use)Promise.all([claude.use('db'),claude.use('user')]).then(async([db,u])=>{if(!db||!u)return;const id=await u.id();if(!id)return;const ref=db.doc('data/users/'+id+'/wallet'),sn=await ref.get();wallet=ref;const v=sn.exists&&sn.data();if(v&&typeof v.t==='number'&&v.t>=st.t){Object.assign(st,v);deco(me.b,st.on);dirty=true;save(WK,JSON.stringify(st));ui()}else if(st.t)keep()}).catch(()=>{});

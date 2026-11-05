@@ -40,6 +40,8 @@ def walk(context, label):
     expect(page.locator('#enter h2')).to_have_text('독도에서 힐링하기')
     expect(page.locator('#enter .note').first).to_contain_text('가상 체험')
     expect(page.locator('#enter a.back')).to_have_attribute('href', '../?area=learn')
+    expect(page.locator('#login-cta')).to_have_attribute('href', '../account.html?next=camp%2F')
+    expect(page.locator('#start')).to_have_text('로그인 없이 둘러보기')
     expect(page.locator('#e-camp')).to_contain_text('대황 30')
     expect(page.locator('#e-stay')).to_contain_text('대황 6')
     expect(page.locator('#g-text')).to_contain_text('서도 주민숙소')
@@ -48,6 +50,8 @@ def walk(context, label):
 
     page.locator('#start').click()
     expect(page.locator('#enter')).to_be_hidden()
+    assert page.evaluate("getComputedStyle(document.querySelector('.rock')).backgroundColor") == 'rgba(0, 0, 0, 0)'
+    assert page.evaluate("parseFloat(getComputedStyle(document.querySelector('.rock')).fontSize)") >= 16
     expect(page.locator('#count')).to_contain_text('혼자 쉬는 중')
     expect(page.locator('#tags .tag:not(.me) .name')).to_have_count(0)
     expect(page.locator('#tags .tag:not(.me) .bubble:visible')).to_have_count(0)
@@ -153,6 +157,26 @@ def rain(browser):
     assert results['clear'] == 0 and results['rain'] > .05, results
     print('ok rain follows the weather', results)
 
+def member(browser):
+    context = browser.new_context()
+    use_three(context)
+    weather(context, 0)
+    context.add_init_script("localStorage.setItem('dokdo-account-session-v1',JSON.stringify({user:{id:'fixture'}}));localStorage.setItem('nick','독코')")
+    page = context.new_page()
+    page.goto(f'{base}/camp/')
+    expect(page.locator('#login-cta')).to_be_hidden()
+    expect(page.locator('#start')).to_have_text('바다에서 독도 보기')
+    page.goto(f'{base}/')
+    expect(page.locator('#account-link')).to_have_text('내 기록')
+    page.evaluate('DokdoApp.editProfile()')
+    page.fill('#nickname', '독코')
+    page.locator('#age-form button[type=submit]').click()
+    expect(page.locator('#account-link')).to_have_text('독코')
+    page.goto(f'{base}/games.html')
+    expect(page.locator('#game-account-link')).to_have_text('독코')
+    context.close()
+    print('ok signed-in header and camp entry')
+
 def blocked(browser):
     context = browser.new_context()
     context.route(CDN, lambda r: r.abort())
@@ -177,6 +201,7 @@ try:
             card(context, label)
             context.close()
         rain(browser)
+        member(browser)
         blocked(browser)
         browser.close()
 finally:

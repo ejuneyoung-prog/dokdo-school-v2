@@ -114,3 +114,5 @@
 @media(max-width:540px){.header>.brand{flex:1;min-width:0}.header>.login-entry{margin-left:0;min-width:72px;padding:9px 13px}.header>.language-switch{order:3}.header>.ticket{order:4;margin-left:auto}.header nav{order:5;justify-content:space-between;font-size:11px;white-space:normal;gap:8px 12px;margin:5px 0}.header nav a{min-height:40px;display:inline-flex;align-items:center}}
 @media(max-width:540px){.header{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px}.header>.brand{grid-column:1;grid-row:1;min-width:0}.header>.login-entry{grid-column:2;grid-row:1}.header>.language-switch{grid-column:1;grid-row:2;justify-self:start}.header>.ticket{grid-column:2;grid-row:2;justify-self:end;margin:0}.header>nav{grid-column:1/-1;grid-row:3;width:100%;margin:0}}
 @media(max-width:540px){.header>.brand>span{min-width:0;white-space:normal}.header>.brand small{white-space:normal;line-height:1.45}}
+/* 로그인 뒤에는 닉네임이 보입니다. 긴 이름은 줄여서 머리줄을 밀지 않게 합니다. */
+.header>.login-entry.signed-in{display:inline-block;background:transparent;color:#2f5930;border-color:#bdcfa8;max-width:9.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.5}

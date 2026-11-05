@@ -143,8 +143,8 @@ test('The real form binding returns to the allowed destination only after verifi
 test('Form failures and email-confirmation-pending signup cannot redirect as a successful login',async()=>{
  for(const signup of [false,true]){const f=bindFixture(signup?{}:{loginError:{code:'invalid_credentials'}});await flush();if(signup)f.c.setMode('signup');f.nodes['account-email'].value=USER.email;f.nodes['account-password'].value='fictional-password';await f.nodes['account-form'].onsubmit({preventDefault(){}});a.deepEqual(f.assigned,[]);a.equal(f.c.getState().user,null);}
 });
-test('The account entry utility contains no SDK initialization or student-record access',()=>{
- const source=fs.readFileSync(path.join(__dirname,'../assets/account-entry.js'),'utf8');a.doesNotMatch(source,/createClient|localStorage|sessionStorage|fetch\s*\(/);
+test('The account entry utility has no SDK or network and only reads the sign-in mark and nickname',()=>{
+ const source=fs.readFileSync(path.join(__dirname,'../assets/account-entry.js'),'utf8');a.doesNotMatch(source,/createClient|sessionStorage|setItem|removeItem|fetch\s*\(/);a.deepEqual([...source.matchAll(/localStorage\.getItem\(([^|)]+)/g)].map(m=>m[1]).sort(),["'dokdo-korea-school-cinematic-v1'",'key']);
  const game=fs.readFileSync(path.join(__dirname,'../games.html'),'utf8');a.match(game,/id="game-account-link" href="\.\/account\.html\?next=games\.html"/);
  const account=fs.readFileSync(path.join(__dirname,'../account.html'),'utf8');a.match(account,/connect-src 'self' https:\/\/cqlvhrodebmhxbrhlmzu\.supabase\.co/);a.doesNotMatch(account,/https:\/\/\*\.supabase\.co|assets\/app\.js|assets\/games\.js/);
 });
