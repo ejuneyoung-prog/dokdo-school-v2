@@ -37,6 +37,14 @@
    if(!response.ok)throw Error('Password change unavailable');return response.json();
   };
  }
+ // 만 14세 확인 시각만 계정에 남깁니다. SDK 이벤트를 일으키지 않도록 직접 보냅니다.
+ function ageRecordTransport(config,fetcher){
+  return async(token,confirmedAt)=>{
+   const project=new URL(config.supabaseUrl);if(typeof fetcher!=='function'||!/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(project.href)||!/^\d{4}-\d{2}-\d{2}T[\d:.]+Z$/.test(confirmedAt||''))throw Error('Age record unavailable');
+   const response=await fetcher(project.origin+'/auth/v1/user',{method:'PUT',credentials:'omit',cache:'no-store',redirect:'error',referrerPolicy:'no-referrer',signal:AbortSignal.timeout(4000),headers:{apikey:config.publishableKey,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({data:{age_14_confirmed_at:confirmedAt}})});
+   if(!response.ok)throw Error('Age record unavailable');return true;
+  };
+ }
  function returnPath(currentUrl){
   try{const next=new URL(currentUrl).searchParams.get('next');return ['games.html','camp/'].includes(next)?next:'./';}catch(e){return './';}
  }
@@ -63,7 +71,7 @@
    await locks.request('lock:'+key,{mode:'exclusive'},()=>{const raw=storage.getItem(key);if(!raw)return;const saved=JSON.parse(raw);if(saved.access_token!==session.access_token)return;if(session.user?.id&&storage.getItem(accepted)===session.user.id)clearAccepted();storage.removeItem(key);if(storage.getItem(key)!==null)throw Error('Session cleanup unavailable');});
   }};
  }
- function createController({config,sdk,currentUrl,onChange=()=>{},defer=fn=>setTimeout(fn,0),navigate=()=>{},onAccount=()=>{},consumeCallback=()=>{},cleanup=null,updatePassword=null}){
+ function createController({config,sdk,currentUrl,onChange=()=>{},defer=fn=>setTimeout(fn,0),navigate=()=>{},onAccount=()=>{},consumeCallback=()=>{},cleanup=null,updatePassword=null,recordAge=null}){
   const settings=validateConfig(config,currentUrl);let url;try{url=new URL(currentUrl);}catch(e){url=new URL('https://invalid.example/');}
   const recoveryHint=url.searchParams.get('flow')==='recovery'||new URLSearchParams(url.hash.slice(1)).get('type')==='recovery';
   const fragment=new URLSearchParams(url.hash.slice(1));
@@ -145,7 +153,7 @@
      if(exchanged.error||!exchanged.data?.session||exchanged.data.user?.id!==exchanged.data.session.user?.id){callbackRejected=true;await cleanup?.discard(exchanged.data?.session);await restore(null);state.ready=true;return true;}
      exchangedSession=exchanged.data.session;
      if(exchanged.data.redirectType==='recovery')acceptRecovery(exchangedSession);
-     await restore(exchangedSession,true);if(!state.user||state.user.id!==exchangedSession.user.id){callbackRejected=true;await cleanup?.discard(exchangedSession);}state.ready=true;return true;
+     await restore(exchangedSession,true);if(!state.user||state.user.id!==exchangedSession.user.id){callbackRejected=true;await cleanup?.discard(exchangedSession);}else try{await recordAge?.(exchangedSession.access_token);}catch(e){/* 기록 실패가 로그인을 막지 않습니다. 다음 복귀 때 다시 보냅니다. */}state.ready=true;return true;
     }
     const {data,error}=await client.auth.getSession();if(error)throw error;
     await restore(data?.session||null);state.ready=true;return true;
@@ -205,7 +213,7 @@
       clearRecovery();recoveryConsumed=true;state.mode='login';notice('비밀번호를 바꿨어요.');return true;
      }catch(e){if(current())notice(messageFor(e,mode),true);return false;}
     }
-    const result=mode==='signup'?await client.auth.signUp({email,password,options:{emailRedirectTo:settings.redirect}}):await client.auth.signInWithPassword({email,password});
+    const result=mode==='signup'?await client.auth.signUp({email,password,options:{emailRedirectTo:settings.redirect,data:{age_14_confirmed_at:new Date().toISOString()}}}):await client.auth.signInWithPassword({email,password});
     if(result.error)throw result.error;
     if(mode==='signup'&&!result.data?.session){notice('가입 확인 메일을 확인해 주세요. 이미 가입하셨다면 로그인해 주세요.');return true;}
     if(!result.data?.session)throw Error('Sign-in not verified');
@@ -251,8 +259,10 @@
    if(state.ready&&state.oauthComplete&&state.user&&!recovery&&!continued){continued=true;root.location.assign(returnPath(root.location.href));}
   };
   let cleanup;try{cleanup=sessionCleanup(root.localStorage,root.navigator.locks);}catch(e){cleanup={prepare(){throw Error('Session storage unavailable');}};}
-  const controller=createController({updatePassword:passwordTransport(root.DOKDO_AUTH_CONFIG,root.fetch?.bind(root)),config:root.DOKDO_AUTH_CONFIG,sdk:root.supabase,currentUrl:root.location.href,onChange:view,cleanup,navigate:url=>root.location.assign(url),consumeCallback:()=>{const safe=new URL(root.location.href);safe.search='';safe.hash='';safe.searchParams.set('next',returnPath(root.location.href));root.history?.replaceState(null,'',safe.href);},onAccount:(user,client)=>{if(user)records?.connect(user,client);else records?.invalidate();}});
-  const adult=()=>{if($('age-14').checked)return true;$('age-14').focus();$('account-status').textContent='만 14세 이상인지 먼저 확인해 주세요.';return false;};
+  const AGE_KEY='dokdo-age-14-confirmed-at',session=()=>{try{return root.sessionStorage||null;}catch(e){return null;}};
+  const recordAge=async token=>{const store=session(),at=store?.getItem(AGE_KEY);if(!at)return;await ageRecordTransport(root.DOKDO_AUTH_CONFIG,root.fetch?.bind(root))(token,at);store.removeItem(AGE_KEY);};
+  const controller=createController({recordAge,updatePassword:passwordTransport(root.DOKDO_AUTH_CONFIG,root.fetch?.bind(root)),config:root.DOKDO_AUTH_CONFIG,sdk:root.supabase,currentUrl:root.location.href,onChange:view,cleanup,navigate:url=>root.location.assign(url),consumeCallback:()=>{const safe=new URL(root.location.href);safe.search='';safe.hash='';safe.searchParams.set('next',returnPath(root.location.href));root.history?.replaceState(null,'',safe.href);},onAccount:(user,client)=>{if(user)records?.connect(user,client);else records?.invalidate();}});
+  const adult=()=>{if($('age-14').checked){try{session()?.setItem(AGE_KEY,new Date().toISOString());}catch(e){}return true;}$('age-14').focus();$('account-status').textContent='만 14세 이상인지 먼저 확인해 주세요.';return false;};
   if($('google-signin'))$('google-signin').onclick=()=>adult()&&controller.signInGoogle();
   if($('age-14'))$('age-14').onchange=()=>view(controller.getState());
   if($('email-open'))$('email-open').onclick=()=>{emailOpen=true;view(controller.getState());$('account-email').focus();};
@@ -264,5 +274,5 @@
   root.addEventListener('pageshow',event=>{if(event.persisted)root.location.reload();});
   root.DokdoLanguage?.mount(d.body);controller.init();return controller;
  }
- return {createController,passwordTransport,validateConfig,returnPath,googleReturnUrl,validGoogleUrl,kakaoReturnUrl,validKakaoUrl,sessionCleanup,mount};
+ return {createController,passwordTransport,ageRecordTransport,validateConfig,returnPath,googleReturnUrl,validGoogleUrl,kakaoReturnUrl,validKakaoUrl,sessionCleanup,mount};
 });

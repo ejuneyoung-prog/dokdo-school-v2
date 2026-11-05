@@ -1,6 +1,6 @@
 /* 구글 로그인 입구: 가상 계정만 쓰고 외부 인증에 접속하지 않습니다. */
 'use strict';
-const test=require('node:test'),a=require('node:assert/strict'),fs=require('fs'),path=require('path'),vm=require('vm'),{createController,googleReturnUrl,validGoogleUrl,returnPath,sessionCleanup,mount}=require('../assets/account.js');
+const test=require('node:test'),a=require('node:assert/strict'),fs=require('fs'),path=require('path'),vm=require('vm'),{createController,googleReturnUrl,validGoogleUrl,returnPath,sessionCleanup,mount,ageRecordTransport}=require('../assets/account.js');
 const URL_NOW='https://school.example/account.html?next=camp/',CONFIG={enabled:true,googleEnabled:true,supabaseUrl:'https://fixture.supabase.co',publishableKey:'sb_publishable_FICTIONAL_ONLY_0000',redirectUrl:'https://school.example/account.html'};
 const settings={url:'https://fixture.supabase.co',redirect:CONFIG.redirectUrl};
 const authorize=(over={})=>{const u=new URL('https://fixture.supabase.co/auth/v1/authorize');const q={provider:'google',redirect_to:googleReturnUrl(settings,URL_NOW),code_challenge:'a'.repeat(43),code_challenge_method:'s256',prompt:'select_account',...over};for(const[k,v]of Object.entries(q))u.searchParams.set(k,v);return u.href;};
@@ -37,4 +37,24 @@ test('The Google button does nothing until the age is confirmed',async()=>{
 test('A Google failure does not speak of Kakao',async()=>{
  const auth={onAuthStateChange(){return{data:{subscription:{unsubscribe(){}}}};},async getSession(){return{data:{session:null},error:null};}};let seen='';
  const c=createController({config:CONFIG,sdk:{createClient:()=>({auth})},currentUrl:'https://school.example/account.html?oauth=google&error=access_denied',onChange:s=>{seen=s.message;},consumeCallback(){},cleanup:{prepare(){},begin(){},discard(){}}});await c.init();a.doesNotMatch(seen,/카카오/);a.match(seen,/구글/);c.dispose();
+});
+
+test('The age record sends only the time, and only to the project',async()=>{
+ const sent=[];const send=ageRecordTransport(CONFIG,async(url,init)=>{sent.push({url,init});return{ok:true};});
+ await send('token','2026-11-05T04:00:00.000Z');a.equal(sent[0].url,'https://fixture.supabase.co/auth/v1/user');a.equal(sent[0].init.method,'PUT');a.deepEqual(JSON.parse(sent[0].init.body),{data:{age_14_confirmed_at:'2026-11-05T04:00:00.000Z'}});a.equal(sent[0].init.headers.Authorization,'Bearer token');
+ await a.rejects(send('token','someone@example.com'));await a.rejects(ageRecordTransport({...CONFIG,supabaseUrl:'https://evil.example'},async()=>({ok:true}))('token','2026-11-05T04:00:00.000Z'));
+ await a.rejects(ageRecordTransport(CONFIG,async()=>({ok:false}))('token','2026-11-05T04:00:00.000Z'));
+});
+test('Returning from Google records the age before moving on, and a failed record does not stop the login',async()=>{
+ for(const fails of [false,true]){
+  const user={id:'fixture',app_metadata:{provider:'google'}},session={access_token:'fixture-token',user};let recorded='',readyAtRecord=null;
+  const auth={onAuthStateChange(){return{data:{subscription:{unsubscribe(){}}}};},async getSession(){return{data:{session},error:null};},async getUser(){return{data:{user},error:null};},async exchangeCodeForSession(){return{data:{session,user},error:null};}};
+  let c;c=createController({config:CONFIG,sdk:{createClient:()=>({auth})},currentUrl:'https://school.example/account.html?oauth=google&next=camp/&code=fixture-code',consumeCallback(){},cleanup:{prepare(){},begin(){},authorize:async()=>true,discard(){},forget(){}},recordAge:async token=>{readyAtRecord=c.getState().ready;recorded=token;if(fails)throw Error('down');}});
+  await c.init();a.equal(recorded,'fixture-token');a.equal(readyAtRecord,false);const s=c.getState();a.equal(s.ready,true);a.equal(s.user.id,'fixture');a.equal(s.oauthComplete,true);c.dispose();
+ }
+});
+test('Signing up keeps the time of the age confirmation',async()=>{
+ let options=null;const auth={onAuthStateChange(){return{data:{subscription:{unsubscribe(){}}}};},async getSession(){return{data:{session:null},error:null};},async signUp(o){options=o.options;return{data:{session:null},error:null};}};
+ const c=createController({config:{...CONFIG,googleEnabled:false},sdk:{createClient:()=>({auth})},currentUrl:'https://school.example/account.html'});await c.init();c.setMode('signup');await c.submit({email:'a@example.com',password:'fictional-password'});
+ a.match(options.data.age_14_confirmed_at,/^\d{4}-\d{2}-\d{2}T[\d:.]+Z$/);a.deepEqual(Object.keys(options.data),['age_14_confirmed_at']);c.dispose();
 });
