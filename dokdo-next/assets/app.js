@@ -29,7 +29,7 @@ const en={
  myLights:'Lights I have earned',lifetime:'Lifetime correct',discoveries:'Encounters with life',gullJournal:'Black-tailed gull journal',
  placeBeacons:'Place beacons',openJournal:'Open journal',journey:'🗺️ My learning journey',seaVisitors:'🦭 Call the legendary gangchi',
  visitRule:'Earn invitations through correct answers. Gangchi then visit the water between the islands for one minute.',
- visitCount:'Number of gangchi to invite',invite:'Invite gangchi',backHome:'To Dokdo Learning',
+ visitCount:'Number of gangchi to invite',invite:'Invite gangchi',backHome:'Back to Dokdo Learning',
  dailyTitle:'Learn a little',dailyDesc:'Read a short explanation, then try the questions. Revisit mistakes with help.',
  reviewTitle:'Recall what you learned',reviewDesc:'Check what you remember on different days. Repeating one answer is not mastery.',
  placementTitle:'Find your starting point',placementDesc:'Select an age band, then explore five questions at a comfortable level.',
@@ -820,7 +820,7 @@ function renderResult(q,outcome){
    :tr('이 과정의 열두 단원을 모두 마쳤어요. 학습하기에서 더 깊은 과정을 열 수 있습니다.','You have finished all twelve units. Open a deeper pathway from the learning menu.');
  }
  const row=document.createElement('div');row.className='button-row';
- const home=document.createElement('button');home.className='button primary';home.textContent=tr('배움터로','To Dokdo Learning');home.onclick=()=>view('home');
+ const home=document.createElement('button');home.className='button primary';home.textContent=tr('배움터로 돌아가기','Back to Dokdo Learning');home.onclick=()=>view('home');
  const more=document.createElement('button');more.className='button secondary';more.textContent=tr('한 번 더 배우기','Learn a little more');more.onclick=()=>start('daily');row.append(home,more);
  if(done&&getS()?.learningProfile?.course?.track==='adult'){const go=document.createElement('button');go.className='button secondary';go.textContent=tr('복습으로 계속하기','Keep going with review');go.onclick=()=>start('review');row.append(go);}
  else if(done){const go=document.createElement('button');go.className='button secondary';go.textContent=tr('과정 목록 보기','Open the course list');go.onclick=()=>{view('learn');renderCatalog();};row.append(go);}

@@ -1,6 +1,6 @@
 # 공개 전 인증 경계 보강 · 2026-10-19
 
-현재 공개판은 kakaoEnabled/privateRecordsEnabled:false를 유지합니다. 새 두 기능을 활성화하면 인증은 별도 dokdo-account-session-v2의 PKCE로 분리합니다. 기존 v1 세션을 승계하지 않아 한 번 다시 로그인해야 합니다. 이메일·비밀번호 및 학습·게임 저장 키는 유지합니다. 두 설정이 false인 기존 이메일 판은 기존 v1 동작을 유지합니다.
+현재 공개판은 googleEnabled/kakaoEnabled/privateRecordsEnabled:false를 유지합니다. 새 두 기능을 활성화하면 인증은 별도 dokdo-account-session-v2의 PKCE로 분리합니다. 기존 v1 세션을 승계하지 않아 한 번 다시 로그인해야 합니다. 이메일·비밀번호 및 학습·게임 저장 키는 유지합니다. 두 설정이 false인 기존 이메일 판은 기존 v1 동작을 유지합니다.
 
 개인 보관함의 RLS와 수동 저장 체크만으로 로그인 CSRF를 막을 수는 없습니다. URL에 다른 사람의 유효 JWT를 넣어 계정을 바꾸게 하는 경로를 차단합니다. 보안 모드는 URL 자동 세션 수입을 끄며 query/fragment의 access_token·refresh_token·provider_token·provider_refresh_token은 수입하지 않습니다. code는 query 단일값만 허용하고, 고정 SDK exchangeCodeForSession이 브라우저에 보관한 verifier로 교환한 뒤 서버 getUser와 일치해야 합니다. S256 challenge만 허용하며 plain fallback은 거절합니다. code/hash는 주소창에서 제거합니다.
 

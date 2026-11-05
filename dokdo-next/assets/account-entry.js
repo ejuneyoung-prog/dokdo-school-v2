@@ -1,8 +1,12 @@
 /* 머리줄 계정 단추. SDK나 서버 호출 없이 이 브라우저의 로그인 표시와 닉네임만 읽습니다. */
 (function(){
  'use strict';
+ function keys(){
+  const config=globalThis.DOKDO_AUTH_CONFIG;if(!config)return ['dokdo-account-session-v2','dokdo-account-session-v1'];
+  return [config.googleEnabled===true||config.kakaoEnabled===true||config.privateRecordsEnabled===true?'dokdo-account-session-v2':'dokdo-account-session-v1'];
+ }
  function signedIn(){
-  for(const key of ['dokdo-account-session-v2','dokdo-account-session-v1']){try{const value=JSON.parse(localStorage.getItem(key)||'null');if(value&&value.user&&value.user.id)return true;}catch(e){}}
+  for(const key of keys()){try{const value=JSON.parse(localStorage.getItem(key)||'null');if(value&&value.user&&value.user.id)return true;}catch(e){}}
   return false;
  }
  function nickname(){

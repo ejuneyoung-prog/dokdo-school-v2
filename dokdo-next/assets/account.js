@@ -43,7 +43,7 @@
  function kakaoReturnUrl(settings,currentUrl){const u=new URL(settings.redirect);u.searchParams.set('oauth','kakao');u.searchParams.set('next',returnPath(currentUrl));return u.href;}
  function googleReturnUrl(settings,currentUrl){const u=new URL(settings.redirect);u.searchParams.set('oauth','google');u.searchParams.set('next',returnPath(currentUrl));return u.href;}
  function validGoogleUrl(value,settings,currentUrl){
-  try{const u=new URL(value);return u.protocol==='https:'&&u.origin===settings.url&&u.pathname==='/auth/v1/authorize'&&!u.username&&!u.password&&!u.hash&&u.searchParams.getAll('provider').length===1&&u.searchParams.get('provider')==='google'&&u.searchParams.getAll('redirect_to').length===1&&u.searchParams.get('redirect_to')===googleReturnUrl(settings,currentUrl)&&u.searchParams.getAll('code_challenge').length===1&&/^[A-Za-z0-9_-]{43}$/.test(u.searchParams.get('code_challenge')||'')&&u.searchParams.getAll('code_challenge_method').length===1&&u.searchParams.get('code_challenge_method')==='s256';}catch(e){return false;}
+  try{const u=new URL(value);return u.protocol==='https:'&&u.origin===settings.url&&u.pathname==='/auth/v1/authorize'&&!u.username&&!u.password&&!u.hash&&u.searchParams.getAll('provider').length===1&&u.searchParams.get('provider')==='google'&&!u.searchParams.has('scopes')&&u.searchParams.getAll('prompt').length===1&&u.searchParams.get('prompt')==='select_account'&&u.searchParams.getAll('redirect_to').length===1&&u.searchParams.get('redirect_to')===googleReturnUrl(settings,currentUrl)&&u.searchParams.getAll('code_challenge').length===1&&/^[A-Za-z0-9_-]{43}$/.test(u.searchParams.get('code_challenge')||'')&&u.searchParams.getAll('code_challenge_method').length===1&&u.searchParams.get('code_challenge_method')==='s256';}catch(e){return false;}
  }
  function validKakaoUrl(value,settings,currentUrl){
   try{const u=new URL(value);return u.protocol==='https:'&&u.origin===settings.url&&u.pathname==='/auth/v1/authorize'&&!u.username&&!u.password&&!u.hash&&u.searchParams.getAll('provider').length===1&&u.searchParams.get('provider')==='kakao'&&u.searchParams.getAll('redirect_to').length===1&&u.searchParams.get('redirect_to')===kakaoReturnUrl(settings,currentUrl)&&u.searchParams.getAll('scope').length===1&&u.searchParams.get('scope')==='profile_nickname'&&u.searchParams.getAll('code_challenge').length===1&&/^[A-Za-z0-9_-]{43}$/.test(u.searchParams.get('code_challenge')||'')&&u.searchParams.getAll('code_challenge_method').length===1&&u.searchParams.get('code_challenge_method')==='s256';}catch(e){return false;}
@@ -52,7 +52,9 @@
   const key='dokdo-account-session-v2',accepted=key+'-accepted-user';
   const lock=(name,timeout,fn)=>locks.request(name,{mode:'exclusive'},fn);
   const clearAccepted=()=>{storage.removeItem(accepted);if(storage.getItem(accepted)!==null)throw Error('Session acceptance cleanup unavailable');};
-  return {lock,prepare(){if(typeof locks?.request!=='function'||!storage)throw Error('Session lock unavailable');storage.getItem(key);storage.getItem(accepted);},
+  return {lock,prepare(){if(typeof locks?.request!=='function'||!storage)throw Error('Session lock unavailable');storage.getItem(key);storage.getItem(accepted);storage.removeItem('dokdo-account-session-v1');},
+   // 구글을 다시 끄면 옛 방식으로 돌아가므로 새 방식의 세션을 남기지 않습니다.
+   retire(){for(const item of [key,accepted,key+'-code-verifier'])storage.removeItem(item);},
    begin:()=>lock('lock:'+key,0,clearAccepted),
    authorize:(session,establish,isCurrent)=>lock('lock:'+key,0,()=>{const saved=JSON.parse(storage.getItem(key)||'null');if(!isCurrent()||!saved?.access_token||saved.access_token!==session?.access_token||saved.user?.id!==session?.user?.id)return false;if(establish){storage.setItem(accepted,session.user.id);if(storage.getItem(accepted)!==session.user.id)throw Error('Session acceptance unavailable');}return storage.getItem(accepted)===session.user.id;}),
    forget:id=>lock('lock:'+key,0,()=>{if(storage.getItem(accepted)===id)clearAccepted();}),async discard(session){
@@ -67,14 +69,14 @@
   const fragment=new URLSearchParams(url.hash.slice(1));
   const oauthError=['error','error_code','error_description'].some(key=>url.searchParams.has(key)||fragment.has(key));
   const expiredState=[url.searchParams,fragment].some(params=>params.get('error_code')==='bad_oauth_state');
-  const oauthMessage=expiredState?(settings?.kakaoEnabled?'카카오 로그인 요청 시간이 지났어요. 카카오 로그인 버튼을 눌러 새로 시작해 주세요.':'카카오 로그인 요청 시간이 지났어요. 지금은 이메일로 로그인해 주세요.'):'카카오 로그인을 마치지 못했어요. 다시 시도하거나 이메일로 로그인해 주세요.';
+  const oauthMessage=url.searchParams.get('oauth')==='google'?(expiredState?'구글 로그인 요청 시간이 지났어요. 구글 로그인 단추를 눌러 새로 시작해 주세요.':'구글 로그인을 마치지 못했어요. 다시 시도하거나 이메일로 로그인해 주세요.'):expiredState?(settings?.kakaoEnabled?'카카오 로그인 요청 시간이 지났어요. 카카오 로그인 버튼을 눌러 새로 시작해 주세요.':'카카오 로그인 요청 시간이 지났어요. 지금은 이메일로 로그인해 주세요.'):'카카오 로그인을 마치지 못했어요. 다시 시도하거나 이메일로 로그인해 주세요.';
   const oauthProvider=url.searchParams.get('oauth'),oauthHint=['kakao','google'].includes(oauthProvider);
   const secure=!!settings?.secureSessions,code=url.searchParams.get('code');
   const tokenCallback=secure&&['access_token','refresh_token','provider_token','provider_refresh_token'].some(key=>fragment.has(key)||url.searchParams.has(key));
   const malformedCode=secure&&url.searchParams.has('code')&&(url.searchParams.getAll('code').length!==1||!code||code.length>4096);
   let callbackRejected=!!(secure&&(tokenCallback||oauthError||malformedCode)),exchangedSession=null,exchangePending=false,exchangeEvents=[],exchangeOverflow=false,recoveryConsumed=false;
   let recoveryWanted=false,recoveryAuthority=null; // Recovery is scoped to one verified SDK identity/session.
-  const state={ready:false,busy:false,user:null,mode:'login',oauthComplete:false,kakaoEnabled:!!settings?.kakaoEnabled&&!recoveryHint,message:'계정 서비스를 연결하고 있어요. 연결이 끝날 때까지 이메일과 비밀번호를 입력받지 않습니다.',error:false};
+  const state={ready:false,busy:false,user:null,mode:'login',oauthComplete:false,kakaoEnabled:!!settings?.kakaoEnabled&&!recoveryHint,googleEnabled:!!settings?.googleEnabled&&!recoveryHint,message:'계정 서비스를 연결하고 있어요. 연결이 끝날 때까지 이메일과 비밀번호를 입력받지 않습니다.',error:false};
   let client=null,subscription=null,revision=0,pendingEvent=null,disposed=false;
   const emit=()=>{if(!disposed)onChange({...state,user:state.user?{...state.user}:null});};
   const notice=(message,error=false)=>{state.message=message;state.error=error;emit();};
@@ -118,7 +120,7 @@
    if(typeof sdk?.createClient!=='function'){notice('계정 화면을 불러오지 못했어요. 새로고침한 뒤 다시 이용해 주세요.',true);return false;}
    state.busy=true;emit();
    try{
-    if(secure)cleanup?.prepare();
+    if(secure)cleanup?.prepare();else cleanup?.retire?.();
     if(secure&&code&&!callbackRejected)await cleanup?.begin();
     client=sdk.createClient(settings.url,settings.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:secure?false:!oauthError,flowType:secure?'pkce':'implicit',storageKey:secure?'dokdo-account-session-v2':'dokdo-account-session-v1',...(secure&&cleanup?{lock:cleanup.lock}:{})}});
     const watcher=client.auth.onAuthStateChange((event,session)=>{
@@ -158,7 +160,7 @@
    if(disposed||!state.ready||state.busy||state.user||!settings.googleEnabled||recoveryWanted||recoveryHint||!['login','signup'].includes(state.mode))return false;
    const startingRevision=revision;state.busy=true;notice('구글 로그인으로 이동하고 있어요.');let moved=false;
    try{
-    const {data,error}=await client.auth.signInWithOAuth({provider:'google',options:{redirectTo:googleReturnUrl(settings,currentUrl),skipBrowserRedirect:true}});
+    const {data,error}=await client.auth.signInWithOAuth({provider:'google',options:{redirectTo:googleReturnUrl(settings,currentUrl),skipBrowserRedirect:true,queryParams:{prompt:'select_account'}}});
     if(disposed||revision!==startingRevision||pendingEvent)return false;if(error||!validGoogleUrl(data?.url,settings,currentUrl))throw Error('OAuth start unavailable');
     navigate(data.url);moved=true;return true;
    }catch(e){if(!disposed)notice('구글 로그인을 열지 못했어요. 다시 시도해 주세요.',true);return false;}
@@ -242,18 +244,19 @@
    for(const mode of ['login','signup']){$('mode-'+mode).disabled=!state.ready||state.busy;$('mode-'+mode).setAttribute('aria-pressed',String(state.mode===mode));}
    $('mode-forgot').hidden=recovery||forgot;$('mode-back').hidden=!forgot;
    for(const id of ['mode-forgot','mode-back','account-signout'])$(id).disabled=!state.ready||state.busy;
-   $('account-email-display').textContent=state.user?.email||(state.user?.provider==='kakao'?'카카오 계정으로 로그인했어요.':state.user?.provider==='google'?'구글 계정으로 로그인했어요.':'로그인한 계정');
-   if($('google-signin')){const adult=$('age-14').checked,google=root.DOKDO_AUTH_CONFIG?.googleEnabled===true;$('age-row').hidden=!(google&&!recovery&&!forgot&&!signed)&&state.mode!=='signup';$('google-option').hidden=!google||recovery||forgot||signed;$('google-signin').disabled=!state.ready||state.busy||!adult;$('email-open').hidden=!google||emailOpen||recovery||forgot||signed;$('account-controls').classList?.toggle('email-fold',google&&!emailOpen&&!recovery&&!forgot&&!signed);}
-   if($('kakao-signin')){$('kakao-option').hidden=!state.kakaoEnabled||recovery||forgot||signed;$('kakao-signin').disabled=!state.ready||state.busy;}
-   if($('account-continue')){$('account-continue').href=returnPath(root.location.href);$('account-continue').textContent=returnPath(root.location.href)==='games.html'?'독도 놀이터로 돌아가기':'독도 스쿨로 돌아가기';}
+   $('account-email-display').textContent=state.user?.provider==='google'?'구글 계정으로 로그인했어요.':state.user?.email||(state.user?.provider==='kakao'?'카카오 계정으로 로그인했어요.':'로그인한 계정');
+   if($('google-signin')){const adult=$('age-14').checked,google=state.googleEnabled,social=google||state.kakaoEnabled;$('age-row').hidden=!(social&&!recovery&&!forgot&&!signed)&&state.mode!=='signup';$('google-option').hidden=!google||recovery||forgot||signed;$('google-signin').disabled=!state.ready||state.busy||!adult;$('email-open').hidden=!google||emailOpen||recovery||forgot||signed;$('account-controls').classList?.toggle('email-fold',google&&!emailOpen&&!recovery&&!forgot&&!signed);}
+   if($('kakao-signin')){$('kakao-option').hidden=!state.kakaoEnabled||recovery||forgot||signed;$('kakao-signin').disabled=!state.ready||state.busy||!!$('age-14')&&!$('age-14').checked;}
+   if($('account-continue')){$('account-continue').href=returnPath(root.location.href);$('account-continue').textContent=({'games.html':'독도 놀이터로 돌아가기','camp/':'독도에서 힐링하기로 돌아가기'})[returnPath(root.location.href)]||'독도 스쿨로 돌아가기';}
    if(state.ready&&state.oauthComplete&&state.user&&!recovery&&!continued){continued=true;root.location.assign(returnPath(root.location.href));}
   };
   let cleanup;try{cleanup=sessionCleanup(root.localStorage,root.navigator.locks);}catch(e){cleanup={prepare(){throw Error('Session storage unavailable');}};}
   const controller=createController({updatePassword:passwordTransport(root.DOKDO_AUTH_CONFIG,root.fetch?.bind(root)),config:root.DOKDO_AUTH_CONFIG,sdk:root.supabase,currentUrl:root.location.href,onChange:view,cleanup,navigate:url=>root.location.assign(url),consumeCallback:()=>{const safe=new URL(root.location.href);safe.search='';safe.hash='';safe.searchParams.set('next',returnPath(root.location.href));root.history?.replaceState(null,'',safe.href);},onAccount:(user,client)=>{if(user)records?.connect(user,client);else records?.invalidate();}});
-  if($('google-signin'))$('google-signin').onclick=()=>controller.signInGoogle();
+  const adult=()=>{if($('age-14').checked)return true;$('age-14').focus();$('account-status').textContent='만 14세 이상인지 먼저 확인해 주세요.';return false;};
+  if($('google-signin'))$('google-signin').onclick=()=>adult()&&controller.signInGoogle();
   if($('age-14'))$('age-14').onchange=()=>view(controller.getState());
   if($('email-open'))$('email-open').onclick=()=>{emailOpen=true;view(controller.getState());$('account-email').focus();};
-  if($('kakao-signin'))$('kakao-signin').onclick=()=>controller.signInKakao();
+  if($('kakao-signin'))$('kakao-signin').onclick=()=>(!$('age-14')||adult())&&controller.signInKakao();
   for(const mode of ['login','signup','forgot'])$('mode-'+mode).onclick=()=>{if(controller.setMode(mode)){$('account-password').value='';$('account-email').focus();}};
   $('mode-back').onclick=()=>controller.setMode('login');
   form.onsubmit=async event=>{event.preventDefault();if(controller.getState().mode==='signup'&&!$('age-14').checked){$('age-14').focus();$('account-status').textContent='만 14세 이상인지 먼저 확인해 주세요.';return;}if(!form.reportValidity())return;const before=controller.getState();const ok=await controller.submit({email:$('account-email').value,password:$('account-password').value});$('account-password').value='';if(ok&&['login','signup'].includes(before.mode)&&controller.getState().user)root.location.assign(returnPath(root.location.href));};

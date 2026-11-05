@@ -324,7 +324,7 @@ function renderProg(){const i=levelOf(prog.xp),cur=LEVELS[i],nx=LEVELS[i+1],L=en
  const openN=ZONES.filter(z=>isOpen(z.id)).length,badgeN=BADGES.filter(b=>prog.badges[b[0]]).length;$('zones-sum').textContent=tr('바다 단계 · '+openN+'/4 열림','Sea stages · '+openN+'/4 open');$('badges-sum').textContent=tr('배지 · '+badgeN+'/'+BADGES.length,'Badges · '+badgeN+'/'+BADGES.length);
  testLabel();}
 function missionLine(m){return tr('이번 판 '+missionProgress(m,run())+' / '+m.n+' · 완수하면 +300 XP','This round '+missionProgress(m,run())+' / '+m.n+' · +300 XP when complete');}
-function testLabel(){$('test').textContent=testMode?tr('시험 모드 켜짐: 모든 바다 열림 (저장된 진행은 그대로)','Test mode on: all seas open (saved progress unchanged)'):tr('시험 모드: 모든 바다 열기 (운영자 확인용)','Test mode: open all seas (for operator checks)');}
+function testLabel(){$('test').textContent=testMode?tr('시험 모드 켜짐: 모든 바다 열림 (잡은 기록은 저장됩니다)','Test mode on: all seas open (catches are still saved)'):tr('시험 모드: 모든 바다 열기 (운영자 확인용)','Test mode: open all seas (for operator checks)');}
 $('test').hidden=!operatorView(root.location?.search);
 $('test').onclick=()=>{testMode=!testMode;$('test').setAttribute('aria-pressed',String(testMode));renderProg();};
 function renderHall(){const ol=$('hall');ol.replaceChildren();if(!hall.length){const e=el('li','f-empty',tr('아직 기록이 없습니다. 첫 번째 이름을 남겨 보세요.','No records yet. Be the first to leave your name.'));e.style.display='block';ol.append(e);return;}

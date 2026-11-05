@@ -133,9 +133,14 @@ test('Post-login destinations have a closed same-site allowlist',()=>{
 function bindFixture(options={}){
  const f=fixture(options),nodes={},assigned=[],listeners={};
  const doc={getElementById(id){return nodes[id]||(nodes[id]={hidden:false,disabled:false,value:'',dataset:{},setAttribute(k,v){this[k]=v;},focus(){},reportValidity(){return true;}});}};
+ doc.getElementById('age-14').checked=options.adult!==false;
  const root={document:doc,location:{href:options.url||URL_NOW+'?next=games.html',assign:path=>assigned.push(path)},DOKDO_AUTH_CONFIG:CONFIG,supabase:f.sdk,DokdoRecordsUI:options.recordsUI,addEventListener:(type,fn)=>listeners[type]=fn};
  const c=mount(root);return {...f,c,nodes,assigned,listeners};
 }
+test('Signup waits for the age confirmation and then really calls the server',async()=>{
+ for(const adult of [false,true]){const f=bindFixture({adult});await flush();f.c.setMode('signup');f.nodes['account-email'].value=USER.email;f.nodes['account-password'].value='fictional-password';
+  await f.nodes['account-form'].onsubmit({preventDefault(){}});a.equal(f.calls.filter(c=>c.name==='signUp').length,adult?1:0);a.deepEqual(f.assigned,[]);f.c.dispose();}
+});
 test('The real form binding returns to the allowed destination only after verified sign-in',async()=>{
  const f=bindFixture();await flush();f.nodes['account-email'].value=USER.email;f.nodes['account-password'].value='fictional-password';
  await f.nodes['account-form'].onsubmit({preventDefault(){}});a.deepEqual(f.assigned,['games.html']);a.equal(f.nodes['account-password'].value,'');

@@ -248,7 +248,7 @@ try:
   before_translation=page.evaluate(protected_record)
   if page.locator('.school-v3').count():page.click('#lesson-result .v3-result-details>summary')
   more(page);page.click('#language');wait_until(page,'document.documentElement.lang==="en"')
-  check('Completed result translates its heading and action without another lesson',page.locator('#lesson-result h2').inner_text()=='Dokdo shines a little brighter today' and page.locator('#lesson-result .button.primary').inner_text()=='To Dokdo Learning' and page.evaluate('DokdoApp.lesson===null'))
+  check('Completed result translates its heading and action without another lesson',page.locator('#lesson-result h2').inner_text()=='Dokdo shines a little brighter today' and page.locator('#lesson-result .button.primary').inner_text()=='Back to Dokdo Learning' and page.evaluate('DokdoApp.lesson===null'))
   check('Completed result translates its original five knowledge facts',page.locator('#lesson-result .lesson-takeaway p').inner_text()==expected_english_facts)
   check('Translating a result preserves question records, XP, grades, course and weekly totals',page.evaluate(protected_record)==before_translation)
   if page.locator('.school-v3').count():

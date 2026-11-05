@@ -55,6 +55,7 @@
 <script defer src="./assets/app.js"></script>
 <script defer src="./assets/school-v3.js"></script>
 <script defer src="./assets/garden-ui.js"></script>
+<script defer src="./assets/account-config.js"></script>
 <script defer src="./assets/account-entry.js"></script>
 </head>
 <body class="has-playground school-v3 v3-choosing">
@@ -94,7 +95,7 @@
  <button type="button" id="v3-profile-entry" class="v3-profile-entry">닉네임·국가·학교 설정</button>
 </section>
 <section class="v3-home" aria-labelledby="v3-greeting">
- <button type="button" id="v3-main-home" class="text-button v3-main-home">← 메인으로</button>
+ <button type="button" id="v3-main-home" class="text-button v3-main-home">← 메인으로 돌아가기</button>
  <div class="v3-welcome"><div><p class="v3-eyebrow" id="v3-area-label">DOKDO KOREA SCHOOL · 독도 배움터</p><h1 id="v3-greeting">오늘도, 한 걸음만.</h1><p id="v3-subtitle">알아갈수록 가까워지는 나의 독도.</p></div><canvas id="v3-mascot" width="200" height="150" aria-hidden="true"></canvas></div>
  <div class="v3-columns"><div class="v3-main-column">
   <section class="v3-next" aria-labelledby="v3-lesson-title"><div class="v3-next-top"><span id="v3-today">오늘의 독도 이야기</span><span id="v3-lesson-meta">짧은 이야기 · 5문제</span></div><h2 id="v3-lesson-title">독도는 어디에 있을까</h2><div id="v3-start-slot"></div></section>
@@ -105,7 +106,7 @@
   <section class="v3-play-card"><h2 id="v3-play-title">이제, 독도에서 놀까요?</h2><p id="v3-play-copy">삽살개와 달리고, 바다를 깨끗하게.</p><a href="./games.html" id="v3-play-link">독도 놀이터 가기 →</a></section>
  </aside></div><p class="v3-home-note" id="v3-home-note">기록은 이 브라우저에 저장돼요.</p>
 </section>
-<div class="v3-legacy-home"><button id="v3-back-learning" class="button secondary">← 배움터로</button>
+<div class="v3-legacy-home"><button id="v3-back-learning" class="button secondary">← 배움터로 돌아가기</button>
  <div class="v3-info-heading"><p class="v3-eyebrow">DISCOVER DOKDO</p><h1 id="v3-info-title">독도 알아보기</h1><p id="v3-info-copy">독도의 위치와 모습, 살아가는 생명과 독도 시간을 만나요.</p></div>
  <nav class="v3-info-links" aria-label="독도 정보"><button id="nav-map" class="button secondary"><span data-i18n="map">지도 살펴보기</span></button><a href="#dokdo-weather" id="v3-weather-link">독도 시간</a><button data-view="journal" class="text-button"><span data-i18n="journal">생명 도감</span></button><a href="./question-review.html" id="v3-question-link">240문항과 출처</a><button id="v3-info-sources" class="text-button">그림·자료 출처</button><a href="https://www.youtube.com/@독도코리아/live" target="_blank" rel="noopener noreferrer" id="v3-info-live">실시간 독도 보러 가기 ↗</a></nav>
 
@@ -207,7 +208,7 @@
 
 
 <section id="view-channel" class="view v3-channel-view" hidden aria-labelledby="v3-channel-title">
- <button type="button" id="v3-channel-home" class="text-button v3-main-home">← 메인으로</button>
+ <button type="button" id="v3-channel-home" class="text-button v3-main-home">← 메인으로 돌아가기</button>
  <div class="v3-info-heading"><p class="v3-eyebrow">DOKDO KOREA CHANNEL</p><h1 id="v3-channel-title">독도 코리아 채널</h1><p id="v3-channel-copy">음악과 영상으로 독도의 이야기를 전합니다.</p></div>
  <div class="v3-channel-actions"><a id="header-live-link" class="v3-live-entry" href="https://www.youtube.com/@독도코리아/live" target="_blank" rel="noopener noreferrer"><span class="v3-live-dot" aria-hidden="true"></span><span id="v3-channel-live-label">실시간 독도 보러 가기 ↗</span></a><a id="header-channel-link" class="button secondary" href="https://www.youtube.com/@독도코리아" target="_blank" rel="noopener noreferrer" data-i18n="headerChannel">YouTube 채널 열기 ↗</a></div>
  <section class="youtube-card v3-latest" id="youtube-card" aria-labelledby="v3-latest-title">
@@ -266,7 +267,7 @@
 </section>
 
 <section id="view-learn" class="view narrow" hidden>
- <div class="section-heading"><div><p class="eyebrow">A SMALL STEP, A LASTING LIGHT</p><h1 data-i18n="learn">학습하기</h1></div><button class="text-button" data-view="home" data-i18n="backHome">배움터로</button></div>
+ <div class="section-heading"><div><p class="eyebrow">A SMALL STEP, A LASTING LIGHT</p><h1 data-i18n="learn">학습하기</h1></div><button class="text-button" data-view="home" data-i18n="backHome">배움터로 돌아가기</button></div>
  <div id="learning-menu" class="learning-menu">
   <article class="menu-course"><span>01</span><h2 data-i18n="dailyTitle">짧게 배우기</h2><p data-i18n="dailyDesc">설명을 읽고 문제를 풀어요. 틀린 부분은 해설 뒤에 다시 확인해요.</p><button class="button primary" data-start="daily" data-i18n="start">시작하기</button></article>
   <article class="menu-course"><span>02</span><h2 data-i18n="reviewTitle">기억 꺼내기</h2><p data-i18n="reviewDesc">배운 내용을 다른 날에도 기억하는지 살펴봐요. 같은 문제 반복만으로 진급하지 않아요.</p><button class="button secondary" data-start="review" data-i18n="start">시작하기</button></article>
@@ -286,7 +287,7 @@
 </section>
 
 <section id="view-journal" class="view narrow" hidden>
- <div class="section-heading"><div><p class="eyebrow">LIFE FINDS A HOME HERE</p><h1 data-i18n="journal">생명 도감</h1></div><button class="text-button" data-view="home" data-i18n="backHome">배움터로</button></div>
+ <div class="section-heading"><div><p class="eyebrow">LIFE FINDS A HOME HERE</p><h1 data-i18n="journal">생명 도감</h1></div><button class="text-button" data-view="home" data-i18n="backHome">배움터로 돌아가기</button></div>
  <p class="lead" data-i18n="journalIntro">독도는 생명이 쉬고 머무는 곳입니다. 배움의 한 단계를 마치면 짧은 방문이 기록으로 남아요.</p>
  <article class="species-card"><div class="species-art" aria-hidden="true"><svg viewBox="0 0 280 210"><path d="M122 101 Q55 45 19 70Q60 87 105 117L92 139L130 129Q174 124 231 48Q193 63 152 94Z" fill="#dce9e7"/><path d="m130 97q27-28 42-7l21 10-27 7-22 11Z" fill="#f6f4e9"/><path d="m168 88 24 12-24 1" fill="#d9ba70"/><path d="m93 123-27 19 28-3" fill="#31535f"/><circle cx="164" cy="89" r="3" fill="#09283b"/></svg></div>
  <div><span id="bird-unlocked" class="pill"></span><h2 data-i18n="gull">괭이갈매기</h2><p data-i18n="gullText">외교부의 독도 자연환경 자료에서 소개하는 새입니다. 독도는 철새가 쉬어 가는 곳이기도 합니다.</p><p id="bird-unlock-rule" class="fine"></p><button id="bird-replay" class="button secondary" data-i18n="birdReplay">새의 방문 다시 보기</button><a class="source-link" href="https://dokdo.mofa.go.kr/kor/introduce/nature.jsp" target="_blank" rel="noopener noreferrer" data-i18n="ecologySource">독도 자연환경 자료 ↗</a></div></article>
@@ -296,7 +297,7 @@
 </section>
 
 <section id="view-hall" class="view narrow" hidden>
- <div class="section-heading"><div><p class="eyebrow">WEEKLY HALL OF FAME</p><h1 data-i18n="hallOfFame">명예의 전당</h1></div><button class="text-button" data-view="home" data-i18n="backHome">배움터로</button></div>
+ <div class="section-heading"><div><p class="eyebrow">WEEKLY HALL OF FAME</p><h1 data-i18n="hallOfFame">명예의 전당</h1></div><button class="text-button" data-view="home" data-i18n="backHome">배움터로 돌아가기</button></div>
  <div id="hall-not-configured" class="record-panel" hidden>
   <h2 data-i18n="hallNotConfiguredTitle">아직 서버에 연결되지 않았어요</h2>
   <p data-i18n="hallNotConfiguredBody">이번 주 순위·학교 부문·방송 화면은 실제 집계 서버가 연결된 뒤에 표시됩니다. 지금은 빈 화면을 실제 참가자 0명으로 보여주지 않기 위해 상태만 안내합니다.</p>
@@ -323,7 +324,7 @@
 </section>
 
 <section id="view-grade" class="view narrow" hidden>
- <div class="section-heading"><div><p class="eyebrow">YOUR LEARNING GRADE</p><h1 data-i18n="gradeTab">학년</h1></div><button class="text-button" data-view="home" data-i18n="backHome">배움터로</button></div>
+ <div class="section-heading"><div><p class="eyebrow">YOUR LEARNING GRADE</p><h1 data-i18n="gradeTab">학년</h1></div><button class="text-button" data-view="home" data-i18n="backHome">배움터로 돌아가기</button></div>
  <section class="record-panel">
   <div class="card-heading"><h2 id="grade-view-current"></h2><span id="grade-view-stats" class="fine"></span></div>
   <div class="gangchi-gauge"><progress id="grade-view-gauge" value="0" max="5"></progress><small id="grade-view-gauge-label" class="fine"></small></div>
@@ -333,7 +334,7 @@
 </section>
 
 <section id="view-records" class="view narrow" hidden>
- <div class="section-heading"><div><p class="eyebrow">YOUR LEARNING STAYS WITH YOU</p><h1 data-i18n="myRecords">내 기록</h1></div><button class="text-button" data-view="home" data-i18n="backHome">배움터로</button></div>
+ <div class="section-heading"><div><p class="eyebrow">YOUR LEARNING STAYS WITH YOU</p><h1 data-i18n="myRecords">내 기록</h1></div><button class="text-button" data-view="home" data-i18n="backHome">배움터로 돌아가기</button></div>
  <div class="record-summary" id="record-summary"></div>
  <section class="record-panel"><div class="card-heading"><h2 data-i18n="badgesTitle"><span class="card-emoji" aria-hidden="true">🏅</span> 성취 배지</h2><span id="badges-count" class="fine"></span></div><div id="badges-grid" class="badges-grid"></div></section>
  <section class="record-panel"><h2 data-i18n="backupTitle">기록 보관과 복원</h2><p data-i18n="localOnly">새 화면은 이 브라우저에 저장됩니다. 클라우드 계정과 자동 동기화되지 않으니 백업 파일도 보관해 주세요.</p><div class="button-row"><button id="export-records" class="button primary" data-i18n="backupFile">학습 기록 파일 저장</button><label class="button secondary file-label"><span data-i18n="importFile">백업 파일 불러오기</span><input id="import-file" type="file" accept=".json,application/json"></label></div><p class="fine" data-i18n="backupWarning">이미지 저장은 기록 백업이 아닙니다. 백업 파일에는 이름·학교·구형 복원 코드·학습 내역이 들어갈 수 있으니 비공개로 보관하세요.</p><div id="import-preview" class="import-preview" hidden></div>
