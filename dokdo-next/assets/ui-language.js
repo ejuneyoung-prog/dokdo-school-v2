@@ -16,7 +16,7 @@ const dictionary={
  "구글 로그인을 마치지 못했어요. 다시 시도하거나 이메일로 로그인해 주세요.":"Google sign-in did not finish. Please try again or sign in with email.",
  "구글 로그인 요청 시간이 지났어요. 구글 로그인 단추를 눌러 새로 시작해 주세요.":"Your Google sign-in request timed out. Press the Google button to start again.",
  "구글 계정으로 로그인했어요.":"Signed in with Google.",
- "독도에서 힐링하기로 돌아가기":"Back to Healing on Dokdo",
+ "독도에서 힐링하기로 돌아가기":"Back to Dokdo Retreat",
  "카카오 로그인 요청 시간이 지났어요. 지금은 이메일로 로그인해 주세요.":"Your Kakao sign-in request expired. Please sign in with email for now.",
  "이 기기의 독도 기록":"Dokdo records on this device",
  "이 기기에 쌓인 기록이에요. 로그인 계정에 자동으로 연결되지 않아요. 공용 기기에서는 다른 사람의 기록일 수 있어요.":"These are device records, not automatically linked to the signed-in account. On a shared device, they may belong to someone else.",
