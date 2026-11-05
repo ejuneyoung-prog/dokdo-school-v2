@@ -47,7 +47,7 @@ const en={
  weeklyHistory:'Weekly learning history',weeklyRule:'Only the weekly tally restarts each Monday in Korea time. Your lifetime learning, lights and beacons stay.',
  footer:'Small moments of learning make Dokdo shine.',demoLink:'Separate demo',ageTitle:'Tell us your age band',
  ageDesc:'We use your age band to pick your first story and explanations. Everyone starts at Kindergarten. We do not collect your date of birth.',
- ageRecoverLink:'Already have a nickname? Load your record here ↗',
+ ageRecoverLink:'Already have a nickname? Load your record here ↗',
  nickname:'Nickname (needed to keep your record)',nicknamePublic:'This nickname appears in the Hall of Fame. Do not use your real name or phone number.',schoolPublic:'Your school name appears in the school ranking.',ageBand:'Age band',
  selectAge:'Select your age band',easyStart:'Start with very simple language, regardless of age.',continue:'Continue',
  agePreserve:'Existing game grades and records are not reduced.',settings:'Settings',reduceMotion:'Reduce motion',
@@ -472,8 +472,8 @@ function renderOutlines(){
   const pts=DOKDO_OUTLINES[key],ns='http://www.w3.org/2000/svg';
   const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','-15 -18 330 365');svg.setAttribute('role','img');svg.setAttribute('aria-label',tr(key==='west'?'서도 모양 비교':'동도 모양 비교',key==='west'?'Seodo outline comparison':'Dongdo outline comparison'));
   const path=document.createElementNS(ns,'path');path.setAttribute('d','M'+pts.map(p=>p.join(' ')).join('L')+'Z');
-  path.setAttribute('fill',key==='west'?'#426965':'#536e69');path.setAttribute('stroke','#92c2b8');path.setAttribute('stroke-width','2');svg.append(path);
-  const text=document.createElementNS(ns,'text');text.setAttribute('x','140');text.setAttribute('y','340');text.setAttribute('text-anchor','middle');text.setAttribute('fill','#d7e8e3');text.setAttribute('font-size','20');
+  path.setAttribute('fill',key==='west'?'#bcd4b2':'#c9dcbc');path.setAttribute('stroke','#4d7f47');path.setAttribute('stroke-width','3');svg.append(path);
+  const text=document.createElementNS(ns,'text');text.setAttribute('x','140');text.setAttribute('y','340');text.setAttribute('text-anchor','middle');text.setAttribute('fill','#203f35');text.setAttribute('font-size','40');
   text.textContent=tr(key==='west'?'서도':'동도',key==='west'?'Seodo':'Dongdo');svg.append(text);$('outline-compare').append(svg);
  }
 }
