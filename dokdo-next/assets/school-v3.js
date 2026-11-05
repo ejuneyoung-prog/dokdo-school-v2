@@ -16,7 +16,7 @@ function syncArea(){
  const info=document.body.classList.contains('v3-exploring'),channel=!$('view-channel').hidden;
  const nav=$('v3-learn-nav'),active=learningEntered&&!$('view-home').hidden&&!info;
  nav.classList.toggle('active',active);if(active)nav.setAttribute('aria-current','page');else nav.removeAttribute('aria-current');
- document.title=channel?copy('독도 코리아 채널 · 독도 코리아 스쿨','Dokdo Korea Channel · Dokdo Korea School'):info?copy('독도 알아보기 · 독도 코리아 스쿨','Discover Dokdo · Dokdo Korea School'):learningEntered?copy('독도 배움터 · 독도 코리아 스쿨 V3','Dokdo Learning · Dokdo Korea School V3'):copy('독도 코리아 스쿨 V3 · 배움터와 놀이터','Dokdo Korea School V3 · Learn and Play');
+ document.title=channel?copy('독도 코리아 채널 · 독도 코리아 스쿨','Dokdo Korea Channel · Dokdo Korea School'):info?copy('독도 알아보기 · 독도 코리아 스쿨','Discover Dokdo · Dokdo Korea School'):learningEntered?copy('독도 배움터 · 독도 코리아 스쿨','Dokdo Learning · Dokdo Korea School'):copy('독도 코리아 스쿨 · 배움터와 놀이터','Dokdo Korea School · Learn and Play');
 }
 function enterLearning(){
  const previous=learningEntered;learningEntered=true;
@@ -46,7 +46,6 @@ function refresh(){
  label('v3-info-menu-title','독도 알아보기','Discover Dokdo');label('v3-info-menu-copy','위치·역사·생명·오늘의 날씨','Place, history, wildlife & weather');label('v3-channel-menu-title','독도 코리아 채널','Dokdo Korea Channel');label('v3-channel-menu-copy','최근 영상·라이브·음악과 이야기','Recent videos, live & music');
  label('v3-info-title','독도 알아보기','Discover Dokdo');label('v3-info-copy','독도의 위치와 모습, 살아가는 생명과 오늘의 날씨를 만나요.','Explore Dokdo’s location, landscape, wildlife and today’s weather.');label('v3-weather-link','오늘의 날씨','Today’s weather');label('v3-question-link','240문항과 출처','240 questions & sources');label('v3-info-sources','그림·자료 출처','Artwork & sources');
  label('v3-channel-title','독도 코리아 채널','Dokdo Korea Channel');label('v3-channel-copy','음악과 영상으로 독도의 이야기를 전합니다.','Sharing Dokdo’s story through music and video.');label('v3-channel-home','← 메인으로','← Back to the main menu');label('v3-latest-title','최근 공개 영상','Recent public videos');label('youtube-channel-link','채널에서 전체 영상 보기 ↗','All videos on YouTube ↗');label('channel-feed-retry','다시 불러오기','Try again');label('v3-channel-feed-note','공식 공개 영상 목록은 최대 15분간 보관됩니다. 눌러서 YouTube에서 보며, 자동으로 재생하지 않습니다.','The official public feed is cached for up to 15 minutes. Open a video on YouTube to watch; nothing plays automatically.');
- label('v3-versions-link','V1 · V2 · V3 버전 안내','V1 · V2 · V3 version guide');
  label('v3-main-language','English','한국어');$('v3-main-language').setAttribute('aria-label',copy('Switch to English','한국어로 바꾸기'));
  label('v3-entry-title','내 독도 학력은 몇 학년?','What’s your Dokdo grade?');label('v3-entry-description','배우고, 놀며 독도와 가까워져요.','Learn, play, and get closer to Dokdo.');
  lines('v3-choice-learn-title','독도\n배움터','Dokdo Learning');label('v3-choice-learn-description','문제를 풀며 독도를 알아가요.','Discover Dokdo, one question at a time.');label('v3-choice-learn-action','배움터 들어가기 →','Start learning →');

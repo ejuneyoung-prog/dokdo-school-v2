@@ -231,7 +231,7 @@ function applyStatic(){const E=en();for(const n of doc.querySelectorAll('[data-e
  for(const n of doc.querySelectorAll('[data-en-label]')){if(!n.dataset.koLabel)n.dataset.koLabel=n.getAttribute('aria-label');n.setAttribute('aria-label',E?n.dataset.enLabel:n.dataset.koLabel);}
  for(const n of doc.querySelectorAll('[data-en-ph]')){if(!n.dataset.koPh)n.dataset.koPh=n.getAttribute('placeholder');n.setAttribute('placeholder',E?n.dataset.enPh:n.dataset.koPh);}
  for(const b of doc.querySelectorAll('[data-language-toggle]')){b.textContent=E?'한국어':'English';b.setAttribute('aria-label',E?'한국어로 바꾸기':'Switch to English');}
- doc.title=E?'Dokdo Song Typing · Dokdo Korea School V3':'독도 노래 타자연습 · 독도 코리아 스쿨 V3';}
+ doc.title=E?'Dokdo Song Typing · Dokdo Korea School':'독도 노래 타자연습 · 독도 코리아 스쿨';}
 function relabel(){applyStatic();renderSongs();renderHall();if(song){draw();if(done){$('meaning').textContent='';$('next').textContent='';if(lastResult){$('r-detail').textContent=detail(lastResult);if(lastResult.acc<90)$('save-msg').textContent=lowMsg();}}}}
 for(const b of doc.querySelectorAll('[data-language-toggle]')){if(!root.DokdoLanguage){b.hidden=true;continue;}b.addEventListener('click',()=>root.DokdoLanguage.set(en()?'ko':'en'));}
 doc.addEventListener('dokdo:language',relabel);
