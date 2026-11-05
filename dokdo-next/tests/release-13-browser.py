@@ -126,6 +126,41 @@ def info_channel_checks(page):
   page.unroute('**/api/channel',feed_route)
  page.click('#brand-home');enter_learning(page)
 
+def cleanup_checks(browser,base):
+ """UI cleanup regressions on a phone: first lesson wording, map scroll, game and typing scroll, contrast."""
+ def fresh(width=390,height=844):
+  c=browser.new_context(viewport={'width':width,'height':height},reduced_motion='reduce');c.add_init_script(INTRO_WATCH)
+  c.route('**/assets/site-config.js',lambda r:r.fulfill(status=200,content_type='application/javascript',body=unconfigured()))
+  c.route(lambda u:not u.startswith(base),lambda r:r.abort());p=c.new_page();p.set_default_timeout(15000);p.on('dialog',lambda d:d.accept());return c,p
+ c,p=fresh();p.goto(base);wait_until(p,'!!window.DokdoApp');enter_learning(p)
+ check('Before an age band the card names no unit and the path lists no stops',p.locator('#v3-lesson-title').inner_text()=='나에게 맞는 첫 이야기' and p.locator('.v3-stop').count()==0)
+ p.click('#start-lesson');p.wait_for_selector('#age-dialog[open]')
+ check('Age dialog no longer offers a starting point that the grade page rules out',p.locator('#age-form h2').inner_text()=='나이대를 알려 주세요')
+ style=p.evaluate("(()=>{const q=getComputedStyle(document.querySelector('[data-i18n=ageDesc]')),i=getComputedStyle(document.getElementById('nickname'));return{size:parseFloat(q.fontSize),text:q.color,bg:i.backgroundColor,ink:i.color}})()")
+ check('First dialog text is 15px or larger and its inputs are light',style['size']>=15 and style['text']!='rgb(188, 208, 213)' and style['bg']=='rgb(255, 255, 255)',style)
+ p.select_option('#age-band','10-11');p.click('#age-form button[type=submit]');p.wait_for_selector('#read-done')
+ stage=p.locator('#lesson-stage').inner_text();title=p.evaluate("DokdoStarter.unitInfo(DokdoApp.state.learningProfile.course.unit).ko")
+ check('First lesson shows the unit name alone, without the cognitive label',stage==title,stage)
+ p.click('#leave-lesson');p.wait_for_selector('#v3-lesson-title')
+ check('After age selection the card and path match the real lesson',p.locator('#v3-lesson-title').inner_text()==title and title in p.locator('.v3-stop').first.inner_text())
+ check('With nothing answered the button does not say continue','이어서' not in p.locator('#start-lesson').inner_text())
+ p.evaluate("document.getElementById('v3-explore').click()");p.wait_for_selector('#nav-map',state='visible');p.click('#nav-map')
+ wait_until(p,"Math.abs(document.getElementById('map-card').getBoundingClientRect().top)<2")
+ check('Opening the map scrolls the panel into view','독도' in p.locator('#map-card').inner_text())
+ c.close()
+ c,p=fresh();p.goto(base+'games.html');p.wait_for_selector('#gift-list .gift')
+ p.locator('[data-launch="blocks"]').first.click();p.wait_for_selector('#player-dialog[open]')
+ wait_until(p,"document.getElementById('block-pieces').getBoundingClientRect().bottom<=document.getElementById('player-dialog').getBoundingClientRect().bottom+1")
+ check('Cleanup game starts with the piece tray on screen',True);c.close()
+ c,p=fresh();p.goto(base+'typing.html');p.wait_for_selector('.song');p.wait_for_timeout(300)
+ check('Typing page does not scroll before a song is chosen',p.evaluate('scrollY')==0)
+ p.locator('.song').first.click()
+ wait_until(p,"(()=>{const a=document.querySelector('.t-lines').getBoundingClientRect(),b=document.getElementById('typing').getBoundingClientRect();return a.top>=0&&b.bottom<=innerHeight})()")
+ check('Choosing a song brings the lyrics and input on screen',True);c.close()
+ c,p=fresh();p.goto(base+'fishing.html');p.wait_for_selector('#go')
+ check('Fishing operator button is hidden for ordinary visitors',p.locator('#test').evaluate('e=>e.hidden'))
+ p.goto(base+'fishing.html?operator=1');p.wait_for_selector('#go')
+ check('Fishing operator button appears with operator=1',not p.locator('#test').evaluate('e=>e.hidden'));c.close()
 def unconfigured(src=None):
  """site-config.js with no backend or analytics id, so nothing is called out to.
 
@@ -182,6 +217,7 @@ try:
   learning_link_checks(ctx)
   preview_selector_checks(browser)
   info_channel_checks(page)
+  if a.mode=='http':cleanup_checks(browser,'http://127.0.0.1:'+str(server.server_port)+'/')
   check('Existing record model 1.3 remains compatible',page.evaluate('DokdoApp.version')=='1.3.0')
   check('Fresh profile has no flags, credits, or visitors',page.evaluate('DokdoJourney.progress(DokdoApp.state).total===0 && DokdoApp.state.gangchiVisits.length===0 && DokdoApp.state.gcHit===0'))
   check('Weather terms are not silently accepted',page.evaluate('!DokdoApp.weatherClient.enabled'))
@@ -212,7 +248,7 @@ try:
   before_translation=page.evaluate(protected_record)
   if page.locator('.school-v3').count():page.click('#lesson-result .v3-result-details>summary')
   more(page);page.click('#language');wait_until(page,'document.documentElement.lang==="en"')
-  check('Completed result translates its heading and action without another lesson',page.locator('#lesson-result h2').inner_text()=='Dokdo shines a little brighter today' and page.locator('#lesson-result .button.primary').inner_text()=='Back to my Dokdo' and page.evaluate('DokdoApp.lesson===null'))
+  check('Completed result translates its heading and action without another lesson',page.locator('#lesson-result h2').inner_text()=='Dokdo shines a little brighter today' and page.locator('#lesson-result .button.primary').inner_text()=='To Dokdo Learning' and page.evaluate('DokdoApp.lesson===null'))
   check('Completed result translates its original five knowledge facts',page.locator('#lesson-result .lesson-takeaway p').inner_text()==expected_english_facts)
   check('Translating a result preserves question records, XP, grades, course and weekly totals',page.evaluate(protected_record)==before_translation)
   if page.locator('.school-v3').count():

@@ -3,7 +3,7 @@
 .fish-app{--card:#fffef8;--panel:#edf3e8;--tile:#e4ede0;--accent:#1c6650;--warn:#a8670f;--num:Gmarket,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;display:flex;flex-direction:column;gap:18px;padding-top:32px}
 .fish-app h1,.fish-app h2{letter-spacing:-.05em}
 .fish-app .f-intro{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 20px}
-.fish-app .f-eyebrow{display:block;font-size:.875rem;letter-spacing:.12em;font-weight:700;color:#51806b}
+.fish-app .f-eyebrow{display:block;font-size:.875rem;letter-spacing:.12em;font-weight:700;color:#3f6d59}
 .fish-app h1{font-size:clamp(2rem,4.3vw,3rem);line-height:1.3;margin:8px 0 6px}
 .fish-app .f-lead{font-size:1rem;color:#486653;max-width:44rem}
 .fish-app .f-note{color:#4c6856;font-size:.875rem}
@@ -35,7 +35,7 @@
 .fish-app .f-side{display:flex;flex-direction:column;gap:16px;min-width:0}
 .fish-app .f-panel{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
 .fish-app .f-panel h2{font-size:1.125rem;display:flex;align-items:baseline;gap:4px 8px;flex-wrap:wrap}
-.fish-app .f-panel h2 .f-eyebrow{font-size:.8rem}
+.fish-app .f-panel h2 .f-eyebrow{font-size:.875rem}
 .fish-app .f-hall ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
 .fish-app .f-hall li{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:8px;align-items:center;background:var(--panel);border-radius:10px;padding:8px 10px}
 .fish-app .f-hall .rk{font-family:var(--num);font-weight:700;font-size:1.2rem;color:#4c6856;text-align:center}
@@ -50,7 +50,7 @@
 .fish-app .f-dex button.new{border-color:var(--accent)}
 .fish-app .f-dex canvas{width:100%;max-width:84px;height:auto}
 .fish-app .f-dex span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.fish-app .f-dex small{color:#4c6856;font-size:.8rem}
+.fish-app .f-dex small{color:#4c6856;font-size:.875rem}
 .fish-app .f-info{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:.875rem;display:flex;flex-direction:column;gap:4px;line-height:1.7}
 .fish-app .f-info b{font-size:1rem}
 .fish-app .f-src{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 16px;color:#4c6856;font-size:.875rem;line-height:1.8}
@@ -64,11 +64,11 @@
 .fish-app .f-zones{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
 .fish-app .f-zones div{background:var(--panel);border-radius:10px;padding:8px 10px;font-size:.875rem;display:flex;flex-direction:column;gap:2px;border:2px solid transparent;min-width:0}
 .fish-app .f-zones div.open{border-color:#69a879;background:#f3f8ee}
-.fish-app .f-zones small{color:#4c6856;font-size:.8rem}
+.fish-app .f-zones small{color:#4c6856;font-size:.875rem}
 .fish-app .f-mission{background:var(--panel);border:2px solid transparent;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
 .fish-app .f-mission.done{border-color:#69a879}
 .fish-app .f-badges{display:flex;flex-wrap:wrap;gap:6px}
-.fish-app .f-badges span{font-size:.8rem;background:#eef1ea;color:#5d6f63;border:1px solid #dbe3d5;border-radius:999px;padding:3px 10px}
+.fish-app .f-badges span{font-size:.875rem;background:#eef1ea;color:#5d6f63;border:1px solid #dbe3d5;border-radius:999px;padding:3px 10px}
 .fish-app .f-badges span.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .fish-app .f-test{background:transparent;border:1px dashed #a9bfa9;color:#4c6856;border-radius:10px;padding:8px;font-size:.875rem;min-height:44px}
 .fish-app .f-test[aria-pressed="true"]{border-color:var(--warn);color:var(--warn);border-style:solid}
@@ -82,5 +82,7 @@
 .fish-app .f-fold[open]>summary{margin-bottom:8px}
 .fish-app .f-fold .f-test{width:100%;margin-top:8px}
 @media(max-width:900px){.fish-app .f-main{grid-template-columns:minmax(0,1fr)}}
-@media(max-width:560px){.fish-app{padding-top:20px;gap:14px}.fish-app .f-hud{gap:6px}.fish-app .f-hud div{padding:4px 8px}.fish-app .f-hud small{font-size:.75rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fish-app .f-hud strong{font-size:1.15rem}.fish-app .f-stage{padding:10px}.fish-app .f-overlay{padding:10px}.fish-app .f-card{padding:16px}.fish-app .f-ctl{font-size:1rem}}
+@media(max-width:560px){.fish-app{padding-top:20px;gap:14px}.fish-app .f-hud{gap:6px}.fish-app .f-hud div{padding:4px 8px}.fish-app .f-hud small{font-size:.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fish-app .f-hud strong{font-size:1.15rem}.fish-app .f-stage{padding:10px}.fish-app .f-overlay{padding:10px}.fish-app .f-card{padding:16px}.fish-app .f-ctl{font-size:1rem}}
 @media(prefers-reduced-motion:reduce){.fish-app .f-xp i{transition:none}}
+/* 좁은 화면에서도 HUD 이름이 말줄임표로 잘리지 않게 두 줄까지 허용합니다. */
+@media(max-width:560px){.fish-app .f-hud small{white-space:normal;overflow:visible;line-height:1.35}}
