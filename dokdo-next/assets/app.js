@@ -1009,7 +1009,7 @@ async function renderHall(cached=false){
  if(!window.DokdoLeaderboard||!DokdoLeaderboard.isConfigured()){hallShow('hall-not-configured');return;}
  if(cached&&!hallResponse)return;
  hallShow('hall-loading');
- if($('hall-under14')){$('hall-under14').hidden=mayShare();$('hall-under14').textContent=P.knownChild()?(language==='en'?en.hallUnder14:ko.hallUnder14):tr('수업을 시작할 때 나이대를 고르시면 순위에 참여하실 수 있습니다.','Select your age band when you start a lesson to join the rankings.');}
+ if($('hall-under14')){$('hall-under14').hidden=mayShare();$('hall-under14').textContent=P.knownChild()?(language==='en'?en.hallUnder14:ko.hallUnder14):tr('수업을 시작할 때 나이대를 고르시면 순위 참여 방법을 알려 드립니다.','Select your age band when you start a lesson and we will show how to join the rankings.');}
  const res=cached?hallResponse:await DokdoLeaderboard.fetchWeekly();
  if(!cached)hallResponse=res;
  if(res.state==='error'){hallShow('hall-error');$('hall-error-text').textContent=tr('기록을 불러오지 못했어요. 잠시 뒤 다시 시도해 주세요.','We could not load the records. Please try again in a moment.');return;}
