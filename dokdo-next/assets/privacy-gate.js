@@ -7,7 +7,7 @@
  root.DokdoPrivacy=api;
 })(typeof globalThis!=='undefined'?globalThis:this,function(root){
 'use strict';
-const AGE_KEY='dokdo-device-age-v1',CONSENT_KEY='dokdo-guardian-consent-v2';
+const AGE_KEY='dokdo-device-age-v1',CONSENT_KEY='dokdo-guardian-consent-v2',ADOPTED_KEY='dokdo-device-age-adopted-v1',STATE_KEY='dokdo-korea-school-cinematic-v1';
 const CHILD=['u7','8-9','10-11','12-13'],OLDER=['14-16','17-19','20+'];
 const read=key=>{try{return root.localStorage?.getItem(key)||'';}catch(e){return '';}};
 const write=(key,value)=>{try{root.localStorage?.setItem(key,value);}catch(e){}};
@@ -21,5 +21,15 @@ function isChildBand(band){return CHILD.includes(band);}
 function knownChild(){return isChildBand(deviceAge())&&!consent();}
 function mayShare(){return OLDER.includes(deviceAge())||consent();}
 function clear(){remove(AGE_KEY);remove(CONSENT_KEY);}
+const live=()=>root.document?.querySelector?.('meta[name="dokdo-mode"]')?.content==='live';
+/* 이번 변경 전에 쓰던 기기의 나이대를 기기마다 한 번만 옮깁니다. 그 뒤에 불러온 기록의 나이대는 옮기지 않습니다.
+ * '중학생'이던 14-16은 중1이 섞여 있어 다시 묻습니다. 시연 화면은 실제 기기 값을 건드리지 않습니다. */
+function adopt(){
+ if(!live()||read(ADOPTED_KEY))return;
+ write(ADOPTED_KEY,'1');
+ if(deviceAge())return;
+ try{const saved=JSON.parse(read(STATE_KEY)||'null'),band=(saved?.state||saved)?.learningProfile?.ageBand;if(band&&band!=='14-16')setDeviceAge(band);}catch(e){}
+}
+adopt();
 return{AGE_KEY,CONSENT_KEY,deviceAge,setDeviceAge,consent,saveConsent,isChildBand,knownChild,mayShare,clear};
 });

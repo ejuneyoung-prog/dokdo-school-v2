@@ -122,6 +122,27 @@ def adult_record_on_child_device(browser):
     return sent
 
 
+def adoption(browser):
+    def gate_age(init, path='/index.html'):
+        context = browser.new_context()
+        context.route('**/*', lambda r: r.continue_() if r.request.url.startswith(LOCAL) else r.abort())
+        context.route('**/assets/site-config.js', lambda r: r.fulfill(body=site_config(), content_type='text/javascript'))
+        page = context.new_page()
+        page.goto(base + '/index.html')
+        page.wait_for_function('window.DokdoApp&&DokdoApp.state')
+        saved = page.evaluate("""()=>{const s=DokdoAppModel.fresh();DokdoAppModel.selectProfile(s,'20+',false);return JSON.stringify(s)}""")
+        page.evaluate(init, saved)
+        page.goto(base + path)
+        page.wait_for_timeout(700)
+        band = page.evaluate("localStorage.getItem('dokdo-device-age-v1')||''")
+        context.close()
+        return band
+    older = gate_age("s=>{localStorage.clear();localStorage.setItem(DokdoAppModel.KEY,s)}")
+    restored = gate_age("s=>{localStorage.removeItem('dokdo-device-age-v1');localStorage.setItem(DokdoAppModel.KEY,s)}")
+    demo = gate_age("s=>{localStorage.clear();localStorage.setItem(DokdoAppModel.KEY,s)}", '/demo.html')
+    return older, restored, demo
+
+
 with sync_playwright() as pw:
     browser = getattr(pw, engine).launch()
     for band in ('u7', '8-9', '10-11', '12-13'):
@@ -145,5 +166,7 @@ with sync_playwright() as pw:
     sent = adult_record_on_child_device(browser)
     assert not sent, sent
     print('ok an adult record does not open sharing on a child device')
+    assert adoption(browser) == ('20+', '', '')
+    print('ok age is adopted once, and never from a restored record or the demo')
     browser.close()
 print('privacy sharing ok')

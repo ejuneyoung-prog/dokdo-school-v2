@@ -210,8 +210,7 @@ function scheduleWrite(fn){
 }
 const P=window.DokdoPrivacy,UNDER14_MAIL='mailto:officialdokdokorea@gmail.com?subject='+encodeURIComponent('독도 코리아 스쿨 순위 참여 보호자 동의 요청');
 const mayShare=()=>P.mayShare();
-/* 예전 기록의 나이대를 기기 값으로 옮깁니다. '중학생'이던 14-16은 중1이 섞여 있어 다시 묻습니다. */
-function adoptDeviceAge(){const band=getS()?.learningProfile?.ageBand;if(!P.deviceAge()&&band&&band!=='14-16')P.setDeviceAge(band);}
+const ageMissing=()=>!isolated&&!P.deviceAge();
 /* 보호자 동의를 메일로 확인한 뒤 드리는 ?guardian= 링크를 확인합니다. docs/GUARDIAN-CONSENT.ko.md 참고. */
 async function acceptGuardianLink(){
  let code='';try{code=new URLSearchParams(location.search).get('guardian')||'';}catch(e){}
@@ -533,7 +532,7 @@ function setupAge(callback,force=false,profileOnly=false){
  $('age-form').querySelector('[type="submit"]').textContent=profileOnly?tr('저장하기','Save'):tr('계속하기','Continue');
  ageNext=callback;$('age-band').replaceChildren();const empty=document.createElement('option');empty.value='';empty.textContent=tr('나이대를 골라 주세요','Select your age band');$('age-band').append(empty);
  C.BANDS.forEach(b=>{const o=document.createElement('option');o.value=b.id;o.textContent=b[language];$('age-band').append(o);});
- $('age-band').value=P.deviceAge();$('age-easy').checked=!!getS().learningProfile?.easy;
+ $('age-band').value=isolated?(getS().learningProfile?.ageBand||''):P.deviceAge();$('age-easy').checked=!!getS().learningProfile?.easy;
  renderUnder14();
  $('nickname').value=(getS().name||'').slice(0,40);
  const knownFlags=Array.from($('flag-select').options).map(o=>o.value).filter(v=>v!=='OTHER');
@@ -633,7 +632,7 @@ $('age-form').addEventListener('submit',async event=>{
   const flagRaw=$('flag-select').value==='OTHER'?$('flag-other').value.trim().toUpperCase():$('flag-select').value;
   const flag=/^[A-Z]{2}$/.test(flagRaw)?flagRaw:'KR';
   const schoolCat=$('school-cat').value,schoolName=$('school-name').value.trim().slice(0,60);
-  const ageKnown=!!P.deviceAge();if(!editOnly)P.setDeviceAge(band);
+  const ageKnown=isolated||!!P.deviceAge();if(!editOnly&&!isolated)P.setDeviceAge(band);
   await mutate(s=>{
    // 나이대만 다시 확인하는 경우 쌓아 온 과정 위치를 그대로 둡니다.
    if(!editOnly){if(s.learningProfile&&!ageKnown)s.learningProfile.ageBand=band;else M.selectProfile(s,band,easy);}
@@ -648,7 +647,7 @@ $('age-form').addEventListener('submit',async event=>{
 });
 function start(mode,forceAge=false){
  if(!guarded())return;
- setupAge(()=>begin(mode),forceAge||mode==='placement'||!P.deviceAge());
+ setupAge(()=>begin(mode),forceAge||mode==='placement'||ageMissing());
 }
 function begin(mode){
  const s=getS();C.ensureProfile(s.learningProfile);
@@ -669,7 +668,7 @@ function renderCatalog(){
  for(const u of C.DATA.units){
   const done=!!p?.course?.completed[p.course.track+':'+u.id];const b=document.createElement('button');b.type='button';b.className='unit-button'+(done?' done':'')+(p?.course?.unit===u.id?' current':'');b.dataset.unit=u.id;
   const n=document.createElement('span');n.textContent=String(u.id).padStart(2,'0');const title=document.createElement('b');title.textContent=u[language];const note=document.createElement('small');note.textContent=done?tr('배움 완료 · 다시 배우기','Completed · learn again'):tr(u.category+' · 5개념','5 connected concepts');b.append(n,title,note);
-  b.onclick=()=>setupAge(async()=>{try{await mutate(st=>{C.ensureProfile(st.learningProfile);st.learningProfile.course.unit=u.id;});begin('daily');}catch(e){}});list.append(b);
+  b.onclick=()=>setupAge(async()=>{try{await mutate(st=>{C.ensureProfile(st.learningProfile);st.learningProfile.course.unit=u.id;});begin('daily');}catch(e){}},ageMissing());list.append(b);
  }
  // 예전에는 열 수 없으면 버튼째 숨겨서, 열두 단원을 다 마친 사람이 무엇을
  // 더 해야 하는지 알 길이 없었습니다. 이제 이유와 함께 보여 줍니다.
@@ -901,7 +900,7 @@ function bragText(){
 }
 function renderShareRow(){
  const wrap=document.createElement('div');wrap.className='share-row';
- const label=document.createElement('p');label.className='fine';label.textContent=tr('독도 코리아 스쿨을 다른 사람에게 알려주세요. "라이브에 공유하기"만 내 닉네임과 기록이 포함되고, 나머지는 점수·이름이 포함되지 않습니다.','Tell someone else about Dokdo Korea School. Only "Share to the live chat" includes your nickname and record — the rest never include your score or name.');
+ const label=document.createElement('p');label.className='fine';label.textContent=mayShare()?tr('독도 코리아 스쿨을 다른 사람에게 알려주세요. "라이브에 공유하기"만 내 닉네임과 기록이 포함되고, 나머지는 점수·이름이 포함되지 않습니다.','Tell someone else about Dokdo Korea School. Only "Share to the live chat" includes your nickname and record — the rest never include your score or name.'):tr('독도 코리아 스쿨을 다른 사람에게 알려주세요. 공유 문구에 닉네임은 넣지 않아요.','Tell others about Dokdo Korea School. Your nickname is left out of shared text.');
  const row=document.createElement('div');row.className='share-list';
  row.append(shareButton(tr('링크 복사','Copy link'),async()=>{
   shareTrack('link');const res=await DokdoShare.copyLink();
@@ -1010,7 +1009,7 @@ async function renderHall(cached=false){
  if(!window.DokdoLeaderboard||!DokdoLeaderboard.isConfigured()){hallShow('hall-not-configured');return;}
  if(cached&&!hallResponse)return;
  hallShow('hall-loading');
- if($('hall-under14')){$('hall-under14').hidden=mayShare();if(!mayShare()&&!P.knownChild())$('hall-under14').textContent=tr('나이대를 고르면 순위에 참여할 수 있어요.','Select your age band to join the rankings.');}
+ if($('hall-under14')){$('hall-under14').hidden=mayShare();$('hall-under14').textContent=P.knownChild()?(language==='en'?en.hallUnder14:ko.hallUnder14):tr('수업을 시작할 때 나이대를 고르시면 순위에 참여하실 수 있습니다.','Select your age band when you start a lesson to join the rankings.');}
  const res=cached?hallResponse:await DokdoLeaderboard.fetchWeekly();
  if(!cached)hallResponse=res;
  if(res.state==='error'){hallShow('hall-error');$('hall-error-text').textContent=tr('기록을 불러오지 못했어요. 잠시 뒤 다시 시도해 주세요.','We could not load the records. Please try again in a moment.');return;}
@@ -1415,7 +1414,7 @@ function frame(now){
  requestAnimationFrame(frame);
 }
 if('IntersectionObserver' in window)new IntersectionObserver(entries=>{sceneVisible=!!entries[0]?.isIntersecting;frameLast=0;},{threshold:.05}).observe(canvas);
-assetsReady.then(()=>{updateEnvironment();paint();requestAnimationFrame(frame);adoptDeviceAge();maybeShowIntro();acceptGuardianLink();autoLoadFromLink();});
+assetsReady.then(()=>{updateEnvironment();paint();requestAnimationFrame(frame);maybeShowIntro();acceptGuardianLink();autoLoadFromLink();});
 $('time-mode').onchange=()=>{timeMode=$('time-mode').value;updateEnvironment();paint();};
 $('weather-refresh').onclick=async()=>{if(!weatherClient.enabled){toast(tr('배포자가 assets/site-config.js에서 비상업용 조건을 확인한 뒤 날씨를 연결합니다. 낮밤 전환은 계속 작동합니다.','Weather requires the operator to confirm its non-commercial terms in assets/site-config.js. Day/night still works.'));return;}await weatherClient.refresh(true);updateEnvironment();paint();};
 if(weatherClient.enabled){weatherClient.refresh().then(()=>{updateEnvironment();paint();});setInterval(()=>{if(!document.hidden)weatherClient.refresh().then(updateEnvironment);},300000);}
@@ -1566,7 +1565,7 @@ wire('dispute-send','onclick',async()=>{
  if(!disputeItem||disputeSending)return;
  const item=disputeItem,reason=$('dispute-reason').value.trim().slice(0,1000);
  // 나이를 확인하지 못했거나 만 14세 미만이면 자유 글을 서버로 보내지 않고 메일로 안내합니다.
- if(!mayShare()){disputeMailItem={item,reason};disputeState(tr('보호자와 함께 메일로 보내 주세요.','Please send this by email with a guardian.'));return;}
+ if(!mayShare()){disputeMailItem={item,reason};disputeState(P.knownChild()?tr('보호자와 함께 메일로 보내 주세요.','Please send this by email with a guardian.'):tr('나이대를 고르기 전에는 메일로 보내 주세요.','Until you select an age band, please send this by email.'));return;}
  // One report per device per minute keeps repeated taps from flooding the sheet.
  let lastAt=0;try{lastAt=Number(localStorage.getItem('dokdo-dispute-at'))||0;}catch(e){}
  if(Date.now()-lastAt<60000){toast(tr('방금 보내 주신 의견이 있어요. 1분 뒤에 다시 보내 주세요.','You just sent a report. Please try again in a minute.'));return;}
