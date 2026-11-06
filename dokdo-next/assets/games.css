@@ -135,3 +135,7 @@
 
 /* 로그인 뒤에는 닉네임이 보입니다. 긴 이름은 줄여서 머리줄을 밀지 않게 합니다. */
 .header>.login-entry.signed-in{display:inline-block;background:transparent;color:#2f5930;border-color:#bdcfa8;max-width:9.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.5;box-shadow:none}
+
+/* 그룹 브랜드 규정: 놀이터 머리줄 두 섬 심볼(스쿨 블루) */
+.brand svg{width:83px;height:20px;flex:none}
+@media(max-width:540px){.brand svg{width:62px;height:15px}}

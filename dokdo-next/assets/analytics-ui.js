@@ -3,7 +3,7 @@
 'use strict';
 const fixed={
  'v3-enter-learn':['learn','main'],'v3-enter-play':['play','main'],'v3-learn-nav':['learn','nav'],
- 'v3-explore':['info','menu'],'v3-open-channel':['channel','menu'],'v3-live-entry':['live','main'],
+ 'v3-explore':['info','menu'],'v3-open-channel':['channel','menu'],'v3-channel-about':['channel','menu'],'v3-live-entry':['live','main'],
  'v3-info-live':['live','info'],'header-live-link':['live','channel'],'youtube-live-link':['live','channel'],
  'header-channel-link':['channel','channel'],'youtube-channel-link':['channel','channel'],
  'v3-play-link':['play','learning'],'v3-island-link':['play','learning'],'account-link':['account','menu'],

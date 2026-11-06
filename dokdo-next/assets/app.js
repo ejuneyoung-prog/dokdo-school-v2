@@ -12,7 +12,7 @@ const listen=(id,type,fn,opts)=>{const el=$(id);if(el)el.addEventListener(type,f
 const ko={};document.querySelectorAll('[data-i18n]').forEach(el=>ko[el.dataset.i18n]=el.textContent);
 const en={
  v3Learn:'Dokdo Learning',v3Play:'Dokdo Playground',facilityTitle:'Places and facilities',facilitySource:'Official facility information ↗',
- skip:'Skip to content',brandMain:'Dokdo Korea',brandSub:'School',tagline:'A little learning. A brighter Dokdo.',
+ skip:'Skip to content',brandMain:'Dokdo Korea',brandSub:'School',tagline:'A little learning. A brighter Dokdo.',brandEnglish:'독도 코리아 스쿨',
  demoBanner:'PREVIEW ONLY · reload resets this demo · no real accounts',demoReset:'Try an empty record',
  myDokdo:'My Dokdo',map:'Explore the map',learn:'Learn',journal:'Life journal',myRecords:'My records',
  oldFound:'A previous learning record exists in this browser.',oldCopy:'Keep the original and copy it into this new view.',checkRecords:'Check the record',
@@ -898,7 +898,7 @@ function renderShareRow(){
  },'📷',tr('이미지를 저장한 뒤 인스타를 엽니다','Saves the image, then opens Instagram')));
  const yt=(window.DOKDO_SITE_CONFIG&&window.DOKDO_SITE_CONFIG.youtube)||{};
  if(yt.liveUrl||yt.channelUrl){
-  row.append(shareButton(tr('독도 코리아 라이브에 공유하기','Share to the Dokdo Korea live chat'),async()=>{
+  row.append(shareButton(tr('독도코리아 라이브에 공유하기','Share to the Dokdo Korea live chat'),async()=>{
    shareTrack('live');
    // window.open must run synchronously in the click handler, before any
    // await -- Safari (and most browsers) silently block a popup opened

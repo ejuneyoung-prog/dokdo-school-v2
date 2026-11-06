@@ -414,3 +414,31 @@ body.school-v3{word-break:keep-all;overflow-wrap:break-word}
 /* 로그인 뒤에는 닉네임이 보입니다. 긴 이름은 줄여서 머리줄을 밀지 않게 합니다. */
 .school-v3 .login-entry.signed-in{display:inline-block;background:transparent;color:#2f5930;border-color:#bdcfa8;max-width:9.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.5;box-shadow:none}
 @media(min-width:761px) and (max-width:1000px){.school-v3 .site-header>.login-entry.signed-in{width:100%;max-width:100%;text-align:center}}
+
+/* 그룹 브랜드 규정(헌법 제5장 5항): 스쿨 머리줄 로고, 더보기 운영 주체·연혁 */
+.school-v3 .brand{gap:12px;white-space:nowrap}
+.school-v3 .brand svg{width:100px;height:24px;flex:none}
+.school-v3 .brand-names{display:flex;flex-direction:column;gap:3px;min-width:0}
+.school-v3 .brand strong{font:700 20px/1.1 var(--heading);color:#232528;overflow-wrap:normal}
+.school-v3 .brand-main,.school-v3 .brand-sub{color:#232528}
+.school-v3 .brand small{display:block;font:400 14px/1.1 "Bebas Neue",var(--heading);letter-spacing:2.48px;margin-right:-2.48px;white-space:nowrap;color:#232528;opacity:.85}
+html[lang=en] .school-v3 .brand small{font-family:var(--heading);letter-spacing:0;margin-right:0}
+@media(max-width:1000px){.school-v3 .brand{gap:10px}.school-v3 .brand svg{width:83px;height:20px}.school-v3 .brand strong{font-size:18px}.school-v3 .brand small{letter-spacing:1.69px;margin-right:-1.69px}}
+@media(max-width:560px){.school-v3 .brand{gap:8px}.school-v3 .brand svg{width:62px;height:15px}.school-v3 .brand strong{font-size:16px}.school-v3 .brand small{letter-spacing:0.9px;margin-right:-0.9px}}
+@media(max-width:380px){.school-v3 .brand{gap:7px}.school-v3 .brand svg{width:46px;height:11px}.school-v3 .brand strong{font-size:15px}.school-v3 .brand small{letter-spacing:0.5px;margin-right:-0.5px}}
+@media(max-width:340px){.school-v3 .brand{gap:5px}.school-v3 .brand svg{width:37px;height:9px}.school-v3 .brand strong{font-size:14px}.school-v3 .brand small{letter-spacing:0.1px;margin-right:-0.1px}}
+@media(max-width:560px){html[lang=en] .school-v3 .brand{white-space:normal}html[lang=en] .school-v3 .brand strong{font-size:15px;line-height:1.15}html[lang=en] .school-v3 .brand small{display:none}}
+html[lang=en] .school-v3 .brand small{letter-spacing:0;margin-right:0}
+#channel-info-dialog .group-lockup{margin:0}
+.group-lockup{display:flex;align-items:center;gap:10px;margin:0 0 10px}
+.group-lockup svg{width:83px;height:20px;flex:none}
+.group-lockup strong{display:block;font:700 16px/1.1 var(--heading);color:#232528}
+.group-lockup small{display:block;margin-top:3px;font:400 14px/1.1 "Bebas Neue",var(--heading);letter-spacing:1.73px;margin-right:-1.73px;white-space:nowrap;color:#232528;opacity:.85}
+.v3-about-channel{margin-top:10px;padding:12px;border:1px solid #dce6d7;border-radius:12px;background:#fff}
+.v3-about-by{margin:0 0 9px;font-size:15px;line-height:1.5;color:#203f35}
+.v3-about-history,.channel-history{list-style:none;margin:0;padding:0;display:grid;gap:5px}
+.v3-about-history li,.channel-history li{display:grid;grid-template-columns:3.1em minmax(0,1fr);gap:8px;align-items:baseline;font-size:14px;line-height:1.5;color:#4a644f}
+.v3-about-history b,.channel-history b{font:600 14px/1.5 var(--heading);color:#24795b}
+.school-v3 .v3-about-channel .text-button{margin-top:9px;padding:6px 0;min-height:40px;font-size:14px;color:#24795b;text-align:left}
+.channel-operator{font-family:var(--heading);color:#203f35}
+.channel-history{margin:6px 0 16px;gap:7px}.channel-history li{grid-template-columns:6.4em minmax(0,1fr);font-size:15px}
