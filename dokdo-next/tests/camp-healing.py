@@ -125,6 +125,8 @@ def walk(context, label):
 
 def card(context, label):
     page = context.new_page()
+    # 닉네임을 힐링존 주소로 건네는 것은 만 14세 이상이 확인된 기기뿐입니다.
+    page.add_init_script("localStorage.setItem('dokdo-device-age-v1','20+')")
     page.goto(f'{base}/')
     entry = page.locator('#camp-entry')
     expect(entry).to_be_visible()
