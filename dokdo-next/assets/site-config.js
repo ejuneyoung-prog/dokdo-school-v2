@@ -24,6 +24,9 @@ window.DOKDO_SITE_CONFIG=Object.freeze({
   * event. Only learning metrics, fixed navigation labels and numeric
   * game metrics are permitted. Account pages do not load GA. See assets/analytics.js. */
  analytics:Object.freeze({gaId:'G-WJM7KL33ST'}),
+ /* 보호자 동의를 메일로 확인한 뒤 낸 링크 코드의 SHA-256입니다. 코드 원문은 넣지 않습니다.
+  * tools/guardian_code.py로 만듭니다. docs/GUARDIAN-CONSENT.ko.md 참고. */
+ guardianConsentHashes:Object.freeze([]),
  /* Kakao JS key is a public browser identifier, not a secret — protected by
   * domain registration in the Kakao developer console (must include this
   * site's real deployed domain), not by hiding the key. */

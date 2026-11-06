@@ -58,7 +58,7 @@ lines('camp-title','독도에서\n힐링하기','Dokdo Retreat');label('camp-des
  const begun=Object.values(s.m||{}).some(r=>r&&(r.att>0||r.cor>0||r.courseLearned));
  label('v3-first-class',begun?'이어서 시작하기':'1교시 시작',begun?'Continue learning':'Start Period 1');
  // 힐링 공간은 스쿨 저장소를 읽지 않습니다. 닉네임은 주소로만 건네고, 없으면 붙이지 않습니다.
- const campNick=(s.name||'').trim();if($('camp-entry'))$('camp-entry').href='./camp/'+(campNick?'?nick='+encodeURIComponent(campNick):'');
+ const campNick=window.DokdoAppModel.mayShare(s)?(s.name||'').trim():'';if($('camp-entry'))$('camp-entry').href='./camp/'+(campNick?'?nick='+encodeURIComponent(campNick):'');
  const en=document.documentElement.lang==='en',p=s.learningProfile,unit=C.unitInfo(p?.course?.unit||1),game=gameRecord(),summary=window.DokdoAppModel.summary(s);
  label('v3-area-label','DOKDO KOREA SCHOOL · 독도 배움터','DOKDO KOREA SCHOOL · LEARNING');
  label('v3-greeting','오늘도, 한 걸음만.','One little step today.');label('v3-subtitle','알아갈수록 가까워지는 나의 독도.','A little learning brings Dokdo closer.');

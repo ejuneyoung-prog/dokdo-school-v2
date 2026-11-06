@@ -48,7 +48,7 @@ const en={
  footer:'Small moments of learning make Dokdo shine.',demoLink:'Separate demo',ageTitle:'Tell us your age band',
  ageDesc:'We use your age band to pick your first story and explanations. Everyone starts at Kindergarten. We do not collect your date of birth.',
  ageRecoverLink:'Already have a nickname? Load your record here ↗',
- nickname:'Nickname (needed to keep your record)',nicknamePublic:'This nickname appears in the Hall of Fame. Do not use your real name or phone number.',schoolPublic:'Your school name appears in the school ranking.',ageBand:'Age band',
+ nickname:'Nickname (needed to keep your record)',nicknamePublic:'This nickname appears in the Hall of Fame. Do not use your real name or phone number.',under14Note:'Under 14, your nickname and school stay on this device. To join the rankings, a guardian needs to consent by email.',guardianMail:'Email us with a guardian ↗',hallUnder14:'Under 14, your records stay on this device and are not shown in the rankings.',schoolPublic:'Your school name appears in the school ranking.',ageBand:'Age band',
  selectAge:'Select your age band',easyStart:'Start with very simple language, regardless of age.',continue:'Continue',
  agePreserve:'Existing game grades and records are not reduced.',settings:'Settings',reduceMotion:'Reduce motion',
  enableBirds:'Show birds after achievements',seaDensity:'Life in the sea',calm:'Calm',rich:'Lively',full:'More lively',
@@ -133,7 +133,7 @@ let state=store.load(),language=(!isolated&&window.DokdoLanguage?.saved())||stat
 if(!isolated&&window.DokdoLanguage&&window.DokdoLanguage.saved()===null)window.DokdoLanguage.set(language);
 let lastLessonFirst=null;try{lastLessonFirst=isolated?null:Number(sessionStorage.getItem('dokdo-v3-last-first'))||null;}catch(e){}
 let busy=false,sceneTime=state?.scene?.timeSec||0,frameLast=0,drawAt=0,saveAt=0,sceneVisible=true,lightDirty=true,lightLayer=null,dirty=false,homeVideoIds=null;
-let soundOn=false,audioToken=0,audio=null,importCandidate=null,importOriginal=null,assetError=false;
+let soundOn=false,audioToken=0,audio=null,importCandidate=null,importOriginal=null,importNeedsAge=false,assetError=false;
 let writeQueue=Promise.resolve();
 const tr=(a,b)=>language==='en'?b:a;
 const txt=(id,value)=>{if($(id))$(id).textContent=String(value);};
@@ -208,6 +208,27 @@ function scheduleWrite(fn){
  };
  const result=writeQueue.then(run);writeQueue=result.catch(()=>{});return result;
 }
+const GUARDIAN_KEY='dokdo-guardian-consent-v1',UNDER14_MAIL='mailto:officialdokdokorea@gmail.com?subject='+encodeURIComponent('독도 코리아 스쿨 순위 참여 보호자 동의 요청');
+function guardianConsent(){try{return localStorage.getItem(GUARDIAN_KEY)==='1';}catch(e){return false;}}
+function mayShare(s){return M.mayShare(s,guardianConsent());}
+/* 보호자 동의를 메일로 확인한 뒤 드리는 ?guardian= 링크를 확인합니다. docs/GUARDIAN-CONSENT.ko.md 참고. */
+async function acceptGuardianLink(){
+ let code='';try{code=new URLSearchParams(location.search).get('guardian')||'';}catch(e){}
+ if(!code)return;
+ try{
+  const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('dokdo-guardian:'+code));
+  const hash=Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  if((window.DOKDO_SITE_CONFIG?.guardianConsentHashes||[]).includes(hash)){localStorage.setItem(GUARDIAN_KEY,'1');toast(tr('보호자 동의를 확인했어요. 이제 순위에 참여할 수 있어요.','Guardian consent confirmed. You can now join the rankings.'));}
+  else toast(tr('동의 링크를 확인하지 못했어요. 메일로 다시 문의해 주세요.','We could not confirm this link. Please email us again.'));
+ }catch(e){toast(tr('동의 링크를 확인하지 못했어요. 메일로 다시 문의해 주세요.','We could not confirm this link. Please email us again.'));}
+ try{const u=new URL(location.href);u.searchParams.delete('guardian');history.replaceState(null,'',u.pathname+u.search+u.hash);}catch(e){}
+}
+function renderUnder14(){
+ const s=getS(),band=$('age-band')?.value||s?.learningProfile?.ageBand||'',known=!!C.band(band),child=known&&!M.mayShare({learningProfile:{ageBand:band}},guardianConsent());
+ if($('under14-note'))$('under14-note').hidden=!child;
+ document.querySelectorAll('[data-i18n="nicknamePublic"],[data-i18n="schoolPublic"]').forEach(el=>{el.hidden=child;});
+ if($('guardian-mail'))$('guardian-mail').href=UNDER14_MAIL;
+}
 let lastAutoSaveAttempt=0;
 // BETA: real users never found the manual "서버로 백업 전송" button, so their
 // server save record never existed even though their answer events were
@@ -217,11 +238,10 @@ let lastAutoSaveAttempt=0;
 function scheduleAutoSave(){
  const s=getS();if(!s)return;
  const nick=(s.name||'').trim().normalize('NFC');if(!nick)return;
- if(!window.DokdoLeaderboard||!DokdoLeaderboard.isConfigured())return;
+ if(!window.DokdoLeaderboard||!DokdoLeaderboard.isConfigured()||store.blocked||!mayShare(s))return;
  const now=Date.now();if(now-lastAutoSaveAttempt<60000)return;
  lastAutoSaveAttempt=now;
- const payload=store.blocked?store.recovery():M.backupText(s);
- DokdoLeaderboard.saveProgress(nick,nick,s.grade||'K',payload).catch(()=>{});
+ DokdoLeaderboard.saveProgress(nick,nick,s.grade||'K',M.serverCopyText(s)).catch(()=>{});
 }
 async function mutate(fn){
  if(!guarded())throw Error('Record protection is active.');
@@ -277,10 +297,10 @@ function renderLevelBanner(s,a){
  for(let i=0;i<2;i++){const el=document.createElement('span');el.textContent=line;track.append(el);}
  box.classList.toggle('top-level',top);
  box.hidden=false;
- mutate(x=>{x.seenLevel=reached;if(top)x.topReported=true;}).catch(()=>{});
+ const share=mayShare(s);mutate(x=>{x.seenLevel=reached;if(top&&share)x.topReported=true;}).catch(()=>{});
  // Reaching the top level is recorded for the operator to check; it is not
  // announced to anyone else until they approve the row in their sheet.
- if(top&&!s.topReported&&window.DokdoLeaderboard)DokdoLeaderboard.reportTopLevel(a.name,name,a.correct).catch(()=>{});
+ if(top&&!s.topReported&&share&&window.DokdoLeaderboard)DokdoLeaderboard.reportTopLevel(a.name,name,a.correct).catch(()=>{});
 }
 /* Top-level reachers the operator has approved, scrolled on the home view
  * under the learner's own promotion strip. Nothing appears until a row is
@@ -507,6 +527,7 @@ function setupAge(callback,force=false,profileOnly=false){
  ageNext=callback;$('age-band').replaceChildren();const empty=document.createElement('option');empty.value='';empty.textContent=tr('나이대를 골라 주세요','Select your age band');$('age-band').append(empty);
  C.BANDS.forEach(b=>{const o=document.createElement('option');o.value=b.id;o.textContent=b[language];$('age-band').append(o);});
  $('age-band').value=getS().learningProfile?.ageBand||'';$('age-easy').checked=!!getS().learningProfile?.easy;
+ renderUnder14();
  $('nickname').value=(getS().name||'').slice(0,40);
  const knownFlags=Array.from($('flag-select').options).map(o=>o.value).filter(v=>v!=='OTHER');
  const curFlag=getS().flag||'KR';
@@ -595,6 +616,7 @@ listen('school-name','keydown',event=>{
  else if(event.key==='Enter'&&schoolPick>=0){event.preventDefault();$('school-name').value=options[schoolPick].dataset.name;closeSchoolSuggest();}
  else if(event.key==='Escape')closeSchoolSuggest();
 });
+$('age-band').addEventListener('change',renderUnder14);
 $('age-form').addEventListener('submit',async event=>{
  event.preventDefault();if(busy)return;const editOnly=profileEditing,entryToken=ageSetupRevision,afterSave=ageNext;
  if(!editOnly&&!C.band($('age-band').value)){txt('age-error',tr('나이대를 먼저 골라 주세요.','Please select an age band.'));return;}
@@ -731,7 +753,7 @@ async function choose(pick,skip=false){
    DokdoPlayBridge.rewardLearning(q.item.familyId).then(earned=>{if(earned)toast(tr('독도 이야기 선물: 도전권 +1회 · 꾸미기 XP +5','Dokdo story gift: +1 play ticket · +5 decorating XP'));}).catch(()=>toast(tr('학습 기록은 저장됐어요. 놀이터 저장 공간을 확인해 주세요.','Your lesson is saved. Please check playground storage.')));
   }
   // Persistent commit succeeded before moving the question forward.
-  if(window.DokdoLeaderboard){const cur=getS();DokdoLeaderboard.postEvent({
+  if(window.DokdoLeaderboard&&mayShare(getS())){const cur=getS();DokdoLeaderboard.postEvent({
    nick:cur.name||'',flag:cur.flag||'KR',grade:cur.grade||'K',qid:q.item.id,ok:ok?1:0,
    run:cur.run||0,best:cur.best||0,mode:q.mode,school:cur.school||'',schoolCode:'',schoolCat:cur.schoolCat||''
   }).catch(()=>{});if(DokdoLeaderboard.isConfigured?.()){if(ok)showRankToday(cur.name,q.item.id);else{const rt=$('rank-today');if(rt)rt.hidden=true;}}}
@@ -978,6 +1000,7 @@ async function renderHall(cached=false){
  if(!window.DokdoLeaderboard||!DokdoLeaderboard.isConfigured()){hallShow('hall-not-configured');return;}
  if(cached&&!hallResponse)return;
  hallShow('hall-loading');
+ if($('hall-under14'))$('hall-under14').hidden=mayShare(getS());
  const res=cached?hallResponse:await DokdoLeaderboard.fetchWeekly();
  if(!cached)hallResponse=res;
  if(res.state==='error'){hallShow('hall-error');$('hall-error-text').textContent=tr('기록을 불러오지 못했어요. 잠시 뒤 다시 시도해 주세요.','We could not load the records. Please try again in a moment.');return;}
@@ -1116,8 +1139,10 @@ wire('cloud-save','onclick',async()=>{
  const s=getS();if(!s)return;
  const nick=(s.name||'').trim().normalize('NFC');
  if(!nick){txt('cloud-save-status',tr('닉네임을 먼저 설정해 주세요.','Set a nickname first.'));return;}
+ if(!mayShare(s)){txt('cloud-save-status',tr('만 14세 미만은 보호자 동의 전까지 서버로 보내지 않아요.','Under 14, records stay on this device until a guardian consents.'));return;}
+ if(store.blocked){txt('cloud-save-status',tr('지금은 서버로 보낼 수 없어요. 백업 파일을 보관해 주세요.','This record cannot be sent right now. Please keep a backup file.'));return;}
  $('cloud-save').disabled=true;txt('cloud-save-status',tr('전송 중…','Sending…'));
- const key=nick,payload=store.blocked?store.recovery():M.backupText(s);
+ const key=nick,payload=M.serverCopyText(s);
  const res=await DokdoLeaderboard.saveProgress(key,nick,s.grade||'K',payload);
  if(res.state==='sent_unconfirmed'){
   // The save POST is a fire-and-forget no-cors request -- it cannot tell us
@@ -1164,8 +1189,9 @@ wire('cloud-load','onclick',async()=>{
    const current=getS();
    // BETA: same-nickname records are combined (mergeStates), not replaced,
    // so loading on a device that already has progress cannot erase it.
-   importCandidate=current?M.mergeStates(current,res.data.payload):M.parseImport(res.data.payload,null);
-   importOriginal=res.data.payload;
+   const copy=M.readServerCopy(res.data.payload,current);
+   importCandidate=current?M.mergeStates(current,copy.text):M.parseImport(copy.text,null);
+   importOriginal=copy.text;importNeedsAge=copy.needsAge;
    txt('cloud-load-status','');showImport();
   }catch(e){txt('cloud-load-status',tr('서버 기록의 구조를 확인할 수 없어 불러오지 않았습니다.','The server record could not be validated, so nothing was loaded.'));}
  }else if(res.state==='not_found')txt('cloud-load-status',tr('해당 닉네임으로 저장된 기록이 없습니다.','No record found for that nickname.'));
@@ -1216,7 +1242,7 @@ function showImport(legacy=false){
   if(!importCandidate||busy)return;busy=true;
   try{
    await scheduleWrite(()=>getS()===null?store.recoverState(importCandidate):store.importState(importCandidate,importOriginal));
-   state=getS();language=state.visual.language;translate();sceneTime=state.scene.timeSec||0;lightDirty=true;importCandidate=null;importOriginal=null;box.hidden=true;renderRecords();toast(tr('복사한 기록을 저장했습니다. 원본은 그대로 남아 있습니다.','The copied record was saved. The original remains unchanged.'));
+   state=getS();language=state.visual.language;translate();sceneTime=state.scene.timeSec||0;lightDirty=true;importCandidate=null;importOriginal=null;box.hidden=true;renderRecords();if(importNeedsAge){importNeedsAge=false;setupAge(()=>{},true);}toast(tr('복사한 기록을 저장했습니다. 원본은 그대로 남아 있습니다.','The copied record was saved. The original remains unchanged.'));
   }catch(e){toast(tr('복사를 저장하지 못했습니다. 원본은 변경하지 않았습니다.','The copy could not be saved. The original was not changed.'));updateStorageStatus();}
   finally{busy=false;}
  };
@@ -1378,7 +1404,7 @@ function frame(now){
  requestAnimationFrame(frame);
 }
 if('IntersectionObserver' in window)new IntersectionObserver(entries=>{sceneVisible=!!entries[0]?.isIntersecting;frameLast=0;},{threshold:.05}).observe(canvas);
-assetsReady.then(()=>{updateEnvironment();paint();requestAnimationFrame(frame);maybeShowIntro();autoLoadFromLink();});
+assetsReady.then(()=>{updateEnvironment();paint();requestAnimationFrame(frame);maybeShowIntro();acceptGuardianLink();autoLoadFromLink();});
 $('time-mode').onchange=()=>{timeMode=$('time-mode').value;updateEnvironment();paint();};
 $('weather-refresh').onclick=async()=>{if(!weatherClient.enabled){toast(tr('배포자가 assets/site-config.js에서 비상업용 조건을 확인한 뒤 날씨를 연결합니다. 낮밤 전환은 계속 작동합니다.','Weather requires the operator to confirm its non-commercial terms in assets/site-config.js. Day/night still works.'));return;}await weatherClient.refresh(true);updateEnvironment();paint();};
 if(weatherClient.enabled){weatherClient.refresh().then(()=>{updateEnvironment();paint();});setInterval(()=>{if(!document.hidden)weatherClient.refresh().then(updateEnvironment);},300000);}
