@@ -39,3 +39,4 @@ test('The configuration holds only hashes of guardian codes',()=>{
  const list=config.match(/guardianConsentHashes:Object\.freeze\(\[([^\]]*)\]\)/);a.ok(list);
  for(const item of list[1].split(',').map(t=>t.trim()).filter(Boolean))a.match(item,/^'[0-9a-f]{64}'$/);
 });
+test('Measurement opens only for a device band of 14 or older, never by guardian consent alone',()=>{const P=gate();a.equal(P.mayMeasure(),false);for(const band of ['u7','8-9','10-11','12-13']){P.setDeviceAge(band);a.equal(P.mayMeasure(),false,band);}globalThis.DOKDO_SITE_CONFIG={guardianConsentHashes:['abc']};P.saveConsent('abc');a.equal(P.mayShare(),true);a.equal(P.mayMeasure(),false);for(const band of ['14-16','17-19','20+']){P.setDeviceAge(band);a.equal(P.mayMeasure(),true,band);}});

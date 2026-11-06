@@ -2,7 +2,7 @@ const test=require('node:test'),a=require('node:assert/strict'),fs=require('node
 const ROOT=path.resolve(__dirname,'..');
 function client(mode,withoutDocument=false){
  const requests=[],scripts=[];
- const context={window:{DOKDO_SITE_CONFIG:{leaderboard:{apiUrl:'https://example.invalid/test-only'},analytics:{gaId:'G-TESTONLY'}}},AbortController,setTimeout,clearTimeout,
+ const context={window:{DOKDO_SITE_CONFIG:{leaderboard:{apiUrl:'https://example.invalid/test-only'},analytics:{gaId:'G-TESTONLY'}},DokdoPrivacy:{mayMeasure:()=>true}},AbortController,setTimeout,clearTimeout,
   fetch:async(url,options)=>{requests.push({url,options});return {ok:true,headers:{get:()=> 'application/json'},json:async()=>({found:true,tops:[],temperature:10,station:'test'})};}};
  if(!withoutDocument)context.document={querySelector:()=>mode===null?null:{content:mode},createElement:()=>({}),head:{appendChild:s=>scripts.push(s)}};
  vm.createContext(context);

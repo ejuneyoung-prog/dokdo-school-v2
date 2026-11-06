@@ -13,13 +13,15 @@ const read=key=>{try{return root.localStorage?.getItem(key)||'';}catch(e){return
 const write=(key,value)=>{try{root.localStorage?.setItem(key,value);}catch(e){}};
 const remove=key=>{try{root.localStorage?.removeItem(key);}catch(e){}};
 function deviceAge(){const band=read(AGE_KEY);return CHILD.includes(band)||OLDER.includes(band)?band:'';}
-function setDeviceAge(band){if(CHILD.includes(band)||OLDER.includes(band))write(AGE_KEY,band);}
+function setDeviceAge(band){if(CHILD.includes(band)||OLDER.includes(band)){write(AGE_KEY,band);try{root.DokdoAnalytics?.refresh?.();}catch(e){}}}
 function hashes(){const list=root.DOKDO_SITE_CONFIG?.guardianConsentHashes;return Array.isArray(list)?list:[];}
 function consent(){const stored=read(CONSENT_KEY);return !!stored&&hashes().includes(stored);}
 function saveConsent(hash){if(hashes().includes(hash)){write(CONSENT_KEY,hash);return true;}return false;}
 function isChildBand(band){return CHILD.includes(band);}
 function knownChild(){return isChildBand(deviceAge())&&!consent();}
 function mayShare(){return OLDER.includes(deviceAge())||consent();}
+/* 통계(GA)는 이 기기에서 만 14세 이상을 고른 때만 켭니다. 나이대를 모르는 기기와 보호자 동의 기기도 끕니다(교수님 결정 2026-11-07). */
+function mayMeasure(){return OLDER.includes(deviceAge());}
 function clear(){remove(AGE_KEY);remove(CONSENT_KEY);}
 const live=()=>root.document?.querySelector?.('meta[name="dokdo-mode"]')?.content==='live';
 /* 이번 변경 전에 쓰던 기기의 나이대를 기기마다 한 번만 옮깁니다. 그 뒤에 불러온 기록의 나이대는 옮기지 않습니다.
@@ -31,5 +33,5 @@ function adopt(){
  try{const saved=JSON.parse(read(STATE_KEY)||'null'),band=(saved?.state||saved)?.learningProfile?.ageBand;if(band&&band!=='14-16')setDeviceAge(band);}catch(e){}
 }
 adopt();
-return{AGE_KEY,CONSENT_KEY,deviceAge,setDeviceAge,consent,saveConsent,isChildBand,knownChild,mayShare,clear};
+return{AGE_KEY,CONSENT_KEY,deviceAge,setDeviceAge,consent,saveConsent,isChildBand,knownChild,mayShare,mayMeasure,clear};
 });

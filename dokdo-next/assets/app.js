@@ -1503,7 +1503,7 @@ async function saveImage(){
  const a=M.summary(s);x.fillStyle='#081f2e';x.fillRect(0,770,1536,160);
  const now=new Date();
  x.fillStyle='#e8efeb';x.font='500 25px GmarketSans, sans-serif';
- let name=a.name||tr('나의 독도','My Dokdo');while(x.measureText(name).width>1000)name=name.slice(0,-2)+'…';
+ let name=(mayShare()&&a.name)||tr('나의 독도','My Dokdo');while(x.measureText(name).width>1000)name=name.slice(0,-2)+'…';
  x.fillText(name,48,805);
  x.font='500 16px GmarketSans,sans-serif';x.fillStyle='#8fa7b2';x.textAlign='right';
  x.fillText(Core.dayKey(now.getTime())+' '+DokdoSolar.clock(now.getTime()),1488,805);x.textAlign='left';
