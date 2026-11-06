@@ -48,7 +48,7 @@ const en={
  footer:'Small moments of learning make Dokdo shine.',demoLink:'Separate demo',ageTitle:'Tell us your age band',
  ageDesc:'We use your age band to pick your first story and explanations. Everyone starts at Kindergarten. We do not collect your date of birth.',
  ageRecoverLink:'Already have a nickname? Load your record here ↗',
- nickname:'Nickname (needed to keep your record)',nicknamePublic:'This nickname appears in the Hall of Fame. Do not use your real name or phone number.',under14Note:'Under 14, your nickname and school stay on this device. To join the rankings, a guardian needs to consent by email.',guardianMail:'Email us with a guardian ↗',hallUnder14:'Under 14, your records stay on this device and are not shown in the rankings.',schoolPublic:'Your school name appears in the school ranking.',ageBand:'Age band',
+ nickname:'Nickname (needed to keep your record)',nicknamePublic:'This nickname appears in the Hall of Fame. Do not use your real name or phone number.',under14Note:'If you are under 14, your nickname and school stay on this device. To join the rankings, a guardian needs to consent by email.',guardianMail:'Email us with a guardian ↗',hallUnder14:'If you are under 14, your records stay on this device and do not appear in the rankings.',schoolPublic:'Your school name appears in the school ranking.',ageBand:'Age band',
  selectAge:'Select your age band',easyStart:'Start with very simple language, regardless of age.',continue:'Continue',
  agePreserve:'Existing game grades and records are not reduced.',settings:'Settings',reduceMotion:'Reduce motion',
  enableBirds:'Show birds after achievements',seaDensity:'Life in the sea',calm:'Calm',rich:'Lively',full:'More lively',
@@ -133,7 +133,7 @@ let state=store.load(),language=(!isolated&&window.DokdoLanguage?.saved())||stat
 if(!isolated&&window.DokdoLanguage&&window.DokdoLanguage.saved()===null)window.DokdoLanguage.set(language);
 let lastLessonFirst=null;try{lastLessonFirst=isolated?null:Number(sessionStorage.getItem('dokdo-v3-last-first'))||null;}catch(e){}
 let busy=false,sceneTime=state?.scene?.timeSec||0,frameLast=0,drawAt=0,saveAt=0,sceneVisible=true,lightDirty=true,lightLayer=null,dirty=false,homeVideoIds=null;
-let soundOn=false,audioToken=0,audio=null,importCandidate=null,importOriginal=null,importNeedsAge=false,assetError=false;
+let soundOn=false,audioToken=0,audio=null,importCandidate=null,importOriginal=null,assetError=false;
 let writeQueue=Promise.resolve();
 const tr=(a,b)=>language==='en'?b:a;
 const txt=(id,value)=>{if($(id))$(id).textContent=String(value);};
@@ -208,26 +208,33 @@ function scheduleWrite(fn){
  };
  const result=writeQueue.then(run);writeQueue=result.catch(()=>{});return result;
 }
-const GUARDIAN_KEY='dokdo-guardian-consent-v1',UNDER14_MAIL='mailto:officialdokdokorea@gmail.com?subject='+encodeURIComponent('독도 코리아 스쿨 순위 참여 보호자 동의 요청');
-function guardianConsent(){try{return localStorage.getItem(GUARDIAN_KEY)==='1';}catch(e){return false;}}
-function mayShare(s){return M.mayShare(s,guardianConsent());}
+const P=window.DokdoPrivacy,UNDER14_MAIL='mailto:officialdokdokorea@gmail.com?subject='+encodeURIComponent('독도 코리아 스쿨 순위 참여 보호자 동의 요청');
+const mayShare=()=>P.mayShare();
+/* 예전 기록의 나이대를 기기 값으로 옮깁니다. '중학생'이던 14-16은 중1이 섞여 있어 다시 묻습니다. */
+function adoptDeviceAge(){const band=getS()?.learningProfile?.ageBand;if(!P.deviceAge()&&band&&band!=='14-16')P.setDeviceAge(band);}
 /* 보호자 동의를 메일로 확인한 뒤 드리는 ?guardian= 링크를 확인합니다. docs/GUARDIAN-CONSENT.ko.md 참고. */
 async function acceptGuardianLink(){
  let code='';try{code=new URLSearchParams(location.search).get('guardian')||'';}catch(e){}
  if(!code)return;
+ const failed=()=>toast(tr('동의 링크를 확인하지 못했어요. 메일로 다시 문의해 주세요.','We could not confirm this link. Please email us again.'));
  try{
   const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('dokdo-guardian:'+code));
   const hash=Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
-  if((window.DOKDO_SITE_CONFIG?.guardianConsentHashes||[]).includes(hash)){localStorage.setItem(GUARDIAN_KEY,'1');toast(tr('보호자 동의를 확인했어요. 이제 순위에 참여할 수 있어요.','Guardian consent confirmed. You can now join the rankings.'));}
-  else toast(tr('동의 링크를 확인하지 못했어요. 메일로 다시 문의해 주세요.','We could not confirm this link. Please email us again.'));
- }catch(e){toast(tr('동의 링크를 확인하지 못했어요. 메일로 다시 문의해 주세요.','We could not confirm this link. Please email us again.'));}
+  if(P.saveConsent(hash))toast(tr('보호자 동의를 확인했어요. 이제 순위에 참여할 수 있어요.','Guardian consent confirmed. You can now join the rankings.'));else failed();
+ }catch(e){failed();}
  try{const u=new URL(location.href);u.searchParams.delete('guardian');history.replaceState(null,'',u.pathname+u.search+u.hash);}catch(e){}
 }
 function renderUnder14(){
- const s=getS(),band=$('age-band')?.value||s?.learningProfile?.ageBand||'',known=!!C.band(band),child=known&&!M.mayShare({learningProfile:{ageBand:band}},guardianConsent());
+ const band=$('age-band')?.value||P.deviceAge(),child=P.isChildBand(band)&&!P.consent();
  if($('under14-note'))$('under14-note').hidden=!child;
  document.querySelectorAll('[data-i18n="nicknamePublic"],[data-i18n="schoolPublic"]').forEach(el=>{el.hidden=child;});
  if($('guardian-mail'))$('guardian-mail').href=UNDER14_MAIL;
+}
+const shareHold=()=>P.knownChild()?tr('만 14세 미만의 기록은 보호자 동의 전까지 서버로 보내지 않아요.','If you are under 14, records stay on this device until a guardian consents.'):tr('나이대를 먼저 골라 주세요.','Please select your age band first.');
+function renderRecordNotes(){
+ const share=mayShare(),set=(key,text)=>{const el=document.querySelector(`[data-i18n="${key}"]`);if(el)el.textContent=share?(language==='en'?en[key]:ko[key]):text;};
+ set('localOnly',tr('기록은 이 브라우저에만 저장돼요. 백업 파일을 꼭 보관해 주세요.','Your record stays in this browser. Please keep a backup file.'));
+ set('resetWarning',tr('이 기기의 기록을 지우고 빈 상태로 시작해요. 먼저 위에서 백업 파일을 저장해 주세요.','Clears this device’s record and starts empty. Save a backup file above first.'));
 }
 let lastAutoSaveAttempt=0;
 // BETA: real users never found the manual "서버로 백업 전송" button, so their
@@ -238,7 +245,7 @@ let lastAutoSaveAttempt=0;
 function scheduleAutoSave(){
  const s=getS();if(!s)return;
  const nick=(s.name||'').trim().normalize('NFC');if(!nick)return;
- if(!window.DokdoLeaderboard||!DokdoLeaderboard.isConfigured()||store.blocked||!mayShare(s))return;
+ if(!window.DokdoLeaderboard||!DokdoLeaderboard.isConfigured()||store.blocked||!mayShare())return;
  const now=Date.now();if(now-lastAutoSaveAttempt<60000)return;
  lastAutoSaveAttempt=now;
  DokdoLeaderboard.saveProgress(nick,nick,s.grade||'K',M.serverCopyText(s)).catch(()=>{});
@@ -297,7 +304,7 @@ function renderLevelBanner(s,a){
  for(let i=0;i<2;i++){const el=document.createElement('span');el.textContent=line;track.append(el);}
  box.classList.toggle('top-level',top);
  box.hidden=false;
- const share=mayShare(s);mutate(x=>{x.seenLevel=reached;if(top&&share)x.topReported=true;}).catch(()=>{});
+ const share=mayShare();mutate(x=>{x.seenLevel=reached;if(top&&share)x.topReported=true;}).catch(()=>{});
  // Reaching the top level is recorded for the operator to check; it is not
  // announced to anyone else until they approve the row in their sheet.
  if(top&&!s.topReported&&share&&window.DokdoLeaderboard)DokdoLeaderboard.reportTopLevel(a.name,name,a.correct).catch(()=>{});
@@ -526,7 +533,7 @@ function setupAge(callback,force=false,profileOnly=false){
  $('age-form').querySelector('[type="submit"]').textContent=profileOnly?tr('저장하기','Save'):tr('계속하기','Continue');
  ageNext=callback;$('age-band').replaceChildren();const empty=document.createElement('option');empty.value='';empty.textContent=tr('나이대를 골라 주세요','Select your age band');$('age-band').append(empty);
  C.BANDS.forEach(b=>{const o=document.createElement('option');o.value=b.id;o.textContent=b[language];$('age-band').append(o);});
- $('age-band').value=getS().learningProfile?.ageBand||'';$('age-easy').checked=!!getS().learningProfile?.easy;
+ $('age-band').value=P.deviceAge();$('age-easy').checked=!!getS().learningProfile?.easy;
  renderUnder14();
  $('nickname').value=(getS().name||'').slice(0,40);
  const knownFlags=Array.from($('flag-select').options).map(o=>o.value).filter(v=>v!=='OTHER');
@@ -626,8 +633,11 @@ $('age-form').addEventListener('submit',async event=>{
   const flagRaw=$('flag-select').value==='OTHER'?$('flag-other').value.trim().toUpperCase():$('flag-select').value;
   const flag=/^[A-Z]{2}$/.test(flagRaw)?flagRaw:'KR';
   const schoolCat=$('school-cat').value,schoolName=$('school-name').value.trim().slice(0,60);
+  const ageKnown=!!P.deviceAge();if(!editOnly)P.setDeviceAge(band);
   await mutate(s=>{
-   if(!editOnly)M.selectProfile(s,band,easy);if(!s.name||s.name.length<=40)s.name=nick;
+   // 나이대만 다시 확인하는 경우 쌓아 온 과정 위치를 그대로 둡니다.
+   if(!editOnly){if(s.learningProfile&&!ageKnown)s.learningProfile.ageBand=band;else M.selectProfile(s,band,easy);}
+   if(!s.name||s.name.length<=40)s.name=nick;
    s.flag=flag;s.schoolCat=schoolCat;s.school=schoolName;
    if(!s.recoveryCode)s.recoveryCode=String(Math.floor(1000+Math.random()*9000));
   });
@@ -638,7 +648,7 @@ $('age-form').addEventListener('submit',async event=>{
 });
 function start(mode,forceAge=false){
  if(!guarded())return;
- setupAge(()=>begin(mode),forceAge||mode==='placement');
+ setupAge(()=>begin(mode),forceAge||mode==='placement'||!P.deviceAge());
 }
 function begin(mode){
  const s=getS();C.ensureProfile(s.learningProfile);
@@ -753,7 +763,7 @@ async function choose(pick,skip=false){
    DokdoPlayBridge.rewardLearning(q.item.familyId).then(earned=>{if(earned)toast(tr('독도 이야기 선물: 도전권 +1회 · 꾸미기 XP +5','Dokdo story gift: +1 play ticket · +5 decorating XP'));}).catch(()=>toast(tr('학습 기록은 저장됐어요. 놀이터 저장 공간을 확인해 주세요.','Your lesson is saved. Please check playground storage.')));
   }
   // Persistent commit succeeded before moving the question forward.
-  if(window.DokdoLeaderboard&&mayShare(getS())){const cur=getS();DokdoLeaderboard.postEvent({
+  if(window.DokdoLeaderboard&&mayShare()){const cur=getS();DokdoLeaderboard.postEvent({
    nick:cur.name||'',flag:cur.flag||'KR',grade:cur.grade||'K',qid:q.item.id,ok:ok?1:0,
    run:cur.run||0,best:cur.best||0,mode:q.mode,school:cur.school||'',schoolCode:'',schoolCat:cur.schoolCat||''
   }).catch(()=>{});if(DokdoLeaderboard.isConfigured?.()){if(ok)showRankToday(cur.name,q.item.id);else{const rt=$('rank-today');if(rt)rt.hidden=true;}}}
@@ -884,7 +894,7 @@ function shareButton(label,onClick,icon,hint){
 function bragText(){
  const s=getS();if(!s)return'';
  const a=M.summary(s),gp=Core.gradeProgress(a.gradeScore);
- const who=a.name||tr('독도 코리아 스쿨','Dokdo Korea School');
+ const who=(mayShare()&&a.name)||tr('독도 코리아 스쿨','Dokdo Korea School');
  return tr(
   `${who} · ${levelText(gp)} ${gradeLabel(gp.grade)} · 정답 ${num(a.correct)}문제 · 밝힌 불빛 ${num(a.lights)}개 · ${num(a.xp)} XP`,
   `${who} · ${levelText(gp)} · ${num(a.correct)} correct · ${num(a.lights)} lights · ${num(a.xp)} XP`);
@@ -1000,7 +1010,7 @@ async function renderHall(cached=false){
  if(!window.DokdoLeaderboard||!DokdoLeaderboard.isConfigured()){hallShow('hall-not-configured');return;}
  if(cached&&!hallResponse)return;
  hallShow('hall-loading');
- if($('hall-under14'))$('hall-under14').hidden=mayShare(getS());
+ if($('hall-under14')){$('hall-under14').hidden=mayShare();if(!mayShare()&&!P.knownChild())$('hall-under14').textContent=tr('나이대를 고르면 순위에 참여할 수 있어요.','Select your age band to join the rankings.');}
  const res=cached?hallResponse:await DokdoLeaderboard.fetchWeekly();
  if(!cached)hallResponse=res;
  if(res.state==='error'){hallShow('hall-error');$('hall-error-text').textContent=tr('기록을 불러오지 못했어요. 잠시 뒤 다시 시도해 주세요.','We could not load the records. Please try again in a moment.');return;}
@@ -1113,7 +1123,7 @@ function renderBadges(s){
 }
 function renderCloudPanel(s){
  const configured=!!(window.DokdoLeaderboard&&DokdoLeaderboard.isConfigured());
- $('cloud-panel').hidden=!configured;if(!configured)return;
+ renderRecordNotes();$('cloud-panel').hidden=!configured||P.knownChild();if(!configured)return;
  const nick=(s?.name||'').trim();
  // BETA: matching by nickname alone, not nickname+code -- see mergeStates()
  // in app-model.js. Anyone using the same nickname shares one server slot;
@@ -1139,7 +1149,7 @@ wire('cloud-save','onclick',async()=>{
  const s=getS();if(!s)return;
  const nick=(s.name||'').trim().normalize('NFC');
  if(!nick){txt('cloud-save-status',tr('닉네임을 먼저 설정해 주세요.','Set a nickname first.'));return;}
- if(!mayShare(s)){txt('cloud-save-status',tr('만 14세 미만은 보호자 동의 전까지 서버로 보내지 않아요.','Under 14, records stay on this device until a guardian consents.'));return;}
+ if(!mayShare()){txt('cloud-save-status',shareHold());return;}
  if(store.blocked){txt('cloud-save-status',tr('지금은 서버로 보낼 수 없어요. 백업 파일을 보관해 주세요.','This record cannot be sent right now. Please keep a backup file.'));return;}
  $('cloud-save').disabled=true;txt('cloud-save-status',tr('전송 중…','Sending…'));
  const key=nick,payload=M.serverCopyText(s);
@@ -1173,14 +1183,15 @@ function autoLoadFromLink(){
  let nick='';
  try{const q=new URLSearchParams(location.search);nick=(q.get('기록')||q.get('load')||'').trim();}catch(e){}
  if(!nick)return;
- const field=$('cloud-load-nick');if(!field)return;
+ const field=$('cloud-load-nick');if(!field||P.knownChild())return;
  field.value=nick.normalize('NFC');
  view('records');
- setTimeout(()=>{const b=$('cloud-load');if(b&&!b.disabled)b.click();},400);
+ if(mayShare())setTimeout(()=>{const b=$('cloud-load');if(b&&!b.disabled)b.click();},400);
 }
 wire('cloud-load','onclick',async()=>{
  const nick=$('cloud-load-nick').value.trim().normalize('NFC');
  if(!nick){txt('cloud-load-status',tr('불러올 닉네임을 입력해 주세요.','Enter the nickname to load.'));return;}
+ if(P.knownChild()){txt('cloud-load-status',shareHold());return;}
  if(store.blocked&&getS()!==null){guarded();return;}
  $('cloud-load').disabled=true;txt('cloud-load-status',tr('불러오는 중…','Loading…'));
  const res=await DokdoLeaderboard.loadProgress(nick);
@@ -1190,8 +1201,8 @@ wire('cloud-load','onclick',async()=>{
    // BETA: same-nickname records are combined (mergeStates), not replaced,
    // so loading on a device that already has progress cannot erase it.
    const copy=M.readServerCopy(res.data.payload,current);
-   importCandidate=current?M.mergeStates(current,copy.text):M.parseImport(copy.text,null);
-   importOriginal=copy.text;importNeedsAge=copy.needsAge;
+   importCandidate=current?M.mergeStates(current,copy):M.parseImport(copy,null);
+   importOriginal=copy;
    txt('cloud-load-status','');showImport();
   }catch(e){txt('cloud-load-status',tr('서버 기록의 구조를 확인할 수 없어 불러오지 않았습니다.','The server record could not be validated, so nothing was loaded.'));}
  }else if(res.state==='not_found')txt('cloud-load-status',tr('해당 닉네임으로 저장된 기록이 없습니다.','No record found for that nickname.'));
@@ -1242,7 +1253,7 @@ function showImport(legacy=false){
   if(!importCandidate||busy)return;busy=true;
   try{
    await scheduleWrite(()=>getS()===null?store.recoverState(importCandidate):store.importState(importCandidate,importOriginal));
-   state=getS();language=state.visual.language;translate();sceneTime=state.scene.timeSec||0;lightDirty=true;importCandidate=null;importOriginal=null;box.hidden=true;renderRecords();if(importNeedsAge){importNeedsAge=false;setupAge(()=>{},true);}toast(tr('복사한 기록을 저장했습니다. 원본은 그대로 남아 있습니다.','The copied record was saved. The original remains unchanged.'));
+   state=getS();language=state.visual.language;translate();sceneTime=state.scene.timeSec||0;lightDirty=true;importCandidate=null;importOriginal=null;box.hidden=true;renderRecords();toast(tr('복사한 기록을 저장했습니다. 원본은 그대로 남아 있습니다.','The copied record was saved. The original remains unchanged.'));
   }catch(e){toast(tr('복사를 저장하지 못했습니다. 원본은 변경하지 않았습니다.','The copy could not be saved. The original was not changed.'));updateStorageStatus();}
   finally{busy=false;}
  };
@@ -1259,12 +1270,12 @@ $('import-file').onchange=async event=>{
 };
 wire('reset-record','onclick',async()=>{
  if(!getS()||busy)return;
- if(!confirm(tr('이 기기의 모든 기록을 지우고 빈 상태로 시작합니다. 직전 기록은 이 브라우저에 한 번 더 보관되지만, 화면에서는 되돌릴 수 없습니다. 백업 파일을 저장했거나 닉네임을 알고 계신가요? 계속할까요?','This clears every record on this device and starts empty. The previous record is kept once more in this browser, but there is no undo button here. Have you saved a backup, or do you know your nickname? Continue?')))return;
+ if(!confirm(tr('이 기기의 모든 기록을 지우고 빈 상태로 시작합니다. 직전 기록은 이 브라우저에 한 번 더 보관되지만, 화면에서는 되돌릴 수 없습니다. 백업 파일을 저장해 두셨나요?','This clears everything on this device and starts empty. The previous record is kept once more in this browser, but it cannot be restored from the screen. Have you saved a backup file?')))return;
  busy=true;
  try{
   await scheduleWrite(()=>store.importState(M.fresh()));
-  state=getS();language=state.visual.language;translate();lesson=null;lightDirty=true;homeVideoIds=null;view('home',true);paint();
-  toast(tr('기록을 초기화했습니다. 필요하면 내 기록에서 다른 기기 기록 불러오기로 되돌릴 수 있습니다.','Record reset. If needed, use "Load a record from another device" in My records to bring it back.'));
+  P.clear();state=getS();language=state.visual.language;translate();lesson=null;lightDirty=true;homeVideoIds=null;view('home',true);paint();
+  toast(tr('기록을 초기화했습니다.','Record reset.'));
  }catch(e){toast(tr('초기화하지 못했습니다.','Could not reset the record.'));updateStorageStatus();}
  finally{busy=false;}
 });
@@ -1404,7 +1415,7 @@ function frame(now){
  requestAnimationFrame(frame);
 }
 if('IntersectionObserver' in window)new IntersectionObserver(entries=>{sceneVisible=!!entries[0]?.isIntersecting;frameLast=0;},{threshold:.05}).observe(canvas);
-assetsReady.then(()=>{updateEnvironment();paint();requestAnimationFrame(frame);maybeShowIntro();acceptGuardianLink();autoLoadFromLink();});
+assetsReady.then(()=>{updateEnvironment();paint();requestAnimationFrame(frame);adoptDeviceAge();maybeShowIntro();acceptGuardianLink();autoLoadFromLink();});
 $('time-mode').onchange=()=>{timeMode=$('time-mode').value;updateEnvironment();paint();};
 $('weather-refresh').onclick=async()=>{if(!weatherClient.enabled){toast(tr('배포자가 assets/site-config.js에서 비상업용 조건을 확인한 뒤 날씨를 연결합니다. 낮밤 전환은 계속 작동합니다.','Weather requires the operator to confirm its non-commercial terms in assets/site-config.js. Day/night still works.'));return;}await weatherClient.refresh(true);updateEnvironment();paint();};
 if(weatherClient.enabled){weatherClient.refresh().then(()=>{updateEnvironment();paint();});setInterval(()=>{if(!document.hidden)weatherClient.refresh().then(updateEnvironment);},300000);}
@@ -1554,6 +1565,8 @@ wire('dispute-mail','onclick',()=>{if(!disputeMailItem)return;disputeMail(disput
 wire('dispute-send','onclick',async()=>{
  if(!disputeItem||disputeSending)return;
  const item=disputeItem,reason=$('dispute-reason').value.trim().slice(0,1000);
+ // 나이를 확인하지 못했거나 만 14세 미만이면 자유 글을 서버로 보내지 않고 메일로 안내합니다.
+ if(!mayShare()){disputeMailItem={item,reason};disputeState(tr('보호자와 함께 메일로 보내 주세요.','Please send this by email with a guardian.'));return;}
  // One report per device per minute keeps repeated taps from flooding the sheet.
  let lastAt=0;try{lastAt=Number(localStorage.getItem('dokdo-dispute-at'))||0;}catch(e){}
  if(Date.now()-lastAt<60000){toast(tr('방금 보내 주신 의견이 있어요. 1분 뒤에 다시 보내 주세요.','You just sent a report. Please try again in a minute.'));return;}
@@ -1561,7 +1574,7 @@ wire('dispute-send','onclick',async()=>{
  const id=Date.now().toString(36)+Math.random().toString(36).slice(2,10);
  let res={state:'not_configured'};
  try{
-  if(window.DokdoLeaderboard&&DokdoLeaderboard.reportDispute)res=await DokdoLeaderboard.reportDispute({id,qid:item.id,question:item.q,answer:item.choices[item.answer],reason,lang:language,age:getS().learningProfile?.ageBand||''});
+  if(window.DokdoLeaderboard&&DokdoLeaderboard.reportDispute)res=await DokdoLeaderboard.reportDispute({id,qid:item.id,question:item.q,answer:item.choices[item.answer],reason,lang:language,age:P.deviceAge()});
  }catch(e){res={state:'error'};}
  disputeSending=false;$('dispute-send').disabled=false;
  const stillOpen=disputeItem===item&&$('dispute-dialog').open;

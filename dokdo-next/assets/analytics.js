@@ -20,7 +20,7 @@ function clean(name,params){
 }
 let started=false;
 function start(){
- if(started)return;const id=gaId();if(!id)return;started=true;
+ if(started||window.DokdoPrivacy?.knownChild())return;const id=gaId();if(!id)return;started=true;
  window.dataLayer=window.dataLayer||[];
  window.gtag=function(){window.dataLayer.push(arguments);};
  window.gtag('js',new Date());
@@ -34,7 +34,7 @@ function start(){
  document.head.appendChild(s);
 }
 function track(name,params){
- if(!Object.prototype.hasOwnProperty.call(fields,name)||!gaId())return;
+ if(!Object.prototype.hasOwnProperty.call(fields,name)||!gaId()||window.DokdoPrivacy?.knownChild())return;
  start();try{window.gtag('event',name,clean(name,params));}catch(e){}
 }
 if(typeof document!=='undefined'){

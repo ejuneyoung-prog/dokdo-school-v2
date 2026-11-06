@@ -28,7 +28,7 @@ def site_config():
     text = (ROOT / 'assets/site-config.js').read_text(encoding='utf-8')
     text = re.sub(r"apiUrl:'[^']*'", f"apiUrl:'{TEST_API}'", text)
     text = re.sub(r"gaId:'[^']*'", "gaId:''", text)
-    return text.replace('guardianConsentHashes:Object.freeze([])', "guardianConsentHashes:Object.freeze(['" + GUARDIAN_HASH + "'])")
+    return re.sub(r'guardianConsentHashes:Object\.freeze\(\[[^\]]*\]\)', "guardianConsentHashes:Object.freeze(['" + GUARDIAN_HASH + "'])", text)
 
 
 import hashlib
@@ -91,6 +91,37 @@ def run(browser, band, consent=False):
     return sent, note, camp, saved
 
 
+def adult_record_on_child_device(browser):
+    sent = []
+    context = browser.new_context()
+
+    def route(r):
+        url = r.request.url
+        if url.startswith(LOCAL):
+            return r.continue_()
+        if url.startswith(TEST_API) and r.request.method == 'POST':
+            sent.append(r.request.post_data or '')
+            return r.fulfill(status=200, body='{}', content_type='application/json')
+        if url.startswith(TEST_API):
+            return r.fulfill(status=200, body='{}', content_type='application/json')
+        return r.abort()
+
+    context.route('**/*', route)
+    context.route('**/assets/site-config.js', lambda r: r.fulfill(body=site_config(), content_type='text/javascript'))
+    page = context.new_page()
+    page.add_init_script("localStorage.setItem('dokdo-device-age-v1','10-11')")
+    page.goto(base + '/index.html')
+    page.wait_for_function('window.DokdoApp&&DokdoApp.state')
+    page.evaluate("""async()=>{const A=DokdoApp;const s=A.state;s.name='adult-nick';s.school='adult-school';const M=DokdoAppModel;M.selectProfile(s,'20+',false);localStorage.setItem(M.KEY,JSON.stringify(s));}""")
+    page.reload()
+    page.wait_for_timeout(900)
+    state_band = page.evaluate('DokdoPrivacy.deviceAge()')
+    assert state_band == '10-11', state_band
+    assert page.evaluate('DokdoPrivacy.mayShare()') is False
+    context.close()
+    return sent
+
+
 with sync_playwright() as pw:
     browser = getattr(pw, engine).launch()
     for band in ('u7', '8-9', '10-11', '12-13'):
@@ -104,11 +135,15 @@ with sync_playwright() as pw:
     kinds = [json.loads(body).get('t') for body in sent]
     assert 'a' in kinds and 'save' in kinds, kinds
     payload = saved['payload']
-    for word in ('fixture-school', 'ageBand', 'recoveryCode', 'schoolCat'):
+    for word in ('fixture-school', '"school":"fixture'):
         assert word not in payload, word
     print('ok 14 or older keeps rankings and saves a stripped copy')
     sent, note, camp, saved = run(browser, '10-11', consent=True)
     assert not note and any(json.loads(body).get('t') == 'a' for body in sent)
     print('ok guardian link opens rankings on this device')
+    # 불러온 기록의 나이대가 어린이 기기의 전송을 열면 안 됩니다.
+    sent = adult_record_on_child_device(browser)
+    assert not sent, sent
+    print('ok an adult record does not open sharing on a child device')
     browser.close()
 print('privacy sharing ok')

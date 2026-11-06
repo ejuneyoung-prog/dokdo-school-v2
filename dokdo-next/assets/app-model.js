@@ -151,22 +151,21 @@ function replayBirds(s){
 function backupText(s,lang=s.visual.language,now=Date.now()){
  validate(s);return JSON.stringify(Core.envelope(s,lang,now),null,2);
 }
-/* 나이대를 알 수 없거나 만 14세 미만이면 서버로 보내지 않습니다. 보호자 동의가 확인되면 예외입니다. */
-const SHARING_BANDS=['14-16','17-19','20+'];
-function mayShare(s,guardianConsent=false){return guardianConsent===true||SHARING_BANDS.includes(s?.learningProfile?.ageBand);}
-/* 서버 저장본은 닉네임만으로 불러올 수 있으므로 나이대·학교·복구 번호를 뺍니다. */
+/* 서버 저장본은 닉네임만으로 불러올 수 있으므로 나이대·학교·복구 번호를 비웁니다.
+ * 나이대 칸은 없애지 않고 자리표시 값을 둡니다. 되돌린 예전 코드도 읽을 수 있게 하기 위해서입니다. */
 function serverCopyText(s,lang=s.visual.language,now=Date.now()){
  validate(s);const e=Core.envelope(s,lang,now),st=e.state;e.serverCopy=1;
- delete st.school;delete st.schoolCat;delete st.recoveryCode;if(st.learningProfile)delete st.learningProfile.ageBand;
+ st.school='';st.schoolCat='';st.recoveryCode='';if(st.learningProfile)st.learningProfile.ageBand='20+';
  return JSON.stringify(e);
 }
-/* 서버 저장본에서 뺀 값을 이 기기의 값으로 채웁니다. 예전 저장본은 그대로 둡니다. */
+/* 불러온 기록이 이 기기의 나이대를 바꾸지 못하게 합니다. 새 저장본에서 비운 값은 이 기기의 값으로 채웁니다. */
 function readServerCopy(text,current=null){
- const d=JSON.parse(text);if(d?.serverCopy!==1||!d.state)return{text,needsAge:false};
+ const d=JSON.parse(text);if(!d?.state)return text;
  const band=current?.learningProfile?.ageBand,p=d.state.learningProfile;
- if(p)p.ageBand=band||'20+';
- d.state.school=current?.school||'';d.state.schoolCat=current?.schoolCat||'';d.state.recoveryCode=current?.recoveryCode||'';
- return{text:JSON.stringify(d),needsAge:!!p&&!band};
+ if(!(d.serverCopy===1||band&&p))return text;
+ if(p&&band)p.ageBand=band;
+ if(d.serverCopy===1){d.state.school=current?.school||'';d.state.schoolCat=current?.schoolCat||'';d.state.recoveryCode=current?.recoveryCode||'';}
+ return JSON.stringify(d);
 }
 function parseImport(text,current,now=Date.now(),allowRaw=false){
  if(typeof text!=='string'||text.length>8000000)throw Error('Backup exceeds 8 MB.');
@@ -402,6 +401,6 @@ function computeBadges(s){
  const a=summary(s);
  return BADGES.map(b=>({id:b.id,icon:b.icon,ko:b.ko,en:b.en,earned:!!b.need(a),group:b.id.replace(/\d+$/,'')}));
 }
-return {VERSION,KEY,OLD_KEYS,Core,Course,Journey,fresh,ensure,validate,summary,selectProfile,answer,finish,unlock,mayShare,serverCopyText,readServerCopy,
+return {VERSION,KEY,OLD_KEYS,Core,Course,Journey,fresh,ensure,validate,summary,selectProfile,answer,finish,unlock,serverCopyText,readServerCopy,
         tick,replayBirds,backupText,parseImport,mergeStates,legacyCandidates,Store,MemoryStorage,clone,BADGES,computeBadges};
 });
