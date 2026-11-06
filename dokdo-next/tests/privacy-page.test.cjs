@@ -12,5 +12,5 @@ test('Every entrance links to the privacy policy',()=>{
 });
 test('The policy names every outside service the school page connects to',()=>{
  const page=read('privacy.html');
- for(const name of ['Google LLC','Vercel Inc.','Supabase Inc.','Open-Meteo','jsDelivr'])a.ok(page.includes(name),name);
+ for(const name of ['Google LLC','Vercel Inc.','Supabase Inc.','Open-Meteo','jsDelivr','유튜브','카카오'])a.ok(page.includes(name),name);
 });

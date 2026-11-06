@@ -40,7 +40,7 @@ const en={
  birdReplay:'Replay the bird visit',ecologySource:'Read about Dokdo’s natural environment ↗',
  wildlifeNote:'Gangchi and bird visits are imaginary learning celebrations. They do not represent real sightings, restoration or population counts.',
  badgesTitle:'🏅 Achievement Badges',
- backupTitle:'Keep and restore your record',localOnly:'The new view saves in this browser. It does not sync with a cloud account. Keep a private backup file, too.',
+ backupTitle:'Keep and restore your record',localOnly:'Your record saves in this browser. With a nickname it also saves to our server automatically. It does not sync with an account, so keep a private backup file, too.',
  backupFile:'Save learning backup',importFile:'Open a backup file',
  backupWarning:'A saved image is not a learning backup. Backup files may contain a name, school, old recovery code and learning history. Keep them private.',
  oldRecords:'Previous Dokdo School records',oldRecordWarning:'Only records under the same site and browser can be read. Original records and the old cloud are not modified. The two versions do not sync automatically.',
