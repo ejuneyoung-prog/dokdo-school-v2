@@ -22,7 +22,7 @@ function knownChild(){return isChildBand(deviceAge())&&!consent();}
 function mayShare(){return OLDER.includes(deviceAge())||consent();}
 /* 통계(GA)는 이 기기에서 만 14세 이상을 고른 때만 켭니다. 나이대를 모르는 기기와 보호자 동의 기기도 끕니다(교수님 결정 2026-11-07). */
 function mayMeasure(){return OLDER.includes(deviceAge());}
-function clear(){remove(AGE_KEY);remove(CONSENT_KEY);}
+function clear(){remove(AGE_KEY);remove(CONSENT_KEY);try{root.DokdoAnalytics?.refresh?.();}catch(e){}}
 const live=()=>root.document?.querySelector?.('meta[name="dokdo-mode"]')?.content==='live';
 /* 이번 변경 전에 쓰던 기기의 나이대를 기기마다 한 번만 옮깁니다. 그 뒤에 불러온 기록의 나이대는 옮기지 않습니다.
  * '중학생'이던 14-16은 중1이 섞여 있어 다시 묻습니다. 시연 화면은 실제 기기 값을 건드리지 않습니다. */
