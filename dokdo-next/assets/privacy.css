@@ -1,0 +1,21 @@
+@font-face{font-family:GmarketSans;font-style:normal;font-weight:500;font-display:swap;src:url("./fonts/GmarketSansMedium.woff2") format("woff2")}
+@font-face{font-family:GmarketSans;font-style:normal;font-weight:700;font-display:swap;src:url("./fonts/GmarketSansBold.woff2") format("woff2")}
+:root{font-family:GmarketSans,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-weight:500;color:#244b36;background:#f8faf5;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:#f8faf5;line-height:1.75;font-size:16px;word-break:keep-all;overflow-wrap:break-word}
+.policy{max-width:860px;margin:0 auto;padding:20px 16px 72px}
+.policy-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:28px}
+.policy-top a{color:#3f6d59;font-size:14px;min-height:44px;display:inline-flex;align-items:center}
+.policy-top button{font:inherit;font-size:14px;color:#24523b;background:#f3f7ee;border:1px solid #73927b;border-radius:8px;padding:7px 12px;min-height:44px;cursor:pointer}
+.eyebrow{font-size:14px;color:#3f6d59;margin:0 0 6px}
+h1{font-size:30px;line-height:1.35;margin:0 0 14px;font-weight:700}
+h2{font-size:20px;line-height:1.45;margin:34px 0 10px;font-weight:700}
+a{color:#2f5930}
+.easy{background:#eef4e4;border:1px solid #cfdcc0;border-radius:12px;padding:6px 18px 14px;margin-top:22px}
+.easy h2{margin-top:14px}
+ul{padding-left:20px;margin:8px 0}
+.table-wrap{overflow-x:auto;border:1px solid #dce7d6;border-radius:10px;background:#fff}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:14px;line-height:1.6}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid #e5ecdf}
+th{background:#f1f5ea;white-space:nowrap}
+tr:last-child td{border-bottom:0}

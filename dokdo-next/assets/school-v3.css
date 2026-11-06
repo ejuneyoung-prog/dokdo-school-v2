@@ -295,6 +295,7 @@ body.school-v3{word-break:keep-all;overflow-wrap:break-word}
 .school-v3 .v3-stop b,.school-v3 .v3-choice-name,.school-v3 .grade-row-name,.school-v3:lang(en) .v3-choice-name{word-break:keep-all}
 :where(.school-v3) a{color:#2f6238}
 .school-v3 button:disabled{opacity:1}
+.school-v3 .footer-privacy{font-weight:700;color:inherit;text-decoration:underline;min-height:44px;display:inline-flex;align-items:center}
 .school-v3 #arrange-beacon:disabled,.school-v3 #save-image:disabled{background:#e3ead9!important;color:#566b5a!important;border-color:#cfdbc8!important;box-shadow:none!important;cursor:not-allowed}
 .school-v3 td{overflow-wrap:anywhere}
 .school-v3 th,.school-v3 td.cell-number{white-space:nowrap;overflow-wrap:normal}
