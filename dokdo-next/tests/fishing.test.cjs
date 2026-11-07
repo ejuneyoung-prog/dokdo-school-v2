@@ -238,3 +238,17 @@ test('after the scoring change the level ladder and score goals only got lower, 
  const old=[0,300,1000,2500,5000,10000];for(const xp of [0,299,300,999,1000,4999,5000,12000])a.ok(F.levelOf(xp)>=old.filter(v=>xp>=v).length-1,String(xp));
  a.ok(F.MISSIONS.some(m=>m.k==='score'&&m.n===400));a.ok(F.BADGES.some(b=>b[0]==='score1000'&&b[1]==='한 판 600점'));
 });
+
+test('after a hit the new green zone is always at least .25 away from the ball, so no free second hit',()=>{
+ let seed=3;const rnd=()=>{seed=(seed+0x6D2B79F5)|0;let x=Math.imul(seed^(seed>>>15),1|seed);x=(x+Math.imul(x^(x>>>7),61|x))^x;return((x^(x>>>14))>>>0)/4294967296;};
+ for(const id of ['daehwang','jari','malj','bangeo','dohwa_s'])for(let i=0;i<3000;i++){const s=sp(id),f=F.startFight(s,100);f.pos=f.zw/2+rnd()*(1-f.zw);f.zone=f.pos;
+  const r=F.fightStep(f,s,100,true,0,rnd);a.equal(r.hit,true);a.ok(Math.abs(f.zone-f.pos)>=.25-1e-9,id+' '+f.pos+' '+f.zone);a.ok(f.zone>=f.zw/2-1e-9&&f.zone<=1-f.zw/2+1e-9);}
+});
+
+test('losing the bait reels the line back up for new bait, and a short pause stops a held tap from skipping the catch card',()=>{
+ const src=fs.readFileSync(path.join(ROOT,'assets/fishing.js'),'utf8');
+ a.equal((src.match(/lockUntil=t\+\.5;autoUp=true;holdMain=false;/g)||[]).length,3,'snapped, escaped and too-early all reel up');
+ a.match(src,/if\(holdUp\|\|autoUp\)hookY=Math\.max\(0,hookY-sp\*1\.6\*dt\);/);
+ a.match(src,/const press=\(v\)=>\{if\(v&&t<lockUntil\)return;/);a.match(src,/if\(k\.act==='close'\)\{if\(t<lockUntil\)return;/);
+ const page=fs.readFileSync(path.join(ROOT,'fishing.html'),'utf8');a.match(page,/<div class="f-controls">\s*<p class="f-coach" id="coach"/,'guide line sticks with the button');
+});
