@@ -1,10 +1,16 @@
 'use strict';
 const { createHash } = require('node:crypto');
 const owner = 'c8c8d1e75d436426fe5468dc3e202997eb5b8195f22274f377c4ddf9428d9a92';
-// 운영자 메일(인증을 마친 계정만)의 SHA-256. 메일 주소 자체는 코드에 두지 않습니다.
+// 운영자 메일(인증을 마친 계정만)의 SHA-256. 서버 코드에는 해시만 둡니다.
 const ownerEmail = '08ff9596a2e73887cacb0733e4ddc36aff1976fd458bbec91216ffea857e0de1';
 const sha = (v) => createHash('sha256').update(v).digest('hex');
-module.exports = async (req, res) => {
+// Supabase가 확인해 준 사용자 정보로만 판단합니다. 메일 인증을 마쳐야 하고, 계정 번호나 메일 해시가 정확히 맞아야 합니다.
+function allowed(user, keys = { owner, ownerEmail }) {
+  if (!user || typeof user !== 'object' || !user.email_confirmed_at || typeof user.id !== 'string') return false;
+  const email = typeof user.email === 'string' ? user.email.trim().toLowerCase() : '';
+  return sha(user.id) === keys.owner || (email !== '' && sha(email) === keys.ownerEmail);
+}
+const handler = async (req, res) => {
   res.setHeader('Cache-Control', 'private, no-store');
   if (req.method !== 'GET') return res.status(405).end();
   const token = req.headers.authorization;
@@ -16,9 +22,8 @@ module.exports = async (req, res) => {
     });
     if (!response.ok) return res.status(401).end();
     const user = await response.json();
-    const email = typeof user.email === 'string' ? user.email.trim().toLowerCase() : '';
-    const allowed = Boolean(user.email_confirmed_at) && typeof user.id === 'string' &&
-      (sha(user.id) === owner || (email !== '' && sha(email) === ownerEmail));
-    return allowed ? res.json({creator:true}) : res.status(403).end();
+    return allowed(user) ? res.json({creator:true}) : res.status(403).end();
   } catch { return res.status(503).end(); }
 };
+handler.allowed = allowed;
+module.exports = handler;
