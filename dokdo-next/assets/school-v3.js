@@ -18,7 +18,7 @@ function syncArea(){
  nav.classList.toggle('active',active);if(active)nav.setAttribute('aria-current','page');else nav.removeAttribute('aria-current');
  const atGate=document.body.classList.contains('v3-choosing')&&!$('view-home').hidden&&!info;$('v3-way').hidden=atGate;
  document.title=channel?copy('독도 코리아 채널 · 독도 코리아 스쿨','Dokdo Korea Channel · Dokdo Korea School'):info?copy('독도 알아보기 · 독도 코리아 스쿨','Discover Dokdo · Dokdo Korea School'):learningEntered?copy('독도 배움터 · 독도 코리아 스쿨','Dokdo Learning · Dokdo Korea School'):copy('독도 코리아 스쿨 · 배움터와 놀이터','Dokdo Korea School · Learn and Play');
- const here=document.title.split(' · ')[0];label('v3-way-here',copy('지금 · ','Now · ')+here,copy('지금 · ','Now · ')+here);
+ const here=channel||info||learningEntered?document.title.split(' · ')[0]:copy('독도 배움터','Dokdo Learning');label('v3-way-here',copy('지금 · ','Now · ')+here,copy('지금 · ','Now · ')+here);
 }
 function enterLearning(){
  const previous=learningEntered;learningEntered=true;

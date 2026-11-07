@@ -11,6 +11,9 @@ const css = read('assets/wayfinder.css');
 test('wayfinder strip is sticky, dark and its buttons are large enough to tap', () => {
   assert.match(css, /\.way\{position:sticky;top:0/);
   assert.match(css, /min-height:46px/);
+  // 배움터 앱의 넓은 button 규칙보다 앞서도록
+  assert.match(css, /html:root body \.way \.way-home,html:root body \.way \.way-up\{min-height:46px/);
+  assert.match(css, /html:has\(body>\.way:not\(\[hidden\]\)\)\{scroll-padding-top:72px\}/);
   assert.match(css, /font:700 17px/);
 });
 
@@ -20,7 +23,7 @@ test('every page outside the first screen loads the strip with a home button', (
     const html = read(page);
     assert.match(html, /<link rel="stylesheet" href="\.\/assets\/wayfinder\.css">/, page + ' loads wayfinder.css');
     assert.ok(html.includes('<nav class="way"'), page + ' has the strip');
-    assert.ok(html.includes('<a class="way-home" href="' + home + '"'), page + ' home goes to the first screen');
+    assert.match(html, new RegExp('<a class="way-home"(?: id="[a-z-]+")? href="' + home.replace(/[.\/]/g, (c) => '\\' + c) + '"'), page + ' home goes to the first screen');
     assert.ok(html.indexOf('<nav class="way"') < html.indexOf('<main'), page + ' strip comes before the content');
   }
 });

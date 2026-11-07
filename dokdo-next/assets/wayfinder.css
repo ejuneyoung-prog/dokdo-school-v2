@@ -9,4 +9,7 @@
 .way .way-here{margin-left:auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:15px;color:#cfe3d6}
 @media (max-width:420px){.way{gap:8px}.way a,.way button{padding:8px 15px;font-size:16px}.way .way-here{font-size:14px}}
 @media (max-width:340px){.way .way-here{display:none}}
-.way .way-home{margin:0}
+html:root body .way .way-home,html:root body .way .way-up{min-height:46px;margin:0}
+/* 줄이 위에 붙어 있으므로, 화면 안에서 어떤 칸으로 이동할 때 그 칸이 줄 밑에 가리지 않게 한다. 문제 푸는 집중 화면에서는 줄이 없으므로 푼다. */
+html:has(body>.way:not([hidden])){scroll-padding-top:72px}
+html:has(body.v3-in-lesson){scroll-padding-top:0}
