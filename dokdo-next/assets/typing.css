@@ -51,7 +51,7 @@
 .type-app .t-result form{display:flex;flex-wrap:wrap;gap:8px}
 .type-app .t-result form .primary{width:auto;flex:1 1 10rem}
 .type-app .t-result input{flex:3 1 160px;min-width:0;font:inherit;background:#fff;color:var(--ink);border:2px solid var(--line);border-radius:10px;padding:10px 12px}
-.type-app .t-hall{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:16px;display:flex;flex-direction:column;gap:10px;position:sticky;top:12px;min-width:0}
+.type-app .t-hall{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:16px;display:flex;flex-direction:column;gap:10px;position:sticky;top:74px;min-width:0}
 .type-app .t-hall h2{font-size:1.125rem;display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 8px}
 .type-app .t-hall h2 .t-eyebrow{font-size:.875rem}
 .type-app .t-tabs{display:flex;flex-wrap:wrap;gap:6px}

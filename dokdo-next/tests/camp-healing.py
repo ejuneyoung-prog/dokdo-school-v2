@@ -76,7 +76,8 @@ def walk(context, label):
     page.goto(f'{base}/camp/?nick={quote(NICK)}')
     expect(page.locator('#enter h2')).to_have_text('독도에서 힐링하기')
     expect(page.locator('#enter .note').first).to_contain_text('가상 체험')
-    expect(page.locator('#enter a.back')).to_have_attribute('href', '../?area=learn')
+    expect(page.locator('#enter a.back')).to_have_attribute('href', '../')
+    expect(page.locator('#top a.back')).to_have_attribute('href', '../')
     expect(page.locator('#login-cta')).to_have_attribute('href', '../account.html?next=camp%2F')
     expect(page.locator('#start')).to_have_text('로그인 없이 둘러보기')
     expect(page.locator('#e-camp')).to_contain_text('대황 30')
@@ -147,8 +148,8 @@ def walk(context, label):
     assert all('cdn.jsdelivr.net' in u or 'api.open-meteo.com' in u for u in external), external
     assert all('nick' not in u for u in external), 'nickname stays out of outside requests'
     page.locator('#enter a.back').click()
-    page.wait_for_url('**/?area=learn')
-    expect(page.locator('.v3-home')).to_be_visible()
+    page.wait_for_function("location.pathname.endsWith('/') && !location.pathname.includes('/camp')")
+    expect(page.locator('#v3-entry')).to_be_visible()
     assert not errors, errors
     page.close()
     print('ok', label)
@@ -254,7 +255,7 @@ def blocked(browser):
     expect(page.locator('#err')).to_be_visible()
     expect(page.locator('#err a.back')).to_be_visible()
     page.locator('#err a.back').click()
-    page.wait_for_url('**/?area=learn')
+    page.wait_for_function("!location.pathname.includes('/camp')")
     context.close()
     print('ok three.js blocked path')
 

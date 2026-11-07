@@ -12,3 +12,6 @@
 .age-check{display:flex;align-items:center;gap:8px;min-height:44px;margin-top:12px}.age-check input{width:20px;height:20px}
 .google-signin{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:54px;border:1px solid #bdcfa8;border-radius:12px;background:#fff;color:#1f2a24;font:700 1rem GmarketSans,sans-serif;margin:6px 0 10px;cursor:pointer}.google-signin:disabled{opacity:.55;cursor:not-allowed}
 .email-fold #mode-buttons,.email-fold #account-form,.email-fold #mode-forgot{display:none}
+/* 길잡이 줄은 화면 끝에서 끝까지(바탕 여백 바깥으로) */
+body>.way{margin:-24px -18px 24px}
+@media(max-width:380px){body>.way{margin:-16px -12px 20px}}

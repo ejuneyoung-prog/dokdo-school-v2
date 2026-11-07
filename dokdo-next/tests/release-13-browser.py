@@ -145,7 +145,7 @@ def cleanup_checks(browser,base):
  check('After age selection the card and path match the real lesson',p.locator('#v3-lesson-title').inner_text()==title and title in p.locator('.v3-stop').first.inner_text())
  check('With nothing answered the button does not say continue','이어서' not in p.locator('#start-lesson').inner_text())
  p.evaluate("document.getElementById('v3-explore').click()");p.wait_for_selector('#nav-map',state='visible');p.click('#nav-map')
- wait_until(p,"Math.abs(document.getElementById('map-card').getBoundingClientRect().top)<2")
+ wait_until(p,"(()=>{const w=document.getElementById('v3-way'),edge=w&&!w.hidden?w.getBoundingClientRect().bottom:0;const t=document.getElementById('map-card').getBoundingClientRect().top;return t>=edge-2&&t<edge+16})()")
  check('Opening the map scrolls the panel into view','독도' in p.locator('#map-card').inner_text())
  c.close()
  c,p=fresh();p.goto(base+'games.html');p.wait_for_selector('#gift-list .gift')

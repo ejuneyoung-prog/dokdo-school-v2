@@ -8,6 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self' https://cqlvhrodebmhxbrhlmzu.supabase.co; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
 <title>내 계정 · 독도 코리아 스쿨</title>
 <link rel="stylesheet" href="./assets/account.css">
+<link rel="stylesheet" href="./assets/wayfinder.css">
 <script defer src="./assets/ui-language.js"></script>
 <script defer src="./assets/account-config.js"></script>
 <script defer src="./assets/vendor/supabase-2.118.0.js" integrity="sha384-TcHRA3zBbn+Lexh5n+Oil4guNPOS3rjNDpGRAN46u/s/mB2IZ50ceC6TYDU2yvgK" crossorigin="anonymous"></script>
@@ -23,9 +24,9 @@
 <script defer src="./assets/account.js"></script>
 </head>
 <body>
+<nav class="way" aria-label="길잡이"><a class="way-home" href="https://dokdo-school-v2.vercel.app/dokdo-next/" aria-label="홈 · 처음 화면으로"><b aria-hidden="true">⌂</b><span>홈</span></a><span class="way-here">지금 · 내 계정</span></nav>
 <main class="account">
  <button class="language-switch" type="button" data-language-toggle>English</button>
- <a class="back" href="https://dokdo-school-v2.vercel.app/dokdo-next/">← 독도 코리아 스쿨</a>
  <p class="eyebrow">DOKDO KOREA SCHOOL</p>
  <h1 id="account-title">내 계정</h1>
  <p id="connection-note">계정 서비스를 연결하고 있어요. 준비가 끝나면 이메일 아이디로 입장할 수 있어요.</p>
