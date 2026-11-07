@@ -8,7 +8,7 @@ test('The privacy policy covers the items the law asks for, in both languages',(
  a.doesNotMatch(page,/확인 필요|TBD|TODO/);
 });
 test('Every entrance links to the privacy policy',()=>{
- for(const name of ['index.html','games.html','account.html'])a.match(read(name),/href="\.\/privacy\.html"/,name);
+ for(const name of ['index.html','games.html','fishing.html','typing.html','account.html'])a.match(read(name),/href="\.\/privacy\.html"/,name);
 });
 test('The policy names every outside service the school page connects to',()=>{
  const page=read('privacy.html');
