@@ -265,3 +265,10 @@ test('bait: 10 a day, 2 more for each quiz question answered correctly today, an
  a.match(src,/function start\(\)\{actx\(\);if\(baitNow\(\)<=0\)/);
  const page=fs.readFileSync(path.join(ROOT,'fishing.html'),'utf8');a.match(page,/id="nobait"[^>]*hidden/);a.match(page,/href="\.\/\?area=learn" id="nobait-go"/);
 });
+
+test('closing the no-bait card always leaves a card to press (no dead screen after Play again)',()=>{
+ const src=fs.readFileSync(path.join(ROOT,'assets/fishing.js'),'utf8');
+ a.match(src,/\$\('nobait-close'\)\.onclick=\(\)=>\{\$\('nobait'\)\.hidden=true;if\(\$\('end'\)\.hidden\)\$\('start'\)\.hidden=false;\};/);
+ // 지나가기만 하는 생물로는 판이 끝나지 않는다: 관심을 보인 뒤에만 미끼를 확인한다.
+ a.ok(src.indexOf('const a=approach(c.s);if(!a.want)')<src.indexOf('if(baitNow()<=0){noBait();break;}'));
+});
