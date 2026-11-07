@@ -72,7 +72,7 @@ test('old phase-1 saves load without losing anything', () => {
   assert.equal(bad.hx, 0);
 });
 
-test('fishing pool uses the checked fishing data: no juveniles, weeds, deep shrimp or protected coral', () => {
+test('fishing pool uses the checked fishing data: fish, shellfish and 대황·감태; no juveniles, deep shrimp, protected coral or unsourced 미역', () => {
   const list = E.pool(F.SP, F.starsOf);
   assert.equal(list.length, E.FISH_IDS.length);
   for (const f of list) {
@@ -80,9 +80,12 @@ test('fishing pool uses the checked fishing data: no juveniles, weeds, deep shri
     assert.equal(f.name, s.name);
     assert.ok(['A', 'B', 'C'].includes(s.zone), f.id);
     assert.ok(!/어린/.test(s.name), f.id);
-    assert.ok(['fish', 'shell', 'conch'].includes(s.kind), f.id);
+    assert.ok(['fish', 'shell', 'conch', 'weed'].includes(s.kind), f.id);
+    assert.ok(s.src && s.src.length, f.id + ' has a source');
     assert.ok(f.star >= 1 && f.star <= 5);
   }
+  assert.ok(list.some((f) => f.id === 'daehwang') && list.some((f) => f.id === 'gamtae') && list.some((f) => f.id === 'jeonbok'));
+  assert.ok(!list.some((f) => /미역/.test(f.name)));
   // 드문 것일수록 덜 나온다
   const n = {}; for (let i = 0; i < 10000; i++) { const f = E.pick(list, i / 10000); n[f.star] = (n[f.star] || 0) + 1; }
   const stars = Object.keys(n).map(Number).sort();
@@ -99,6 +102,8 @@ test('ten catches a day, exchange and cooking', () => {
   assert.equal(E.sell(st, jari), E.SELL[jari.star]);
   assert.equal(st.fish.jari, 9);
   // 모닥불 없이는 구이만, 모닥불이 있으면 매운탕까지
+  // 요리 자리: 동도 선착장과 동도 정상 캠핑(11/08 교수님 승인)
+  assert.deepEqual(E.COOK_AT, ['dock', 'camp']);
   assert.deepEqual(E.menu(0).map((m) => m.id), ['grill']);
   assert.deepEqual(E.menu(1).map((m) => m.id), ['grill', 'stew']);
   const grill = E.MENU[0], stew = E.MENU[1];
@@ -135,4 +140,16 @@ test('lesson result offers one line to go to Dokdo, separate from the playground
   const v3 = fs.readFileSync(path.join(__dirname, '..', 'assets', 'school-v3.js'), 'utf8');
   assert.match(v3, /sea\.className='v3-result-sea'/);
   assert.match(v3, /sea\.href=live\?'\.\/camp\/':'https:\/\/dokdo-school-v2\.vercel\.app\/dokdo-next\/camp\/'/);
+});
+
+test('대황 becomes currency right away; 감태 goes to the exchange; seaweed is not cooked', () => {
+  const st = fresh(), list = E.pool(F.SP, F.starsOf), dh = list.find((f) => f.id === 'daehwang'), gt = list.find((f) => f.id === 'gamtae');
+  const r = E.land(st, dh, D);
+  assert.equal(r.coin, 1);
+  assert.equal(st.fish.daehwang, undefined, 'not stored');
+  assert.equal(E.land(st, gt, D).coin, 0);
+  assert.equal(st.fish.gamtae, 1);
+  assert.equal(E.unit(gt), '묶음');
+  assert.equal(E.cook(st, gt, E.MENU[0], 1, D), null);
+  assert.equal(E.sell(st, gt), E.SELL[gt.star]);
 });
