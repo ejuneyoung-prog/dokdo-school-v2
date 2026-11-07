@@ -84,7 +84,7 @@ def walk(context, label):
     expect(page.locator('#e-dock')).to_contain_text('Lv5')
     expect(page.locator('#e-stay')).to_contain_text('Lv10')
     expect(page.locator('#e-camp')).to_contain_text('Lv20')
-    expect(page.locator('#g-text')).to_contain_text('Lv1 · 동도 선착장까지 경험치 960')
+    expect(page.locator('#g-text')).to_contain_text('Lv1 · 선착장까지 960')
     assert heal_state(page)['gift'] == 1 and heal_state(page)['c'] == 100, 'welcome gift 100 대황 once'
     assert page.locator('#meet').count() == 0, 'old visitor room is gone'
     assert '사람에게도 보입니다' not in page.content(), 'solo mode does not promise shared decorations'

@@ -46,9 +46,11 @@ test('places open by level, and places already bought stay open', () => {
   assert.ok(!E.open('stay', 9, 0));
   assert.ok(E.open('stay', 1, 2), 'bought 서도 before stays open');
   assert.ok(E.open('camp', 1, 1), 'bought 동도 정상 before stays open');
+  assert.ok(E.open('dock', 1, 2) && E.open('dock', 1, 1), 'anyone who bought a place in phase 1 also has the lower 선착장');
   assert.equal(E.nextPlace(1, 0)[0], 'dock');
   assert.equal(E.nextPlace(5, 0)[0], 'stay');
   assert.equal(E.nextPlace(5, 2)[0], 'camp');
+  assert.equal(E.nextPlace(1, 2)[0], 'camp');
   assert.equal(E.nextPlace(20, 0), null);
 });
 

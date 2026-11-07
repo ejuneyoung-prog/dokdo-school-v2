@@ -23,7 +23,8 @@ function earn(st,kind,amt,day){roll(st,day);const key=kind==='clean'?'xC':'xG',r
 function level(st,school){const xp=(st.hx||0)+(school||0),L=levelOf(xp);return{xp,L,cur:xpFor(L),next:xpFor(L+1)}}
 // 이미 산 곳(pass 비트)은 레벨과 상관없이 열려 있다.
 const BIT={camp:1,stay:2};
-const open=(m,L,pass)=>L>=placeLv(m)||!!(BIT[m]&&((pass|0)&BIT[m]));
+// 1단계에 서도나 동도 정상을 산 사람은 그보다 낮은 선착장도 열어 둔다.
+const open=(m,L,pass)=>L>=placeLv(m)||!!(BIT[m]&&((pass|0)&BIT[m]))||(m==='dock'&&((pass|0)&3)>0);
 function nextPlace(L,pass){return PLACES.find(p=>!open(p[0],L,pass))||null}
 function welcome(st){if(st.gift)return 0;st.gift=1;st.c=(st.c||0)+GIFT;st.t=(st.t||0)+GIFT;return GIFT}
 // 낚시: 배에서 닿는 얕은 바다(0~40m)의 물고기·조개만. 어린 물고기와 해조류·보호생물은 넣지 않는다.
