@@ -115,11 +115,12 @@ const me={b:boat(hue),x:-40,z:1050,r:0,tx:null,tz:null,say:'',sayT:0,wave:0,tag:
 nick.addEventListener('input',()=>{save('nick',nick.value);dirty=true});
 let yaw=0,pitch=.2,dist=70,bowView=false,dirty=true;
 const ring=new T.Mesh(new T.RingGeometry(5,6.5,32),new T.MeshBasicMaterial({color:0xB6D80C,side:T.DoubleSide,transparent:true,opacity:.9}));ring.rotation.x=-Math.PI/2;ring.position.y=.6;ring.visible=false;s.add(ring);
-let route=[],spin=0,dragT=-9999;const go=(x,z,keep)=>{if(!keep)route=[];me.tx=x;me.tz=z;ring.position.x=x;ring.position.z=z;ring.visible=true};
+// 자동 항해 길과 360도 둘러보기의 중심은 섬 땅의 무게중심(sail.js). 땅 칸은 위에서 다 만들어진 뒤라 여기서 모은다.
+const SAIL=window.DokdoSail,land=[];block.forEach((_,k)=>{const[a,b]=k.split(',').map(Number);land.push([a*CELL,b*CELL])});const ISLE=SAIL.center(land),ctr=[ISLE.x,ISLE.z];
+const plan={auto:false,route:[]};let dragT=-9999;const go=(x,z,keep)=>{if(!keep)plan.route=[];me.tx=x;me.tz=z;plan.best=Infinity;plan.idle=0};
 const dest=(p,d)=>{const a=Math.atan2(p[0]-me.x,p[2]-me.z);let x=p[0]-Math.sin(a)*d,z=p[2]-Math.cos(a)*d;go(x,z)};
 let mode=null,auto=false,dusk=0;const autoB=$('#auto'),VB={camp:$('#v-camp'),sea:$('#v-sea'),stay:$('#v-stay')};
-const orbitPts=()=>{const rr=[];for(let d=0;d<360;d+=6){const a=d*Math.PI/180;let r=1700;while(r>200&&!hit(Math.sin(a)*r,Math.cos(a)*r))r-=20;rr.push(r+90)}const sm=rr.map((_,i)=>Math.max(...[-2,-1,0,1,2].map(k=>rr[(i+k+rr.length)%rr.length])));const st=Math.round(((Math.atan2(me.x,me.z)*180/Math.PI+360)%360)/6);const out=[];for(let i=1;i<=60;i++){const k=(st+i)%60,a=k*6*Math.PI/180;out.push([Math.sin(a)*sm[k],Math.cos(a)*sm[k]])}return out};
-const setAuto=v=>{auto=v;autoB.setAttribute('aria-pressed',v);if(v){leave();route=orbitPts();const p=route.shift();go(p[0],p[1],true);dist=Math.max(dist,90);pitch=.22}else{route=[]}};
+const setAuto=v=>{auto=v;plan.auto=v;autoB.setAttribute('aria-pressed',v);if(v){leave();plan.route=[];plan.wide=0;plan.stuck=0;SAIL.next(me,plan,hit,ctr);dist=Math.max(dist,90);pitch=.22}else{plan.route=[]}};
 function leave(){if(!mode)return;const m=mode;mode=null;$('#vr').hidden=true;VB[m].setAttribute('aria-pressed',false);me.b.userData.parts.forEach(o=>o.visible=true);if(m==='sea'||bowView){if(bowView)bowBtn.click()}dist=70;pitch=.2;yaw=me.r;dirty=true}
 function heal(m){if(mode===m){leave();return}if(auto)setAuto(false);leave();me.tx=null;ring.visible=false;mode=m;VB[m].setAttribute('aria-pressed',true);dirty=true;mark();
  if(m==='sea'){if(me.z<640||Math.abs(me.x)>400){me.x=-60;me.z=900}me.r=0;if(!bowView)bowBtn.click();pitch=.2;return}
@@ -127,7 +128,11 @@ function heal(m){if(mode===m){leave();return}if(auto)setAuto(false);leave();me.t
 const mark=()=>{$('#vr').hidden=!(mode==='camp'||mode==='stay')};autoB.onclick=()=>setAuto(!auto);VB.camp.onclick=()=>tryGo('camp');VB.sea.onclick=()=>heal('sea');VB.stay.onclick=()=>tryGo('stay');
 $('#go-seo').onclick=()=>{leave();setAuto(false);dest(peakW,330);dist=Math.min(dist,60)};
 $('#go-dong').onclick=()=>{leave();setAuto(false);dest(peakE,300);dist=Math.min(dist,60)};
-$('#look').onclick=()=>{spin=performance.now();dragT=spin+9000};
+// 360도 둘러보기: 내 배가 아니라 동도·서도를 가운데 두고 한 바퀴 돈다. 시작과 끝은 내 배 시점에서 부드럽게 이어진다. 도는 중에 다시 누르면 곧 끝낸다.
+let look=0,lookA=0,lookOut=0,lookOutA=0,lookOutW=0;const LOOK=calm?26000:18000,aim=new T.Vector3();
+const lookAt=n=>{const k=Math.min(1,(n-look)/LOOK);return{w:ss(0,.12,k)*(1-ss(.88,1,k)),a:lookA+ss(0,1,k)*Math.PI*2,k}};
+// 도는 중에 다시 누르면 그 자리에서 멈춘 채 내 배 시점으로 천천히 돌아온다(각도는 건너뛰지 않음).
+$('#look').onclick=()=>{const n=performance.now();if(look){if(!lookOut){const q=lookAt(n);lookOut=n;lookOutA=q.a;lookOutW=q.w}return}look=n;lookOut=0;lookA=Math.atan2(cam.position.x-ISLE.x,cam.position.z-ISLE.z)};
 const bowBtn=$('#bow');bowBtn.onclick=()=>{bowView=!bowView;bowBtn.setAttribute('aria-pressed',bowView);me.b.userData.rig.forEach(o=>o.visible=!bowView);yaw=bowView?0:me.r;pitch=.2};
 function speak(x){me.say=x.slice(0,30);me.sayT=performance.now();dirty=true;chime()}
 $('#wave').onclick=()=>{me.wave=performance.now();speak('안녕하세요!')};
@@ -154,7 +159,7 @@ const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(
 const WK='dokdo-heal';let st={c:0,t:0,own:0,on:0,pass:0,seen:[],qD:'',qN:0,rD:'',rN:0};try{Object.assign(st,JSON.parse(load(WK)||'{}'))}catch(e){}if(!Array.isArray(st.seen))st.seen=[];for(const k of ['c','t','own','on','pass','qN','rN'])if(!Number.isFinite(st[k]))st[k]=0;
 deco(me.b,st.on);
 const el=(tg,cl,tx)=>{const e=document.createElement(tg);if(cl)e.className=cl;if(tx!=null)e.textContent=tx;return e};
-const toastE=$('#toast');let toastT=0;function toast(x){toastE.textContent=x;toastE.hidden=false;$('#hint').hidden=true;clearTimeout(toastT);toastT=setTimeout(()=>{toastE.hidden=true},2600)}
+const toastE=$('#toast');let toastT=0,scene=false;function toast(x){if(scene)return;toastE.textContent=x;toastE.hidden=false;$('#hint').hidden=true;clearTimeout(toastT);toastT=setTimeout(()=>{toastE.hidden=true},2600)}
 let wallet=null,busy=false,again=false;
 // 서도는 첫날 열리고, 동도 정상은 며칠 모아야 오른다. 다음 목표가 싼 곳부터 보이도록 서도를 앞에 둔다.
 const PASS={stay:[2,6,'서도 주민숙소','e-stay','v-stay','서도 데크에서 동도를 바라봅니다'],camp:[1,30,'동도 정상 캠핑','e-camp','v-camp','동도 우산봉 정상에서 쉽니다']};
@@ -162,13 +167,13 @@ const PASS={stay:[2,6,'서도 주민숙소','e-stay','v-stay','서도 데크에�
 let creator=false,stBack=null,ownerOK=false,ownerEpoch=0;
 const opened=m=>creator||!PASS[m]||!!((st.pass|0)&PASS[m][0]);
 function passUI(){Object.keys(PASS).forEach(m=>{const p=PASS[m],x=opened(m)?p[2]:p[2]+' · 대황 '+p[1];$('#'+p[3]).textContent=x;$('#'+p[4]).textContent=x})}
-function goalUI(){const a=Object.keys(PASS).filter(m=>!opened(m)).map(m=>[PASS[m][2],PASS[m][1]]),b=ITEMS.filter(i=>!(st.own&i[0])).sort((x,y)=>(y[0]===64)-(x[0]===64)||x[2]-y[2]).map(i=>[i[1],i[2]]),g=[...a,...b][0],e=$('#goal');e.hidden=!g;if(!g)return;$('#g-text').textContent=st.c>=g[1]?g[0]+' 열 수 있습니다':'다음 목표 '+g[0]+' · 대황 '+(g[1]-st.c)+'개 더';$('#g-fill').style.width=Math.min(100,st.c/g[1]*100)+'%'}
+function goalUI(){const a=Object.keys(PASS).filter(m=>!opened(m)).map(m=>[PASS[m][2],PASS[m][1]]),b=ITEMS.filter(i=>!(st.own&i[0])).sort((x,y)=>(y[0]===64)-(x[0]===64)||x[2]-y[2]).map(i=>[i[1],i[2]]),g=[...a,...b][0],e=$('#goal');e.hidden=!g;if(!g)return;$('#g-text').textContent=st.c>=g[1]?g[0]+' 열 수 있습니다':g[0]+' · 대황 '+(g[1]-st.c)+'개 더';$('#g-fill').style.width=Math.min(100,st.c/g[1]*100)+'%'}
 function ui(){$('#shell').textContent=st.c;$('#shell2').textContent=st.c;passUI();goalUI()}
 function tryGo(m){if(opened(m)){heal(m);return true}const p=PASS[m];if(st.c>=p[1]){st.c-=p[1];st.pass=(st.pass|0)|p[0];keep();chime();toast(p[2]+' 열림 · 대황 -'+p[1]);heal(m);return true}toast('대황 '+p[1]+'개가 필요합니다 · 지금 '+st.c+'개');openDeck();return false}
 function keep(){if(creator){ui();return}save(WK,JSON.stringify(st));ui();if(!wallet)return;if(busy){again=true;return}busy=true;wallet.set({...st}).catch(()=>{wallet=null}).finally(()=>{busy=false;if(again){again=false;keep()}})}
 function gain(k,why){st.c+=k;st.t+=k;keep();toast(why+' · 대황 +'+k);chime()}
 ui();
-const deck=$('#deck'),dBody=$('#d-body');let dTab='q';
+const deck=$('#deck'),dBody=$('#d-body'),body=document.body;let dTab='q';
 const qToday=()=>{const d=Math.floor(Date.parse(today())/864e5);return[0,1,2].map(j=>QZ[(d*3+j)%QZ.length])};
 function dq(){if(st.qD!==today()){st.qD=today();st.qN=0}if(st.qN>=3){dBody.append(el('p','','오늘의 세 문제를 다 풀었습니다.'),el('p','mute','내일 새 문제가 나옵니다. 3분 쉬기나 바위 찾기로도 대황을 모을 수 있습니다.'));return}
  const Q=qToday()[st.qN];dBody.append(el('p','mute','문제 '+(st.qN+1)+' / 3 · 맞히면 대황 2개'),el('p','',Q[0]));
@@ -181,12 +186,16 @@ const closeDeck=()=>{deck.hidden=true;$('#t-deck').focus()};$('#d-close').onclic
 const openDeck=(k)=>{startAudio();dTab=k||'q';deck.hidden=false;dview();$('#d-close').focus()};$('#goal').onclick=()=>openDeck('i');
 $('#t-deck').onclick=()=>{startAudio();deck.hidden=false;dview();$('#d-close').focus()};
 addEventListener('keydown',e=>{if(e.key==='Escape'&&!deck.hidden)closeDeck()});
-const dock=$('#dock'),TAB=['rest','sail','talk'];function setTab(k){TAB.forEach(q=>{$('#p-'+q).hidden=q!==k;$('#t-'+q).setAttribute('aria-selected',q===k)});pad()}
-const pad=()=>{const h=dock.offsetHeight;document.documentElement.style.setProperty('--dk',h+'px');if(h)cam.setViewOffset(innerWidth,innerHeight,0,h/2,innerWidth,innerHeight)};TAB.forEach(q=>$('#t-'+q).onclick=()=>setTab(q));pad();
+// 아래 판은 평소 한 줄(메뉴 이름만). 메뉴를 누르면 그 줄 위에 단추가 열리고, 다시 누르면 닫힌다.
+const dock=$('#dock'),TAB=['rest','sail','talk'];let tabNow='';function setTab(k){tabNow=tabNow===k?'':k;TAB.forEach(q=>{$('#p-'+q).hidden=q!==tabNow;$('#t-'+q).setAttribute('aria-expanded',q===tabNow)});$('#say').hidden=tabNow!=='talk';pad()}
+const pad=()=>{const h=dock.offsetHeight,base=h?$('#menu').offsetHeight+12:0;document.documentElement.style.setProperty('--dk',h+'px');if(base)cam.setViewOffset(innerWidth,innerHeight,0,base/2,innerWidth,innerHeight);else cam.clearViewOffset()};
+// 풍경만 보기: 판과 이름표를 모두 숨기고 독도만 남긴다. 구석의 작은 단추나 Esc로 돌아온다.
+const sceneB=$('#unscene');function setScene(v){scene=v;body.classList.toggle('scenery',v);sceneB.hidden=!v;if(v){deck.hidden=true;toastE.hidden=true;sceneB.focus()}else $('#scenery').focus();pad()}
+$('#scenery').onclick=()=>setScene(true);sceneB.onclick=()=>setScene(false);addEventListener('keydown',e=>{if(e.key==='Escape'&&scene)setScene(false)});TAB.forEach(q=>$('#t-'+q).onclick=()=>setTab(q));pad();
 // 3분 쉬기
-const RS=180,body=document.body;let rest=null;
-function endRest(){rest=null;body.classList.remove('resting');$('#rest').hidden=true;$('#breath').focus()}
-$('#breath').onclick=()=>{startAudio();rest={t:performance.now(),m:0,ph:-1,z:1};body.classList.add('resting');$('#rest').hidden=false;$('#r-end').focus()};$('#r-end').onclick=endRest;
+const RS=180;let rest=null;
+function endRest(){rest=null;body.classList.remove('resting');$('#rest').hidden=true;pad();$('#breath').focus()}
+$('#breath').onclick=()=>{startAudio();rest={t:performance.now(),m:0,ph:-1,z:1};body.classList.add('resting');$('#rest').hidden=false;pad();$('#r-end').focus()};$('#r-end').onclick=endRest;
 function resting(n){const e=(n-rest.t)/1000*rest.z,l=Math.max(0,RS-e),m=Math.floor(e/60);if(m>rest.m){rest.m=m;if(st.rD!==today()){st.rD=today();st.rN=0}if(st.rN<10){st.rN++;gain(1,'쉬는 시간')}}$('#r-left').textContent=Math.floor(l/60)+':'+String(Math.floor(l%60)).padStart(2,'0');const c=e%10,inh=c<4,k=inh?c/4:1-(c-4)/6;if(inh!==(rest.ph===1)){rest.ph=inh?1:0;$('#r-word').textContent=inh?'들이쉬고':'내쉬고';if(inh)bell()}if(!calm)$('#r-dot').style.transform='scale('+(.8+k*.4)+')';if(!calm)yaw+=.00035;if(l<=0){endRest();toast('잘 쉬셨습니다')}}
 // 말 거르기
 const BAD=/시발|씨발|ㅅㅂ|ㅆㅂ|병신|ㅂㅅ|좆|존나|ㅈㄴ|개새|새끼|지랄|닥쳐|꺼져|섹스|야동|보지|자지|fuck|shit|bitch|다케시마|타케시마|竹島|takeshima/i;
@@ -200,7 +209,7 @@ cv.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;const o=pt
  if(pts.size===2){const[a,b]=[...pts.values()],d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);if(pinch)dist=Math.min(420,Math.max(zmin(),dist*pinch/d));pinch=d;moved=99;return}
  const dx=e.clientX-o.clientX,dy=e.clientY-o.clientY;moved+=Math.abs(dx)+Math.abs(dy);dragT=performance.now();yaw-=dx*.009;pitch=Math.min(1.25,Math.max(bowView?-.3:.04,pitch+dy*.004))});
 const zmin=()=>mode==='camp'||mode==='stay'?10:26;const ray=new T.Raycaster(),pl=new T.Plane(new T.Vector3(0,1,0),0),nd=new T.Vector2(),pp=new T.Vector3();
-const up=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=0;if(moved<7&&e.type==='pointerup'){nd.set(e.clientX/innerWidth*2-1,-e.clientY/innerHeight*2+1);ray.setFromCamera(nd,cam);if(!mode||mode==='sea'){if(ray.ray.intersectPlane(pl,pp)&&!hit(pp.x,pp.z)){if(mode)leave();if(auto)setAuto(false);go(pp.x,pp.z)}}}};
+const up=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=0;if(moved<7&&e.type==='pointerup'){nd.set(e.clientX/innerWidth*2-1,-e.clientY/innerHeight*2+1);ray.setFromCamera(nd,cam);if(!mode||mode==='sea'){if(ray.ray.intersectPlane(pl,pp)&&!hit(pp.x,pp.z)){if(auto){toast('자동 항해 중 · 끄기는 항해 메뉴에서');return}if(mode)leave();go(pp.x,pp.z)}}}};
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 cv.addEventListener('wheel',e=>{e.preventDefault();dist=Math.min(420,Math.max(zmin(),dist*(1+e.deltaY*.001)))},{passive:false});
 const keys={};addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;keys[e.key.toLowerCase()]=1});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=0});
@@ -221,18 +230,19 @@ if(window.claude&&claude.use)claude.use('db').then(db=>{if(!db)return;db.doc('se
 // 소리
 let fireOn=false,AC=null,mix=null,bed=null,snd={},on=true,silent=null;const VOL=.8,REC={},WV=.65,RV=.6;let level=Math.min(100,Math.max(0,parseFloat(load('vol'))));if(!(level>=0))level=45;const volNow=()=>on?VOL*Math.pow(level/45,1.6):0;
 const wavQuiet=()=>{const N=4000,b=new Uint8Array(44+N).fill(128),v=new DataView(b.buffer);[...'RIFF'].forEach((c,i)=>b[i]=c.charCodeAt(0));v.setUint32(4,36+N,true);[...'WAVEfmt '].forEach((c,i)=>b[8+i]=c.charCodeAt(0));v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,8000,true);v.setUint32(28,8000,true);v.setUint16(32,1,true);v.setUint16(34,8,true);[...'data'].forEach((c,i)=>b[36+i]=c.charCodeAt(0));v.setUint32(40,N,true);return URL.createObjectURL(new Blob([b],{type:'audio/wav'}))};
-function startAudio(){if(!silent){try{if(navigator.audioSession)navigator.audioSession.type='playback';silent=new Audio(wavQuiet());silent.loop=true;silent.setAttribute('playsinline','');silent.play().catch(()=>{})}catch(e){}}if(AC){AC.resume();return}const A=window.AudioContext||window.webkitAudioContext;if(!A)return;AC=new A();AC.resume();AC.onstatechange=()=>{if(AC.state==='running')sb.textContent=on?'소리 켜짐':'소리 꺼짐'};setTimeout(()=>{if(AC.state!=='running')sb.textContent='눌러서 소리 켜기'},1500);mix=AC.createGain();mix.gain.value=0;mix.gain.setTargetAtTime(volNow(),AC.currentTime,2.2);const lim=AC.createDynamicsCompressor();lim.threshold.value=-14;lim.ratio.value=6;lim.attack.value=.005;lim.release.value=.25;mix.connect(lim);lim.connect(AC.destination);
+function startAudio(){if(!silent){try{if(navigator.audioSession)navigator.audioSession.type='playback';silent=new Audio(wavQuiet());silent.loop=true;silent.setAttribute('playsinline','');silent.play().catch(()=>{})}catch(e){}}if(AC){AC.resume();return}const A=window.AudioContext||window.webkitAudioContext;if(!A)return;AC=new A();AC.resume();AC.onstatechange=sndLabel;setTimeout(sndLabel,1500);mix=AC.createGain();mix.gain.value=0;mix.gain.setTargetAtTime(volNow(),AC.currentTime,2.2);const lim=AC.createDynamicsCompressor();lim.threshold.value=-14;lim.ratio.value=6;lim.attack.value=.005;lim.release.value=.25;mix.connect(lim);lim.connect(AC.destination);
  const L=AC.sampleRate*5,B=AC.createBuffer(2,L,AC.sampleRate);for(let c=0;c<2;c++){const d=B.getChannelData(c);for(let i=0;i<L;i++)d[i]=Math.random()*2-1}
  bed=AC.createGain();bed.connect(mix);const lane=(type,f,Q,base,lf,dp,out)=>{const so=AC.createBufferSource();so.buffer=B;so.loop=true;so.playbackRate.value=.6+Math.random()*.5;const fl=AC.createBiquadFilter();fl.type=type;fl.frequency.value=f;fl.Q.value=Q;const g=AC.createGain();g.gain.value=base;so.connect(fl);fl.connect(g);g.connect(out||mix);so.start();if(lf){const o=AC.createOscillator(),og=AC.createGain();o.frequency.value=lf;og.gain.value=dp;o.connect(og);og.connect(g.gain);o.start()}return g};
  snd.sea=lane('lowpass',520,.3,.3,.11,.14,bed);snd.swell=lane('lowpass',260,.5,.2,.07,.1,bed);snd.hiss=lane('bandpass',980,.5,.07,.09,.04,bed);snd.surf=lane('bandpass',1500,.45,0,.17,.06,bed);snd.wake=lane('bandpass',760,.7,0);snd.wind=lane('bandpass',380,1.2,.03,.05,.02);snd.fire=lane('highpass',1800,.5,0);snd.rain=lane('highpass',3200,.3,0);
  rec('waves','./waves.mp3');rec('rain','./rain.mp3');
  const gull=()=>{setTimeout(gull,5000+Math.random()*11000);if(!on||AC.state!=='running'||sky.n>.6||sky.r>.5)return;const t0=AC.currentTime,pan=AC.createStereoPanner?AC.createStereoPanner():null;if(pan){pan.pan.value=Math.random()*1.4-.7;pan.connect(mix)}const cnt=2+Math.floor(Math.random()*3);for(let i=0;i<cnt;i++){const o=AC.createOscillator(),g=AC.createGain(),t=t0+i*.34;o.type='triangle';o.frequency.setValueAtTime(1500,t);o.frequency.exponentialRampToValueAtTime(980,t+.26);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.03,t+.03);g.gain.exponentialRampToValueAtTime(.001,t+.28);o.connect(g);g.connect(pan||mix);o.start(t);o.stop(t+.3)}};setTimeout(gull,1800);
  setInterval(()=>{if(!on||mode!=='camp'||!fireOn||Math.random()>.5)return;const t=AC.currentTime,so=AC.createBufferSource(),g=AC.createGain();so.buffer=B;g.gain.setValueAtTime(.08*Math.random(),t);g.gain.exponentialRampToValueAtTime(.001,t+.05);so.connect(g);g.connect(mix);so.start(t,Math.random()*4,.06)},140)}
+function sndLabel(){sb.textContent=!on?'소리 끔':AC&&AC.state!=='running'?'소리 켜기':'소리'}
 function rec(k,url){fetch(url).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(b=>new Promise((y,x)=>AC.decodeAudioData(b,y,x))).then(buf=>{const so=AC.createBufferSource(),g=AC.createGain();so.buffer=buf;so.loop=true;so.loopStart=.06;so.loopEnd=buf.duration-.06;g.gain.value=0;so.connect(g);g.connect(mix);so.start(0,.06);REC[k]=g}).catch(()=>{})}
 function bell(){if(!AC||!on)return;const t=AC.currentTime;[220,331].forEach((f,i)=>{const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.035/(i+1),t+.08);g.gain.exponentialRampToValueAtTime(.001,t+3.2);o.connect(g);g.connect(mix);o.start(t);o.stop(t+3.3)})}
 function chime(){if(!AC||!on)return;const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.frequency.setValueAtTime(760,t);o.frequency.exponentialRampToValueAtTime(1180,t+.09);g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.001,t+.22);o.connect(g);g.connect(mix);o.start(t);o.stop(t+.24)}
 function sound(mv,seated,dn){if(!AC)return;const t=AC.currentTime,set=(k,v)=>snd[k]&&snd[k].gain.setTargetAtTime(v,t,.4);set('surf',seated?(mode==='stay'?.24:.13):Math.max(0,1-dn/820)*.34);if(REC.waves){bed.gain.setTargetAtTime(0,t,1.2);REC.waves.gain.setTargetAtTime(seated?(mode==='stay'?WV*1.15:WV*.7):WV*(.72+.5*Math.max(0,1-dn/820)),t,1)}if(REC.rain)REC.rain.gain.setTargetAtTime(sky.r*RV,t,1.2);set('wake',seated?0:Math.abs(mv)*.09);set('fire',mode==='camp'&&fireOn?.02:0);set('rain',REC.rain?0:sky.r*.07);snd.wind&&snd.wind.gain.setTargetAtTime(seated?.08:.03,t,.6)}
-const sb=$('#snd');sb.onclick=()=>{startAudio();on=!on;sb.setAttribute('aria-pressed',on);sb.textContent=on?'소리 켜짐':'소리 꺼짐';if(mix)mix.gain.setTargetAtTime(volNow(),AC.currentTime,.1)};
+const sb=$('#snd');sb.onclick=()=>{startAudio();on=!on;sb.setAttribute('aria-pressed',on);sndLabel();if(mix)mix.gain.setTargetAtTime(volNow(),AC.currentTime,.1)};
 document.querySelectorAll('.vol').forEach((x,i,all)=>{x.value=level;x.addEventListener('input',()=>{startAudio();level=+x.value;all.forEach(y=>{if(y!==x)y.value=level});save('vol',level);if(mix)mix.gain.setTargetAtTime(volNow(),AC.currentTime,.08)})});
 // 세션 확인에 SDK를 쓰지 않습니다. 이 페이지는 계정 서버에 접속하지 않고 브라우저의 로그인 표시만 읽습니다.
 function signedIn(){const c=window.DOKDO_AUTH_CONFIG,keys=!c?['dokdo-account-session-v2','dokdo-account-session-v1']:[c.googleEnabled===true||c.kakaoEnabled===true||c.privateRecordsEnabled===true?'dokdo-account-session-v2':'dokdo-account-session-v1'];for(const k of keys){try{const v=JSON.parse(localStorage.getItem(k)||'null');if(v&&v.user&&v.user.id)return true}catch(e){}}return false}
@@ -264,12 +274,13 @@ let sent=0;function push(n){if(!room||!dirty||n-sent<220)return;sent=n;dirty=fal
 // 움직임
 function fit(){r.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();pad()}addEventListener('resize',fit);fit();
 const bob=(b,x,z,rot,n)=>{const a=calm?0:1;b.position.set(x,a*Math.sin(n*.0013+x*.01)*.5,z);b.rotation.set(a*Math.sin(n*.0011+z*.01)*.04,rot,a*Math.sin(n*.0009)*.05)};
-const duskC=new T.Color('#fdb78f'),nightC=new T.Color('#0d1430'),greyC=new T.Color('#b9c2ca');const nearShore=()=>Math.min(Math.hypot(me.x-peakW[0],me.z-peakW[2]),Math.hypot(me.x-peakE[0],me.z-peakE[2]));let last=performance.now(),nearNow=null;const info=$('#info'),infoN=$('#info b'),infoT=$('#info span');
+const duskC=new T.Color('#fdb78f'),nightC=new T.Color('#0d1430'),greyC=new T.Color('#b9c2ca');const nearShore=()=>Math.min(Math.hypot(me.x-peakW[0],me.z-peakW[2]),Math.hypot(me.x-peakE[0],me.z-peakE[2]));let last=performance.now(),nearNow=null,infoTm=0;const info=$('#info'),infoN=$('#info b'),infoT=$('#info span');
 function tick(n){const dt=Math.min(.05,(n-last)/1000);last=n;seaU.t.value=n/1000;
  const seated=mode==='camp'||mode==='stay';let mv=0,tr=0;if(!seated){if(keys.w||keys.arrowup)mv=1;if(keys.s||keys.arrowdown)mv=-.6;if(keys.a||keys.arrowleft)tr=1;if(keys.d||keys.arrowright)tr=-1}
- if(mv||tr){if(auto)setAuto(false);me.tx=null;ring.visible=false;me.r+=tr*dt*1.1}
- else if(me.tx!=null){const dx=me.tx-me.x,dz=me.tz-me.z,d=Math.hypot(dx,dz);if(d<(route.length?34:6)){me.tx=null;ring.visible=false;if(auto&&!route.length)route=orbitPts();if(route.length){const p=route.shift();go(p[0],p[1],true)}}else{let want=Math.atan2(dx,dz)+Math.PI,dr=((want-me.r+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI;me.r+=dr*Math.min(1,dt*2.4);mv=Math.min(1,d/50)}}
- if(mv){const sp=mv*42*dt,nx=me.x-Math.sin(me.r)*sp,nz=me.z-Math.cos(me.r)*sp;if(!hit(nx,nz)&&Math.hypot(nx,nz)<2600){me.x=nx;me.z=nz;dirty=true}else{if(auto&&route.length){const p=route.shift();go(p[0],p[1],true);me.x*=1.01;me.z*=1.01}else{me.tx=null;ring.visible=false;route=[]}}}
+ if(mv||tr){if(auto)setAuto(false);me.tx=null;me.r+=tr*dt*1.1}
+ else if(!seated)mv=SAIL.steer(me,plan,dt,hit,ctr);
+ if(mv){SAIL.move(me,plan,mv,dt,hit,ctr,2600);dirty=true}
+ ring.visible=me.tx!=null&&!auto;if(ring.visible){ring.position.x=me.tx;ring.position.z=me.tz}
  if(me.say&&n-me.sayT>=8000){me.say='';dirty=true}
  if(seated){const t=mode==='camp'?camp:stay,q=seatOf(mode,1);me.b.position.set(q.x,q.y-2.85,q.z);me.b.rotation.set(0,Math.atan2(q.x-t.lx,q.z-t.lz),0)}else bob(me.b,me.x,me.z,me.r,n);
  swim(me.b,n);if(rest)resting(n);
@@ -278,14 +289,17 @@ function tick(n){const dt=Math.min(.05,(n-last)/1000);last=n;seaU.t.value=n/1000
  put(me.tag.e,me.b.position.x,me.b.position.y+(seated?12:12),me.b.position.z);if(bowView||(seated&&!showSay))me.tag.e.style.visibility='hidden';
  others.forEach(o=>{if(o.gx!=null){o.x+=(o.gx-o.x)*.07;o.z+=(o.gz-o.z)*.07;o.r+=(o.gr-o.r)*.07}if(o.v){const h=[...String(o.tag.na.textContent)].reduce((a,c)=>a+c.charCodeAt(0),0),q=seatOf(o.v,2+h%6),t=o.v==='camp'?camp:stay;o.b.userData.parts.forEach(x=>x.visible=false);o.b.position.set(q.x,q.y-2.85,q.z);o.b.rotation.set(0,Math.atan2(q.x-t.lx,q.z-t.lz),0)}else{o.b.userData.parts.forEach(x=>x.visible=true);bob(o.b,o.x,o.z,o.r,n)}swim(o.b,n);o.b.userData.who.position.y=2.85+(n-o.wave<1800?Math.abs(Math.sin(n*.012))*1.3:0);put(o.tag.e,o.b.position.x,o.b.position.y+12,o.b.position.z)});
  gulls.forEach((w,i)=>{const u=w.userData,a=u.a+n*.00022*(i%2?1:-1);w.position.set(u.c[0]+Math.cos(a)*u.r,u.c[1]+u.h*.3+Math.sin(n*.001+i)*6,u.c[2]+Math.sin(a)*u.r);w.rotation.y=-a;w.scale.y=1});
- if(spin){const k=(n-spin)/8000;if(k>=1)spin=0;else yaw+=dt/8*Math.PI*2}
- else if(!bowView&&mv>0&&n-dragT>3500){const dy=((me.r-yaw+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI;yaw+=dy*Math.min(1,dt*.7)}
+ if(scene&&!calm&&!look&&n-dragT>4000)yaw+=dt*.025;
+ if(!look&&!bowView&&mv>0&&n-dragT>3500){const dy=((me.r-yaw+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI;yaw+=dy*Math.min(1,dt*.7)}
  let near=null,nd2=340;rocks.forEach(p=>{const d=Math.hypot(p.pos[0]-me.x,p.pos[2]-me.z),ty=p.pos[1]+p.lift;let seen=d<760;if(seen)for(let i=1;i<12;i++){const u=i/12,qx=cam.position.x+(p.pos[0]-cam.position.x)*u,qz=cam.position.z+(p.pos[2]-cam.position.z)*u;if(hAt(qx,qz)>cam.position.y+(ty-cam.position.y)*u+4){seen=false;break}}
-  put(p.e,p.pos[0],ty,p.pos[2],seen?1:0);if(d<nd2){nd2=d;near=p}});
- if(near!==nearNow){nearNow=near;info.hidden=!near;if(near){infoN.textContent=near.nm;infoT.textContent=near.info;if(!st.seen.includes(near.nm)){st.seen.push(near.nm);gain(1,near.nm+' 발견')}}}
+  put(p.e,p.pos[0],ty,p.pos[2],seen&&!look?1:0);if(d<nd2){nd2=d;near=p}});
+ if(near!==nearNow){nearNow=near;info.hidden=!near;clearTimeout(infoTm);if(near)infoTm=setTimeout(()=>{info.hidden=true},8000);if(near){infoN.textContent=near.nm;infoT.textContent=near.info;if(!st.seen.includes(near.nm)){st.seen.push(near.nm);gain(1,near.nm+' 발견')}}}
  places.forEach(p=>{const d=Math.hypot(p.pos[0]-me.x,p.pos[2]-me.z);put(p.e,p.pos[0],p.pos[1]+14,p.pos[2],d<1900?1:.0)});
- if(bowView){cam.position.set(me.x+Math.sin(me.r)*6,8.2,me.z+Math.cos(me.r)*6);const yy=me.r+yaw;cam.lookAt(me.x-Math.sin(yy)*100,8.5+Math.sin(-pitch+.2)*60,me.z-Math.cos(yy)*100)}
- else{const yy=yaw,base=seated?me.b.position.y:0,tx=seated?me.b.position.x:me.x,tz=seated?me.b.position.z:me.z,h=Math.sin(pitch)*dist+6+base,rd=Math.cos(pitch)*dist;cam.position.set(tx+Math.sin(yy)*rd,h,tz+Math.cos(yy)*rd);cam.lookAt(tx,base+10,tz)}
+ if(bowView){cam.position.set(me.x+Math.sin(me.r)*6,8.2,me.z+Math.cos(me.r)*6);const yy=me.r+yaw;aim.set(me.x-Math.sin(yy)*100,8.5+Math.sin(-pitch+.2)*60,me.z-Math.cos(yy)*100)}
+ else{const yy=yaw,base=seated?me.b.position.y:0,tx=seated?me.b.position.x:me.x,tz=seated?me.b.position.z:me.z,h=Math.sin(pitch)*dist+6+base,rd=Math.cos(pitch)*dist;cam.position.set(tx+Math.sin(yy)*rd,h,tz+Math.cos(yy)*rd);aim.set(tx,base+10,tz)}
+ if(look){let w,a;if(lookOut){const q=(n-lookOut)/1600;w=lookOutW*(1-ss(0,1,q));a=lookOutA;if(q>=1){look=lookOut=0;dragT=n}}else{const q=lookAt(n);w=q.w;a=q.a;if(q.k>=1){look=0;dragT=n}}
+  if(w>0){const R=Math.max(ISLE.ext*1.35+110,ISLE.ext*.75/(Math.tan(23*Math.PI/180)*cam.aspect)),H=R*.27+20;cam.position.lerp(v.set(ISLE.x+Math.sin(a)*R,H,ISLE.z+Math.cos(a)*R),w);aim.lerp(v.set(ISLE.x,45,ISLE.z),w)}}
+ cam.lookAt(aim);
  const lk=Math.min(1,dt*.6);['d','n','g','r'].forEach(k=>{sky[k]+=(sky.tg[k]-sky[k])*lk});skyU.d.value=sky.d;skyU.n.value=sky.n;skyU.g.value=sky.g;
  const el=Math.max(.09,sky.e*Math.PI/180);sun.position.set(Math.sin(sky.az)*Math.cos(el)*900,Math.sin(el)*900,-Math.cos(sky.az)*Math.cos(el)*900);sun.intensity=(2.3-sky.d*.9)*(1-.92*sky.n)*(1-.55*sky.g);hemi.intensity=1.5*(1-.82*sky.n)*(1-.15*sky.g);
  s.fog.color.copy(hor).lerp(duskC,sky.d).lerp(nightC,sky.n).lerp(greyC,sky.g*.8);s.fog.near=1800-900*sky.g;s.fog.far=9000-4500*sky.g;

@@ -66,7 +66,7 @@ test('토큰이 없거나 서버가 세션을 거절하면 401, 응답이 이상
 
 test('크리에이터 버튼은 처음에 숨겨져 있고 서버 확인 뒤에만 보인다', () => {
   assert.match(page, /<button id="creator" hidden aria-pressed="false">/);
-  assert.match(page, /<div id="cmode" hidden>/);
+  assert.match(page, /<(div|span) id="cmode" hidden>/);
   assert.match(healing, /fetch\('\/api\/camp-creator',\{headers:\{Authorization:'Bearer '\+tk\},cache:'no-store'\}\)/);
   assert.match(healing, /\.creator===true/);
   assert.ok(!/[?&]creator=|searchParams\.get\('creator'\)/.test(healing), '주소로 켜는 길이 없다');
