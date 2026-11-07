@@ -182,7 +182,7 @@ test('one big button: no separate raise button, a four-tile guide, and the sea p
  a.match(page,/id="save-btn"[^>]*>명예의 전당에 남기기</);
 });
 
-test('difficulty: stars 1~5 from fight, points double per star, seaweed and shells are the cheapest',()=>{
+test('difficulty: stars 1~5 from fight, points double per star, kelp and mussels are the cheapest',()=>{
  for(const s of F.SP){const n=F.starsOf(s);a.ok(n>=1&&n<=5,s.id);a.equal(s.pts,F.STAR_PTS[n],s.id+' points follow stars');}
  a.deepEqual(F.STAR_PTS,[0,10,20,40,80,160]);
  for(const id of ['daehwang','gamtae','damchi'])a.equal(F.starsOf(sp(id)),1,id);
@@ -222,4 +222,13 @@ test('flow ladder: a child lands easy creatures almost always and the priciest o
  a.ok(kid[1]>=.95&&kid[2]>=.85,'child, easy ones: '+kid.join());
  for(let n=2;n<=5;n++){a.ok(kid[n]<=kid[n-1]+.03,'child never easier with more stars: '+kid.join());a.ok(good[n]>=kid[n]-.03,'practice helps: '+good.join());}
  a.ok(kid[5]<=.35,'priciest is hard for a beginner: '+kid[5]);a.ok(good[5]>=.5,'and reachable with practice: '+good[5]);
+});
+
+test('a landed creature swims again, and seaweed or shells bite without a nibble',()=>{
+ const src=fs.readFileSync(path.join(ROOT,'assets/fishing.js'),'utf8');
+ const i0=src.indexOf('function landed('),landed=src.slice(i0,src.indexOf('\nfunction ',i0+10));
+ a.match(landed,/c\.hold=false;/,'catching releases the hold so the creature swims again');
+ a.match(src,/function end\(\)\{st='over';coachOn=false;nib=null;/);
+ const rnd=()=>0;a.equal(F.approach(sp('daehwang'),rnd).nibble,0);a.equal(F.approach(sp('jeonbok'),rnd).nibble,0);a.ok(F.approach(sp('jari'),rnd).nibble>=.7);
+ a.doesNotMatch(src,/tr\('톡톡'/,'the nibble mark is not called 톡톡 (that word means press)');
 });
