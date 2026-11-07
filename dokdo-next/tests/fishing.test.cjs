@@ -176,3 +176,41 @@ test('one big button: no separate raise button, a four-tile guide, and the sea p
  a.match(src,/classList\.add\('is-live'\)/);a.match(src,/classList\.remove\('is-live'\)/);
  a.match(page,/id="save-btn"[^>]*>명예의 전당에 남기기</);
 });
+
+test('difficulty: stars 1~5 from fight, points double per star, seaweed and shells are the cheapest',()=>{
+ for(const s of F.SP){const n=F.starsOf(s);a.ok(n>=1&&n<=5,s.id);a.equal(s.pts,F.STAR_PTS[n],s.id+' points follow stars');}
+ a.deepEqual(F.STAR_PTS,[0,10,20,40,80,160]);
+ for(const id of ['daehwang','gamtae','damchi'])a.equal(F.starsOf(sp(id)),1,id);
+ for(const id of ['hokdom','dohwa_s','gasibae'])a.equal(F.starsOf(sp(id)),5,id);
+ // 더 센 생물이 더 싼 일은 없다.
+ const by=[...F.SP].sort((x,y)=>x.fight-y.fight);for(let i=1;i<by.length;i++)a.ok(by[i].pts>=by[i-1].pts,by[i].id);
+});
+
+test('bait: most passers ignore the hook; checked over 100,000 simulated passes',()=>{
+ let seed=7;const rnd=()=>{seed=(seed+0x6D2B79F5)|0;let x=Math.imul(seed^(seed>>>15),1|seed);x=(x+Math.imul(x^(x>>>7),61|x))^x;return((x^(x>>>14))>>>0)/4294967296;};
+ const N=100000,rate=s=>{let w=0,nibMin=9,nibMax=0,ignMin=9;for(let i=0;i<N;i++){const r=F.approach(s,rnd);if(r.want){w++;nibMin=Math.min(nibMin,r.nibble);nibMax=Math.max(nibMax,r.nibble);}else ignMin=Math.min(ignMin,r.ignore);}return{p:w/N,nibMin,nibMax,ignMin};};
+ const kelp=rate(sp('daehwang')),jari=rate(sp('jari')),hok=rate(sp('hokdom'));
+ a.ok(Math.abs(kelp.p-.2)<.01,'kelp '+kelp.p);a.ok(Math.abs(jari.p-.45)<.01,'jari '+jari.p);a.ok(Math.abs(hok.p-.25)<.01,'hokdom '+hok.p);
+ for(const s of F.SP)a.ok(F.baitChance(s)<.5,s.id+' more than half pass by');
+ // 톡톡 건드리는 시간은 0.7~2초, 관심 없는 녀석은 3초 넘게 다시 오지 않는다.
+ a.ok(jari.nibMin>=.7&&jari.nibMax<=2);a.ok(jari.ignMin>=3);
+ // 기대 점수(문 확률 x 점수)는 별이 많을수록 크다: 어려운 것을 노릴 이유가 있다.
+ const ev=n=>F.baitChance(F.SP.find(s=>F.starsOf(s)===n))*F.STAR_PTS[n];for(let n=2;n<=5;n++)a.ok(ev(n)>ev(n-1),'star '+n);
+});
+
+test('the green bar narrows as the creature gets pricier',()=>{
+ a.deepEqual(F.BAR,[0,.34,.28,.23,.18,.14]);
+ for(let n=2;n<=5;n++)a.ok(F.BAR[n]<F.BAR[n-1]);
+ a.equal(F.startFight(sp('daehwang'),100).zw,.34);a.equal(F.startFight(sp('dohwa_s'),100).zw,.14);
+});
+
+test('flow ladder: an average player lands easy creatures almost always and the priciest about a third of the time',()=>{
+ let seed=11;const rnd=()=>{seed=(seed+0x6D2B79F5)|0;let x=Math.imul(seed^(seed>>>15),1|seed);x=(x+Math.imul(x^(x>>>7),61|x))^x;return((x^(x>>>14))>>>0)/4294967296;};
+ // 보통 실력: 0.25초 늦게 보고, 눈대중이 조금 흔들리는 사람.
+ const play=s=>{const y0=F.yOf(s.zone==='D'?200:s.zone==='C'?30:s.zone==='B'?15:6),f=F.startFight(s,y0);let y=y0;const h=[];for(let i=0;i<60*90;i++){h.push(f.fish);const seen=h[Math.max(0,h.length-16)]+(rnd()-.5)*.08;const r=F.fightStep(f,s,y,seen>f.zone+f.zw/2,1/60,rnd);y=r.hookY;if(r.outcome)return r.outcome==='landed';}return false;};
+ const rate=n=>{const ss=F.SP.filter(s=>F.starsOf(s)===n);let ok=0,N=0;for(const s of ss)for(let k=0;k<120;k++){N++;if(play(s))ok++;}return ok/N;};
+ const r=[0,1,2,3,4,5].map(n=>n?rate(n):1);
+ a.ok(r[1]>=.95&&r[2]>=.95,'easy ones land: '+r.join());
+ for(let n=2;n<=5;n++)a.ok(r[n]<=r[n-1]+.02,'never easier with more stars: '+r.join());
+ a.ok(r[5]>=.15&&r[5]<=.6,'priciest is a real challenge but possible: '+r[5]);
+});
