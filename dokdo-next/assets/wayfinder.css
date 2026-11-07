@@ -11,5 +11,4 @@
 @media (max-width:340px){.way .way-here{display:none}}
 html:root body .way .way-home,html:root body .way .way-up{min-height:46px;margin:0}
 /* 줄이 위에 붙어 있으므로, 화면 안에서 어떤 칸으로 이동할 때 그 칸이 줄 밑에 가리지 않게 한다. 문제 푸는 집중 화면에서는 줄이 없으므로 푼다. */
-html:has(body>.way:not([hidden])){scroll-padding-top:72px}
-html:has(body.v3-in-lesson){scroll-padding-top:0}
+html:has(body:not(.v3-in-lesson)>.way:not([hidden])){scroll-padding-top:72px}
