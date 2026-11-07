@@ -27,22 +27,27 @@ const BIT={camp:1,stay:2};
 const open=(m,L,pass)=>L>=placeLv(m)||!!(BIT[m]&&((pass|0)&BIT[m]))||(m==='dock'&&((pass|0)&3)>0);
 function nextPlace(L,pass){return PLACES.find(p=>!open(p[0],L,pass))||null}
 function welcome(st){if(st.gift)return 0;st.gift=1;st.c=(st.c||0)+GIFT;st.t=(st.t||0)+GIFT;return GIFT}
-// 낚시: 배에서 닿는 얕은 바다(0~40m)의 물고기·조개만. 어린 물고기와 해조류·보호생물은 넣지 않는다.
-const FISH_IDS=['jari','yongchi','malj','jeonbok','sora','bangeo','yeoneo','dohwa_b','hokdom'];
+// 낚시: 배에서 닿는 얕은 바다(0~40m)의 물고기·조개와 해조류 대황·감태(11/08 교수님 제안, 출처: 명정구 외 2017). 어린 물고기·보호생물은 넣지 않는다.
+// 미역은 프로젝트 출처 자료에서 독도 기록을 확인하지 못해 넣지 않았다(확인 필요).
+const FISH_IDS=['jari','yongchi','malj','jeonbok','sora','bangeo','yeoneo','dohwa_b','hokdom','daehwang','gamtae'];
+// 대황은 따면 바로 화폐 대황 1개가 된다(창고에 쌓지 않음).
+const DIRECT={daehwang:1};
 function pool(SP,starsOf){if(!Array.isArray(SP)||typeof starsOf!=='function')return[];return FISH_IDS.map(id=>SP.find(s=>s&&s.id===id)).filter(Boolean).map(s=>({id:s.id,name:s.name,kind:s.kind,star:starsOf(s)}))}
 // 별이 많을수록 드물다(무게 1/별).
 function pick(list,r){if(!list.length)return null;const w=list.map(f=>1/f.star),tot=w.reduce((a,b)=>a+b,0);let t=Math.min(.999999,Math.max(0,r))*tot;for(let i=0;i<list.length;i++){t-=w[i];if(t<0)return list[i]}return list[list.length-1]}
 const catchesLeft=(st,day)=>{roll(st,day);return Math.max(0,CATCH_DAY-st.fN)};
-function land(st,f,day){roll(st,day);if(!f||st.fN>=CATCH_DAY)return null;st.fN++;st.fish[f.id]=(st.fish[f.id]||0)+1;return{xp:earn(st,'game',f.star*3,day)}}
+function land(st,f,day){roll(st,day);if(!f||st.fN>=CATCH_DAY)return null;st.fN++;const coin=DIRECT[f.id]||0;if(!coin)st.fish[f.id]=(st.fish[f.id]||0)+1;return{xp:earn(st,'game',f.star*3,day),coin}}
+// 셀 때: 물고기·조개는 마리, 해조류는 묶음
+const unit=f=>f&&f.kind==='weed'?'묶음':'마리';
 // 교환소: 물고기 한 마리를 대황으로. 별 1·2·3·4·5 → 1·2·3·5·8.
 const SELL={1:1,2:2,3:3,4:5,5:8};
 function sell(st,f){if(!f||!(st.fish[f.id]>0))return 0;st.fish[f.id]--;if(!st.fish[f.id])delete st.fish[f.id];return SELL[f.star]||1}
-// 요리: 캠핑 자리에서. 모닥불 단계(지금은 꾸미기의 모닥불 하나 = 1단계)가 오를수록 메뉴가 는다.
+// 요리: 동도 선착장(Lv5)과 동도 정상 캠핑 자리에서(11/08 교수님 승인으로 선착장 추가). 모닥불 단계(지금은 꾸미기의 모닥불 하나 = 1단계)가 오를수록 메뉴가 는다.
 const MENU=[{id:'grill',name:'구이',need:1,fire:0,per:4},{id:'stew',name:'매운탕',need:2,fire:1,per:6}];
-const COOK_AT=['camp'];
+const COOK_AT=['dock','camp'];
 const menu=fire=>MENU.filter(m=>(fire|0)>=m.fire);
-function cook(st,f,dish,fire,day){if(!f||!dish||(fire|0)<dish.fire||!((st.fish[f.id]||0)>=dish.need))return null;st.fish[f.id]-=dish.need;if(!st.fish[f.id])delete st.fish[f.id];st.ate++;return{xp:earn(st,'game',f.star*dish.per,day),name:f.name+' '+dish.name}}
+function cook(st,f,dish,fire,day){if(!f||f.kind==='weed'||!dish||(fire|0)<dish.fire||!((st.fish[f.id]||0)>=dish.need))return null;st.fish[f.id]-=dish.need;if(!st.fish[f.id])delete st.fish[f.id];st.ate++;return{xp:earn(st,'game',f.star*dish.per,day),name:f.name+' '+dish.name}}
 function pickup(st,day){return earn(st,'clean',CLEAN_XP,day)}
-const api={K,CAP,GIFT,CATCH_DAY,CLEAN_XP,xpFor,levelOf,PLACES,placeLv,schoolXp,kstDay,tidy,roll,earn,level,open,nextPlace,welcome,FISH_IDS,pool,pick,catchesLeft,land,SELL,sell,MENU,COOK_AT,menu,cook,pickup};
+const api={K,CAP,GIFT,CATCH_DAY,CLEAN_XP,xpFor,levelOf,PLACES,placeLv,schoolXp,kstDay,tidy,roll,earn,level,open,nextPlace,welcome,FISH_IDS,DIRECT,unit,pool,pick,catchesLeft,land,SELL,sell,MENU,COOK_AT,menu,cook,pickup};
 if(typeof module==='object'&&module.exports)module.exports=api;else root.DokdoHealEcon=api;
 })(typeof window!=='undefined'?window:globalThis);
