@@ -90,6 +90,36 @@ def walk(context, label):
     assert page.evaluate("getComputedStyle(document.querySelector('.rock')).backgroundColor") == 'rgba(0, 0, 0, 0)'
     assert page.evaluate("parseFloat(getComputedStyle(document.querySelector('.rock')).fontSize)") >= 16
     expect(page.locator('#count')).to_contain_text('혼자 쉬는 중')
+    # 위는 한 줄(스쿨로·게이지·소리), 아래 메뉴도 처음엔 한 줄. 메뉴를 누르면 열리고 다시 누르면 닫힌다.
+    expect(page.locator('#p-rest')).to_be_hidden()
+    expect(page.locator('#say')).to_be_hidden()
+    assert page.evaluate("document.querySelector('#top').getBoundingClientRect().height") < 70
+    assert page.evaluate("document.querySelector('#dock').getBoundingClientRect().height") < 80
+    page.locator('#t-sail').click()
+    expect(page.locator('#p-sail')).to_be_visible()
+    expect(page.locator('#t-sail')).to_have_attribute('aria-expanded', 'true')
+    page.locator('#t-sail').click()
+    expect(page.locator('#p-sail')).to_be_hidden()
+    page.locator('#t-talk').click()
+    expect(page.locator('#say')).to_be_visible()
+    expect(page.locator('#nick')).to_be_visible()
+    page.locator('#t-talk').click()
+    # 풍경만 보기: 판이 모두 사라지고 작은 단추로 돌아온다.
+    page.locator('#scenery').click()
+    expect(page.locator('#dock')).to_be_hidden()
+    expect(page.locator('#top')).to_be_hidden()
+    expect(page.locator('#unscene')).to_be_visible()
+    page.locator('#unscene').click()
+    expect(page.locator('#dock')).to_be_visible()
+    # 자동 항해 중에 바다를 짧게 눌러도 자동 항해는 꺼지지 않는다.
+    page.locator('#t-sail').click()
+    page.locator('#auto').click()
+    expect(page.locator('#auto')).to_have_attribute('aria-pressed', 'true')
+    page.mouse.click(page.viewport_size['width'] // 2, page.viewport_size['height'] // 2 + 60) if page.viewport_size else None
+    expect(page.locator('#toast')).to_contain_text('자동 항해 중')
+    expect(page.locator('#auto')).to_have_attribute('aria-pressed', 'true')
+    page.locator('#auto').click()
+    page.locator('#t-sail').click()
     expect(page.locator('#tags .tag:not(.me) .name')).to_have_count(0)
     expect(page.locator('#tags .tag:not(.me) .bubble:visible')).to_have_count(0)
     assert 'nick' not in page.url, 'nickname leaves the address after it is read'
