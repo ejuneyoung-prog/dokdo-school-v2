@@ -16,7 +16,9 @@ function syncArea(){
  const info=document.body.classList.contains('v3-exploring'),channel=!$('view-channel').hidden;
  const nav=$('v3-learn-nav'),active=learningEntered&&!$('view-home').hidden&&!info;
  nav.classList.toggle('active',active);if(active)nav.setAttribute('aria-current','page');else nav.removeAttribute('aria-current');
+ const atGate=document.body.classList.contains('v3-choosing')&&!$('view-home').hidden&&!info;$('v3-way').hidden=atGate;
  document.title=channel?copy('독도 코리아 채널 · 독도 코리아 스쿨','Dokdo Korea Channel · Dokdo Korea School'):info?copy('독도 알아보기 · 독도 코리아 스쿨','Discover Dokdo · Dokdo Korea School'):learningEntered?copy('독도 배움터 · 독도 코리아 스쿨','Dokdo Learning · Dokdo Korea School'):copy('독도 코리아 스쿨 · 배움터와 놀이터','Dokdo Korea School · Learn and Play');
+ const here=document.title.split(' · ')[0];label('v3-way-here',copy('지금 · ','Now · ')+here,copy('지금 · ','Now · ')+here);
 }
 function enterLearning(){
  const previous=learningEntered;learningEntered=true;
@@ -52,7 +54,7 @@ function refresh(){
  lines('v3-choice-learn-title','독도\n배움터','Dokdo Learning');label('v3-choice-learn-description','문제를 풀며 독도를 알아가요.','Discover Dokdo, one question at a time.');label('v3-choice-learn-action','배움터 들어가기 →','Start learning →');
 lines('camp-title','독도에서\n힐링하기','Dokdo Retreat');label('camp-desc','파도 소리를 들으며 쉬어가요.','Rest by the waves.');label('camp-action','힐링하러 가기 →','Take a break →');
  lines('v3-choice-play-title','독도\n놀이터','Dokdo Playground');label('v3-choice-play-description','게임하며 나의 섬을 가꿔요.','Play games and grow your own island.');label('v3-choice-play-action','놀이터 들어가기 →','Start playing →');
- label('v3-main-home','← 메인으로 돌아가기','← Back to the main menu');label('v3-back-learning','← 배움터로 돌아가기','← Back to Dokdo Learning');
+ {const home=$('v3-main-home'),mark=document.createElement('b'),word=document.createElement('span');mark.setAttribute('aria-hidden','true');mark.textContent='⌂';word.textContent=copy('홈','Home');home.replaceChildren(mark,word);}$('v3-main-home').setAttribute('aria-label',copy('홈 · 처음 화면으로','Home · first screen'));label('v3-back-learning','← 배움터로 돌아가기','← Back to Dokdo Learning');
  const s=App.state;if(!s)return;
  // 나이대만 고른 사람은 아직 이어갈 수업이 없습니다. 푼 문제가 있어야 '이어서'입니다.
  const begun=Object.values(s.m||{}).some(r=>r&&(r.att>0||r.cor>0||r.courseLearned));

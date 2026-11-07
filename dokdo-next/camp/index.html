@@ -20,7 +20,7 @@ body{margin:0;background:var(--ink);color:var(--white);font:500 15px/1.35 var(--
 /* 위쪽은 한 줄: 스쿨로 · 다음 목표 게이지 · 소리 크기. 시각·날씨·인원은 판 없이 글자만 그 아래에 둔다. */
 #top{top:calc(10px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:min(680px,calc(100vw - 32px));box-sizing:border-box;padding:4px 6px;display:flex;align-items:center;gap:8px;background:rgba(46,49,53,.78)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-#top .back{flex:none;padding:0 6px}
+#top .back{flex:none;min-height:40px;padding:4px 14px}
 #top .vol{margin-left:auto;flex:none}
 #snd{flex:none;padding-inline:10px}
 #sub{position:fixed;top:calc(66px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:calc(100vw - 32px);display:flex;flex-wrap:wrap;justify-content:center;gap:2px 12px;font-size:14px;color:var(--white);text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 8px rgba(0,0,0,.6);pointer-events:none;text-align:center}
@@ -86,10 +86,10 @@ body.resting #dock,body.resting #sub,body.resting #top,body.resting #info,body.r
 #goal,#snd,#nick,#text,#send{min-height:44px}
 #start{background:var(--lime);color:var(--ink);font-size:16px;padding:12px}
 #err{position:fixed;inset:0;display:grid;place-items:center;padding-inline:max(16px,env(safe-area-inset-left,0px));text-align:center}
-@media (max-width:520px){#hint{display:none}#toast{top:auto;bottom:calc(var(--dk,64px) + 20px)}#top{gap:4px}#top .vol{width:64px}#top .back{padding:0 4px}#menu{gap:4px}#menu button{padding-inline:6px}}
-.back{color:var(--lime);font-size:14px;line-height:1.6;text-decoration:none}
-.back:hover{text-decoration:underline}
-#enter .back{justify-self:center;padding:6px 8px}
+@media (max-width:520px){#hint{display:none}#toast{top:auto;bottom:calc(var(--dk,64px) + 20px)}#top{gap:4px}#top .vol{width:64px}#top .back{padding:4px 12px;font-size:15px}#menu{gap:4px}#menu button{padding-inline:6px}}
+.back{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:6px 18px;border-radius:999px;background:#fff;color:#163e36;font-size:16px;font-weight:700;line-height:1;text-decoration:none;white-space:nowrap;box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.back:hover{text-decoration:none;filter:brightness(1.06)}
+#enter .back{justify-self:center;padding:8px 20px}
 #enter .note a{color:var(--mute)}
 #err{z-index:9;background:var(--ink);align-content:center;gap:14px}
 #dock{grid-template-columns:minmax(0,1fr)}
@@ -105,12 +105,12 @@ body:has(#deck:not([hidden])) #toast{top:calc(14px + env(safe-area-inset-top,0px
 </head><body>
 <canvas id="stage" aria-label="독도에서 힐링하기 3D 장면"></canvas>
 <div id="tags"></div>
-<div id="top" class="card"><a class="back" href="../?area=learn" aria-label="스쿨로 돌아가기">← 스쿨</a><h1 class="sr">독도에서 힐링하기</h1><button id="goal" hidden><span id="g-text"></span><span id="g-bar"><span id="g-fill"></span></span></button><input class="vol" type="range" min="0" max="100" aria-label="소리 크기"><button id="snd" aria-pressed="true">소리</button></div>
+<div id="top" class="card"><a class="back" href="../" aria-label="홈 · 처음 화면으로">⌂ 홈</a><h1 class="sr">독도에서 힐링하기</h1><button id="goal" hidden><span id="g-text"></span><span id="g-bar"><span id="g-fill"></span></span></button><input class="vol" type="range" min="0" max="100" aria-label="소리 크기"><button id="snd" aria-pressed="true">소리</button></div>
 <div id="sub"><span id="now"></span><span id="count">바다로 나가는 중</span><span id="vr" hidden>화면 속 가상 체험입니다</span><span id="cmode" hidden>크리에이터 모드 · 기록 저장 안 함</span></div>
 <div id="hint" hidden>바다를 누르면 이동, 끌면 둘러보기, 휠이나 두 손가락으로 가까이 보기</div>
 <div id="toast" role="status" hidden></div>
 <div id="rest" hidden><div id="r-dot"><span id="r-word">들이쉬고</span></div><div id="r-left">3:00</div><input class="vol" type="range" min="0" max="100" aria-label="소리 크기"><button id="r-end">끝내기</button></div>
-<div id="enter"><div><h2>독도에서 힐링하기</h2><p>파도 소리를 들으며 쉬어 가는 곳입니다. 대황을 모으면 동도와 서도에 오를 수 있습니다.</p><a id="login-cta" class="login-cta" href="../account.html?next=camp%2F" hidden>로그인하고 들어가기</a><button id="start">바다에서 독도 보기</button><button id="e-camp">동도 정상 캠핑</button><button id="e-stay">서도 주민숙소</button><p class="note">화면 속 가상 체험입니다. 실제 독도는 천연보호구역이라 머물 수 있는 곳과 시간이 제한됩니다.</p><p class="note">날씨 자료 <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></p><a class="back" href="../?area=learn">← 스쿨로 돌아가기</a></div></div>
+<div id="enter"><div><h2>독도에서 힐링하기</h2><p>파도 소리를 들으며 쉬어 가는 곳입니다. 대황을 모으면 동도와 서도에 오를 수 있습니다.</p><a id="login-cta" class="login-cta" href="../account.html?next=camp%2F" hidden>로그인하고 들어가기</a><button id="start">바다에서 독도 보기</button><button id="e-camp">동도 정상 캠핑</button><button id="e-stay">서도 주민숙소</button><p class="note">화면 속 가상 체험입니다. 실제 독도는 천연보호구역이라 머물 수 있는 곳과 시간이 제한됩니다.</p><p class="note">날씨 자료 <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></p><a class="back" href="../" aria-label="홈 · 처음 화면으로">⌂ 홈으로 돌아가기</a></div></div>
 <div id="info" class="card" hidden><b></b><span></span></div>
 <div id="dock" class="card">
  <div class="row" id="p-rest" hidden><button id="v-sea" aria-pressed="false">바다에서 보기</button><button id="v-camp" aria-pressed="false">동도 정상 캠핑</button><button id="v-stay" aria-pressed="false">서도 주민숙소</button><button id="breath">3분 쉬기</button><button id="creator" hidden aria-pressed="false">크리에이터 모드</button></div>
