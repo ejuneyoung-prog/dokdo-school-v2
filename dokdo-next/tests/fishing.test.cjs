@@ -114,9 +114,9 @@ test('daily missions and levels are deterministic and complete only on this roun
  a.equal(F.todayMission(new Date(2026,9,31)),F.todayMission(new Date(2026,9,31,23,59)));
  a.ok(F.MISSIONS.includes(F.todayMission(new Date(2026,0,1))));
  const run={runCount:{jari:3,mullung:1},score:520,bestCombo:4,caughtRun:['jari','jari','jari','mullung']};
- a.equal(F.missionDone({k:'sp',id:'jari',n:3},run),true);a.equal(F.missionDone({k:'score',n:500},run),true);a.equal(F.missionDone({k:'combo',n:5},run),false);
+ a.equal(F.missionDone({k:'sp',id:'jari',n:3},run),true);a.equal(F.missionDone({k:'score',n:400},run),true);a.equal(F.missionDone({k:'combo',n:5},run),false);
  a.equal(F.missionDone({k:'kinds',n:5},run),false);a.equal(F.missionDone({k:'shrimp',n:1},run),true);a.equal(F.missionProgress({k:'kinds',n:5},run),2);
- a.equal(F.levelOf(0),0);a.equal(F.levelOf(299),0);a.equal(F.levelOf(300),1);a.equal(F.levelOf(10000),5);a.equal(F.levelOf(999999),5);
+ a.equal(F.levelOf(0),0);a.equal(F.levelOf(149),0);a.equal(F.levelOf(150),1);a.equal(F.levelOf(5000),5);a.equal(F.levelOf(999999),5);
 });
 
 test('17 fact-checked species, 8 sources, every source reference resolves; analytics allows exactly these ids',()=>{
@@ -231,4 +231,10 @@ test('a landed creature swims again, and seaweed or shells bite without a nibble
  a.match(src,/function end\(\)\{st='over';coachOn=false;nib=null;/);
  const rnd=()=>0;a.equal(F.approach(sp('daehwang'),rnd).nibble,0);a.equal(F.approach(sp('jeonbok'),rnd).nibble,0);a.ok(F.approach(sp('jari'),rnd).nibble>=.7);
  a.doesNotMatch(src,/tr\('톡톡'/,'the nibble mark is not called 톡톡 (that word means press)');
+});
+
+test('after the scoring change the level ladder and score goals only got lower, so nobody is demoted',()=>{
+ a.deepEqual(F.LEVELS.map(l=>l[0]),[0,150,500,1250,2500,5000]);
+ const old=[0,300,1000,2500,5000,10000];for(const xp of [0,299,300,999,1000,4999,5000,12000])a.ok(F.levelOf(xp)>=old.filter(v=>xp>=v).length-1,String(xp));
+ a.ok(F.MISSIONS.some(m=>m.k==='score'&&m.n===400));a.ok(F.BADGES.some(b=>b[0]==='score1000'&&b[1]==='한 판 600점'));
 });

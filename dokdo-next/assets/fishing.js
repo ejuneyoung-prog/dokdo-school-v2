@@ -56,12 +56,13 @@ const BAIT=[0,.2,.45,.4,.32,.25];
 function baitChance(s){return BAIT[starsOf(s)];}
 // 지나가는 생물 하나가 바늘에 다가왔을 때: 관심이 없으면 지나가고, 있으면 톡톡 건드리다가(이때 당기면 달아남) 문다.
 function approach(s,rnd=Math.random){if(rnd()>=baitChance(s))return{want:false,ignore:3+rnd()*3};return{want:true,nibble:s.spd?.7+rnd()*1.3:0};}
-const LEVELS=[[0,'견습 어부','Apprentice angler'],[300,'독도 어부','Dokdo angler'],[1000,'대황 숲 어부','Kelp forest angler'],[2500,'가지초 베테랑','Gajicho reef veteran'],[5000,'독도새우 명인','Dokdo shrimp master'],[10000,'독도 바다지기','Dokdo sea guardian']];
+// 점수 체계를 바꾸며(2026-11-07) 한 판 점수가 옛날의 절반쯤이 되어 기준도 절반으로 낮췄다. 낮추기만 해서 누구도 강등되지 않는다.
+const LEVELS=[[0,'견습 어부','Apprentice angler'],[150,'독도 어부','Dokdo angler'],[500,'대황 숲 어부','Kelp forest angler'],[1250,'가지초 베테랑','Gajicho reef veteran'],[2500,'독도새우 명인','Dokdo shrimp master'],[5000,'독도 바다지기','Dokdo sea guardian']];
 const UNLOCK_NEED={B:['얕은 바다 생물 3종','3 shallow-sea species'],C:['대황·감태 숲 생물 3종','3 kelp-forest species'],D:['혹돔 또는 도감 10종','the Asian sheepshead wrasse or 10 guide entries']};
-const BADGES=[['first','첫 손맛','First bite'],['daehwang','대황 숲 지기','Kelp forest keeper'],['hokdom','혹돔과의 대결','Wrasse showdown'],['shrimp1','첫 독도새우','First Dokdo shrimp'],['shrimp3','독도새우 3종','All 3 Dokdo shrimp'],['combo5','5연속 낚시','5 in a row'],['perfect','완벽한 손맛','Perfect touch'],['coral','보호생물을 지켰어요','Protected the coral'],['score1000','한 판 1,000점','1,000 points in a round'],['zoneA','얕은 바다 도감 완성','Shallow sea guide complete'],['zoneB','대황 숲 도감 완성','Kelp forest guide complete'],['zoneC','가지초 도감 완성','Gajicho guide complete'],['zoneD','독도새우 도감 완성','Dokdo shrimp guide complete'],['dexAll','독도 바다 박사','Dokdo sea expert'],['mission','오늘의 임무 완수',"Today's mission done"]];
+const BADGES=[['first','첫 손맛','First bite'],['daehwang','대황 숲 지기','Kelp forest keeper'],['hokdom','혹돔과의 대결','Wrasse showdown'],['shrimp1','첫 독도새우','First Dokdo shrimp'],['shrimp3','독도새우 3종','All 3 Dokdo shrimp'],['combo5','5연속 낚시','5 in a row'],['perfect','완벽한 손맛','Perfect touch'],['coral','보호생물을 지켰어요','Protected the coral'],['score1000','한 판 600점','600 points in a round'],['zoneA','얕은 바다 도감 완성','Shallow sea guide complete'],['zoneB','대황 숲 도감 완성','Kelp forest guide complete'],['zoneC','가지초 도감 완성','Gajicho guide complete'],['zoneD','독도새우 도감 완성','Dokdo shrimp guide complete'],['dexAll','독도 바다 박사','Dokdo sea expert'],['mission','오늘의 임무 완수',"Today's mission done"]];
 const MISSIONS=[
  {t:'자리돔 3마리 낚기',k:'sp',id:'jari',n:3},{t:'참담치 2개 낚기',k:'sp',id:'damchi',n:2},{t:'대황 2개 거두기',k:'sp',id:'daehwang',n:2},
- {t:'감태 2개 거두기',k:'sp',id:'gamtae',n:2},{t:'전복 1개 낚기',k:'sp',id:'jeonbok',n:1},{t:'한 판에 500점',k:'score',n:500},
+ {t:'감태 2개 거두기',k:'sp',id:'gamtae',n:2},{t:'전복 1개 낚기',k:'sp',id:'jeonbok',n:1},{t:'한 판에 400점',k:'score',n:400},
  {t:'5연속으로 낚기',k:'combo',n:5},{t:'한 판에 5종 낚기',k:'kinds',n:5},{t:'연어병치 2마리 낚기',k:'sp',id:'yeoneo',n:2},{t:'독도새우 1마리 낚기',k:'shrimp',n:1}];
 
 // ── 순수 규칙 (화면 없이 시험할 수 있음) ──
@@ -176,7 +177,7 @@ const sfx={bite(){tone(880,660,.12,.2,'square');tone(880,660,.12,.2,'square',.16
 let nib=null;let st='idle',score=0,timeLeft=180,hookY=0,camY=0,holdMain=false,holdUp=false,caughtRun=[],bite=null,fight=null,last=0,t=0,flash=null,bubbles=[],combo=0,bestCombo=0,golden=null,splash=[],limitWarned=false,runCount={};
 let crit=[];
 const run=()=>({runCount,score,bestCombo,caughtRun});
-function spawn(){crit=[];for(const s of SP){const n=s.kind==='fish'?(s.school?4:s.id==='hokdom'?1:2):s.kind==='shrimp'?2:3;for(let i=0;i<n;i++){const m=s.d[0]+Math.random()*(s.d[1]-s.d[0]);crit.push({s,x:s.spd?Math.random()*W:W*BOAT_X+40+(Math.random()-.5)*180,y:yOf(m),dir:Math.random()<.5?-1:1,ph:Math.random()*6.28,cool:0});}}}
+function spawn(){crit=[];for(const s of SP){const n=s.kind==='fish'?(s.school?4:s.id==='hokdom'?1:2):s.kind==='shrimp'?5:3;for(let i=0;i<n;i++){const m=s.d[0]+Math.random()*(s.d[1]-s.d[0]);crit.push({s,x:s.spd?Math.random()*W:W*BOAT_X+40+(Math.random()-.5)*180,y:yOf(m),dir:Math.random()<.5?-1:1,ph:Math.random()*6.28,cool:0});}}}
 function zoneAt(m){if(m<=0.3)return null;if(m<10)return ZONES[0];if(m<20)return ZONES[1];if(m<=40)return ZONES[2];if(m<150)return {name:'찬물이 깔린 깊은 바다',en:'Deep sea over a cold-water layer',range:'40~150m'};if(m<=300)return ZONES[3];return {name:'해산 아래 심해',en:'Deep sea below the seamount',range:'300m 아래',rangeEn:'below 300m'};}
 
 // ── 그리기 ──
@@ -322,7 +323,7 @@ function landed(){const c=bite.c,s=c.s,f=fight;st='catch';const first=!dex[s.id]
   if(!calm)root.requestAnimationFrame(anim);};anim();}
 function endDetail(){const kinds=new Set(caughtRun).size;return tr('잡은 생물 '+caughtRun.length+'마리 · '+kinds+'종 · 최고 '+bestCombo+'연속','Caught '+caughtRun.length+' · '+kinds+' species · Best combo '+bestCombo);}
 function end(){st='over';coachOn=false;nib=null;timeLeft=0;hud();$('b-main').disabled=true;$('stage')?.classList.remove('is-live');holdMain=holdUp=false;$('catch').hidden=true;
- $('e-score').textContent=score;$('e-detail').textContent=endDetail();if(score>=1000&&badge('score1000'))renderProg();const m=todayMission();if(!prog.mission[today()]&&missionDone(m,run())){prog.mission[today()]=true;prog.xp+=300;badge('mission');saveProg();}renderProg();$('save-msg').textContent='';
+ $('e-score').textContent=score;$('e-detail').textContent=endDetail();if(score>=600&&badge('score1000'))renderProg();const m=todayMission();if(!prog.mission[today()]&&missionDone(m,run())){prog.mission[today()]=true;prog.xp+=300;badge('mission');saveProg();}renderProg();$('save-msg').textContent='';
  const can=score>0;$('save-btn').disabled=!can;$('nick').disabled=!can;$('nick').value=store.get(KEYS.nick,'');if(!can)$('save-msg').textContent=tr('점수가 있어야 명예의 전당에 오릅니다.','You need a score to enter the hall of fame.');$('end').hidden=false;track('fish_complete',{score});}
 
 // ── 도감·순위 ──
