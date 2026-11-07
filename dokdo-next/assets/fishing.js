@@ -57,6 +57,13 @@ function baitChance(s){return BAIT[starsOf(s)];}
 // 지나가는 생물 하나가 바늘에 다가왔을 때: 관심이 없으면 지나가고, 있으면 톡톡 건드리다가(이때 당기면 달아남) 문다.
 function approach(s,rnd=Math.random){if(rnd()>=baitChance(s))return{want:false,ignore:3+rnd()*3};return{want:true,nibble:s.spd?.7+rnd()*1.3:0};}
 // 점수 체계를 바꾸며(2026-11-07) 한 판 점수가 옛날의 절반쯤이 되어 기준도 절반으로 낮췄다. 낮추기만 해서 누구도 강등되지 않는다.
+// ── 미끼 ── 하루에 10개를 그냥 주고, 오늘 배움터 퀴즈를 하나 맞힐 때마다 2개를 더 준다. 다 쓰면 퀴즈를 풀고 와야 한다.
+// 배움터 기록은 이 기기의 저장값(SCHOOL_KEY)을 읽기만 하고 쓰지 않는다. 오늘(한국 시각) 점수를 받은 문항 수를 센다.
+const BAIT_FREE=10,BAIT_PER_QUIZ=2,SCHOOL_KEY='dokdo-korea-school-cinematic-v1';
+function kstDay(now){return new Date(now+9*3600000).toISOString().slice(0,10);}
+function quizToday(school,day){const m=school&&typeof school==='object'&&school.m;if(!m||typeof m!=='object')return 0;let n=0;for(const r of Object.values(m))if(r&&r.courseRewardDay===day)n++;return n;}
+function baitLeft(prog,quiz,day){const used=prog&&prog.bait&&prog.bait.day===day?Math.max(0,prog.bait.used|0):0;return Math.max(0,BAIT_FREE+BAIT_PER_QUIZ*Math.max(0,quiz|0)-used);}
+function useBait(prog,day){if(!prog.bait||prog.bait.day!==day)prog.bait={day,used:0};prog.bait.used++;}
 const LEVELS=[[0,'견습 어부','Apprentice angler'],[150,'독도 어부','Dokdo angler'],[500,'대황 숲 어부','Kelp forest angler'],[1250,'가지초 베테랑','Gajicho reef veteran'],[2500,'독도새우 명인','Dokdo shrimp master'],[5000,'독도 바다지기','Dokdo sea guardian']];
 const UNLOCK_NEED={B:['얕은 바다 생물 3종','3 shallow-sea species'],C:['대황·감태 숲 생물 3종','3 kelp-forest species'],D:['혹돔 또는 도감 10종','the Asian sheepshead wrasse or 10 guide entries']};
 const BADGES=[['first','첫 손맛','First bite'],['daehwang','대황 숲 지기','Kelp forest keeper'],['hokdom','혹돔과의 대결','Wrasse showdown'],['shrimp1','첫 독도새우','First Dokdo shrimp'],['shrimp3','독도새우 3종','All 3 Dokdo shrimp'],['combo5','5연속 낚시','5 in a row'],['perfect','완벽한 손맛','Perfect touch'],['coral','보호생물을 지켰어요','Protected the coral'],['score1000','한 판 600점','600 points in a round'],['zoneA','얕은 바다 도감 완성','Shallow sea guide complete'],['zoneB','대황 숲 도감 완성','Kelp forest guide complete'],['zoneC','가지초 도감 완성','Gajicho guide complete'],['zoneD','독도새우 도감 완성','Dokdo shrimp guide complete'],['dexAll','독도 바다 박사','Dokdo sea expert'],['mission','오늘의 임무 완수',"Today's mission done"]];
@@ -92,7 +99,7 @@ function scoreCatch({pts,size,first,perfect,combo,gold}){
 // ── 끌어올리기(타이밍) ── 챔질에 성공하면 공이 좌우로 오간다. 공이 초록 칸에 있을 때 톡 누르면 한 칸 끌어올린다.
 // 별이 많을수록 칸이 좁고 공이 빠르며 더 여러 번 성공해야 한다. 끌어올릴수록(물고기가 지칠수록) 공이 조금씩 빨라진다.
 // 놓치면 조금 다시 내려가고, 세 번 놓치면 줄이 끊어진다. 처음 몇 마리는 공을 느리게 해 손에 익게 한다.
-const BAR=[0,.40,.32,.26,.20,.16],SPEED=[0,.45,.6,.8,1.05,1.3],NEED=[0,2,3,3,4,5],LIVES=3;
+const BAR=[0,.26,.22,.18,.15,.12],SPEED=[0,.55,.7,.85,1.05,1.3],NEED=[0,2,3,3,4,5],LIVES=3;
 function startFight(s,hookY,easy){const n=starsOf(s);return{pos:0,dir:1,speed:SPEED[n]*(easy?.8:1),zw:BAR[n],zone:.62,need:NEED[n],got:0,miss:0,startY:hookY,goalY:hookY,flash:0,flashOk:false,total:0,clean:true};}
 // 맞힌 뒤 새 칸은 공에서 .25 넘게 떨어진 곳에만 둔다(공이 바로 새 칸 안에 남아 공짜로 한 번 더 맞는 일이 없게).
 function newZone(f,rnd){const h=f.zw/2,lo=[h,Math.max(h,f.pos-.25)],hi=[Math.min(1-h,f.pos+.25),1-h];const a=Math.max(0,lo[1]-lo[0]),b=Math.max(0,hi[1]-hi[0]);let u=rnd()*(a+b);f.zone=u<a?lo[0]+u:hi[0]+(u-a);if(a+b<=0)f.zone=f.pos<.5?1-h:h;}
@@ -148,6 +155,8 @@ const track=(n,p)=>{try{root.DokdoAnalytics?.track(n,p);}catch(e){}};
 let testMode=false;
 const today=()=>dayKey(new Date());
 function saveProg(){store.set(KEYS.prog,prog);}
+const baitNow=()=>{const d=kstDay(Date.now());return baitLeft(prog,quizToday(store.get(SCHOOL_KEY,null),d),d);};
+function noBait(){if(st==='play'||st==='bite'||st==='fight')end();$('nobait').hidden=false;}
 function isOpen(z){return testMode||prog.unlocked.includes(z);}
 function maxDepth(){return maxDepthFor(isOpen);}
 function nextNeed(){for(const z of ['B','C','D'])if(!isOpen(z))return {zone:ZONES.find(q=>q.id===z),need:need(z)};return null;}
@@ -269,8 +278,8 @@ function setInfo(){const m=mOf(hookY),z=zoneAt(m),box=$('info');box.replaceChild
  const near=SP.filter(s=>{const zz=ZONES.find(q=>q.id===s.zone);return zz&&zz===z;}).map(nm);box.append(el('b','',tr('지금 위치: ','Now: ')+zn(z)+' ('+zr(z)+')'),el('span','f-note',near.length?tr('이곳에 사는 생물: ','Living here: ')+near.join(', '):tr('이 수심은 화면에서 줄여 그렸습니다. 더 내려가 보세요.','This depth is drawn compressed on screen. Keep going down.')));}
 function hud(){$('h-score').textContent=score;const s=Math.max(0,Math.ceil(timeLeft));$('h-time').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0');$('h-depth').textContent=Math.round(mOf(hookY))+'m';const got=SP.filter(s=>dex[s.id]).length;$('h-dex').textContent=got+'/'+SP.length;}
 function say(text,sec=2.2){flash={text,until:t+sec};}
-function start(){actx();score=0;timeLeft=180;hookY=0;camY=-SKY;caughtRun=[];combo=0;bestCombo=0;runCount={};limitWarned=false;nib=null;autoUp=false;lockUntil=0;const g0=40+Math.random()*100;golden={from:g0+20,to:g0,announced:false};st='play';coachOn=needsCoach(prog,dex);spawn();$('start').hidden=true;if(root.innerWidth<900)$('stage')?.scrollIntoView?.({block:'start',behavior:calm?'auto':'smooth'});$('end').hidden=true;$('b-main').disabled=false;$('stage')?.classList.add('is-live');mainLabel();setInfo();hud();track('fish_start',{});}
-function mainLabel(){const b=$('b-main');b.querySelector('span').textContent=st==='fight'?tr('톡!','Tap!'):st==='bite'?tr('챔질!','Strike!'):nib?tr('참아요','Wait'):autoUp?tr('미끼 다는 중','Re-baiting'):tr('내리기','Drop');b.querySelector('small').textContent=st==='fight'?tr('공이 초록 칸에 오면 눌러요','Press when the ball is in the green'):st==='bite'?tr('지금 누르면 걸려요','Press now to hook it'):nib?tr('입질 중 · ! 가 뜨면 눌러요','Nibbling · press when ! appears'):autoUp?tr('줄을 감아 올려요 · 누르면 다시 내려가요','Reeling up · press to drop again'):tr('누르는 동안 줄이 내려가요','Hold to let the line down');}
+function start(){actx();if(baitNow()<=0){$('start').hidden=true;$('end').hidden=true;noBait();return;}score=0;timeLeft=180;hookY=0;camY=-SKY;caughtRun=[];combo=0;bestCombo=0;runCount={};limitWarned=false;nib=null;autoUp=false;lockUntil=0;const g0=40+Math.random()*100;golden={from:g0+20,to:g0,announced:false};st='play';coachOn=needsCoach(prog,dex);spawn();$('start').hidden=true;if(root.innerWidth<900)$('stage')?.scrollIntoView?.({block:'start',behavior:calm?'auto':'smooth'});$('end').hidden=true;$('b-main').disabled=false;$('stage')?.classList.add('is-live');mainLabel();setInfo();hud();track('fish_start',{});}
+function mainLabel(){const b=$('b-main');b.querySelector('span').textContent=st==='fight'?tr('톡!','Tap!'):st==='bite'?tr('챔질!','Strike!'):nib?tr('참아요','Wait'):autoUp?tr('미끼 다는 중','Re-baiting'):tr('내리기','Drop');b.querySelector('small').textContent=st==='fight'?tr('공이 초록 칸에 오면 눌러요','Press when the ball is in the green'):st==='bite'?tr('지금 누르면 걸려요','Press now to hook it'):nib?tr('입질 중 · ! 가 뜨면 눌러요','Nibbling · press when ! appears'):autoUp?tr('줄을 감아 올려요 · 누르면 다시 내려가요','Reeling up · press to drop again'):st==='play'?tr('누르는 동안 줄이 내려가요 · 미끼 '+baitNow()+'개','Hold to drop · bait '+baitNow()):tr('누르는 동안 줄이 내려가요','Hold to let the line down');}
 function step(dt){t+=dt;if(flash&&t>flash.until)flash=null;
  for(const c of crit){if(c.s.spd&&!c.hold){c.x+=c.dir*c.s.spd*40*dt;if(c.x<-80){c.x=W+60;}if(c.x>W+80){c.x=-60;}}c.ph+=dt*(c.s.spd?6:1.5);if(c.cool>0)c.cool-=dt;}
  for(const b of bubbles){b.y-=30*dt;b.a-=dt*.5;}bubbles=bubbles.filter(b=>b.a>0);
@@ -283,7 +292,7 @@ function step(dt){t+=dt;if(flash&&t>flash.until)flash=null;
   if(Math.abs(hookY-coralY)>40)step.warned=false;
   // 입질
   if(nib){const nc=nib.c,k=Math.min(1,dt*4);nc.x+=(W*BOAT_X+40-nc.x)*k;nc.y+=(hookY+20-nc.y)*k;if(holdMain||holdUp){say(tr('너무 일찍 당겼어요. 느낌표(!)가 뜰 때 눌러요.','Too early. Press when the ! appears.'));nib.c.cool=5;nib.c.hold=false;nib=null;combo=0;sfx.miss();lockUntil=t+.5;autoUp=true;holdMain=false;mainLabel();}else if(t>nib.until){const c=nib.c;nib=null;bite={c,until:t+(c.s.spd?1.1:1.6)};st='bite';sfx.bite();mainLabel();}}
-  else if(!holdMain&&!holdUp&&!autoUp&&hookY>8){const hx=W*BOAT_X+40;for(const c of crit){if(c.cool>0)continue;const dx=Math.abs(c.x-hx),dy=Math.abs(c.y-hookY);const reach=c.s.spd?40:56;if(dy<reach&&dx<reach+c.s.len*.5){const a=approach(c.s);if(!a.want){c.cool=a.ignore;continue;}if(!a.nibble){bite={c,until:t+1.6};st='bite';sfx.bite();mainLabel();break;}c.hold=true;nib={c,until:t+a.nibble};mainLabel();break;}}}
+  else if(!holdMain&&!holdUp&&!autoUp&&hookY>8){const hx=W*BOAT_X+40;for(const c of crit){if(c.cool>0)continue;const dx=Math.abs(c.x-hx),dy=Math.abs(c.y-hookY);const reach=c.s.spd?40:56;if(dy<reach&&dx<reach+c.s.len*.5){if(baitNow()<=0){noBait();break;}const a=approach(c.s);if(!a.want){c.cool=a.ignore;continue;}useBait(prog,kstDay(Date.now()));saveProg();if(!a.nibble){bite={c,until:t+1.6};st='bite';sfx.bite();mainLabel();break;}c.hold=true;nib={c,until:t+a.nibble};mainLabel();break;}}}
  }else if(st==='bite'){if(t>bite.until){say(tr(ig(bite.c.s.name)+' 미끼만 물고 달아났어요.',nm(bite.c.s)+' stole the bait and got away.'));bite.c.cool=4;bite.c.hold=false;bite=null;st='play';sfx.miss();combo=0;lockUntil=t+.5;autoUp=true;holdMain=false;mainLabel();}}
  else if(st==='fight'){const s=bite.c.s,r=fightStep(fight,s,hookY,tapQ,dt);tapQ=false;hookY=r.hookY;if(r.reel)sfx.reel();else if(r.hit===false)sfx.no();
   if(r.outcome==='landed'){for(let k=0;k<18;k++)splash.push({x:W*BOAT_X+40,y:0,vx:(Math.random()-.5)*220,vy:-120-Math.random()*200,r:2+Math.random()*4,a:1});sfx.splash();landed();}
@@ -351,7 +360,7 @@ function renderHall(){const ol=$('hall');ol.replaceChildren();if(!hall.length){c
  hall.slice(0,10).forEach((r,i)=>{const li=doc.createElement('li');li.innerHTML='<span class="rk"></span><span class="nm"><span></span><small></small></span><span class="sc"></span>';li.querySelector('.rk').textContent=i+1;li.querySelector('.nm span').textContent=r.name;li.querySelector('.nm small').textContent=tr(r.kinds+'종 · ',r.kinds+' species · ')+r.date;li.querySelector('.sc').textContent=r.score;ol.append(li);});}
 $('save-form').addEventListener('submit',e=>{e.preventDefault();if(score<=0)return;const name=$('nick').value.trim().slice(0,12)||tr('익명','Anonymous');store.set(KEYS.nick,name);const d=new Date();
  hall.push({name,score,kinds:new Set(caughtRun).size,date:(d.getMonth()+1)+'/'+d.getDate()});hall.sort((a,b)=>b.score-a.score);hall=hall.slice(0,10);const ok=store.set(KEYS.hall,hall);renderHall();$('save-btn').disabled=true;$('save-msg').textContent=ok?tr('명예의 전당에 올렸습니다.','Added to the hall of fame.'):tr('이 브라우저는 저장을 막고 있어 순위를 남기지 못했습니다.','This browser is blocking storage, so your score could not be saved.');});
-$('again').onclick=start;$('go').onclick=start;
+$('again').onclick=start;$('go').onclick=start;$('nobait-close').onclick=()=>{$('nobait').hidden=true;if(st!=='over')$('start').hidden=false;};
 
 // ── 입력 ──
 let tapQ=false;const press=(v)=>{if(v&&t<lockUntil)return;if(v)autoUp=false;if(st==='bite'&&v){hook();return;}if(st==='fight'){if(v)tapQ=true;holdMain=false;return;}holdMain=v;};
@@ -388,5 +397,5 @@ SRC.forEach(([text,u])=>{const li=doc.createElement('li');const a=doc.createElem
 relabel();hud();fit();camY=-SKY;root.requestAnimationFrame(loop);
 }
 
-return{BAR,SPEED,NEED,LIVES,STAR_PTS,starsOf,baitChance,approach,SRC,ZONES,SP,PROTECT,KEYS,LEVELS,BADGES,MISSIONS,UNLOCK_NEED,createStore,loadSaved,unlockReady,newlyUnlocked,maxDepthFor,dayKey,todayMission,levelOf,yOf,mOf,mult,sizeFor,isGolden,isPerfect,scoreCatch,startFight,fightStep,keyAction,missionDone,missionProgress,fitSize,pixelRatio,needsCoach,coachStep,COACH,operatorView,boot};
+return{BAIT_FREE,BAIT_PER_QUIZ,SCHOOL_KEY,kstDay,quizToday,baitLeft,useBait,BAR,SPEED,NEED,LIVES,STAR_PTS,starsOf,baitChance,approach,SRC,ZONES,SP,PROTECT,KEYS,LEVELS,BADGES,MISSIONS,UNLOCK_NEED,createStore,loadSaved,unlockReady,newlyUnlocked,maxDepthFor,dayKey,todayMission,levelOf,yOf,mOf,mult,sizeFor,isGolden,isPerfect,scoreCatch,startFight,fightStep,keyAction,missionDone,missionProgress,fitSize,pixelRatio,needsCoach,coachStep,COACH,operatorView,boot};
 });

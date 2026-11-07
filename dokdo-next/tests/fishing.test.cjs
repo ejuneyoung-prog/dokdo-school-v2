@@ -204,10 +204,10 @@ test('bait: most passers ignore the hook; checked over 100,000 simulated passes'
 });
 
 test('the green bar narrows as the creature gets pricier',()=>{
- a.deepEqual(F.BAR,[0,.40,.32,.26,.20,.16]);a.deepEqual(F.SPEED,[0,.45,.6,.8,1.05,1.3]);a.deepEqual(F.NEED,[0,2,3,3,4,5]);
+ a.deepEqual(F.BAR,[0,.26,.22,.18,.15,.12]);a.deepEqual(F.SPEED,[0,.55,.7,.85,1.05,1.3]);a.deepEqual(F.NEED,[0,2,3,3,4,5]);
  for(let n=2;n<=5;n++)a.ok(F.SPEED[n]>F.SPEED[n-1]&&F.NEED[n]>=F.NEED[n-1]);
  for(let n=2;n<=5;n++)a.ok(F.BAR[n]<F.BAR[n-1]);
- a.equal(F.startFight(sp('daehwang'),100).zw,.40);a.equal(F.startFight(sp('dohwa_s'),100).zw,.16);
+ a.equal(F.startFight(sp('daehwang'),100).zw,.26);a.equal(F.startFight(sp('dohwa_s'),100).zw,.12);
 });
 
 test('flow ladder: a child lands easy creatures almost always and the priciest only with practice',()=>{
@@ -251,4 +251,17 @@ test('losing the bait reels the line back up for new bait, and a short pause sto
  a.match(src,/if\(holdUp\|\|autoUp\)hookY=Math\.max\(0,hookY-sp\*1\.6\*dt\);/);
  a.match(src,/const press=\(v\)=>\{if\(v&&t<lockUntil\)return;/);a.match(src,/if\(k\.act==='close'\)\{if\(t<lockUntil\)return;/);
  const page=fs.readFileSync(path.join(ROOT,'fishing.html'),'utf8');a.match(page,/<div class="f-controls">\s*<p class="f-coach" id="coach"/,'guide line sticks with the button');
+});
+
+test('bait: 10 a day, 2 more for each quiz question answered correctly today, and the school save is only read',()=>{
+ const day='2026-11-07',school={m:{a:{courseRewardDay:day},b:{courseRewardDay:day},c:{courseRewardDay:'2026-11-06'},d:null}};
+ a.equal(F.kstDay(Date.UTC(2026,10,6,15,0,0)),'2026-11-07','Korean midnight starts the new day');
+ a.equal(F.quizToday(school,day),2);a.equal(F.quizToday(null,day),0);a.equal(F.quizToday({m:'x'},day),0);
+ const prog={};a.equal(F.baitLeft(prog,0,day),10);for(let i=0;i<10;i++)F.useBait(prog,day);a.equal(F.baitLeft(prog,0,day),0);
+ a.equal(F.baitLeft(prog,2,day),4,'two right answers give four more');
+ a.equal(F.baitLeft(prog,0,'2026-11-08'),10,'a new day starts fresh');F.useBait(prog,'2026-11-08');a.deepEqual(prog.bait,{day:'2026-11-08',used:1});
+ const src=fs.readFileSync(path.join(ROOT,'assets/fishing.js'),'utf8');
+ a.match(src,/SCHOOL_KEY='dokdo-korea-school-cinematic-v1'/);a.doesNotMatch(src,/store\.set\(SCHOOL_KEY/,'never writes the school save');
+ a.match(src,/function start\(\)\{actx\(\);if\(baitNow\(\)<=0\)/);
+ const page=fs.readFileSync(path.join(ROOT,'fishing.html'),'utf8');a.match(page,/id="nobait"[^>]*hidden/);a.match(page,/href="\.\/\?area=learn" id="nobait-go"/);
 });
