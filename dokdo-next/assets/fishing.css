@@ -17,7 +17,7 @@
 .fish-app .f-hud .f-hot strong{color:var(--accent)}
 .fish-app .f-box{position:relative;border-radius:14px;overflow:hidden;background:#0e2a2e;touch-action:none}
 .fish-app .f-box canvas#sea{display:block;width:100%;height:auto}
-.fish-app .f-overlay{position:absolute;inset:0;display:flex;padding:16px;background:rgba(13,48,45,.55);overflow-y:auto}
+.fish-app .f-overlay{position:absolute;inset:0;z-index:6;display:flex;padding:16px;background:rgba(13,48,45,.55);overflow-y:auto}
 .fish-app .f-overlay>.f-card{margin:auto}
 .fish-app .f-card{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:16px;padding:20px;max-width:440px;width:100%;display:flex;flex-direction:column;gap:12px;text-align:center;box-shadow:0 18px 50px #072d4540}
 .fish-app .f-card h2{font-size:1.375rem;line-height:1.4}
@@ -26,7 +26,18 @@
 .fish-app .f-card form .primary{width:auto;flex:1 1 6rem}
 .fish-app .f-card input{flex:3 1 160px;min-width:0;font:inherit;background:#fff;color:var(--ink);border:2px solid var(--line);border-radius:10px;padding:10px 12px}
 .fish-app .f-card input:focus-visible{outline:3px solid #dc8c22;outline-offset:2px}
-.fish-app .f-controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fish-app .f-controls{display:grid;grid-template-columns:1fr;gap:10px}
+.fish-app .f-guide{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left}
+.fish-app .f-guide li{display:flex;gap:8px;align-items:center;background:rgba(13,48,45,.06);border:1px solid var(--line);border-radius:12px;padding:10px;line-height:1.3}
+.fish-app .f-guide span{display:flex;flex-direction:column}
+.fish-app .f-guide strong{font-size:1.0625rem}
+.fish-app .f-guide small{font-size:.8125rem;color:#4b6658}
+.fish-app .f-guide b{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-family:var(--num);font-size:.875rem}
+/* 휴대폰: 바다 그림이 길어도 누를 단추가 늘 화면 아래에 보이게 붙인다. */
+@media(max-width:900px){.fish-app .f-stage.is-live .f-controls{position:sticky;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:5;background:var(--card,#fff);padding:8px;border-radius:16px;box-shadow:0 -4px 16px rgba(13,48,45,.18)}}
+/* 휴대폰: 위쪽 소개 글을 줄여 바다와 단추가 먼저 보이게 한다. */
+@media(max-width:560px){.fish-app .f-lead{display:none}}
+@media(pointer:coarse){.fish-app .f-pc{display:none}}
 .fish-app .f-ctl{flex-direction:column;gap:2px;min-height:64px;padding:12px 10px;font-size:1.0625rem;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none}
 .fish-app .f-ctl>span{margin:0;font-size:inherit}
 .fish-app .f-ctl small{display:block;font-size:.875rem;font-weight:500;opacity:.9}

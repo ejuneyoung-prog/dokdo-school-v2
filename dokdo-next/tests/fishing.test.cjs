@@ -31,8 +31,8 @@ test('catch score: base x size, first find +50%, perfect +30%, then combo, then 
  a.equal(F.scoreCatch({pts:10,size:normal,first:false,perfect:false,combo:30,gold:false}).total,20);
 });
 
-test('perfect needs at least 85% of the fight on target; golden time is the open window (to, from]',()=>{
- a.equal(F.isPerfect({total:0,onT:0}),false);a.equal(F.isPerfect({total:10,onT:8.5}),true);a.equal(F.isPerfect({total:10,onT:8.4}),false);
+test('perfect means landed without a single miss; golden time is the open window (to, from]',()=>{
+ a.equal(F.isPerfect({got:0,clean:true}),false);a.equal(F.isPerfect({got:3,clean:true}),true);a.equal(F.isPerfect({got:3,clean:false}),false);
  const g={from:100,to:80};a.equal(F.isGolden(g,100),true);a.equal(F.isGolden(g,90),true);a.equal(F.isGolden(g,80),false);a.equal(F.isGolden(g,100.1),false);a.equal(F.isGolden(null,90),false);
 });
 
@@ -51,18 +51,23 @@ test('zones open in order: B after 3 shallow species, C after 3 kelp-forest spec
  a.equal(F.maxDepthFor(z=>z==='A'),10);a.equal(F.maxDepthFor(z=>['A','B'].includes(z)),20);a.equal(F.maxDepthFor(z=>z!=='D'),40);a.equal(F.maxDepthFor(()=>true),300);
 });
 
-test('a fish is landed only at the surface; staying on target at depth keeps the fight going',()=>{
- const s=sp('hokdom'),startY=F.yOf(30),f=F.startFight(s,startY);
- // Keep the fish inside the green bar by fixing its target to the bar centre.
- let y=startY,result=null,steps=0;const rnd=()=>0.5;
- while(steps<2000){f.target=f.zone+f.zw/2;f.fish=f.target;const r=F.fightStep(f,s,y,false,1/60,rnd);y=r.hookY;steps++;if(r.outcome){result=r;break;}
-  a.ok(y>2,'not landed before reaching the surface');}
- a.equal(result.outcome,'landed');a.equal(result.hookY,0);a.ok(steps>60,'reeling from 30m takes time');
- // A fish that is never on target breaks the line instead of landing.
- const g=F.startFight(s,startY);let r2,yy=startY;for(let i=0;i<5000;i++){g.fish=g.zone>.5?.02:.98;g.target=g.fish;r2=F.fightStep(g,s,yy,false,1/60,rnd);yy=r2.hookY;if(r2.outcome)break;}
- a.equal(r2.outcome,'snapped');a.ok(yy>2);
- // Off target, the fish pulls back down but never deeper than where it bit.
- a.ok(yy<=startY);
+test('timing fight: tapping inside the green pulls it up step by step and lands it only at the surface',()=>{
+ const s=sp('hokdom'),startY=F.yOf(30),f=F.startFight(s,startY);const rnd=()=>0.3;
+ a.equal(f.need,F.NEED[5]);a.equal(f.zw,F.BAR[5]);
+ let y=startY,r=null,prev=y;
+ for(let i=0;i<6000&&!(r&&r.outcome);i++){const tap=Math.abs(f.pos-f.zone)<=f.zw/2*.5&&f.flash<=0;r=F.fightStep(f,s,y,tap,1/60,rnd);a.ok(r.hookY<=prev+1e-9,'never deeper while hitting');prev=y=r.hookY;if(!r.outcome)a.ok(y>0);}
+ a.equal(r.outcome,'landed');a.equal(r.hookY,0);a.equal(f.miss,0);a.ok(F.isPerfect(f));
+ // 세 번 놓치면 줄이 끊어지고, 놓쳐도 물린 깊이보다 깊어지지 않는다.
+ const g=F.startFight(s,startY);let yy=startY,r2=null;
+ for(let i=0;i<6000&&!(r2&&r2.outcome);i++){const tap=Math.abs(g.pos-g.zone)>g.zw&&g.flash<=0;r2=F.fightStep(g,s,yy,tap,1/60,rnd);yy=r2.hookY;a.ok(yy<=startY+1e-9);}
+ a.equal(r2.outcome,'snapped');a.equal(g.miss,F.LIVES);a.equal(g.got,0);a.equal(F.isPerfect(g),false);
+});
+
+test('each hit moves the green zone away from the ball and the ball speeds up as the catch tires',()=>{
+ const s=sp('jari'),f=F.startFight(s,100);let seq=[.1,.9,.5];let k=0;const rnd=()=>seq[k++%3];
+ f.pos=f.zone;const sp0=f.speed;const r=F.fightStep(f,s,100,true,0,rnd);a.equal(r.hit,true);a.equal(f.got,1);a.ok(Math.abs(f.zone-f.pos)>=.25-1e-9||f.zone<=f.zw/2+1e-9||f.zone>=1-f.zw/2-1e-9);
+ const x0=f.pos;F.fightStep(f,s,100,false,.1,rnd);a.ok(Math.abs(f.pos-x0)>sp0*.1);
+ a.ok(F.startFight(s,100,true).speed<F.startFight(s,100).speed,'first catches are slower');
 });
 
 test('depth mapping is monotonic and round-trips across the compressed ranges',()=>{
@@ -109,9 +114,9 @@ test('daily missions and levels are deterministic and complete only on this roun
  a.equal(F.todayMission(new Date(2026,9,31)),F.todayMission(new Date(2026,9,31,23,59)));
  a.ok(F.MISSIONS.includes(F.todayMission(new Date(2026,0,1))));
  const run={runCount:{jari:3,mullung:1},score:520,bestCombo:4,caughtRun:['jari','jari','jari','mullung']};
- a.equal(F.missionDone({k:'sp',id:'jari',n:3},run),true);a.equal(F.missionDone({k:'score',n:500},run),true);a.equal(F.missionDone({k:'combo',n:5},run),false);
+ a.equal(F.missionDone({k:'sp',id:'jari',n:3},run),true);a.equal(F.missionDone({k:'score',n:400},run),true);a.equal(F.missionDone({k:'combo',n:5},run),false);
  a.equal(F.missionDone({k:'kinds',n:5},run),false);a.equal(F.missionDone({k:'shrimp',n:1},run),true);a.equal(F.missionProgress({k:'kinds',n:5},run),2);
- a.equal(F.levelOf(0),0);a.equal(F.levelOf(299),0);a.equal(F.levelOf(300),1);a.equal(F.levelOf(10000),5);a.equal(F.levelOf(999999),5);
+ a.equal(F.levelOf(0),0);a.equal(F.levelOf(149),0);a.equal(F.levelOf(150),1);a.equal(F.levelOf(5000),5);a.equal(F.levelOf(999999),5);
 });
 
 test('17 fact-checked species, 8 sources, every source reference resolves; analytics allows exactly these ids',()=>{
@@ -154,7 +159,7 @@ test('first-round guide appears once: only for a new player, steps 1→4 in orde
  // The new field round-trips without changing the other saved fields.
  const ls=memory(),st=F.createStore(ls);st.set(F.KEYS.prog,done);const back=F.loadSaved(F.createStore(ls)).prog;a.equal(back.coachDone,true);a.deepEqual(back.unlocked,['A']);
  a.equal(F.coachStep('play',false,0,null),1);a.equal(F.coachStep('play',true,120,null),1);a.equal(F.coachStep('play',false,120,null),2);a.equal(F.coachStep('bite',false,120,null),2);
- a.equal(F.coachStep('fight',true,120,{onT:.2}),3);a.equal(F.coachStep('fight',true,60,{onT:1.5}),4);a.equal(F.coachStep('catch',false,0,null),0);a.equal(F.coachStep('over',false,0,null),0);
+ a.equal(F.coachStep('fight',true,120,{got:0}),3);a.equal(F.coachStep('fight',true,60,{got:1}),4);a.equal(F.coachStep('catch',false,0,null),0);a.equal(F.coachStep('over',false,0,null),0);
  for(const n of [1,2,3,4]){a.match(F.COACH[n][0],/^\d\/4 /);a.match(F.COACH[n][1],/^\d\/4 /);a.match(F.COACH[n][0],/[.다]$/);a.doesNotMatch(F.COACH[n][1],/[가-힣]/);}
  const src=fs.readFileSync(path.join(ROOT,'assets/fishing.js'),'utf8');a.match(src,/if\(coachOn\)\{coachOn=false;prog\.coachDone=true;\}/);
 });
@@ -164,4 +169,86 @@ test('the test-mode button is for operators: hidden unless the address has ?oper
  a.match(page,/id="test"[^>]*\bhidden\b/);
  a.equal(F.operatorView(''),false);a.equal(F.operatorView('?operator=0'),false);a.equal(F.operatorView('?x=1'),false);a.equal(F.operatorView('?operator=1'),true);
  a.ok(!page.includes('시험판'));a.ok(!page.includes('Trial version'));
+});
+
+test('one big button: no separate raise button, a four-tile guide, and the sea picture works as the button',()=>{
+ const page=fs.readFileSync(path.join(ROOT,'fishing.html'),'utf8'),src=fs.readFileSync(path.join(ROOT,'assets/fishing.js'),'utf8'),css=fs.readFileSync(path.join(ROOT,'assets/fishing.css'),'utf8');
+ a.doesNotMatch(page,/id="b-up"/);a.doesNotMatch(src,/\$\('b-up'\)/);
+ a.equal((page.match(/<ol class="f-guide"[\s\S]*?<\/ol>/)[0].match(/<li>/g)||[]).length,4);
+ a.match(src,/sea\.addEventListener\('pointerdown',e=>\{if\(!live\(\)\)return;e\.preventDefault\(\);actx\(\);press\(true\);\}\)/);
+ // 휴대폰에서는 낚시하는 동안에만 단추를 화면 아래에 붙인다(시작 카드의 출항 단추를 가리지 않게).
+ a.match(css,/\.f-stage\.is-live \.f-controls\{position:sticky;/);
+ a.match(src,/classList\.add\('is-live'\)/);a.match(src,/classList\.remove\('is-live'\)/);
+ a.match(page,/id="save-btn"[^>]*>명예의 전당에 남기기</);
+});
+
+test('difficulty: stars 1~5 from fight, points double per star, kelp and mussels are the cheapest',()=>{
+ for(const s of F.SP){const n=F.starsOf(s);a.ok(n>=1&&n<=5,s.id);a.equal(s.pts,F.STAR_PTS[n],s.id+' points follow stars');}
+ a.deepEqual(F.STAR_PTS,[0,10,20,40,80,160]);
+ for(const id of ['daehwang','gamtae','damchi'])a.equal(F.starsOf(sp(id)),1,id);
+ for(const id of ['hokdom','dohwa_s','gasibae'])a.equal(F.starsOf(sp(id)),5,id);
+ // 더 센 생물이 더 싼 일은 없다.
+ const by=[...F.SP].sort((x,y)=>x.fight-y.fight);for(let i=1;i<by.length;i++)a.ok(by[i].pts>=by[i-1].pts,by[i].id);
+});
+
+test('bait: most passers ignore the hook; checked over 100,000 simulated passes',()=>{
+ let seed=7;const rnd=()=>{seed=(seed+0x6D2B79F5)|0;let x=Math.imul(seed^(seed>>>15),1|seed);x=(x+Math.imul(x^(x>>>7),61|x))^x;return((x^(x>>>14))>>>0)/4294967296;};
+ const N=100000,rate=s=>{let w=0,nibMin=9,nibMax=0,ignMin=9;for(let i=0;i<N;i++){const r=F.approach(s,rnd);if(r.want){w++;nibMin=Math.min(nibMin,r.nibble);nibMax=Math.max(nibMax,r.nibble);}else ignMin=Math.min(ignMin,r.ignore);}return{p:w/N,nibMin,nibMax,ignMin};};
+ const kelp=rate(sp('daehwang')),jari=rate(sp('jari')),hok=rate(sp('hokdom'));
+ a.ok(Math.abs(kelp.p-.2)<.01,'kelp '+kelp.p);a.ok(Math.abs(jari.p-.45)<.01,'jari '+jari.p);a.ok(Math.abs(hok.p-.25)<.01,'hokdom '+hok.p);
+ for(const s of F.SP)a.ok(F.baitChance(s)<.5,s.id+' more than half pass by');
+ // 톡톡 건드리는 시간은 0.7~2초, 관심 없는 녀석은 3초 넘게 다시 오지 않는다.
+ a.ok(jari.nibMin>=.7&&jari.nibMax<=2);a.ok(jari.ignMin>=3);
+ // 기대 점수(문 확률 x 점수)는 별이 많을수록 크다: 어려운 것을 노릴 이유가 있다.
+ const ev=n=>F.baitChance(F.SP.find(s=>F.starsOf(s)===n))*F.STAR_PTS[n];for(let n=2;n<=5;n++)a.ok(ev(n)>ev(n-1),'star '+n);
+});
+
+test('the green bar narrows as the creature gets pricier',()=>{
+ a.deepEqual(F.BAR,[0,.40,.32,.26,.20,.16]);a.deepEqual(F.SPEED,[0,.45,.6,.8,1.05,1.3]);a.deepEqual(F.NEED,[0,2,3,3,4,5]);
+ for(let n=2;n<=5;n++)a.ok(F.SPEED[n]>F.SPEED[n-1]&&F.NEED[n]>=F.NEED[n-1]);
+ for(let n=2;n<=5;n++)a.ok(F.BAR[n]<F.BAR[n-1]);
+ a.equal(F.startFight(sp('daehwang'),100).zw,.40);a.equal(F.startFight(sp('dohwa_s'),100).zw,.16);
+});
+
+test('flow ladder: a child lands easy creatures almost always and the priciest only with practice',()=>{
+ let seed=11;const rnd=()=>{seed=(seed+0x6D2B79F5)|0;let x=Math.imul(seed^(seed>>>15),1|seed);x=(x+Math.imul(x^(x>>>7),61|x))^x;return((x^(x>>>14))>>>0)/4294967296;};
+ const gauss=()=>{let u=0;for(let i=0;i<6;i++)u+=rnd();return u-3;};
+ // 공이 초록 칸 한가운데 오는 순간을 노려 누르는데, 누르는 때가 sigma초만큼 들쭉날쭉한 사람.
+ const play=(s,sigma)=>{const f=F.startFight(s,200);let y=200,plan=null;for(let i=0;i<60*120;i++){const dt=1/60;
+  if(plan===null){const sp=f.speed*(1+.12*f.got),d=f.dir>0?(f.zone>=f.pos?f.zone-f.pos:(1-f.pos)+(1-f.zone)):(f.zone<=f.pos?f.pos-f.zone:f.pos+f.zone);plan=d/sp+gauss()*sigma;if(plan<0)plan=0;}
+  plan-=dt;const tap=plan<=0;if(tap)plan=null;const r=F.fightStep(f,s,y,tap,dt,rnd);y=r.hookY;if(r.outcome)return r.outcome==='landed';}return false;};
+ const rate=(n,sig)=>{const ss=F.SP.filter(s=>F.starsOf(s)===n);let ok=0,N=0;for(const s of ss)for(let k=0;k<150;k++){N++;if(play(s,sig))ok++;}return ok/N;};
+ const kid=[0,1,2,3,4,5].map(n=>n?rate(n,.12):1),good=[0,1,2,3,4,5].map(n=>n?rate(n,.05):1);
+ a.ok(kid[1]>=.95&&kid[2]>=.85,'child, easy ones: '+kid.join());
+ for(let n=2;n<=5;n++){a.ok(kid[n]<=kid[n-1]+.03,'child never easier with more stars: '+kid.join());a.ok(good[n]>=kid[n]-.03,'practice helps: '+good.join());}
+ a.ok(kid[5]<=.35,'priciest is hard for a beginner: '+kid[5]);a.ok(good[5]>=.5,'and reachable with practice: '+good[5]);
+});
+
+test('a landed creature swims again, and seaweed or shells bite without a nibble',()=>{
+ const src=fs.readFileSync(path.join(ROOT,'assets/fishing.js'),'utf8');
+ const i0=src.indexOf('function landed('),landed=src.slice(i0,src.indexOf('\nfunction ',i0+10));
+ a.match(landed,/c\.hold=false;/,'catching releases the hold so the creature swims again');
+ a.match(src,/function end\(\)\{st='over';coachOn=false;nib=null;/);
+ const rnd=()=>0;a.equal(F.approach(sp('daehwang'),rnd).nibble,0);a.equal(F.approach(sp('jeonbok'),rnd).nibble,0);a.ok(F.approach(sp('jari'),rnd).nibble>=.7);
+ a.doesNotMatch(src,/tr\('톡톡'/,'the nibble mark is not called 톡톡 (that word means press)');
+});
+
+test('after the scoring change the level ladder and score goals only got lower, so nobody is demoted',()=>{
+ a.deepEqual(F.LEVELS.map(l=>l[0]),[0,150,500,1250,2500,5000]);
+ const old=[0,300,1000,2500,5000,10000];for(const xp of [0,299,300,999,1000,4999,5000,12000])a.ok(F.levelOf(xp)>=old.filter(v=>xp>=v).length-1,String(xp));
+ a.ok(F.MISSIONS.some(m=>m.k==='score'&&m.n===400));a.ok(F.BADGES.some(b=>b[0]==='score1000'&&b[1]==='한 판 600점'));
+});
+
+test('after a hit the new green zone is always at least .25 away from the ball, so no free second hit',()=>{
+ let seed=3;const rnd=()=>{seed=(seed+0x6D2B79F5)|0;let x=Math.imul(seed^(seed>>>15),1|seed);x=(x+Math.imul(x^(x>>>7),61|x))^x;return((x^(x>>>14))>>>0)/4294967296;};
+ for(const id of ['daehwang','jari','malj','bangeo','dohwa_s'])for(let i=0;i<3000;i++){const s=sp(id),f=F.startFight(s,100);f.pos=f.zw/2+rnd()*(1-f.zw);f.zone=f.pos;
+  const r=F.fightStep(f,s,100,true,0,rnd);a.equal(r.hit,true);a.ok(Math.abs(f.zone-f.pos)>=.25-1e-9,id+' '+f.pos+' '+f.zone);a.ok(f.zone>=f.zw/2-1e-9&&f.zone<=1-f.zw/2+1e-9);}
+});
+
+test('losing the bait reels the line back up for new bait, and a short pause stops a held tap from skipping the catch card',()=>{
+ const src=fs.readFileSync(path.join(ROOT,'assets/fishing.js'),'utf8');
+ a.equal((src.match(/lockUntil=t\+\.5;autoUp=true;holdMain=false;/g)||[]).length,3,'snapped, escaped and too-early all reel up');
+ a.match(src,/if\(holdUp\|\|autoUp\)hookY=Math\.max\(0,hookY-sp\*1\.6\*dt\);/);
+ a.match(src,/const press=\(v\)=>\{if\(v&&t<lockUntil\)return;/);a.match(src,/if\(k\.act==='close'\)\{if\(t<lockUntil\)return;/);
+ const page=fs.readFileSync(path.join(ROOT,'fishing.html'),'utf8');a.match(page,/<div class="f-controls">\s*<p class="f-coach" id="coach"/,'guide line sticks with the button');
 });

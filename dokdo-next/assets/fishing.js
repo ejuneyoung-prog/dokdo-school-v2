@@ -25,34 +25,44 @@ const ZONES=[
 ];
 // ── 생물 ── kind: fish / shrimp / shell / weed / mussel. en: 널리 확실한 영어 이름이 있을 때만.
 const SP=[
- {id:'jari',name:'자리돔',zone:'A',d:[2,10],where:'암반 지역',pts:10,kind:'fish',len:34,c:'#7d8f8c',c2:'#b9c6c2',spd:1.1,fight:.8,src:[3],note:'2006년 뒤 독도 바다의 우점종이 된 물고기입니다.'},
- {id:'yongchi',name:'용치놀래기',zone:'A',d:[3,10],where:'독도 연안',pts:10,kind:'fish',len:40,c:'#c98a5a',c2:'#e7c49a',spd:1.2,fight:.9,stripe:true,src:[3],note:'자리돔·망상어와 함께 늘어난 우점종입니다.'},
- {id:'malj',name:'말쥐치',zone:'A',d:[4,10],where:'암반 지역',pts:20,kind:'fish',len:42,c:'#8d9a6a',c2:'#c9d1a4',spd:.9,fight:1,tall:true,src:[2,3],note:'수온이 오르며 늘어난 어종으로 암반 지역에 삽니다.'},
+ {id:'jari',name:'자리돔',zone:'A',d:[2,10],where:'암반 지역',pts:20,kind:'fish',len:34,c:'#7d8f8c',c2:'#b9c6c2',spd:1.1,fight:.8,src:[3],note:'2006년 뒤 독도 바다의 우점종이 된 물고기입니다.'},
+ {id:'yongchi',name:'용치놀래기',zone:'A',d:[3,10],where:'독도 연안',pts:20,kind:'fish',len:40,c:'#c98a5a',c2:'#e7c49a',spd:1.2,fight:.9,stripe:true,src:[3],note:'자리돔·망상어와 함께 늘어난 우점종입니다.'},
+ {id:'malj',name:'말쥐치',zone:'A',d:[4,10],where:'암반 지역',pts:40,kind:'fish',len:42,c:'#8d9a6a',c2:'#c9d1a4',spd:.9,fight:1,tall:true,src:[2,3],note:'수온이 오르며 늘어난 어종으로 암반 지역에 삽니다.'},
  {id:'damchi',name:'참담치',zone:'A',d:[6,10],where:'수심 5~10m 바위',pts:10,kind:'mussel',len:26,c:'#3b3f45',c2:'#6d7480',spd:0,fight:.5,src:[4],note:'수심 5~10m 바위에서 모자반·산호말과 함께 붙어 삽니다.'},
  {id:'doldom',name:'돌돔 어린 물고기',en:'Juvenile barred knifejaw',zone:'A',d:[4,9],where:'동도와 서도 사이 얕은 조숲',pts:40,kind:'fish',len:36,c:'#d8d2b8',c2:'#3d4248',spd:1.3,fight:1.3,bands:true,src:[1,2],note:'동도와 서도 사이 얕은 조숲에 어린 돌돔이 삽니다.'},
  {id:'bengae',name:'벵에돔 어린 물고기',en:'Juvenile largescale blackfish',zone:'A',d:[4,9],where:'동도와 서도 사이 얕은 조숲',pts:40,kind:'fish',len:36,c:'#4a5a5c',c2:'#7f9396',spd:1.3,fight:1.3,src:[1,2],note:'얕은 조숲에서 자라는 어린 벵에돔입니다.'},
- {id:'daehwang',name:'대황',zone:'B',d:[10,12],where:'수심 10m 전후',pts:30,kind:'weed',len:70,c:'#5a4a2a',c2:'#8a7340',spd:0,fight:.6,src:[4,5],note:'수심 10m 전후에 큰 숲을 이룹니다. 큰 것은 1.5m 이상 자라고, 울릉도·독도가 원산지라고 합니다.'},
- {id:'gamtae',name:'감태',zone:'B',d:[12,20],where:'수심 10~20m',pts:20,kind:'weed',len:60,c:'#6b5a2c',c2:'#a08a48',spd:0,fight:.6,src:[4],note:'대황보다 조금 깊은 10~20m에 자랍니다.'},
- {id:'jeonbok',name:'전복',en:'Abalone',zone:'B',d:[10,12],where:'대황 군락',pts:50,kind:'shell',len:30,c:'#7a6a5a',c2:'#b7c9c4',spd:0,fight:.9,src:[5],note:'대황 군락은 전복·소라의 먹이가 됩니다.'},
- {id:'sora',name:'소라',en:'Turban shell',zone:'B',d:[10,12],where:'대황 군락',pts:40,kind:'conch',len:28,c:'#8a6f55',c2:'#d0b28c',spd:0,fight:.8,src:[5],note:'대황 군락은 소라의 먹이가 됩니다.'},
- {id:'bangeo',name:'방어',en:'Japanese amberjack',zone:'C',d:[20,34],where:'암반 지역',pts:50,kind:'fish',len:64,c:'#6d8696',c2:'#d9d29a',spd:1.8,fight:1.6,line:true,src:[2],note:'독도 암반 지역에서 볼 수 있는 물고기입니다.'},
- {id:'yeoneo',name:'연어병치',zone:'C',d:[26,38],where:'가지초 중층',pts:60,kind:'fish',len:56,c:'#55626a',c2:'#a3b0b6',spd:1.4,fight:1.5,school:true,src:[1],note:'가지초에서 중층을 떼 지어 헤엄칩니다. 50cm 급도 있습니다.'},
- {id:'dohwa_b',name:'도화볼락',zone:'C',d:[34,40],where:'가지초 해송 주변',pts:70,kind:'fish',len:44,c:'#c46a5a',c2:'#efb59f',spd:.9,fight:1.6,spots:true,src:[1],note:'수심 40m 가지초 해송 주변에 무리 지어 삽니다.'},
- {id:'hokdom',name:'혹돔',en:'Asian sheepshead wrasse',zone:'C',d:[22,40],where:'암반 지대',pts:120,kind:'fish',len:86,c:'#9a4f45',c2:'#d39a85',spd:.8,fight:2.2,hump:true,src:[1],note:'독도 연안에서 가장 큰 물고기로 알려져 있고, 80cm가 넘는 개체도 있습니다. 밤에는 바위틈이나 굴속에서 잡니다.'},
- {id:'mullung',name:'물렁가시붉은새우',zone:'D',d:[150,260],where:'수심 150~300m (독도새우 세 종 전체)',pts:150,kind:'shrimp',len:40,c:'#d86a5a',c2:'#f2b39e',spd:.7,fight:1.7,src:[6,7],note:'독도새우 세 종 가운데 하나로 꽃새우라고도 부릅니다.'},
- {id:'gasibae',name:'가시배새우',zone:'D',d:[170,280],where:'수심 150~300m (독도새우 세 종 전체)',pts:200,kind:'shrimp',len:40,c:'#c9853a',c2:'#efd08e',spd:.7,fight:1.9,spiny:true,src:[6,7],note:'독도새우 세 종 가운데 하나로 닭새우라고도 부릅니다.'},
- {id:'dohwa_s',name:'도화새우',zone:'D',d:[190,300],where:'수심 150~300m',pts:300,kind:'shrimp',len:56,c:'#e08f86',c2:'#fbd3c6',spd:.6,fight:2.4,big:true,src:[6,7],note:'독도새우 가운데 가장 크고(최대 25cm) 귀합니다. 수심 150~300m에 삽니다.'}
+ {id:'daehwang',name:'대황',zone:'B',d:[10,12],where:'수심 10m 전후',pts:10,kind:'weed',len:70,c:'#5a4a2a',c2:'#8a7340',spd:0,fight:.6,src:[4,5],note:'수심 10m 전후에 큰 숲을 이룹니다. 큰 것은 1.5m 이상 자라고, 울릉도·독도가 원산지라고 합니다.'},
+ {id:'gamtae',name:'감태',zone:'B',d:[12,20],where:'수심 10~20m',pts:10,kind:'weed',len:60,c:'#6b5a2c',c2:'#a08a48',spd:0,fight:.6,src:[4],note:'대황보다 조금 깊은 10~20m에 자랍니다.'},
+ {id:'jeonbok',name:'전복',en:'Abalone',zone:'B',d:[10,12],where:'대황 군락',pts:20,kind:'shell',len:30,c:'#7a6a5a',c2:'#b7c9c4',spd:0,fight:.9,src:[5],note:'대황 군락은 전복·소라의 먹이가 됩니다.'},
+ {id:'sora',name:'소라',en:'Turban shell',zone:'B',d:[10,12],where:'대황 군락',pts:20,kind:'conch',len:28,c:'#8a6f55',c2:'#d0b28c',spd:0,fight:.8,src:[5],note:'대황 군락은 소라의 먹이가 됩니다.'},
+ {id:'bangeo',name:'방어',en:'Japanese amberjack',zone:'C',d:[20,34],where:'암반 지역',pts:80,kind:'fish',len:64,c:'#6d8696',c2:'#d9d29a',spd:1.8,fight:1.6,line:true,src:[2],note:'독도 암반 지역에서 볼 수 있는 물고기입니다.'},
+ {id:'yeoneo',name:'연어병치',zone:'C',d:[26,38],where:'가지초 중층',pts:80,kind:'fish',len:56,c:'#55626a',c2:'#a3b0b6',spd:1.4,fight:1.5,school:true,src:[1],note:'가지초에서 중층을 떼 지어 헤엄칩니다. 50cm 급도 있습니다.'},
+ {id:'dohwa_b',name:'도화볼락',zone:'C',d:[34,40],where:'가지초 해송 주변',pts:80,kind:'fish',len:44,c:'#c46a5a',c2:'#efb59f',spd:.9,fight:1.6,spots:true,src:[1],note:'수심 40m 가지초 해송 주변에 무리 지어 삽니다.'},
+ {id:'hokdom',name:'혹돔',en:'Asian sheepshead wrasse',zone:'C',d:[22,40],where:'암반 지대',pts:160,kind:'fish',len:86,c:'#9a4f45',c2:'#d39a85',spd:.8,fight:2.2,hump:true,src:[1],note:'독도 연안에서 가장 큰 물고기로 알려져 있고, 80cm가 넘는 개체도 있습니다. 밤에는 바위틈이나 굴속에서 잡니다.'},
+ {id:'mullung',name:'물렁가시붉은새우',zone:'D',d:[150,260],where:'수심 150~300m (독도새우 세 종 전체)',pts:80,kind:'shrimp',len:40,c:'#d86a5a',c2:'#f2b39e',spd:.7,fight:1.7,src:[6,7],note:'독도새우 세 종 가운데 하나로 꽃새우라고도 부릅니다.'},
+ {id:'gasibae',name:'가시배새우',zone:'D',d:[170,280],where:'수심 150~300m (독도새우 세 종 전체)',pts:160,kind:'shrimp',len:40,c:'#c9853a',c2:'#efd08e',spd:.7,fight:1.9,spiny:true,src:[6,7],note:'독도새우 세 종 가운데 하나로 닭새우라고도 부릅니다.'},
+ {id:'dohwa_s',name:'도화새우',zone:'D',d:[190,300],where:'수심 150~300m',pts:160,kind:'shrimp',len:56,c:'#e08f86',c2:'#fbd3c6',spd:.6,fight:2.4,big:true,src:[6,7],note:'독도새우 가운데 가장 크고(최대 25cm) 귀합니다. 수심 150~300m에 삽니다.'}
 ];
 const PROTECT={name:'유착나무돌산호',depth:25,note:'서도 서쪽 수심 약 25m에 국내 최대 군집이 있는 해양보호생물입니다. 건드리지 않고 지나가요.',src:[2]};
 // 이 놀이의 저장 키는 이 넷뿐이다. 놀이터(games-core.js)의 키를 읽거나 쓰지 않는다.
 const KEYS=Object.freeze({dex:'dk-fish-dex',hall:'dk-fish-hall',prog:'dk-fish-prog',nick:'dk-fish-nick'});
 // ── 성장 장치 ──
-const LEVELS=[[0,'견습 어부','Apprentice angler'],[300,'독도 어부','Dokdo angler'],[1000,'대황 숲 어부','Kelp forest angler'],[2500,'가지초 베테랑','Gajicho reef veteran'],[5000,'독도새우 명인','Dokdo shrimp master'],[10000,'독도 바다지기','Dokdo sea guardian']];
+// ── 난이도 ── 힘(fight)으로 별 1~5개를 매기고, 별마다 점수를 두 배로 한다. 쉬운 것은 싸고, 어려울수록 비싸다.
+const STAR_PTS=[0,10,20,40,80,160];
+function starsOf(s){const f=s.fight;return f<=.6?1:f<=.9?2:f<=1.3?3:f<=1.7?4:5;}
+// 미끼에 관심을 보일 확률(지나갈 때 한 번 정함). 대부분은 그냥 지나간다. 별 1(대황·감태·참담치)이 가장 드물게 걸린다.
+// 움직이지 않는 생물(해조류·조개류)은 입질 없이 바로 걸린다(!).
+const BAIT=[0,.2,.45,.4,.32,.25];
+function baitChance(s){return BAIT[starsOf(s)];}
+// 지나가는 생물 하나가 바늘에 다가왔을 때: 관심이 없으면 지나가고, 있으면 톡톡 건드리다가(이때 당기면 달아남) 문다.
+function approach(s,rnd=Math.random){if(rnd()>=baitChance(s))return{want:false,ignore:3+rnd()*3};return{want:true,nibble:s.spd?.7+rnd()*1.3:0};}
+// 점수 체계를 바꾸며(2026-11-07) 한 판 점수가 옛날의 절반쯤이 되어 기준도 절반으로 낮췄다. 낮추기만 해서 누구도 강등되지 않는다.
+const LEVELS=[[0,'견습 어부','Apprentice angler'],[150,'독도 어부','Dokdo angler'],[500,'대황 숲 어부','Kelp forest angler'],[1250,'가지초 베테랑','Gajicho reef veteran'],[2500,'독도새우 명인','Dokdo shrimp master'],[5000,'독도 바다지기','Dokdo sea guardian']];
 const UNLOCK_NEED={B:['얕은 바다 생물 3종','3 shallow-sea species'],C:['대황·감태 숲 생물 3종','3 kelp-forest species'],D:['혹돔 또는 도감 10종','the Asian sheepshead wrasse or 10 guide entries']};
-const BADGES=[['first','첫 손맛','First bite'],['daehwang','대황 숲 지기','Kelp forest keeper'],['hokdom','혹돔과의 대결','Wrasse showdown'],['shrimp1','첫 독도새우','First Dokdo shrimp'],['shrimp3','독도새우 3종','All 3 Dokdo shrimp'],['combo5','5연속 낚시','5 in a row'],['perfect','완벽한 손맛','Perfect touch'],['coral','보호생물을 지켰어요','Protected the coral'],['score1000','한 판 1,000점','1,000 points in a round'],['zoneA','얕은 바다 도감 완성','Shallow sea guide complete'],['zoneB','대황 숲 도감 완성','Kelp forest guide complete'],['zoneC','가지초 도감 완성','Gajicho guide complete'],['zoneD','독도새우 도감 완성','Dokdo shrimp guide complete'],['dexAll','독도 바다 박사','Dokdo sea expert'],['mission','오늘의 임무 완수',"Today's mission done"]];
+const BADGES=[['first','첫 손맛','First bite'],['daehwang','대황 숲 지기','Kelp forest keeper'],['hokdom','혹돔과의 대결','Wrasse showdown'],['shrimp1','첫 독도새우','First Dokdo shrimp'],['shrimp3','독도새우 3종','All 3 Dokdo shrimp'],['combo5','5연속 낚시','5 in a row'],['perfect','완벽한 손맛','Perfect touch'],['coral','보호생물을 지켰어요','Protected the coral'],['score1000','한 판 600점','600 points in a round'],['zoneA','얕은 바다 도감 완성','Shallow sea guide complete'],['zoneB','대황 숲 도감 완성','Kelp forest guide complete'],['zoneC','가지초 도감 완성','Gajicho guide complete'],['zoneD','독도새우 도감 완성','Dokdo shrimp guide complete'],['dexAll','독도 바다 박사','Dokdo sea expert'],['mission','오늘의 임무 완수',"Today's mission done"]];
 const MISSIONS=[
  {t:'자리돔 3마리 낚기',k:'sp',id:'jari',n:3},{t:'참담치 2개 낚기',k:'sp',id:'damchi',n:2},{t:'대황 2개 거두기',k:'sp',id:'daehwang',n:2},
- {t:'감태 2개 거두기',k:'sp',id:'gamtae',n:2},{t:'전복 1개 낚기',k:'sp',id:'jeonbok',n:1},{t:'한 판에 500점',k:'score',n:500},
+ {t:'감태 2개 거두기',k:'sp',id:'gamtae',n:2},{t:'전복 1개 낚기',k:'sp',id:'jeonbok',n:1},{t:'한 판에 400점',k:'score',n:400},
  {t:'5연속으로 낚기',k:'combo',n:5},{t:'한 판에 5종 낚기',k:'kinds',n:5},{t:'연어병치 2마리 낚기',k:'sp',id:'yeoneo',n:2},{t:'독도새우 1마리 낚기',k:'shrimp',n:1}];
 
 // ── 순수 규칙 (화면 없이 시험할 수 있음) ──
@@ -70,7 +80,7 @@ function mOf(y){if(y<=960)return y/24;if(y<=1136)return 40+(y-960)/1.6;if(y<=161
 function mult(combo){return 1+.1*Math.min(10,Math.max(0,combo-1));}
 function sizeFor(r){return r<.15?{key:'big',mult:1.5}:r<.45?{key:'small',mult:.8}:{key:'normal',mult:1};}
 function isGolden(golden,timeLeft){return !!(golden&&timeLeft<=golden.from&&timeLeft>golden.to);}
-function isPerfect(f){return f.total>0&&f.onT/f.total>=.85;}
+function isPerfect(f){return f.got>0&&f.clean;}
 function scoreCatch({pts,size,first,perfect,combo,gold}){
  let p=pts*size.mult;const lines=[{id:'base',pts,size:size.key,v:Math.round(p)}];
  if(first){lines.push({id:'first',v:Math.round(pts*.5)});p+=pts*.5;}
@@ -79,17 +89,24 @@ function scoreCatch({pts,size,first,perfect,combo,gold}){
  if(gold){lines.push({id:'gold',v:Math.round(p)});p*=2;}
  return{total:Math.round(p),lines};
 }
-function startFight(s,hookY){return{fish:.5,target:.5,tw:.6,zone:.38,zw:Math.max(.16,.3-s.fight*.05),v:0,ten:.7,startY:hookY,on:false,onT:0,total:0};}
-// 힘겨루기 한 걸음. 수면(hookY≤2)까지 끌어올려야만 'landed'다.
-function fightStep(f,s,hookY,holdMain,dt,rnd=Math.random){
- f.tw-=dt;if(f.tw<=0){f.target=rnd();f.tw=.5+rnd()*1.2/s.fight;}f.fish+=(f.target-f.fish)*dt*1.2*s.fight;f.fish=Math.max(.02,Math.min(.98,f.fish));
- f.v+=(holdMain?2.6:-2.2)*dt;f.v*=.92;f.zone+=f.v*dt;if(f.zone<0){f.zone=0;f.v=0;}if(f.zone>1-f.zw){f.zone=1-f.zw;f.v=0;}
- const on=f.fish>=f.zone&&f.fish<=f.zone+f.zw;f.on=on;f.total+=dt;if(on)f.onT+=dt;
- f.ten+=(on?.14:-.24/Math.sqrt(s.fight))*dt;f.ten=Math.min(1,f.ten);const reel=on&&rnd()<dt*6;
- if(on)hookY=Math.max(0,hookY-(hookY>yOf(40)?560:260)*dt);else hookY=Math.min(f.startY,hookY+18*s.fight*dt);
- if(hookY<=2)return{hookY:0,reel,outcome:'landed'};
- if(f.ten<=0)return{hookY,reel,outcome:'snapped'};
- return{hookY,reel,outcome:null};
+// ── 끌어올리기(타이밍) ── 챔질에 성공하면 공이 좌우로 오간다. 공이 초록 칸에 있을 때 톡 누르면 한 칸 끌어올린다.
+// 별이 많을수록 칸이 좁고 공이 빠르며 더 여러 번 성공해야 한다. 끌어올릴수록(물고기가 지칠수록) 공이 조금씩 빨라진다.
+// 놓치면 조금 다시 내려가고, 세 번 놓치면 줄이 끊어진다. 처음 몇 마리는 공을 느리게 해 손에 익게 한다.
+const BAR=[0,.40,.32,.26,.20,.16],SPEED=[0,.45,.6,.8,1.05,1.3],NEED=[0,2,3,3,4,5],LIVES=3;
+function startFight(s,hookY,easy){const n=starsOf(s);return{pos:0,dir:1,speed:SPEED[n]*(easy?.8:1),zw:BAR[n],zone:.62,need:NEED[n],got:0,miss:0,startY:hookY,goalY:hookY,flash:0,flashOk:false,total:0,clean:true};}
+// 맞힌 뒤 새 칸은 공에서 .25 넘게 떨어진 곳에만 둔다(공이 바로 새 칸 안에 남아 공짜로 한 번 더 맞는 일이 없게).
+function newZone(f,rnd){const h=f.zw/2,lo=[h,Math.max(h,f.pos-.25)],hi=[Math.min(1-h,f.pos+.25),1-h];const a=Math.max(0,lo[1]-lo[0]),b=Math.max(0,hi[1]-hi[0]);let u=rnd()*(a+b);f.zone=u<a?lo[0]+u:hi[0]+(u-a);if(a+b<=0)f.zone=f.pos<.5?1-h:h;}
+function fightStep(f,s,hookY,tap,dt,rnd=Math.random){
+ f.total+=dt;if(f.flash>0)f.flash-=dt;
+ const sp=f.speed*(1+.12*f.got);f.pos+=f.dir*sp*dt;if(f.pos>=1){f.pos=2-f.pos;f.dir=-1;}if(f.pos<=0){f.pos=-f.pos;f.dir=1;}
+ let hit=null;
+ if(tap&&f.got<f.need){hit=Math.abs(f.pos-f.zone)<=f.zw/2;f.flash=.35;f.flashOk=hit;
+  if(hit){f.got++;f.goalY=f.got>=f.need?0:f.startY*(1-f.got/f.need);newZone(f,rnd);}
+  else{f.miss++;f.clean=false;f.goalY=Math.min(f.startY,f.goalY+f.startY/f.need*.5);}}
+ hookY+=(f.goalY-hookY)*Math.min(1,dt*6);
+ if(f.miss>=LIVES)return{hookY,reel:false,hit,outcome:'snapped'};
+ if(f.got>=f.need&&hookY<=3)return{hookY:0,reel:false,hit,outcome:'landed'};
+ return{hookY,reel:!!hit,hit,outcome:null};
 }
 // 키 입력 판정. 잡은 카드가 떠 있을 때 누르고 있는 스페이스(자동 반복)는 무시한다.
 function keyAction(st,key,repeat,inInput){
@@ -105,8 +122,8 @@ function fitSize(boxWidth){const bw=Number(boxWidth)||900,W=Math.max(360,Math.mi
 function pixelRatio(dpr){return Math.max(1,Math.min(2,Number(dpr)||1));}
 // 첫 판 안내: 처음 하는 사람의 첫 마리에서만. 예전 저장(coachDone 없음)이라도 도감에 한 마리라도 있으면 띄우지 않는다.
 function needsCoach(prog,dex){return !prog.coachDone&&!Object.keys(dex||{}).length;}
-function coachStep(st,holdMain,hookY,fight){if(st==='play')return holdMain||hookY<=8?1:2;if(st==='bite')return 2;if(st==='fight')return fight&&fight.onT>1?4:3;return 0;}
-const COACH=[null,['1/4 내리기 · 단추를 누르고 있으면 줄이 내려갑니다.','1/4 Drop · Hold the button to let the line down.'],['2/4 기다리기 · 손을 떼고 기다리다가 느낌표(!)가 뜨면 바로 누릅니다.','2/4 Wait · Let go, then press as soon as the ! appears.'],['3/4 감기 · 단추를 눌렀다 떼며 초록 칸을 노란 점에 맞춥니다.','3/4 Reel · Press and release to keep the green bar on the yellow dot.'],['4/4 끌어올리기 · 초록 칸을 맞추는 동안 생물이 올라옵니다.','4/4 Bring it up · Stay on target until the catch reaches the surface.']];
+function coachStep(st,holdMain,hookY,fight){if(st==='play')return holdMain||hookY<=8?1:2;if(st==='bite')return 2;if(st==='fight')return fight&&fight.got>0?4:3;return 0;}
+const COACH=[null,['1/4 내리기 · 단추를 누르고 있으면 줄이 내려갑니다.','1/4 Drop · Hold the button to let the line down.'],['2/4 기다리기 · 입질할 땐 참고, 느낌표(!)가 뜨면 바로 누릅니다.','2/4 Wait · Hold still while it nibbles, then press as soon as the ! appears.'],['3/4 톡 · 공이 초록 칸에 왔을 때 한 번 누릅니다.','3/4 Tap · Press once when the ball is in the green.'],['4/4 끌어올리기 · 맞힐 때마다 한 칸씩 올라오고, 세 번 놓치면 달아납니다.','4/4 Bring it up · Each hit pulls it up a step; miss three times and it gets away.']];
 function shrimpCount(runCount){return SP.filter(q=>q.kind==='shrimp').reduce((a,q)=>a+(runCount[q.id]||0),0);}
 function missionDone(m,run){if(m.k==='sp')return (run.runCount[m.id]||0)>=m.n;if(m.k==='score')return run.score>=m.n;if(m.k==='combo')return run.bestCombo>=m.n;if(m.k==='kinds')return new Set(run.caughtRun).size>=m.n;if(m.k==='shrimp')return shrimpCount(run.runCount)>=m.n;return false;}
 function missionProgress(m,run){if(m.k==='sp')return Math.min(m.n,run.runCount[m.id]||0);if(m.k==='score')return Math.min(m.n,run.score);if(m.k==='combo')return Math.min(m.n,run.bestCombo);if(m.k==='kinds')return Math.min(m.n,new Set(run.caughtRun).size);if(m.k==='shrimp')return Math.min(m.n,shrimpCount(run.runCount));return 0;}
@@ -158,10 +175,10 @@ const sfx={bite(){tone(880,660,.12,.2,'square');tone(880,660,.12,.2,'square',.16
  miss(){tone(400,160,.35,.18,'sawtooth');},splash(){tone(200,80,.25,.15,'triangle');},no(){tone(300,300,.15,.12,'square');}};
 
 // ── 상태 ──
-let st='idle',score=0,timeLeft=180,hookY=0,camY=0,holdMain=false,holdUp=false,caughtRun=[],bite=null,fight=null,last=0,t=0,flash=null,bubbles=[],combo=0,bestCombo=0,golden=null,splash=[],limitWarned=false,runCount={};
+let nib=null,lockUntil=0,autoUp=false;let st='idle',score=0,timeLeft=180,hookY=0,camY=0,holdMain=false,holdUp=false,caughtRun=[],bite=null,fight=null,last=0,t=0,flash=null,bubbles=[],combo=0,bestCombo=0,golden=null,splash=[],limitWarned=false,runCount={};
 let crit=[];
 const run=()=>({runCount,score,bestCombo,caughtRun});
-function spawn(){crit=[];for(const s of SP){const n=s.kind==='fish'?(s.school?4:s.id==='hokdom'?1:2):s.kind==='shrimp'?2:3;for(let i=0;i<n;i++){const m=s.d[0]+Math.random()*(s.d[1]-s.d[0]);crit.push({s,x:s.spd?Math.random()*W:W*BOAT_X+40+(Math.random()-.5)*180,y:yOf(m),dir:Math.random()<.5?-1:1,ph:Math.random()*6.28,cool:0});}}}
+function spawn(){crit=[];for(const s of SP){const n=s.kind==='fish'?(s.school?4:s.id==='hokdom'?1:2):s.kind==='shrimp'?5:3;for(let i=0;i<n;i++){const m=s.d[0]+Math.random()*(s.d[1]-s.d[0]);crit.push({s,x:s.spd?Math.random()*W:W*BOAT_X+40+(Math.random()-.5)*180,y:yOf(m),dir:Math.random()<.5?-1:1,ph:Math.random()*6.28,cool:0});}}}
 function zoneAt(m){if(m<=0.3)return null;if(m<10)return ZONES[0];if(m<20)return ZONES[1];if(m<=40)return ZONES[2];if(m<150)return {name:'찬물이 깔린 깊은 바다',en:'Deep sea over a cold-water layer',range:'40~150m'};if(m<=300)return ZONES[3];return {name:'해산 아래 심해',en:'Deep sea below the seamount',range:'300m 아래',rangeEn:'below 300m'};}
 
 // ── 그리기 ──
@@ -217,7 +234,7 @@ function drawCreature(c,x,y,scale,dir,ph){const s=c.kind?c:c.s;const L=s.len*sca
 
 function drawWorld(){
  cx.save();cx.translate(0,-camY);
- for(const c of crit){if(c.y<camY-60||c.y>camY+H+60)continue;if(c===bite?.c&&st==='fight')continue;drawCreature(c,c.x,c.y+Math.sin(c.ph)*3,1,c.dir,c.ph);}
+ for(const c of crit){if(c.y<camY-60||c.y>camY+H+60)continue;if(c===bite?.c&&(st==='fight'||st==='bite'))continue;drawCreature(c,c.x,c.y+Math.sin(c.ph)*3,1,c.dir,c.ph);}
  if(maxDepth()<300&&revealY!==null){const ly=revealY,nn=nextNeed();cx.fillStyle='rgba(6,20,24,.95)';cx.fillRect(0,ly,W,WORLD_BOTTOM-ly+H);cx.strokeStyle='#FFD23F';cx.setLineDash([10,8]);cx.lineWidth=2;cx.beginPath();cx.moveTo(0,ly);cx.lineTo(W,ly);cx.stroke();cx.setLineDash([]);
   if(nn){cx.font='500 15px '+FONT;cx.textAlign='left';cx.fillStyle='#FFD23F';const ls=wrap(tr('잠김 · '+nn.zone.name,'Locked · '+nn.zone.en),W-28).concat(wrap(tr('열리는 조건: '+nn.need,'Opens with '+nn.need),W-28));ls.forEach((l,n)=>{cx.fillStyle=n?'rgba(255,255,255,.85)':'#FFD23F';cx.fillText(l,14,ly+28+n*21);});}}
  const bx=W*BOAT_X;cx.fillStyle='#e9e2cf';cx.beginPath();cx.moveTo(bx-46,-6);cx.lineTo(bx+46,-6);cx.lineTo(bx+32,12);cx.lineTo(bx-32,12);cx.closePath();cx.fill();
@@ -226,6 +243,7 @@ function drawWorld(){
  cx.strokeStyle='#e8e8e8';cx.lineWidth=3;cx.beginPath();cx.arc(bx+40,hookY+6,6,0,Math.PI);cx.stroke();
  if(st==='bite'||st==='fight'){const c=bite.c;drawCreature(c,bx+40,hookY+20,1,c.dir,t*8);}
  if(st==='bite'){cx.fillStyle='#FFD23F';cx.font='700 34px '+FONT;cx.textAlign='center';cx.fillText('!',bx+40,hookY-14+Math.sin(t*20)*3);}
+  if(nib&&st==='play'){cx.fillStyle='rgba(255,255,255,.85)';cx.font='700 18px '+FONT;cx.textAlign='center';cx.fillText(tr('입질…','nibble…'),bx+40+Math.sin(t*14)*3,hookY-12);}
  for(const p of splash){cx.fillStyle='rgba(255,255,255,'+p.a+')';cx.beginPath();cx.arc(p.x,p.y,p.r,0,6.283);cx.fill();}
  for(const b of bubbles){cx.strokeStyle='rgba(255,255,255,'+b.a+')';cx.lineWidth=1.5;cx.beginPath();cx.arc(b.x,b.y,b.r,0,6.283);cx.stroke();}
  cx.strokeStyle='rgba(255,255,255,.7)';cx.lineWidth=2;cx.beginPath();for(let x=0;x<=W;x+=20)cx.lineTo(x,Math.sin(x*.03+t*2)*2);cx.stroke();
@@ -236,12 +254,14 @@ function drawWorld(){
  if(flash){cx.font='500 16px '+FONT;const ls=wrap(flash.text,W-56),fw=narrow()?W-24:Math.min(W-40,Math.max(520,Math.max(...ls.map(l=>cx.measureText(l).width))+32)),fy=narrow()?(combo>1?104:64):18,fh=20+ls.length*22;cx.fillStyle='rgba(35,37,40,.86)';cx.fillRect((W-fw)/2,fy,fw,fh);cx.fillStyle='#fff';cx.textAlign='center';ls.forEach((l,n)=>cx.fillText(l,W/2,fy+27+n*22));}
 }
 function drawFight(){const f=fight,bw=W-80,bx=40,by=H-86;cx.fillStyle='rgba(35,37,40,.9)';cx.fillRect(bx-12,by-34,bw+24,112);
- cx.fillStyle='#fff';cx.font='500 15px '+FONT;cx.textAlign='left';cx.fillText(nm(bite.c.s)+(narrow()?'':tr(' · 초록 칸을 맞추면 줄이 감겨요',' · Keep the green bar on it to reel in')),bx,by-12,bw-(narrow()?110:170));
+ cx.fillStyle='#fff';cx.font='500 15px '+FONT;cx.textAlign='left';cx.fillText(nm(bite.c.s)+' '+'★'.repeat(starsOf(bite.c.s)),bx,by-12,bw-(narrow()?110:170));
  cx.textAlign='right';cx.fillStyle='#B6D80C';cx.fillText(tr('수면까지 '+Math.max(0,Math.round(mOf(hookY)))+'m',Math.max(0,Math.round(mOf(hookY)))+'m to surface'),bx+bw,by-12);
- cx.fillStyle='#383C41';cx.fillRect(bx,by,bw,22);cx.fillStyle=f.on?'rgba(182,216,12,.95)':'rgba(182,216,12,.55)';cx.fillRect(bx+f.zone*bw,by,f.zw*bw,22);
- cx.fillStyle='#FFD23F';cx.beginPath();cx.arc(bx+f.fish*bw,by+11,9,0,6.283);cx.fill();
- cx.textAlign='left';cx.fillStyle='#A7ABB0';cx.font='500 14px '+FONT;cx.fillText(tr('줄 버팀','Line'),bx,by+46);
- cx.fillStyle='#383C41';cx.fillRect(bx+60,by+36,bw-60,10);cx.fillStyle=f.ten<.3?'#FF5A4E':'#FFD23F';cx.fillRect(bx+60,by+36,(bw-60)*Math.max(0,f.ten),10);}
+ const fl=f.flash>0;cx.fillStyle=fl?(f.flashOk?'#3d5a12':'#5a2622'):'#383C41';cx.fillRect(bx,by,bw,22);
+ cx.fillStyle=fl&&f.flashOk?'#d8ff3a':'rgba(182,216,12,.85)';cx.fillRect(bx+(f.zone-f.zw/2)*bw,by,f.zw*bw,22);
+ cx.fillStyle='#FFD23F';cx.beginPath();cx.arc(bx+f.pos*bw,by+11,10,0,6.283);cx.fill();
+ cx.textAlign='left';cx.font='500 14px '+FONT;cx.fillStyle='#A7ABB0';cx.fillText(tr('끌어올림','Pulled'),bx,by+46);
+ for(let i=0;i<f.need;i++){cx.fillStyle=i<f.got?'#B6D80C':'#383C41';cx.beginPath();cx.arc(bx+92+i*20,by+41,7,0,6.283);cx.fill();}
+ cx.textAlign='right';cx.fillStyle='#FF8A80';cx.fillText('♥'.repeat(Math.max(0,LIVES-f.miss))+'♡'.repeat(Math.min(LIVES,f.miss)),bx+bw,by+46);}
 
 // ── 진행 ──
 function el(tag,cls,text){const e=doc.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;}
@@ -249,29 +269,29 @@ function setInfo(){const m=mOf(hookY),z=zoneAt(m),box=$('info');box.replaceChild
  const near=SP.filter(s=>{const zz=ZONES.find(q=>q.id===s.zone);return zz&&zz===z;}).map(nm);box.append(el('b','',tr('지금 위치: ','Now: ')+zn(z)+' ('+zr(z)+')'),el('span','f-note',near.length?tr('이곳에 사는 생물: ','Living here: ')+near.join(', '):tr('이 수심은 화면에서 줄여 그렸습니다. 더 내려가 보세요.','This depth is drawn compressed on screen. Keep going down.')));}
 function hud(){$('h-score').textContent=score;const s=Math.max(0,Math.ceil(timeLeft));$('h-time').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0');$('h-depth').textContent=Math.round(mOf(hookY))+'m';const got=SP.filter(s=>dex[s.id]).length;$('h-dex').textContent=got+'/'+SP.length;}
 function say(text,sec=2.2){flash={text,until:t+sec};}
-function start(){actx();score=0;timeLeft=180;hookY=0;camY=-SKY;caughtRun=[];combo=0;bestCombo=0;runCount={};limitWarned=false;const g0=40+Math.random()*100;golden={from:g0+20,to:g0,announced:false};st='play';coachOn=needsCoach(prog,dex);spawn();$('start').hidden=true;if(root.innerWidth<900)$('stage')?.scrollIntoView?.({block:'start',behavior:calm?'auto':'smooth'});$('end').hidden=true;$('b-main').disabled=false;$('b-up').disabled=false;mainLabel();setInfo();hud();track('fish_start',{});}
-function mainLabel(){const b=$('b-main');b.querySelector('span').textContent=st==='fight'?tr('감기','Reel'):st==='bite'?tr('챔질!','Strike!'):tr('내리기','Drop');b.querySelector('small').textContent=st==='fight'?tr('눌렀다 떼며 초록 칸을 맞춰요','Press and release to keep the green bar on it'):st==='bite'?tr('지금 누르면 걸려요','Press now to hook it'):tr('누르는 동안 줄이 내려가요','Hold to let the line down');
- const u=$('b-up');u.querySelector('span').textContent=tr('올리기','Raise');u.querySelector('small').textContent=tr('누르는 동안 줄을 감아요','Hold to wind the line up');}
+function start(){actx();score=0;timeLeft=180;hookY=0;camY=-SKY;caughtRun=[];combo=0;bestCombo=0;runCount={};limitWarned=false;nib=null;autoUp=false;lockUntil=0;const g0=40+Math.random()*100;golden={from:g0+20,to:g0,announced:false};st='play';coachOn=needsCoach(prog,dex);spawn();$('start').hidden=true;if(root.innerWidth<900)$('stage')?.scrollIntoView?.({block:'start',behavior:calm?'auto':'smooth'});$('end').hidden=true;$('b-main').disabled=false;$('stage')?.classList.add('is-live');mainLabel();setInfo();hud();track('fish_start',{});}
+function mainLabel(){const b=$('b-main');b.querySelector('span').textContent=st==='fight'?tr('톡!','Tap!'):st==='bite'?tr('챔질!','Strike!'):nib?tr('참아요','Wait'):autoUp?tr('미끼 다는 중','Re-baiting'):tr('내리기','Drop');b.querySelector('small').textContent=st==='fight'?tr('공이 초록 칸에 오면 눌러요','Press when the ball is in the green'):st==='bite'?tr('지금 누르면 걸려요','Press now to hook it'):nib?tr('입질 중 · ! 가 뜨면 눌러요','Nibbling · press when ! appears'):autoUp?tr('줄을 감아 올려요 · 누르면 다시 내려가요','Reeling up · press to drop again'):tr('누르는 동안 줄이 내려가요','Hold to let the line down');}
 function step(dt){t+=dt;if(flash&&t>flash.until)flash=null;
- for(const c of crit){if(c.s.spd){c.x+=c.dir*c.s.spd*40*dt;if(c.x<-80){c.x=W+60;}if(c.x>W+80){c.x=-60;}}c.ph+=dt*(c.s.spd?6:1.5);if(c.cool>0)c.cool-=dt;}
+ for(const c of crit){if(c.s.spd&&!c.hold){c.x+=c.dir*c.s.spd*40*dt;if(c.x<-80){c.x=W+60;}if(c.x>W+80){c.x=-60;}}c.ph+=dt*(c.s.spd?6:1.5);if(c.cool>0)c.cool-=dt;}
  for(const b of bubbles){b.y-=30*dt;b.a-=dt*.5;}bubbles=bubbles.filter(b=>b.a>0);
  if(st==='play'||st==='bite'||st==='fight'){timeLeft-=dt;if(timeLeft<=0){end();return;}}
  if(golden&&!golden.announced&&timeLeft<=golden.from){golden.announced=true;say(tr('황금 시간! 20초 동안 점수 2배','Golden time! Double points for 20 seconds'),2.5);[784,988,1175].forEach((f,i)=>tone(f,f,.18,.14,'triangle',i*.08));}
- if(st==='play'){const sp=380,lim=yOf(maxDepth());if(holdMain){hookY=Math.min(lim,hookY+sp*dt*(hookY>yOf(40)?3.5:1));if(hookY>=lim-1&&maxDepth()<300&&!limitWarned){limitWarned=true;const nn=nextNeed();say(tr('낚싯줄이 여기까지예요. '+(nn?nn.need+'을 모으면 다음 바다('+nn.zone.name+')가 열려요':''),'Your line ends here.'+(nn?' Collect '+nn.need+' to open the next sea ('+nn.zone.en+').':'')),3);sfx.no();}}if(hookY<lim-30)limitWarned=false;if(holdUp)hookY=Math.max(0,hookY-sp*1.6*dt);
+ if(st==='play'){const sp=380,lim=yOf(maxDepth());if(holdMain){hookY=Math.min(lim,hookY+sp*dt*(hookY>yOf(40)?3.5:1));if(hookY>=lim-1&&maxDepth()<300&&!limitWarned){limitWarned=true;const nn=nextNeed();say(tr('낚싯줄이 여기까지예요. '+(nn?nn.need+'을 모으면 다음 바다('+nn.zone.name+')가 열려요':''),'Your line ends here.'+(nn?' Collect '+nn.need+' to open the next sea ('+nn.zone.en+').':'')),3);sfx.no();}}if(hookY<lim-30)limitWarned=false;if(holdUp||autoUp)hookY=Math.max(0,hookY-sp*1.6*dt);if(autoUp&&hookY<=0)autoUp=false;
   if((holdMain||holdUp)&&Math.random()<.2)bubbles.push({x:W*BOAT_X+40+Math.random()*10-5,y:hookY,r:2+Math.random()*3,a:.8});
   // 보호생물
   const coralY=yOf(PROTECT.depth);if(Math.abs(hookY-coralY)<18&&!step.warned){step.warned=true;say(tr('유착나무돌산호는 해양보호생물이에요. 건드리지 않고 지나가요.','This coral (유착나무돌산호) is a protected marine species. Pass by without touching it.'));sfx.no();if(badge('coral'))renderProg();}
   if(Math.abs(hookY-coralY)>40)step.warned=false;
   // 입질
-  if(!holdMain&&!holdUp&&hookY>8){const hx=W*BOAT_X+40;for(const c of crit){if(c.cool>0)continue;const dx=Math.abs(c.x-hx),dy=Math.abs(c.y-hookY);const reach=c.s.spd?40:56;if(dy<reach&&dx<reach+c.s.len*.5){if(Math.random()<dt*(c.s.spd?2.2:1.4)){bite={c,until:t+(c.s.spd?1.1:1.6)};st='bite';sfx.bite();mainLabel();break;}}}}
- }else if(st==='bite'){if(t>bite.until){say(tr(ig(bite.c.s.name)+' 미끼만 물고 달아났어요.',nm(bite.c.s)+' stole the bait and got away.'));bite.c.cool=4;bite=null;st='play';sfx.miss();combo=0;mainLabel();}}
- else if(st==='fight'){const s=bite.c.s,r=fightStep(fight,s,hookY,holdMain,dt);hookY=r.hookY;if(r.reel)sfx.reel();
+  if(nib){const nc=nib.c,k=Math.min(1,dt*4);nc.x+=(W*BOAT_X+40-nc.x)*k;nc.y+=(hookY+20-nc.y)*k;if(holdMain||holdUp){say(tr('너무 일찍 당겼어요. 느낌표(!)가 뜰 때 눌러요.','Too early. Press when the ! appears.'));nib.c.cool=5;nib.c.hold=false;nib=null;combo=0;sfx.miss();lockUntil=t+.5;autoUp=true;holdMain=false;mainLabel();}else if(t>nib.until){const c=nib.c;nib=null;bite={c,until:t+(c.s.spd?1.1:1.6)};st='bite';sfx.bite();mainLabel();}}
+  else if(!holdMain&&!holdUp&&!autoUp&&hookY>8){const hx=W*BOAT_X+40;for(const c of crit){if(c.cool>0)continue;const dx=Math.abs(c.x-hx),dy=Math.abs(c.y-hookY);const reach=c.s.spd?40:56;if(dy<reach&&dx<reach+c.s.len*.5){const a=approach(c.s);if(!a.want){c.cool=a.ignore;continue;}if(!a.nibble){bite={c,until:t+1.6};st='bite';sfx.bite();mainLabel();break;}c.hold=true;nib={c,until:t+a.nibble};mainLabel();break;}}}
+ }else if(st==='bite'){if(t>bite.until){say(tr(ig(bite.c.s.name)+' 미끼만 물고 달아났어요.',nm(bite.c.s)+' stole the bait and got away.'));bite.c.cool=4;bite.c.hold=false;bite=null;st='play';sfx.miss();combo=0;lockUntil=t+.5;autoUp=true;holdMain=false;mainLabel();}}
+ else if(st==='fight'){const s=bite.c.s,r=fightStep(fight,s,hookY,tapQ,dt);tapQ=false;hookY=r.hookY;if(r.reel)sfx.reel();else if(r.hit===false)sfx.no();
   if(r.outcome==='landed'){for(let k=0;k<18;k++)splash.push({x:W*BOAT_X+40,y:0,vx:(Math.random()-.5)*220,vy:-120-Math.random()*200,r:2+Math.random()*4,a:1});sfx.splash();landed();}
-  else if(r.outcome==='snapped'){say(tr(ig(s.name)+' 줄을 끊고 달아났어요.',nm(s)+' broke the line and got away.'));sfx.miss();combo=0;bite.c.cool=5;bite=null;fight=null;st='play';mainLabel();}}
+  else if(r.outcome==='snapped'){say(tr(ig(s.name)+' 줄을 끊고 달아났어요.',nm(s)+' broke the line and got away.'));sfx.miss();combo=0;bite.c.cool=5;bite.c.hold=false;bite=null;fight=null;st='play';lockUntil=t+.5;autoUp=true;holdMain=false;mainLabel();}}
  for(const p of splash){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=500*dt;p.a-=dt*1.2;}splash=splash.filter(p=>p.a>0);
  const camMax=maxDepth()>=300?WORLD_BOTTOM-H:Math.min(WORLD_BOTTOM-H,yOf(maxDepth())+LOCK_BAND-H);const target=Math.max(-SKY,Math.min(camMax,hookY-H*.45));camY+=(target-camY)*Math.min(1,dt*4);
 }
-function hook(){if(st==='bite'){fight=startFight(bite.c.s,hookY);st='fight';sfx.splash();mainLabel();}}
+function hook(){if(st==='bite'){fight=startFight(bite.c.s,hookY,Object.keys(dex).length<3);tapQ=false;st='fight';sfx.splash();mainLabel();}}
 function lineText(l){if(l.id==='base'){const size={big:tr('큰 녀석!','Big one!'),small:tr('작은 녀석','Little one'),normal:tr('보통 크기','Regular size')}[l.size];return tr('기본 '+l.pts+'점 · ','Base '+l.pts+' pts · ')+size;}if(l.id==='first')return tr('처음 발견 보너스','First-find bonus');if(l.id==='perfect')return tr('완벽한 손맛','Perfect touch');if(l.id==='combo')return tr(l.combo+'연속 x'+l.m.toFixed(1),l.combo+' in a row x'+l.m.toFixed(1));if(l.id==='gold')return tr('황금 시간 x2','Golden time x2');return l.text||'';}
 function landed(){const c=bite.c,s=c.s,f=fight;st='catch';const first=!dex[s.id];dex[s.id]=(dex[s.id]||0)+1;store.set(KEYS.dex,dex);
  combo++;bestCombo=Math.max(bestCombo,combo);runCount[s.id]=(runCount[s.id]||0)+1;
@@ -288,23 +308,23 @@ function landed(){const c=bite.c,s=c.s,f=fight;st='catch';const first=!dex[s.id]
  if(coachOn){coachOn=false;prog.coachDone=true;}
  saveProg();
  track('fish_catch',{species:s.id,zone:s.zone});
- c.x=c.s.spd?(Math.random()<.5?-60:W+60):W*BOAT_X+40+(Math.random()-.5)*180;c.cool=c.s.spd?3:6;bite=null;fight=null;holdMain=false;sfx.fanfare(s.pts>=100||first);hud();renderDex(s.id);renderProg();mainLabel();
- const card=$('catch-card');card.replaceChildren();const eb=el('span','f-eyebrow',first?tr('NEW · 새로 발견!','NEW · First find!'):'CATCH');
+ c.x=c.s.spd?(Math.random()<.5?-60:W+60):W*BOAT_X+40+(Math.random()-.5)*180;c.cool=c.s.spd?3:6;c.hold=false;bite=null;fight=null;holdMain=false;lockUntil=t+.6;$('b-main').disabled=true;sfx.fanfare(starsOf(s)>=4||first);hud();renderDex(s.id);renderProg();mainLabel();
+ const card=$('catch-card');card.replaceChildren();const eb=el('span','f-eyebrow',(first?tr('NEW · 새로 발견!','NEW · First find!'):'CATCH')+' · '+tr('난이도 ','Difficulty ')+'★'.repeat(starsOf(s)));
  const h=el('h2','',tr('빠밤! ','Ta-da! ')+nm(s));const pc=doc.createElement('canvas');pc.width=360;pc.height=170;pc.style.maxWidth='240px';pc.style.margin='0 auto';pc.style.width='100%';pc.setAttribute('aria-hidden','true');
  const big=el('div','f-big','+'+pts);
  const bl=el('div','f-bonus');for(const [k,v] of lines){const d=el('span','',k+'  ');const b2=el('b','',typeof v==='number'?'+'+v:v);d.append(b2);bl.append(d);}
  const extra=[];for(const z of opened)extra.push(el('div','f-unlock',tr('새 바다가 열렸습니다 · ','New sea opened · ')+z));
  if(got.length)extra.push(el('p','f-note',tr('배지 획득: ','Badges earned: ')+got.join(', ')));
  const p=el('p','f-note',s.note+' ('+tr('사는 곳: ','Lives in: ')+s.where+')');if(en())p.lang='ko';
- const ok=el('button','primary',tr('계속 낚시하기','Keep fishing'));ok.type='button';ok.onclick=()=>{$('catch').hidden=true;st='play';mainLabel();last=root.performance.now();};
+ const ok=el('button','primary',tr('계속 낚시하기','Keep fishing'));ok.type='button';ok.onclick=()=>{$('catch').hidden=true;st='play';$('b-main').disabled=false;mainLabel();last=root.performance.now();};
  card.append(eb,h,pc,big,bl,...extra,p,ok);$('catch').hidden=false;setTimeout(()=>ok.focus({preventScroll:true}),0);
  const pcx=pc.getContext('2d');let ft=0;const anim=()=>{if($('catch').hidden)return;ft+=.016;pcx.clearRect(0,0,360,170);pcx.save();pcx.translate(180,85);for(let k=0;k<14;k++){pcx.rotate(Math.PI*2/14);pcx.fillStyle=k%2?'rgba(182,216,12,.22)':'rgba(255,210,63,.18)';pcx.beginPath();pcx.moveTo(0,0);pcx.lineTo(-16,-180);pcx.lineTo(16,-180);pcx.fill();}pcx.restore();
   pcx.save();pcx.translate(180,85+Math.sin(ft*4)*4);pcx.rotate(Math.sin(ft*3)*.08);cxSwap(pcx,()=>drawCreature(s,0,0,Math.min(2.6,180/s.len),1,ft*6));pcx.restore();
   for(let k=0;k<8;k++){const a=ft*2+k*.8,r=60+((ft*60+k*20)%70);pcx.fillStyle='#FFD23F';pcx.beginPath();pcx.arc(180+Math.cos(a)*r,85+Math.sin(a)*r*.6,2.5,0,6.283);pcx.fill();}
   if(!calm)root.requestAnimationFrame(anim);};anim();}
 function endDetail(){const kinds=new Set(caughtRun).size;return tr('잡은 생물 '+caughtRun.length+'마리 · '+kinds+'종 · 최고 '+bestCombo+'연속','Caught '+caughtRun.length+' · '+kinds+' species · Best combo '+bestCombo);}
-function end(){st='over';coachOn=false;timeLeft=0;hud();$('b-main').disabled=true;$('b-up').disabled=true;holdMain=holdUp=false;$('catch').hidden=true;
- $('e-score').textContent=score;$('e-detail').textContent=endDetail();if(score>=1000&&badge('score1000'))renderProg();const m=todayMission();if(!prog.mission[today()]&&missionDone(m,run())){prog.mission[today()]=true;prog.xp+=300;badge('mission');saveProg();}renderProg();$('save-msg').textContent='';
+function end(){st='over';coachOn=false;nib=null;timeLeft=0;hud();$('b-main').disabled=true;$('stage')?.classList.remove('is-live');holdMain=holdUp=false;$('catch').hidden=true;
+ $('e-score').textContent=score;$('e-detail').textContent=endDetail();if(score>=600&&badge('score1000'))renderProg();const m=todayMission();if(!prog.mission[today()]&&missionDone(m,run())){prog.mission[today()]=true;prog.xp+=300;badge('mission');saveProg();}renderProg();$('save-msg').textContent='';
  const can=score>0;$('save-btn').disabled=!can;$('nick').disabled=!can;$('nick').value=store.get(KEYS.nick,'');if(!can)$('save-msg').textContent=tr('점수가 있어야 명예의 전당에 오릅니다.','You need a score to enter the hall of fame.');$('end').hidden=false;track('fish_complete',{score});}
 
 // ── 도감·순위 ──
@@ -315,7 +335,7 @@ function renderDex(newId){const box=$('dex');box.replaceChildren();for(const s o
 let shownDex=null;
 function showDex(s){shownDex=s;const box=$('dex-info');box.replaceChildren();if(!s){box.append(el('span','f-note',tr('도감 칸을 누르면 사는 곳과 자료 출처가 보입니다.','Tap a guide entry to see where it lives and its sources.')));if(en())box.append(el('span','f-note','Species notes and habitats are shown in Korean, as written in the sources.'));return;}
  const b=el('b','',dex[s.id]?nm(s)+(en()&&s.en?' ('+s.name+')':''):tr('아직 못 잡은 생물','Not caught yet'));const z=ZONES.find(q=>q.id===s.zone);
- const p=el('span','',(dex[s.id]?s.note+' ':'')+tr('사는 곳: ','Lives in: ')+s.where+tr(' · 게임 속 바다: ',' · Game sea: ')+zn(z)+' · '+s.pts+tr('점',' pts'));
+ const p=el('span','',tr('난이도 ','Difficulty ')+'★'.repeat(starsOf(s))+' · '+(s.pts)+tr('점 · ',' pts · ')+(dex[s.id]?s.note+' ':'')+tr('사는 곳: ','Lives in: ')+s.where+tr(' · 게임 속 바다: ',' · Game sea: ')+zn(z));
  const r=el('span','f-note',tr('자료: ','Sources: ')+s.src.map(i=>SRC[i-1][0].split('(')[0].trim()).join(', '));box.append(b,p,r);}
 function renderProg(){const i=levelOf(prog.xp),cur=LEVELS[i],nx=LEVELS[i+1],L=en()?2:1;$('lv-name').textContent=cur[L];$('lv-xp').textContent=prog.xp.toLocaleString('en-US')+' XP'+(nx?tr(' · 다음 '+nx[1]+' '+nx[0].toLocaleString('en-US'),' · Next: '+nx[2]+' at '+nx[0].toLocaleString('en-US')):'');$('lv-bar').style.width=(nx?100*(prog.xp-cur[0])/(nx[0]-cur[0]):100)+'%';
  const zb=$('zones');zb.replaceChildren();for(const z of ZONES){const d=el('div');const open=isOpen(z.id);d.className=open?'open':'';const b=el('span','',(open?tr('열림 · ','Open · '):tr('잠김 · ','Locked · '))+zn(z));const sm=el('small','',open?z.range:(UNLOCK_NEED[z.id]?tr('열리는 조건: '+need(z.id),'Opens with '+need(z.id)):''));d.append(b,sm);zb.append(d);}
@@ -334,12 +354,14 @@ $('save-form').addEventListener('submit',e=>{e.preventDefault();if(score<=0)retu
 $('again').onclick=start;$('go').onclick=start;
 
 // ── 입력 ──
-const press=(v)=>{if(st==='bite'&&v){hook();return;}holdMain=v;};
-const bm=$('b-main'),bu=$('b-up');
+let tapQ=false;const press=(v)=>{if(v&&t<lockUntil)return;if(v)autoUp=false;if(st==='bite'&&v){hook();return;}if(st==='fight'){if(v)tapQ=true;holdMain=false;return;}holdMain=v;};
+const bm=$('b-main');
 bm.addEventListener('pointerdown',e=>{e.preventDefault();actx();press(true);});['pointerup','pointercancel','pointerleave'].forEach(n=>bm.addEventListener(n,()=>press(false)));
-bu.addEventListener('pointerdown',e=>{e.preventDefault();holdUp=true;});['pointerup','pointercancel','pointerleave'].forEach(n=>bu.addEventListener(n,()=>{holdUp=false;}));
+// 바다 그림을 눌러도 큰 단추와 같다(휴대폰에서 단추를 찾지 않아도 되게). 겹친 안내 카드를 누를 때는 반응하지 않는다.
+ const sea=$('sea'),live=()=>['play','bite','fight'].includes(st);
+ sea.addEventListener('pointerdown',e=>{if(!live())return;e.preventDefault();actx();press(true);});['pointerup','pointercancel','pointerleave'].forEach(n=>sea.addEventListener(n,()=>{if(holdMain)press(false);}));
 doc.addEventListener('keydown',e=>{const k=keyAction(st,e.key,e.repeat,!!e.target.closest?.('input,textarea'));if(k.prevent)e.preventDefault();
- if(k.act==='close'){$('catch').hidden=true;st='play';mainLabel();}else if(k.act==='press')press(true);else if(k.act==='up')holdUp=true;});
+ if(k.act==='close'){if(t<lockUntil)return;$('catch').hidden=true;st='play';$('b-main').disabled=false;mainLabel();}else if(k.act==='press')press(true);else if(k.act==='up')holdUp=true;});
 doc.addEventListener('keyup',e=>{if(e.key===' '||e.key==='ArrowDown'){e.preventDefault();press(false);}if(e.key==='ArrowUp')holdUp=false;});
 
 // ── 고정 문구 (한국어/영어) ──
@@ -366,5 +388,5 @@ SRC.forEach(([text,u])=>{const li=doc.createElement('li');const a=doc.createElem
 relabel();hud();fit();camY=-SKY;root.requestAnimationFrame(loop);
 }
 
-return{SRC,ZONES,SP,PROTECT,KEYS,LEVELS,BADGES,MISSIONS,UNLOCK_NEED,createStore,loadSaved,unlockReady,newlyUnlocked,maxDepthFor,dayKey,todayMission,levelOf,yOf,mOf,mult,sizeFor,isGolden,isPerfect,scoreCatch,startFight,fightStep,keyAction,missionDone,missionProgress,fitSize,pixelRatio,needsCoach,coachStep,COACH,operatorView,boot};
+return{BAR,SPEED,NEED,LIVES,STAR_PTS,starsOf,baitChance,approach,SRC,ZONES,SP,PROTECT,KEYS,LEVELS,BADGES,MISSIONS,UNLOCK_NEED,createStore,loadSaved,unlockReady,newlyUnlocked,maxDepthFor,dayKey,todayMission,levelOf,yOf,mOf,mult,sizeFor,isGolden,isPerfect,scoreCatch,startFight,fightStep,keyAction,missionDone,missionProgress,fitSize,pixelRatio,needsCoach,coachStep,COACH,operatorView,boot};
 });
