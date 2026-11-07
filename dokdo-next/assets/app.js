@@ -98,7 +98,7 @@ const en={
  contactCollab:'Contact / Collaborate ↗',
  tourismInfoBtn:'Ulleungdo·Dokdo travel info',
  badgesEarned:'Badges earned',badgesLeft:'Still to earn',
-footerLearn:'About Dokdo',footerQuestions:'Browse the 240 questions',
+ footerPrivacy:'Privacy Policy',footerLearn:'About Dokdo',footerQuestions:'Browse the 240 questions',
  footerChannel:'Dokdo Korea',footerYoutube:'Dokdo Korea Label ↗',
  offerTitle:'🤲 Take part in Dokdo',
  offerLead:'Ways to meet Dokdo and lend a hand, so the learning does not stop at the screen.',
