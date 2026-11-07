@@ -116,7 +116,7 @@ def walk(context, label):
     page.locator('#auto').click()
     expect(page.locator('#auto')).to_have_attribute('aria-pressed', 'true')
     page.mouse.click(page.viewport_size['width'] // 2, page.viewport_size['height'] // 2 + 60) if page.viewport_size else None
-    page.wait_for_timeout(300)
+    expect(page.locator('#toast')).to_contain_text('자동 항해 중')
     expect(page.locator('#auto')).to_have_attribute('aria-pressed', 'true')
     page.locator('#auto').click()
     page.locator('#t-sail').click()

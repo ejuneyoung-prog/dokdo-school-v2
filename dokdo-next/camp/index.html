@@ -83,6 +83,7 @@ body.resting #dock,body.resting #sub,body.resting #top,body.resting #info,body.r
 #g-fill{display:block;height:100%;width:0;background:var(--lime);transition:width .4s}
 .vol{width:88px;min-width:0;margin:0;accent-color:var(--lime);cursor:pointer}
 #rest .vol{width:170px}
+#goal,#snd,#nick,#text,#send{min-height:44px}
 #start{background:var(--lime);color:var(--ink);font-size:16px;padding:12px}
 #err{position:fixed;inset:0;display:grid;place-items:center;padding-inline:max(16px,env(safe-area-inset-left,0px));text-align:center}
 @media (max-width:520px){#hint{display:none}#toast{top:auto;bottom:calc(var(--dk,64px) + 20px)}#top{gap:4px}#top .vol{width:64px}#top .back{padding:0 4px}#menu{gap:4px}#menu button{padding-inline:6px}}
@@ -115,7 +116,7 @@ body:has(#deck:not([hidden])) #toast{top:calc(14px + env(safe-area-inset-top,0px
  <div class="row" id="p-rest" hidden><button id="v-sea" aria-pressed="false">바다에서 보기</button><button id="v-camp" aria-pressed="false">동도 정상 캠핑</button><button id="v-stay" aria-pressed="false">서도 주민숙소</button><button id="breath">3분 쉬기</button><button id="creator" hidden aria-pressed="false">크리에이터 모드</button></div>
  <div class="row" id="p-sail" hidden><button id="go-seo">서도로 가기</button><button id="go-dong">동도로 가기</button><button id="auto" aria-pressed="false">자동 항해</button><button id="look">360도 둘러보기</button><button id="bow" aria-pressed="false">뱃머리 시점</button></div>
  <div class="row" id="p-talk" hidden><button id="wave">손 흔들기</button><button class="q">풍경이 참 좋아요</button><button class="q">같이 쉬어요</button><button class="q">또 만나요</button></div>
- <form id="say" hidden><input id="nick" maxlength="8" autocomplete="off" aria-label="내 이름" title="내 이름"><input id="text" maxlength="30" placeholder="말풍선으로 인사하기" autocomplete="off" aria-label="말풍선 내용"><button id="send" type="submit">보내기</button></form>
+ <form id="say" hidden><input id="nick" maxlength="8" autocomplete="off" aria-label="내 이름" title="내 이름" placeholder="내 이름"><input id="text" maxlength="30" placeholder="말풍선으로 인사하기" autocomplete="off" aria-label="말풍선 내용"><button id="send" type="submit">보내기</button></form>
  <div class="tabs" id="menu" aria-label="메뉴"><button id="t-rest" aria-expanded="false" aria-controls="p-rest">쉼터</button><button id="t-sail" aria-expanded="false" aria-controls="p-sail">항해</button><button id="t-talk" aria-expanded="false" aria-controls="p-talk">인사</button><button id="t-deck">대황 <b id="shell">0</b></button><button id="scenery">풍경만 보기</button></div>
 </div>
 <button id="unscene" hidden>메뉴 보기</button>

@@ -71,7 +71,9 @@ test('the tiny rocks (보찰바위, 독립문바위) are inside the loop, not on
 });
 
 test('auto sail keeps going around the islands from many starting points', () => {
-  const starts = [[-40, 1050], [map.peakW[0] - 420, map.peakW[2] + 200], [map.BC[0] - 60, map.BC[1] + 40], [ctr[0], ctr[1] + 700], [ctr[0] + 800, ctr[1]], [ctr[0] - 700, ctr[1] - 300]];
+  const starts = [[-40, 1050], [map.peakW[0] - 420, map.peakW[2] + 200], [map.BC[0] - 60, map.BC[1] + 40], [ctr[0], ctr[1] + 700], [ctr[0] + 800, ctr[1]], [ctr[0] - 700, ctr[1] - 300],
+    // 동도·서도 사이 남쪽으로 꺾여 열리는 좁은 만(검수에서 찾은 곳)
+    [-59, -178], [-59, -218], [-59, -140], [-59, -122]];
   starts.forEach((s, i) => {
     if (map.hit(s[0], s[1])) return;
     const r = voyage(s, 600);
@@ -92,6 +94,12 @@ test('a boat pinned against the shore escapes instead of switching auto off', ()
   for (let t = 0; t < 120; t += 1 / 30) { const mv = sail.steer(me, plan, 1 / 30, map.hit, ctr); sail.move(me, plan, mv, 1 / 30, map.hit, ctr, 2600); assert.ok(!map.hit(me.x, me.z)); const a = Math.atan2(me.x - ctr[0], me.z - ctr[1]); turn += sail.wrap(a - lastA); lastA = a; }
   assert.ok(plan.auto && me.tx != null, 'still sailing');
   assert.ok(Math.abs(turn) > Math.PI, 'went on around the islands: ' + (turn / Math.PI / 2).toFixed(2) + ' laps');
+});
+
+test('orbit ring is computed once per island and width', () => {
+  const t0 = Date.now(); sail.orbit(map.hit, ctr[0], ctr[1], 0, 900); const first = Date.now() - t0;
+  const t1 = Date.now(); for (let i = 0; i < 50; i++) sail.orbit(map.hit, ctr[0], ctr[1], i * 10, 900); const again = Date.now() - t1;
+  assert.ok(again < Math.max(20, first), 'cached: ' + again + 'ms for 50 vs first ' + first + 'ms');
 });
 
 test('island center sits between 동도 and 서도', () => {

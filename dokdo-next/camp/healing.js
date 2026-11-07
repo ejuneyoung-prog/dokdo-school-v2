@@ -129,7 +129,10 @@ const mark=()=>{$('#vr').hidden=!(mode==='camp'||mode==='stay')};autoB.onclick=(
 $('#go-seo').onclick=()=>{leave();setAuto(false);dest(peakW,330);dist=Math.min(dist,60)};
 $('#go-dong').onclick=()=>{leave();setAuto(false);dest(peakE,300);dist=Math.min(dist,60)};
 // 360도 둘러보기: 내 배가 아니라 동도·서도를 가운데 두고 한 바퀴 돈다. 시작과 끝은 내 배 시점에서 부드럽게 이어진다. 도는 중에 다시 누르면 곧 끝낸다.
-let look=0,lookA=0;const LOOK=calm?26000:18000,aim=new T.Vector3();$('#look').onclick=()=>{const n=performance.now();if(look&&n-look<LOOK*.88){look=n-LOOK*.88;return}look=n;lookA=Math.atan2(cam.position.x-ISLE.x,cam.position.z-ISLE.z)};
+let look=0,lookA=0,lookOut=0,lookOutA=0,lookOutW=0;const LOOK=calm?26000:18000,aim=new T.Vector3();
+const lookAt=n=>{const k=Math.min(1,(n-look)/LOOK);return{w:ss(0,.12,k)*(1-ss(.88,1,k)),a:lookA+ss(0,1,k)*Math.PI*2,k}};
+// 도는 중에 다시 누르면 그 자리에서 멈춘 채 내 배 시점으로 천천히 돌아온다(각도는 건너뛰지 않음).
+$('#look').onclick=()=>{const n=performance.now();if(look){if(!lookOut){const q=lookAt(n);lookOut=n;lookOutA=q.a;lookOutW=q.w}return}look=n;lookOut=0;lookA=Math.atan2(cam.position.x-ISLE.x,cam.position.z-ISLE.z)};
 const bowBtn=$('#bow');bowBtn.onclick=()=>{bowView=!bowView;bowBtn.setAttribute('aria-pressed',bowView);me.b.userData.rig.forEach(o=>o.visible=!bowView);yaw=bowView?0:me.r;pitch=.2};
 function speak(x){me.say=x.slice(0,30);me.sayT=performance.now();dirty=true;chime()}
 $('#wave').onclick=()=>{me.wave=performance.now();speak('안녕하세요!')};
@@ -185,14 +188,14 @@ $('#t-deck').onclick=()=>{startAudio();deck.hidden=false;dview();$('#d-close').f
 addEventListener('keydown',e=>{if(e.key==='Escape'&&!deck.hidden)closeDeck()});
 // 아래 판은 평소 한 줄(메뉴 이름만). 메뉴를 누르면 그 줄 위에 단추가 열리고, 다시 누르면 닫힌다.
 const dock=$('#dock'),TAB=['rest','sail','talk'];let tabNow='';function setTab(k){tabNow=tabNow===k?'':k;TAB.forEach(q=>{$('#p-'+q).hidden=q!==tabNow;$('#t-'+q).setAttribute('aria-expanded',q===tabNow)});$('#say').hidden=tabNow!=='talk';pad()}
-const pad=()=>{const h=dock.offsetHeight;document.documentElement.style.setProperty('--dk',h+'px');if(h)cam.setViewOffset(innerWidth,innerHeight,0,h/2,innerWidth,innerHeight);else cam.clearViewOffset()};
+const pad=()=>{const h=dock.offsetHeight,base=h?$('#menu').offsetHeight+12:0;document.documentElement.style.setProperty('--dk',h+'px');if(base)cam.setViewOffset(innerWidth,innerHeight,0,base/2,innerWidth,innerHeight);else cam.clearViewOffset()};
 // 풍경만 보기: 판과 이름표를 모두 숨기고 독도만 남긴다. 구석의 작은 단추나 Esc로 돌아온다.
 const sceneB=$('#unscene');function setScene(v){scene=v;body.classList.toggle('scenery',v);sceneB.hidden=!v;if(v){deck.hidden=true;toastE.hidden=true;sceneB.focus()}else $('#scenery').focus();pad()}
 $('#scenery').onclick=()=>setScene(true);sceneB.onclick=()=>setScene(false);addEventListener('keydown',e=>{if(e.key==='Escape'&&scene)setScene(false)});TAB.forEach(q=>$('#t-'+q).onclick=()=>setTab(q));pad();
 // 3분 쉬기
 const RS=180;let rest=null;
-function endRest(){rest=null;body.classList.remove('resting');$('#rest').hidden=true;$('#breath').focus()}
-$('#breath').onclick=()=>{startAudio();rest={t:performance.now(),m:0,ph:-1,z:1};body.classList.add('resting');$('#rest').hidden=false;$('#r-end').focus()};$('#r-end').onclick=endRest;
+function endRest(){rest=null;body.classList.remove('resting');$('#rest').hidden=true;pad();$('#breath').focus()}
+$('#breath').onclick=()=>{startAudio();rest={t:performance.now(),m:0,ph:-1,z:1};body.classList.add('resting');$('#rest').hidden=false;pad();$('#r-end').focus()};$('#r-end').onclick=endRest;
 function resting(n){const e=(n-rest.t)/1000*rest.z,l=Math.max(0,RS-e),m=Math.floor(e/60);if(m>rest.m){rest.m=m;if(st.rD!==today()){st.rD=today();st.rN=0}if(st.rN<10){st.rN++;gain(1,'쉬는 시간')}}$('#r-left').textContent=Math.floor(l/60)+':'+String(Math.floor(l%60)).padStart(2,'0');const c=e%10,inh=c<4,k=inh?c/4:1-(c-4)/6;if(inh!==(rest.ph===1)){rest.ph=inh?1:0;$('#r-word').textContent=inh?'들이쉬고':'내쉬고';if(inh)bell()}if(!calm)$('#r-dot').style.transform='scale('+(.8+k*.4)+')';if(!calm)yaw+=.00035;if(l<=0){endRest();toast('잘 쉬셨습니다')}}
 // 말 거르기
 const BAD=/시발|씨발|ㅅㅂ|ㅆㅂ|병신|ㅂㅅ|좆|존나|ㅈㄴ|개새|새끼|지랄|닥쳐|꺼져|섹스|야동|보지|자지|fuck|shit|bitch|다케시마|타케시마|竹島|takeshima/i;
@@ -206,7 +209,7 @@ cv.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;const o=pt
  if(pts.size===2){const[a,b]=[...pts.values()],d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);if(pinch)dist=Math.min(420,Math.max(zmin(),dist*pinch/d));pinch=d;moved=99;return}
  const dx=e.clientX-o.clientX,dy=e.clientY-o.clientY;moved+=Math.abs(dx)+Math.abs(dy);dragT=performance.now();yaw-=dx*.009;pitch=Math.min(1.25,Math.max(bowView?-.3:.04,pitch+dy*.004))});
 const zmin=()=>mode==='camp'||mode==='stay'?10:26;const ray=new T.Raycaster(),pl=new T.Plane(new T.Vector3(0,1,0),0),nd=new T.Vector2(),pp=new T.Vector3();
-const up=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=0;if(moved<7&&e.type==='pointerup'){nd.set(e.clientX/innerWidth*2-1,-e.clientY/innerHeight*2+1);ray.setFromCamera(nd,cam);if(!mode||mode==='sea'){if(ray.ray.intersectPlane(pl,pp)&&!hit(pp.x,pp.z)){if(auto){toast('자동 항해 중 · 끄기는 자동 항해 단추');return}if(mode)leave();go(pp.x,pp.z)}}}};
+const up=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=0;if(moved<7&&e.type==='pointerup'){nd.set(e.clientX/innerWidth*2-1,-e.clientY/innerHeight*2+1);ray.setFromCamera(nd,cam);if(!mode||mode==='sea'){if(ray.ray.intersectPlane(pl,pp)&&!hit(pp.x,pp.z)){if(auto){toast('자동 항해 중 · 끄기는 항해 메뉴에서');return}if(mode)leave();go(pp.x,pp.z)}}}};
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 cv.addEventListener('wheel',e=>{e.preventDefault();dist=Math.min(420,Math.max(zmin(),dist*(1+e.deltaY*.001)))},{passive:false});
 const keys={};addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;keys[e.key.toLowerCase()]=1});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=0});
@@ -294,7 +297,8 @@ function tick(n){const dt=Math.min(.05,(n-last)/1000);last=n;seaU.t.value=n/1000
  places.forEach(p=>{const d=Math.hypot(p.pos[0]-me.x,p.pos[2]-me.z);put(p.e,p.pos[0],p.pos[1]+14,p.pos[2],d<1900?1:.0)});
  if(bowView){cam.position.set(me.x+Math.sin(me.r)*6,8.2,me.z+Math.cos(me.r)*6);const yy=me.r+yaw;aim.set(me.x-Math.sin(yy)*100,8.5+Math.sin(-pitch+.2)*60,me.z-Math.cos(yy)*100)}
  else{const yy=yaw,base=seated?me.b.position.y:0,tx=seated?me.b.position.x:me.x,tz=seated?me.b.position.z:me.z,h=Math.sin(pitch)*dist+6+base,rd=Math.cos(pitch)*dist;cam.position.set(tx+Math.sin(yy)*rd,h,tz+Math.cos(yy)*rd);aim.set(tx,base+10,tz)}
- if(look){const k=(n-look)/LOOK;if(k>=1){look=0;dragT=n}else{const w=ss(0,.12,k)*(1-ss(.88,1,k)),a=lookA+ss(0,1,k)*Math.PI*2,R=ISLE.ext*1.35+110,H=ISLE.ext*.36+50;cam.position.lerp(v.set(ISLE.x+Math.sin(a)*R,H,ISLE.z+Math.cos(a)*R),w);aim.lerp(v.set(ISLE.x,45,ISLE.z),w)}}
+ if(look){let w,a;if(lookOut){const q=(n-lookOut)/1600;w=lookOutW*(1-ss(0,1,q));a=lookOutA;if(q>=1){look=lookOut=0;dragT=n}}else{const q=lookAt(n);w=q.w;a=q.a;if(q.k>=1){look=0;dragT=n}}
+  if(w>0){const R=ISLE.ext*1.35+110,H=ISLE.ext*.36+50;cam.position.lerp(v.set(ISLE.x+Math.sin(a)*R,H,ISLE.z+Math.cos(a)*R),w);aim.lerp(v.set(ISLE.x,45,ISLE.z),w)}}
  cam.lookAt(aim);
  const lk=Math.min(1,dt*.6);['d','n','g','r'].forEach(k=>{sky[k]+=(sky.tg[k]-sky[k])*lk});skyU.d.value=sky.d;skyU.n.value=sky.n;skyU.g.value=sky.g;
  const el=Math.max(.09,sky.e*Math.PI/180);sun.position.set(Math.sin(sky.az)*Math.cos(el)*900,Math.sin(el)*900,-Math.cos(sky.az)*Math.cos(el)*900);sun.intensity=(2.3-sky.d*.9)*(1-.92*sky.n)*(1-.55*sky.g);hemi.intensity=1.5*(1-.82*sky.n)*(1-.15*sky.g);
