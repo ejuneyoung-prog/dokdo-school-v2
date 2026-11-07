@@ -80,9 +80,12 @@ def walk(context, label):
     expect(page.locator('#top a.back')).to_have_attribute('href', '../')
     expect(page.locator('#login-cta')).to_have_attribute('href', '../account.html?next=camp%2F')
     expect(page.locator('#start')).to_have_text('로그인 없이 둘러보기')
-    expect(page.locator('#e-camp')).to_contain_text('대황 30')
-    expect(page.locator('#e-stay')).to_contain_text('대황 6')
-    expect(page.locator('#g-text')).to_contain_text('서도 주민숙소')
+    # 2단계: 장소는 레벨로 열린다(선착장 Lv5, 서도 Lv10, 동도 정상 Lv20)
+    expect(page.locator('#e-dock')).to_contain_text('Lv5')
+    expect(page.locator('#e-stay')).to_contain_text('Lv10')
+    expect(page.locator('#e-camp')).to_contain_text('Lv20')
+    expect(page.locator('#g-text')).to_contain_text('Lv1 · 동도 선착장까지 경험치 960')
+    assert heal_state(page)['gift'] == 1 and heal_state(page)['c'] == 100, 'welcome gift 100 대황 once'
     assert page.locator('#meet').count() == 0, 'old visitor room is gone'
     assert '사람에게도 보입니다' not in page.content(), 'solo mode does not promise shared decorations'
 
@@ -133,7 +136,15 @@ def walk(context, label):
     choice.click()
     won = 'right' in (choice.get_attribute('class') or '')
     state = heal_state(page)
-    assert state['qN'] == 1 and state['c'] == (2 if won else 0), state
+    assert state['qN'] == 1 and state['c'] == (102 if won else 100), state
+    page.locator('#deck [data-d="f"]').click()
+    expect(page.locator('#d-body .lvl')).to_contain_text('Lv 1')
+    expect(page.locator('#d-body .cast')).to_have_text('낚싯줄 던지기')
+    page.locator('#d-close').click()
+    page.locator('#t-rest').click()
+    page.locator('#v-dock').click()
+    expect(page.locator('#toast')).to_contain_text('동도 선착장은 Lv5에 열립니다')
+    page.locator('#d-close').click()
 
     page.evaluate("localStorage.setItem('dokdo-heal',JSON.stringify({c:20}))")
     page.reload()
