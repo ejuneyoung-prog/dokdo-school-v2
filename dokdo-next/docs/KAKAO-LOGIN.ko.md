@@ -13,12 +13,14 @@ REST API 키와 Client Secret은 서버 설정에만 입력합니다. 새 비밀
 ## 운영자 마지막 절차
 
 1. 카카오 앱의 카카오 로그인 활성화·닉네임 동의 및 위 callback 등록을 확인합니다.
-2. Supabase Kakao 제공자에 REST API 키·Client Secret을 직접 입력하고, 이메일 없는 계정을 허용합니다. 기존 이메일 redirect는 유지하고 아래 두 URL을 추가합니다.
-3. 교수님이 직접 최소 동의 화면과 두 입구 로그인을 시험한 뒤 kakaoEnabled를 true로 배포합니다. 동의 거절·이메일 없는 계정·기존 이메일 로그인·재설정도 확인합니다.
+2. Supabase Kakao 제공자에 REST API 키·Client Secret을 직접 입력하고, 이메일 없는 계정을 허용합니다. 기존 이메일 redirect는 유지하고 아래 세 URL을 추가합니다.
 
 - https://dokdo-school-v2.vercel.app/dokdo-next/account.html?oauth=kakao&next=.%2F
 - https://dokdo-school-v2.vercel.app/dokdo-next/account.html?oauth=kakao&next=games.html
 - https://dokdo-school-v2.vercel.app/dokdo-next/account.html?oauth=kakao&next=camp%2F
+
+3. 카카오 로그인을 켜기 전에 처리방침(privacy.html) 1·3번 표에 카카오 줄을 먼저 넣습니다(한국어·영어 모두).
+4. 교수님이 직접 최소 동의 화면과 두 입구 로그인을 시험한 뒤 kakaoEnabled를 true로 배포합니다. 동의 거절·이메일 없는 계정·기존 이메일 로그인·재설정도 확인합니다.
 
 ## 계정·안전 경계
 
