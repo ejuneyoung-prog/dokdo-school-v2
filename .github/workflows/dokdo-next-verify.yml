@@ -60,6 +60,7 @@ jobs:
       - run: python -m pip install -r requirements-test.txt
       - run: python -m playwright install --with-deps ${{ matrix.engine }}
       - run: python tests/camp-healing.py ${{ matrix.engine }}
+      - run: python tests/privacy-sharing-browser.py ${{ matrix.engine }}
       - run: python tests/release-13-browser.py --mode http --engine ${{ matrix.engine }} --output test-results/integration-${{ matrix.engine }}
       - run: python tests/browser.py --mode http --engine ${{ matrix.engine }} --output test-results/${{ matrix.engine }}
       - run: python tests/clear-browser.py --phase flow --mode http --engine ${{ matrix.engine }} --output test-results/flow-${{ matrix.engine }}

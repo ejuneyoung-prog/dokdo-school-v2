@@ -6,13 +6,13 @@
 if(!DATA||DATA.questions.length!==240)throw Error('The complete Dokdo course data is required.');
 const VERSION=DATA.version;
 const BANDS=[
-{id:'u7',ko:'7세 이하 · 함께 읽기',en:'Age 7 and under · read together',track:'early',start:1,max:2},
-{id:'8-9',ko:'초등 1–2학년 · 8–9세 참고',en:'Primary years 1–2',track:'early',start:1,max:2},
-{id:'10-11',ko:'초등 3–4학년 · 10–11세 참고',en:'Primary years 3–4',track:'primary',start:1,max:2},
-{id:'12-13',ko:'초등 5–6학년 · 12–13세 참고',en:'Primary years 5–6',track:'upper',start:2,max:3},
-{id:'14-16',ko:'중학생',en:'Middle school',track:'middle',start:2,max:4},
-{id:'17-19',ko:'고등학생',en:'High school',track:'high',start:3,max:4},
-{id:'20+',ko:'성인',en:'Adult',track:'adult',start:3,max:4}];
+{id:'u7',ko:'만 7세 이하 · 함께 읽기',en:'Age 7 and under · read together',track:'early',start:1,max:2},
+{id:'8-9',ko:'만 8–9세',en:'Age 8–9',track:'early',start:1,max:2},
+{id:'10-11',ko:'만 10–11세',en:'Age 10–11',track:'primary',start:1,max:2},
+{id:'12-13',ko:'만 12–13세 · 초6~중2',en:'Age 12–13',track:'upper',start:2,max:3},
+{id:'14-16',ko:'만 14–16세 · 중2~고2',en:'Age 14–16',track:'middle',start:2,max:4},
+{id:'17-19',ko:'만 17–19세 · 고2~',en:'Age 17–19',track:'high',start:3,max:4},
+{id:'20+',ko:'만 20세 이상',en:'Age 20 and over',track:'adult',start:3,max:4}];
 const STAGES={ko:['','독도와 첫 만남','생명과 생활','기록 속 독도','자료로 설명하기'],en:['','Meet Dokdo','Life and living','Dokdo in records','Explain with evidence']};
 const COG={ko:['','알아보기','이어보기','자료읽기','따져보기'],en:['','Recognise','Connect','Read evidence','Evaluate']};
 const DIFFICULTY={ko:['','기초 확인','개념 연결','자료 활용','심화 연습'],en:['','Foundations','Connections','Using evidence','Extended practice']};

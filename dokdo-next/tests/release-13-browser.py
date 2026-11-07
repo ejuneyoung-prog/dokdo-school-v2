@@ -153,7 +153,7 @@ def cleanup_checks(browser,base):
  wait_until(p,"document.getElementById('block-pieces').getBoundingClientRect().bottom<=document.getElementById('player-dialog').getBoundingClientRect().bottom+1")
  check('Cleanup game starts with the piece tray on screen',True);c.close()
  c,p=fresh();p.goto(base+'typing.html');p.wait_for_selector('.song');p.wait_for_timeout(300)
- check('Typing page does not scroll before a song is chosen',p.evaluate('scrollY')==0)
+ check('Typing page does not scroll before a song is chosen',p.evaluate('scrollY')==0,str(p.evaluate('[scrollY,innerHeight,document.documentElement.scrollHeight,document.activeElement&&document.activeElement.id]')))
  p.locator('.song').first.click()
  wait_until(p,"(()=>{const a=document.querySelector('.t-lines').getBoundingClientRect(),b=document.getElementById('typing').getBoundingClientRect();return a.top>=0&&b.bottom<=innerHeight})()")
  check('Choosing a song brings the lyrics and input on screen',True);c.close()

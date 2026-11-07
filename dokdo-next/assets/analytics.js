@@ -19,8 +19,11 @@ function clean(name,params){
  }return out;
 }
 let started=false;
+/* 만 14세 이상을 고른 기기만 측정합니다. 나이대 판단 모듈이 없으면 켜지 않습니다. */
+const allowed=()=>{try{return window.DokdoPrivacy?.mayMeasure?.()===true;}catch(e){return false;}};
+function halt(){const id=gaId();if(id)window['ga-disable-'+id]=true;}
 function start(){
- if(started)return;const id=gaId();if(!id)return;started=true;
+ if(started)return;if(!allowed()){halt();return;}const id=gaId();if(!id)return;started=true;window['ga-disable-'+id]=false;
  window.dataLayer=window.dataLayer||[];
  window.gtag=function(){window.dataLayer.push(arguments);};
  window.gtag('js',new Date());
@@ -35,11 +38,14 @@ function start(){
 }
 function track(name,params){
  if(!Object.prototype.hasOwnProperty.call(fields,name)||!gaId())return;
+ if(!allowed()){halt();return;}
  start();try{window.gtag('event',name,clean(name,params));}catch(e){}
 }
 if(typeof document!=='undefined'){
  if(document.readyState==='loading')document.addEventListener?.('DOMContentLoaded',start,{once:true});
  else if(document.readyState)start();
 }
-return{track};
+/* 같은 화면에서 나이대를 바꾸면 바로 켜거나 끕니다. 이미 뜬 GA의 자동 측정도 ga-disable로 멈춥니다. */
+function refresh(){if(!gaId())return;if(!allowed()){halt();return;}if(started)window['ga-disable-'+gaId()]=false;else start();}
+return{track,refresh};
 })();
