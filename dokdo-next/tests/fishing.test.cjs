@@ -165,3 +165,14 @@ test('the test-mode button is for operators: hidden unless the address has ?oper
  a.equal(F.operatorView(''),false);a.equal(F.operatorView('?operator=0'),false);a.equal(F.operatorView('?x=1'),false);a.equal(F.operatorView('?operator=1'),true);
  a.ok(!page.includes('시험판'));a.ok(!page.includes('Trial version'));
 });
+
+test('one big button: no separate raise button, a four-tile guide, and the sea picture works as the button',()=>{
+ const page=fs.readFileSync(path.join(ROOT,'fishing.html'),'utf8'),src=fs.readFileSync(path.join(ROOT,'assets/fishing.js'),'utf8'),css=fs.readFileSync(path.join(ROOT,'assets/fishing.css'),'utf8');
+ a.doesNotMatch(page,/id="b-up"/);a.doesNotMatch(src,/\$\('b-up'\)/);
+ a.equal((page.match(/<ol class="f-guide"[\s\S]*?<\/ol>/)[0].match(/<li>/g)||[]).length,4);
+ a.match(src,/sea\.addEventListener\('pointerdown',e=>\{if\(!live\(\)\)return;e\.preventDefault\(\);actx\(\);press\(true\);\}\)/);
+ // 휴대폰에서는 낚시하는 동안에만 단추를 화면 아래에 붙인다(시작 카드의 출항 단추를 가리지 않게).
+ a.match(css,/\.f-stage\.is-live \.f-controls\{position:sticky;/);
+ a.match(src,/classList\.add\('is-live'\)/);a.match(src,/classList\.remove\('is-live'\)/);
+ a.match(page,/id="save-btn"[^>]*>명예의 전당에 남기기</);
+});

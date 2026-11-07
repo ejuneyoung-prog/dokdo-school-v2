@@ -68,9 +68,12 @@
      <div class="f-card">
       <span class="f-eyebrow">3 MINUTES</span>
       <h2 data-en="Let's go fishing in the seas of Dokdo">독도 바다로 낚시를 떠나요</h2>
-      <p class="f-note" data-en="Drop your line and stop: creatures living at that depth will come closer. When one bites, press and release the reel button to keep the green bar over it. The line reels in while you stay on it, and you land it once it reaches the surface.">낚싯줄을 내리다 멈추면 그 수심에 사는 생물이 다가옵니다. 입질이 오면 감기 단추를 눌렀다 떼며 초록 칸을 생물 위에 맞추세요. 맞추는 동안 줄이 감기고, 수면까지 끌어올리면 획득입니다.</p>
-      <p class="f-note" data-en="At first only the shallow sea is open. Collect creatures to open deeper seas. Catch in a row, find creatures you have never seen, and watch for golden time.">처음에는 얕은 바다만 열려 있어요. 생물을 모으면 더 깊은 바다가 열립니다. 점수를 올리려면 연속으로 낚아 보세요. 처음 보는 생물과 황금 시간에도 보너스가 붙습니다.</p>
-      <p class="f-note" data-en="PC: Space = drop line · reel, ↑ = raise line">PC: 스페이스바 = 내리기·감기, ↑ = 올리기</p>
+      <ol class="f-guide" aria-label="낚시하는 법" data-en-label="How to fish">
+       <li><b>1</b><span><strong data-en="Hold">꾹 누르기</strong><small data-en="line goes down">줄이 내려가요</small></span></li>
+       <li><b>2</b><span><strong data-en="Wait">기다리기</strong><small data-en="until ! appears">! 가 뜰 때까지</small></span></li>
+       <li><b>3</b><span><strong data-en="Tap">톡</strong><small data-en="hook it">바로 한 번</small></span></li>
+       <li><b>4</b><span><strong data-en="Tap, tap">톡톡</strong><small data-en="keep it in the green">초록 칸에 맞추기</small></span></li>
+      </ol>
       <button class="primary" id="go" type="button" data-en="Set sail">출항하기</button>
      </div>
     </div>
@@ -85,7 +88,7 @@
       <p class="f-note" id="e-detail"></p>
       <form id="save-form">
        <input id="nick" maxlength="12" placeholder="명예의 전당에 남길 이름" data-en-ph="Name for the hall of fame" aria-label="이름" data-en-label="Name" autocomplete="off">
-       <button class="primary" type="submit" id="save-btn" data-en="Post">올리기</button>
+       <button class="primary" type="submit" id="save-btn" data-en="Save to hall of fame">명예의 전당에 남기기</button>
       </form>
       <span class="f-note" id="save-msg" role="status"></span>
       <button class="f-secondary" id="again" type="button" data-en="Play again">한 번 더</button>
@@ -95,7 +98,6 @@
    <p class="f-coach" id="coach" role="status" hidden></p>
    <div class="f-controls">
     <button class="primary f-ctl" id="b-main" type="button" disabled><span>내리기</span><small>누르는 동안 줄이 내려가요</small></button>
-    <button class="f-secondary f-ctl" id="b-up" type="button" disabled><span>올리기</span><small>누르는 동안 줄을 감아요</small></button>
    </div>
    <div class="f-info" id="info" aria-live="polite"><b>지금 위치: 배 위</b><span class="f-note">처음에는 얕은 바다(0~10m)만 열려 있습니다. 생물을 모으면 대황 숲, 가지초, 독도새우 바다(150~300m)가 차례로 열립니다.</span></div>
   </section>

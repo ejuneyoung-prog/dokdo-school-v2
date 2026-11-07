@@ -249,9 +249,8 @@ function setInfo(){const m=mOf(hookY),z=zoneAt(m),box=$('info');box.replaceChild
  const near=SP.filter(s=>{const zz=ZONES.find(q=>q.id===s.zone);return zz&&zz===z;}).map(nm);box.append(el('b','',tr('지금 위치: ','Now: ')+zn(z)+' ('+zr(z)+')'),el('span','f-note',near.length?tr('이곳에 사는 생물: ','Living here: ')+near.join(', '):tr('이 수심은 화면에서 줄여 그렸습니다. 더 내려가 보세요.','This depth is drawn compressed on screen. Keep going down.')));}
 function hud(){$('h-score').textContent=score;const s=Math.max(0,Math.ceil(timeLeft));$('h-time').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0');$('h-depth').textContent=Math.round(mOf(hookY))+'m';const got=SP.filter(s=>dex[s.id]).length;$('h-dex').textContent=got+'/'+SP.length;}
 function say(text,sec=2.2){flash={text,until:t+sec};}
-function start(){actx();score=0;timeLeft=180;hookY=0;camY=-SKY;caughtRun=[];combo=0;bestCombo=0;runCount={};limitWarned=false;const g0=40+Math.random()*100;golden={from:g0+20,to:g0,announced:false};st='play';coachOn=needsCoach(prog,dex);spawn();$('start').hidden=true;if(root.innerWidth<900)$('stage')?.scrollIntoView?.({block:'start',behavior:calm?'auto':'smooth'});$('end').hidden=true;$('b-main').disabled=false;$('b-up').disabled=false;mainLabel();setInfo();hud();track('fish_start',{});}
-function mainLabel(){const b=$('b-main');b.querySelector('span').textContent=st==='fight'?tr('감기','Reel'):st==='bite'?tr('챔질!','Strike!'):tr('내리기','Drop');b.querySelector('small').textContent=st==='fight'?tr('눌렀다 떼며 초록 칸을 맞춰요','Press and release to keep the green bar on it'):st==='bite'?tr('지금 누르면 걸려요','Press now to hook it'):tr('누르는 동안 줄이 내려가요','Hold to let the line down');
- const u=$('b-up');u.querySelector('span').textContent=tr('올리기','Raise');u.querySelector('small').textContent=tr('누르는 동안 줄을 감아요','Hold to wind the line up');}
+function start(){actx();score=0;timeLeft=180;hookY=0;camY=-SKY;caughtRun=[];combo=0;bestCombo=0;runCount={};limitWarned=false;const g0=40+Math.random()*100;golden={from:g0+20,to:g0,announced:false};st='play';coachOn=needsCoach(prog,dex);spawn();$('start').hidden=true;if(root.innerWidth<900)$('stage')?.scrollIntoView?.({block:'start',behavior:calm?'auto':'smooth'});$('end').hidden=true;$('b-main').disabled=false;$('stage')?.classList.add('is-live');mainLabel();setInfo();hud();track('fish_start',{});}
+function mainLabel(){const b=$('b-main');b.querySelector('span').textContent=st==='fight'?tr('감기','Reel'):st==='bite'?tr('챔질!','Strike!'):tr('내리기','Drop');b.querySelector('small').textContent=st==='fight'?tr('눌렀다 떼며 초록 칸을 맞춰요','Press and release to keep the green bar on it'):st==='bite'?tr('지금 누르면 걸려요','Press now to hook it'):tr('누르는 동안 줄이 내려가요','Hold to let the line down');}
 function step(dt){t+=dt;if(flash&&t>flash.until)flash=null;
  for(const c of crit){if(c.s.spd){c.x+=c.dir*c.s.spd*40*dt;if(c.x<-80){c.x=W+60;}if(c.x>W+80){c.x=-60;}}c.ph+=dt*(c.s.spd?6:1.5);if(c.cool>0)c.cool-=dt;}
  for(const b of bubbles){b.y-=30*dt;b.a-=dt*.5;}bubbles=bubbles.filter(b=>b.a>0);
@@ -303,7 +302,7 @@ function landed(){const c=bite.c,s=c.s,f=fight;st='catch';const first=!dex[s.id]
   for(let k=0;k<8;k++){const a=ft*2+k*.8,r=60+((ft*60+k*20)%70);pcx.fillStyle='#FFD23F';pcx.beginPath();pcx.arc(180+Math.cos(a)*r,85+Math.sin(a)*r*.6,2.5,0,6.283);pcx.fill();}
   if(!calm)root.requestAnimationFrame(anim);};anim();}
 function endDetail(){const kinds=new Set(caughtRun).size;return tr('잡은 생물 '+caughtRun.length+'마리 · '+kinds+'종 · 최고 '+bestCombo+'연속','Caught '+caughtRun.length+' · '+kinds+' species · Best combo '+bestCombo);}
-function end(){st='over';coachOn=false;timeLeft=0;hud();$('b-main').disabled=true;$('b-up').disabled=true;holdMain=holdUp=false;$('catch').hidden=true;
+function end(){st='over';coachOn=false;timeLeft=0;hud();$('b-main').disabled=true;$('stage')?.classList.remove('is-live');holdMain=holdUp=false;$('catch').hidden=true;
  $('e-score').textContent=score;$('e-detail').textContent=endDetail();if(score>=1000&&badge('score1000'))renderProg();const m=todayMission();if(!prog.mission[today()]&&missionDone(m,run())){prog.mission[today()]=true;prog.xp+=300;badge('mission');saveProg();}renderProg();$('save-msg').textContent='';
  const can=score>0;$('save-btn').disabled=!can;$('nick').disabled=!can;$('nick').value=store.get(KEYS.nick,'');if(!can)$('save-msg').textContent=tr('점수가 있어야 명예의 전당에 오릅니다.','You need a score to enter the hall of fame.');$('end').hidden=false;track('fish_complete',{score});}
 
@@ -335,9 +334,11 @@ $('again').onclick=start;$('go').onclick=start;
 
 // ── 입력 ──
 const press=(v)=>{if(st==='bite'&&v){hook();return;}holdMain=v;};
-const bm=$('b-main'),bu=$('b-up');
+const bm=$('b-main');
 bm.addEventListener('pointerdown',e=>{e.preventDefault();actx();press(true);});['pointerup','pointercancel','pointerleave'].forEach(n=>bm.addEventListener(n,()=>press(false)));
-bu.addEventListener('pointerdown',e=>{e.preventDefault();holdUp=true;});['pointerup','pointercancel','pointerleave'].forEach(n=>bu.addEventListener(n,()=>{holdUp=false;}));
+// 바다 그림을 눌러도 큰 단추와 같다(휴대폰에서 단추를 찾지 않아도 되게). 겹친 안내 카드를 누를 때는 반응하지 않는다.
+ const sea=$('sea'),live=()=>['play','bite','fight'].includes(st);
+ sea.addEventListener('pointerdown',e=>{if(!live())return;e.preventDefault();actx();press(true);});['pointerup','pointercancel','pointerleave'].forEach(n=>sea.addEventListener(n,()=>{if(holdMain)press(false);}));
 doc.addEventListener('keydown',e=>{const k=keyAction(st,e.key,e.repeat,!!e.target.closest?.('input,textarea'));if(k.prevent)e.preventDefault();
  if(k.act==='close'){$('catch').hidden=true;st='play';mainLabel();}else if(k.act==='press')press(true);else if(k.act==='up')holdUp=true;});
 doc.addEventListener('keyup',e=>{if(e.key===' '||e.key==='ArrowDown'){e.preventDefault();press(false);}if(e.key==='ArrowUp')holdUp=false;});
