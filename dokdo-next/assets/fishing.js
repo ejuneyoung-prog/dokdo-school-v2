@@ -78,7 +78,7 @@ function mOf(y){if(y<=960)return y/24;if(y<=1136)return 40+(y-960)/1.6;if(y<=161
 function mult(combo){return 1+.1*Math.min(10,Math.max(0,combo-1));}
 function sizeFor(r){return r<.15?{key:'big',mult:1.5}:r<.45?{key:'small',mult:.8}:{key:'normal',mult:1};}
 function isGolden(golden,timeLeft){return !!(golden&&timeLeft<=golden.from&&timeLeft>golden.to);}
-function isPerfect(f){return f.total>0&&f.onT/f.total>=.85;}
+function isPerfect(f){return f.got>0&&f.clean;}
 function scoreCatch({pts,size,first,perfect,combo,gold}){
  let p=pts*size.mult;const lines=[{id:'base',pts,size:size.key,v:Math.round(p)}];
  if(first){lines.push({id:'first',v:Math.round(pts*.5)});p+=pts*.5;}
@@ -87,19 +87,23 @@ function scoreCatch({pts,size,first,perfect,combo,gold}){
  if(gold){lines.push({id:'gold',v:Math.round(p)});p*=2;}
  return{total:Math.round(p),lines};
 }
-// 초록 칸 폭: 비싼(별이 많은) 생물일수록 좁다. 별 1은 넉넉하게, 별 5는 좁게.
-const BAR=[0,.34,.28,.23,.18,.14];
-function startFight(s,hookY){return{fish:.5,target:.5,tw:.6,zone:.38,zw:BAR[starsOf(s)],v:0,ten:.7,startY:hookY,on:false,onT:0,total:0};}
-// 힘겨루기 한 걸음. 수면(hookY≤2)까지 끌어올려야만 'landed'다.
-function fightStep(f,s,hookY,holdMain,dt,rnd=Math.random){
- f.tw-=dt;if(f.tw<=0){f.target=rnd();f.tw=.5+rnd()*1.2/s.fight;}f.fish+=(f.target-f.fish)*dt*1.2*s.fight;f.fish=Math.max(.02,Math.min(.98,f.fish));
- f.v+=(holdMain?2.6:-2.2)*dt;f.v*=.92;f.zone+=f.v*dt;if(f.zone<0){f.zone=0;f.v=0;}if(f.zone>1-f.zw){f.zone=1-f.zw;f.v=0;}
- const on=f.fish>=f.zone&&f.fish<=f.zone+f.zw;f.on=on;f.total+=dt;if(on)f.onT+=dt;
- f.ten+=(on?.14:-.24/Math.sqrt(s.fight))*dt;f.ten=Math.min(1,f.ten);const reel=on&&rnd()<dt*6;
- if(on)hookY=Math.max(0,hookY-(hookY>yOf(40)?560:260)*dt);else hookY=Math.min(f.startY,hookY+18*s.fight*dt);
- if(hookY<=2)return{hookY:0,reel,outcome:'landed'};
- if(f.ten<=0)return{hookY,reel,outcome:'snapped'};
- return{hookY,reel,outcome:null};
+// ── 끌어올리기(타이밍) ── 챔질에 성공하면 공이 좌우로 오간다. 공이 초록 칸에 있을 때 톡 누르면 한 칸 끌어올린다.
+// 별이 많을수록 칸이 좁고 공이 빠르며 더 여러 번 성공해야 한다. 끌어올릴수록(물고기가 지칠수록) 공이 조금씩 빨라진다.
+// 놓치면 조금 다시 내려가고, 세 번 놓치면 줄이 끊어진다. 처음 몇 마리는 공을 느리게 해 손에 익게 한다.
+const BAR=[0,.40,.32,.26,.20,.16],SPEED=[0,.45,.6,.8,1.05,1.3],NEED=[0,2,3,3,4,5],LIVES=3;
+function startFight(s,hookY,easy){const n=starsOf(s);return{pos:0,dir:1,speed:SPEED[n]*(easy?.8:1),zw:BAR[n],zone:.62,need:NEED[n],got:0,miss:0,startY:hookY,goalY:hookY,flash:0,flashOk:false,total:0,clean:true};}
+function newZone(f,rnd){const h=f.zw/2;let c=h+rnd()*(1-2*h);if(Math.abs(c-f.pos)<.25)c=c<.5?Math.min(1-h,c+.35):Math.max(h,c-.35);f.zone=c;}
+function fightStep(f,s,hookY,tap,dt,rnd=Math.random){
+ f.total+=dt;if(f.flash>0)f.flash-=dt;
+ const sp=f.speed*(1+.12*f.got);f.pos+=f.dir*sp*dt;if(f.pos>=1){f.pos=2-f.pos;f.dir=-1;}if(f.pos<=0){f.pos=-f.pos;f.dir=1;}
+ let hit=null;
+ if(tap&&f.got<f.need){hit=Math.abs(f.pos-f.zone)<=f.zw/2;f.flash=.35;f.flashOk=hit;
+  if(hit){f.got++;f.goalY=f.got>=f.need?0:f.startY*(1-f.got/f.need);newZone(f,rnd);}
+  else{f.miss++;f.clean=false;f.goalY=Math.min(f.startY,f.goalY+f.startY/f.need*.5);}}
+ hookY+=(f.goalY-hookY)*Math.min(1,dt*6);
+ if(f.miss>=LIVES)return{hookY,reel:false,hit,outcome:'snapped'};
+ if(f.got>=f.need&&hookY<=3)return{hookY:0,reel:false,hit,outcome:'landed'};
+ return{hookY,reel:!!hit,hit,outcome:null};
 }
 // 키 입력 판정. 잡은 카드가 떠 있을 때 누르고 있는 스페이스(자동 반복)는 무시한다.
 function keyAction(st,key,repeat,inInput){
@@ -115,8 +119,8 @@ function fitSize(boxWidth){const bw=Number(boxWidth)||900,W=Math.max(360,Math.mi
 function pixelRatio(dpr){return Math.max(1,Math.min(2,Number(dpr)||1));}
 // 첫 판 안내: 처음 하는 사람의 첫 마리에서만. 예전 저장(coachDone 없음)이라도 도감에 한 마리라도 있으면 띄우지 않는다.
 function needsCoach(prog,dex){return !prog.coachDone&&!Object.keys(dex||{}).length;}
-function coachStep(st,holdMain,hookY,fight){if(st==='play')return holdMain||hookY<=8?1:2;if(st==='bite')return 2;if(st==='fight')return fight&&fight.onT>1?4:3;return 0;}
-const COACH=[null,['1/4 내리기 · 단추를 누르고 있으면 줄이 내려갑니다.','1/4 Drop · Hold the button to let the line down.'],['2/4 기다리기 · 톡톡 건드릴 땐 참고, 느낌표(!)가 뜨면 바로 누릅니다.','2/4 Wait · Hold still while it nibbles, then press as soon as the ! appears.'],['3/4 감기 · 단추를 눌렀다 떼며 초록 칸을 노란 점에 맞춥니다.','3/4 Reel · Press and release to keep the green bar on the yellow dot.'],['4/4 끌어올리기 · 초록 칸을 맞추는 동안 생물이 올라옵니다.','4/4 Bring it up · Stay on target until the catch reaches the surface.']];
+function coachStep(st,holdMain,hookY,fight){if(st==='play')return holdMain||hookY<=8?1:2;if(st==='bite')return 2;if(st==='fight')return fight&&fight.got>0?4:3;return 0;}
+const COACH=[null,['1/4 내리기 · 단추를 누르고 있으면 줄이 내려갑니다.','1/4 Drop · Hold the button to let the line down.'],['2/4 기다리기 · 톡톡 건드릴 땐 참고, 느낌표(!)가 뜨면 바로 누릅니다.','2/4 Wait · Hold still while it nibbles, then press as soon as the ! appears.'],['3/4 톡 · 공이 초록 칸에 왔을 때 한 번 누릅니다.','3/4 Tap · Press once when the ball is in the green.'],['4/4 끌어올리기 · 맞힐 때마다 한 칸씩 올라오고, 세 번 놓치면 달아납니다.','4/4 Bring it up · Each hit pulls it up a step; miss three times and it gets away.']];
 function shrimpCount(runCount){return SP.filter(q=>q.kind==='shrimp').reduce((a,q)=>a+(runCount[q.id]||0),0);}
 function missionDone(m,run){if(m.k==='sp')return (run.runCount[m.id]||0)>=m.n;if(m.k==='score')return run.score>=m.n;if(m.k==='combo')return run.bestCombo>=m.n;if(m.k==='kinds')return new Set(run.caughtRun).size>=m.n;if(m.k==='shrimp')return shrimpCount(run.runCount)>=m.n;return false;}
 function missionProgress(m,run){if(m.k==='sp')return Math.min(m.n,run.runCount[m.id]||0);if(m.k==='score')return Math.min(m.n,run.score);if(m.k==='combo')return Math.min(m.n,run.bestCombo);if(m.k==='kinds')return Math.min(m.n,new Set(run.caughtRun).size);if(m.k==='shrimp')return Math.min(m.n,shrimpCount(run.runCount));return 0;}
@@ -247,12 +251,14 @@ function drawWorld(){
  if(flash){cx.font='500 16px '+FONT;const ls=wrap(flash.text,W-56),fw=narrow()?W-24:Math.min(W-40,Math.max(520,Math.max(...ls.map(l=>cx.measureText(l).width))+32)),fy=narrow()?(combo>1?104:64):18,fh=20+ls.length*22;cx.fillStyle='rgba(35,37,40,.86)';cx.fillRect((W-fw)/2,fy,fw,fh);cx.fillStyle='#fff';cx.textAlign='center';ls.forEach((l,n)=>cx.fillText(l,W/2,fy+27+n*22));}
 }
 function drawFight(){const f=fight,bw=W-80,bx=40,by=H-86;cx.fillStyle='rgba(35,37,40,.9)';cx.fillRect(bx-12,by-34,bw+24,112);
- cx.fillStyle='#fff';cx.font='500 15px '+FONT;cx.textAlign='left';cx.fillText(nm(bite.c.s)+(narrow()?'':tr(' · 초록 칸을 맞추면 줄이 감겨요',' · Keep the green bar on it to reel in')),bx,by-12,bw-(narrow()?110:170));
+ cx.fillStyle='#fff';cx.font='500 15px '+FONT;cx.textAlign='left';cx.fillText(nm(bite.c.s)+' '+'★'.repeat(starsOf(bite.c.s)),bx,by-12,bw-(narrow()?110:170));
  cx.textAlign='right';cx.fillStyle='#B6D80C';cx.fillText(tr('수면까지 '+Math.max(0,Math.round(mOf(hookY)))+'m',Math.max(0,Math.round(mOf(hookY)))+'m to surface'),bx+bw,by-12);
- cx.fillStyle='#383C41';cx.fillRect(bx,by,bw,22);cx.fillStyle=f.on?'rgba(182,216,12,.95)':'rgba(182,216,12,.55)';cx.fillRect(bx+f.zone*bw,by,f.zw*bw,22);
- cx.fillStyle='#FFD23F';cx.beginPath();cx.arc(bx+f.fish*bw,by+11,9,0,6.283);cx.fill();
- cx.textAlign='left';cx.fillStyle='#A7ABB0';cx.font='500 14px '+FONT;cx.fillText(tr('줄 버팀','Line'),bx,by+46);
- cx.fillStyle='#383C41';cx.fillRect(bx+60,by+36,bw-60,10);cx.fillStyle=f.ten<.3?'#FF5A4E':'#FFD23F';cx.fillRect(bx+60,by+36,(bw-60)*Math.max(0,f.ten),10);}
+ const fl=f.flash>0;cx.fillStyle=fl?(f.flashOk?'#3d5a12':'#5a2622'):'#383C41';cx.fillRect(bx,by,bw,22);
+ cx.fillStyle=fl&&f.flashOk?'#d8ff3a':'rgba(182,216,12,.85)';cx.fillRect(bx+(f.zone-f.zw/2)*bw,by,f.zw*bw,22);
+ cx.fillStyle='#FFD23F';cx.beginPath();cx.arc(bx+f.pos*bw,by+11,10,0,6.283);cx.fill();
+ cx.textAlign='left';cx.font='500 14px '+FONT;cx.fillStyle='#A7ABB0';cx.fillText(tr('끌어올림','Pulled'),bx,by+46);
+ for(let i=0;i<f.need;i++){cx.fillStyle=i<f.got?'#B6D80C':'#383C41';cx.beginPath();cx.arc(bx+92+i*20,by+41,7,0,6.283);cx.fill();}
+ cx.textAlign='right';cx.fillStyle='#FF8A80';cx.fillText('♥'.repeat(Math.max(0,LIVES-f.miss))+'♡'.repeat(Math.min(LIVES,f.miss)),bx+bw,by+46);}
 
 // ── 진행 ──
 function el(tag,cls,text){const e=doc.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;}
@@ -261,7 +267,7 @@ function setInfo(){const m=mOf(hookY),z=zoneAt(m),box=$('info');box.replaceChild
 function hud(){$('h-score').textContent=score;const s=Math.max(0,Math.ceil(timeLeft));$('h-time').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0');$('h-depth').textContent=Math.round(mOf(hookY))+'m';const got=SP.filter(s=>dex[s.id]).length;$('h-dex').textContent=got+'/'+SP.length;}
 function say(text,sec=2.2){flash={text,until:t+sec};}
 function start(){actx();score=0;timeLeft=180;hookY=0;camY=-SKY;caughtRun=[];combo=0;bestCombo=0;runCount={};limitWarned=false;nib=null;const g0=40+Math.random()*100;golden={from:g0+20,to:g0,announced:false};st='play';coachOn=needsCoach(prog,dex);spawn();$('start').hidden=true;if(root.innerWidth<900)$('stage')?.scrollIntoView?.({block:'start',behavior:calm?'auto':'smooth'});$('end').hidden=true;$('b-main').disabled=false;$('stage')?.classList.add('is-live');mainLabel();setInfo();hud();track('fish_start',{});}
-function mainLabel(){const b=$('b-main');b.querySelector('span').textContent=st==='fight'?tr('감기','Reel'):st==='bite'?tr('챔질!','Strike!'):nib?tr('참아요','Wait'):tr('내리기','Drop');b.querySelector('small').textContent=st==='fight'?tr('눌렀다 떼며 초록 칸을 맞춰요','Press and release to keep the green bar on it'):st==='bite'?tr('지금 누르면 걸려요','Press now to hook it'):nib?tr('톡톡 건드리는 중 · ! 가 뜨면 눌러요','It is nibbling · press when ! appears'):tr('누르는 동안 줄이 내려가요','Hold to let the line down');}
+function mainLabel(){const b=$('b-main');b.querySelector('span').textContent=st==='fight'?tr('톡!','Tap!'):st==='bite'?tr('챔질!','Strike!'):nib?tr('참아요','Wait'):tr('내리기','Drop');b.querySelector('small').textContent=st==='fight'?tr('공이 초록 칸에 오면 눌러요','Press when the ball is in the green'):st==='bite'?tr('지금 누르면 걸려요','Press now to hook it'):nib?tr('톡톡 건드리는 중 · ! 가 뜨면 눌러요','It is nibbling · press when ! appears'):tr('누르는 동안 줄이 내려가요','Hold to let the line down');}
 function step(dt){t+=dt;if(flash&&t>flash.until)flash=null;
  for(const c of crit){if(c.s.spd&&!c.hold){c.x+=c.dir*c.s.spd*40*dt;if(c.x<-80){c.x=W+60;}if(c.x>W+80){c.x=-60;}}c.ph+=dt*(c.s.spd?6:1.5);if(c.cool>0)c.cool-=dt;}
  for(const b of bubbles){b.y-=30*dt;b.a-=dt*.5;}bubbles=bubbles.filter(b=>b.a>0);
@@ -276,13 +282,13 @@ function step(dt){t+=dt;if(flash&&t>flash.until)flash=null;
   if(nib){if(holdMain||holdUp){say(tr('너무 일찍 당겼어요. 느낌표(!)가 뜰 때 눌러요.','Too early. Press when the ! appears.'));nib.c.cool=5;nib.c.hold=false;nib=null;combo=0;sfx.miss();mainLabel();}else if(t>nib.until){const c=nib.c;nib=null;bite={c,until:t+(c.s.spd?1.1:1.6)};st='bite';sfx.bite();mainLabel();}}
   else if(!holdMain&&!holdUp&&hookY>8){const hx=W*BOAT_X+40;for(const c of crit){if(c.cool>0)continue;const dx=Math.abs(c.x-hx),dy=Math.abs(c.y-hookY);const reach=c.s.spd?40:56;if(dy<reach&&dx<reach+c.s.len*.5){const a=approach(c.s);if(!a.want){c.cool=a.ignore;continue;}c.hold=true;nib={c,until:t+a.nibble};mainLabel();break;}}}
  }else if(st==='bite'){if(t>bite.until){say(tr(ig(bite.c.s.name)+' 미끼만 물고 달아났어요.',nm(bite.c.s)+' stole the bait and got away.'));bite.c.cool=4;bite.c.hold=false;bite=null;st='play';sfx.miss();combo=0;mainLabel();}}
- else if(st==='fight'){const s=bite.c.s,r=fightStep(fight,s,hookY,holdMain,dt);hookY=r.hookY;if(r.reel)sfx.reel();
+ else if(st==='fight'){const s=bite.c.s,r=fightStep(fight,s,hookY,tapQ,dt);tapQ=false;hookY=r.hookY;if(r.reel)sfx.reel();else if(r.hit===false)sfx.no();
   if(r.outcome==='landed'){for(let k=0;k<18;k++)splash.push({x:W*BOAT_X+40,y:0,vx:(Math.random()-.5)*220,vy:-120-Math.random()*200,r:2+Math.random()*4,a:1});sfx.splash();landed();}
   else if(r.outcome==='snapped'){say(tr(ig(s.name)+' 줄을 끊고 달아났어요.',nm(s)+' broke the line and got away.'));sfx.miss();combo=0;bite.c.cool=5;bite.c.hold=false;bite=null;fight=null;st='play';mainLabel();}}
  for(const p of splash){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=500*dt;p.a-=dt*1.2;}splash=splash.filter(p=>p.a>0);
  const camMax=maxDepth()>=300?WORLD_BOTTOM-H:Math.min(WORLD_BOTTOM-H,yOf(maxDepth())+LOCK_BAND-H);const target=Math.max(-SKY,Math.min(camMax,hookY-H*.45));camY+=(target-camY)*Math.min(1,dt*4);
 }
-function hook(){if(st==='bite'){fight=startFight(bite.c.s,hookY);st='fight';sfx.splash();mainLabel();}}
+function hook(){if(st==='bite'){fight=startFight(bite.c.s,hookY,Object.keys(dex).length<3);tapQ=false;st='fight';sfx.splash();mainLabel();}}
 function lineText(l){if(l.id==='base'){const size={big:tr('큰 녀석!','Big one!'),small:tr('작은 녀석','Little one'),normal:tr('보통 크기','Regular size')}[l.size];return tr('기본 '+l.pts+'점 · ','Base '+l.pts+' pts · ')+size;}if(l.id==='first')return tr('처음 발견 보너스','First-find bonus');if(l.id==='perfect')return tr('완벽한 손맛','Perfect touch');if(l.id==='combo')return tr(l.combo+'연속 x'+l.m.toFixed(1),l.combo+' in a row x'+l.m.toFixed(1));if(l.id==='gold')return tr('황금 시간 x2','Golden time x2');return l.text||'';}
 function landed(){const c=bite.c,s=c.s,f=fight;st='catch';const first=!dex[s.id];dex[s.id]=(dex[s.id]||0)+1;store.set(KEYS.dex,dex);
  combo++;bestCombo=Math.max(bestCombo,combo);runCount[s.id]=(runCount[s.id]||0)+1;
@@ -345,7 +351,7 @@ $('save-form').addEventListener('submit',e=>{e.preventDefault();if(score<=0)retu
 $('again').onclick=start;$('go').onclick=start;
 
 // ── 입력 ──
-const press=(v)=>{if(st==='bite'&&v){hook();return;}holdMain=v;};
+let tapQ=false;const press=(v)=>{if(st==='bite'&&v){hook();return;}if(st==='fight'){if(v)tapQ=true;holdMain=false;return;}holdMain=v;};
 const bm=$('b-main');
 bm.addEventListener('pointerdown',e=>{e.preventDefault();actx();press(true);});['pointerup','pointercancel','pointerleave'].forEach(n=>bm.addEventListener(n,()=>press(false)));
 // 바다 그림을 눌러도 큰 단추와 같다(휴대폰에서 단추를 찾지 않아도 되게). 겹친 안내 카드를 누를 때는 반응하지 않는다.
@@ -379,5 +385,5 @@ SRC.forEach(([text,u])=>{const li=doc.createElement('li');const a=doc.createElem
 relabel();hud();fit();camY=-SKY;root.requestAnimationFrame(loop);
 }
 
-return{BAR,STAR_PTS,starsOf,baitChance,approach,SRC,ZONES,SP,PROTECT,KEYS,LEVELS,BADGES,MISSIONS,UNLOCK_NEED,createStore,loadSaved,unlockReady,newlyUnlocked,maxDepthFor,dayKey,todayMission,levelOf,yOf,mOf,mult,sizeFor,isGolden,isPerfect,scoreCatch,startFight,fightStep,keyAction,missionDone,missionProgress,fitSize,pixelRatio,needsCoach,coachStep,COACH,operatorView,boot};
+return{BAR,SPEED,NEED,LIVES,STAR_PTS,starsOf,baitChance,approach,SRC,ZONES,SP,PROTECT,KEYS,LEVELS,BADGES,MISSIONS,UNLOCK_NEED,createStore,loadSaved,unlockReady,newlyUnlocked,maxDepthFor,dayKey,todayMission,levelOf,yOf,mOf,mult,sizeFor,isGolden,isPerfect,scoreCatch,startFight,fightStep,keyAction,missionDone,missionProgress,fitSize,pixelRatio,needsCoach,coachStep,COACH,operatorView,boot};
 });
