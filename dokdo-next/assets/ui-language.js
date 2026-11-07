@@ -7,7 +7,7 @@ const dictionary={
  "로그인 링크를 확인하지 못했어요. 이메일로 로그인하거나 이 브라우저에서 새 링크를 요청해 주세요.":"This sign-in link could not be verified. Sign in with email or request a new link in this browser.",
  "카카오 로그인 요청 시간이 지났어요. 카카오 로그인 버튼을 눌러 새로 시작해 주세요.":"Your Kakao sign-in request expired. Select Sign in with Kakao to start again.",
  "만 14세 이상입니다":"I am 14 or older",
- "만 14세 미만은 보호자 동의 절차가 준비될 때까지 로그인 없이 이용해 주세요.":"If you are under 14, please use the school without signing in until parental consent is ready.",
+ "만 14세 미만은 로그인 없이 이용해 주세요.":"If you are under 14, please use the school without signing in.",
  "만 14세 이상인지 먼저 확인해 주세요.":"Please confirm that you are 14 or older first.",
  "Google로 로그인":"Sign in with Google",
  "이메일 로그인":"Sign in with email",

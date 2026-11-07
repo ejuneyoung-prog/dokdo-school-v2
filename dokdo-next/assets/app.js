@@ -48,7 +48,7 @@ const en={
  footer:'Small moments of learning make Dokdo shine.',demoLink:'Separate demo',ageTitle:'Tell us your age band',
  ageDesc:'We use your age band to pick your first story and explanations. Everyone starts at Kindergarten. We do not collect your date of birth.',
  ageRecoverLink:'Already have a nickname? Load your record here ↗',
- nickname:'Nickname (needed to keep your record)',nicknamePublic:'This nickname appears in the Hall of Fame. Do not use your real name or phone number.',under14Note:'If you are under 14, your nickname and school stay on this device. To join the rankings, a guardian needs to consent by email.',guardianMail:'Email us with a guardian ↗',hallUnder14:'If you are under 14, your records stay on this device and do not appear in the rankings.',schoolPublic:'Your school name appears in the school ranking.',ageBand:'Age band',
+ nickname:'Nickname (needed to keep your record)',nicknamePublic:'This nickname appears in the Hall of Fame. Do not use your real name or phone number.',nicknamePrivacy:'We collect your nickname and learning record to keep your progress and show it in the Hall of Fame, and keep them for 2 years from your last use. You can use the school without a nickname.',nicknamePrivacyLink:'Privacy Policy ↗',under14Note:'If you are under 14, your nickname and school stay on this device. To join the rankings, a guardian needs to consent by email.',guardianMail:'Email us with a guardian ↗',hallUnder14:'If you are under 14, your records stay on this device and do not appear in the rankings.',schoolPublic:'Your school name appears in the school ranking.',ageBand:'Age band',
  selectAge:'Select your age band',easyStart:'Start with very simple language, regardless of age.',continue:'Continue',
  agePreserve:'Existing game grades and records are not reduced.',settings:'Settings',reduceMotion:'Reduce motion',
  enableBirds:'Show birds after achievements',seaDensity:'Life in the sea',calm:'Calm',rich:'Lively',full:'More lively',
@@ -227,6 +227,7 @@ function renderUnder14(){
  const band=$('age-band')?.value||P.deviceAge(),child=P.isChildBand(band)&&!P.consent();
  if($('under14-note'))$('under14-note').hidden=!child;
  document.querySelectorAll('[data-i18n="nicknamePublic"],[data-i18n="schoolPublic"]').forEach(el=>{el.hidden=child;});
+ if($('nickname-privacy'))$('nickname-privacy').hidden=child;
  if($('guardian-mail'))$('guardian-mail').href=UNDER14_MAIL;
 }
 const shareHold=()=>P.knownChild()?tr('만 14세 미만의 기록은 보호자 동의 전까지 서버로 보내지 않아요.','If you are under 14, records stay on this device until a guardian consents.'):tr('나이대를 먼저 골라 주세요.','Please select your age band first.');

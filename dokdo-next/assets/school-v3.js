@@ -123,7 +123,7 @@ $('v3-back-learning').onclick=()=>{document.body.classList.remove('v3-exploring'
 const legacy=$('legacy-banner');if(legacy)$('view-home').prepend(legacy);
 // Optional public profile fields are disclosed together, with their existing visibility notices intact.
 const form=$('age-form'),optional=document.createElement('details'),optionalTitle=document.createElement('summary');optional.className='v3-optional-profile';optional.open=true;optionalTitle.id='v3-optional-label';optional.append(optionalTitle);
-for(const id of ['nickname','flag-select','flag-other','school-cat','school-name']){const field=$(id)?.closest('label');if(field)optional.append(field);}
+for(const id of ['nickname','flag-select','flag-other','school-cat','school-name']){const field=$(id)?.closest('label');if(field)optional.append(field);if(id==='nickname'&&$('nickname-privacy'))optional.append($('nickname-privacy'));}
 for(const el of [...form.querySelectorAll('[data-i18n="nicknamePublic"],[data-i18n="schoolPublic"]')])optional.append(el);
 const ageField=$('age-band').closest('label');form.insertBefore(optional,$('age-error'));form.insertBefore(ageField,$('age-recover-link'));
 document.addEventListener('dokdo:present',refresh);
