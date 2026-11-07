@@ -298,7 +298,7 @@ function tick(n){const dt=Math.min(.05,(n-last)/1000);last=n;seaU.t.value=n/1000
  if(bowView){cam.position.set(me.x+Math.sin(me.r)*6,8.2,me.z+Math.cos(me.r)*6);const yy=me.r+yaw;aim.set(me.x-Math.sin(yy)*100,8.5+Math.sin(-pitch+.2)*60,me.z-Math.cos(yy)*100)}
  else{const yy=yaw,base=seated?me.b.position.y:0,tx=seated?me.b.position.x:me.x,tz=seated?me.b.position.z:me.z,h=Math.sin(pitch)*dist+6+base,rd=Math.cos(pitch)*dist;cam.position.set(tx+Math.sin(yy)*rd,h,tz+Math.cos(yy)*rd);aim.set(tx,base+10,tz)}
  if(look){let w,a;if(lookOut){const q=(n-lookOut)/1600;w=lookOutW*(1-ss(0,1,q));a=lookOutA;if(q>=1){look=lookOut=0;dragT=n}}else{const q=lookAt(n);w=q.w;a=q.a;if(q.k>=1){look=0;dragT=n}}
-  if(w>0){const R=ISLE.ext*1.35+110,H=ISLE.ext*.36+50;cam.position.lerp(v.set(ISLE.x+Math.sin(a)*R,H,ISLE.z+Math.cos(a)*R),w);aim.lerp(v.set(ISLE.x,45,ISLE.z),w)}}
+  if(w>0){const R=Math.max(ISLE.ext*1.35+110,ISLE.ext*.75/(Math.tan(23*Math.PI/180)*cam.aspect)),H=R*.27+20;cam.position.lerp(v.set(ISLE.x+Math.sin(a)*R,H,ISLE.z+Math.cos(a)*R),w);aim.lerp(v.set(ISLE.x,45,ISLE.z),w)}}
  cam.lookAt(aim);
  const lk=Math.min(1,dt*.6);['d','n','g','r'].forEach(k=>{sky[k]+=(sky.tg[k]-sky[k])*lk});skyU.d.value=sky.d;skyU.n.value=sky.n;skyU.g.value=sky.g;
  const el=Math.max(.09,sky.e*Math.PI/180);sun.position.set(Math.sin(sky.az)*Math.cos(el)*900,Math.sin(el)*900,-Math.cos(sky.az)*Math.cos(el)*900);sun.intensity=(2.3-sky.d*.9)*(1-.92*sky.n)*(1-.55*sky.g);hemi.intensity=1.5*(1-.82*sky.n)*(1-.15*sky.g);

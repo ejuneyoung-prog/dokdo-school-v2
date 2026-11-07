@@ -97,9 +97,11 @@ test('a boat pinned against the shore escapes instead of switching auto off', ()
 });
 
 test('orbit ring is computed once per island and width', () => {
-  const t0 = Date.now(); sail.orbit(map.hit, ctr[0], ctr[1], 0, 900); const first = Date.now() - t0;
-  const t1 = Date.now(); for (let i = 0; i < 50; i++) sail.orbit(map.hit, ctr[0], ctr[1], i * 10, 900); const again = Date.now() - t1;
-  assert.ok(again < Math.max(20, first), 'cached: ' + again + 'ms for 50 vs first ' + first + 'ms');
+  let calls = 0; const counted = (x, z) => { calls++; return map.hit(x, z); };
+  sail.orbit(counted, ctr[0], ctr[1], 0, 900, 97); const first = calls;
+  for (let i = 0; i < 20; i++) sail.orbit(counted, ctr[0], ctr[1], i * 10, 900, 97);
+  assert.ok(first > 1000, 'first ring really looks at the map');
+  assert.equal(calls, first, 'later calls reuse the saved ring');
 });
 
 test('island center sits between 동도 and 서도', () => {

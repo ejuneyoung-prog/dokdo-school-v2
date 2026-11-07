@@ -34,7 +34,7 @@ function move(me,plan,mv,dt,hit,ctr,lim){if(!mv)return false;const sp=mv*SPEED*d
  for(let k=1;k<=9;k++)for(const s of [1,-1]){const a=me.r+s*k*.32,q=at(a),f=[me.x-Math.sin(a)*sp*4,me.z-Math.cos(a)*sp*4];if(ok(q[0],q[1])&&ok(f[0],f[1])){me.x=q[0];me.z=q[1];me.r+=wrap(a-me.r)*.5;plan.stuck=(plan.stuck||0)+.2;if(plan.stuck>12)regen(me,plan,hit,ctr);return true}}
  const ox=me.x-ctr[0],oz=me.z-ctr[1],ol=Math.hypot(ox,oz)||1;for(const s of [4,10,20]){const x=me.x+ox/ol*s,z=me.z+oz/ol*s;if(ok(x,z)){me.x=x;me.z=z;break}}
  plan.stuck=(plan.stuck||0)+1;if(plan.stuck>3)regen(me,plan,hit,ctr);else next(me,plan,hit,ctr);return false}
-function regen(me,plan,hit,ctr){plan.stuck=0;const way=escape(hit,ctr[0],ctr[1],me.x,me.z,90+(plan.wide||0),2600);const t=plan.clock||0;if(way&&t-(plan.escAt==null?-99:plan.escAt)>15){plan.escAt=t;plan.route=way;next(me,plan,hit,ctr);return}plan.wide=Math.min(300,(plan.wide||0)+50);plan.route=[];next(me,plan,hit,ctr)}
+function regen(me,plan,hit,ctr){plan.stuck=0;const t=plan.clock||0,way=t-(plan.escAt==null?-99:plan.escAt)>15?escape(hit,ctr[0],ctr[1],me.x,me.z,90+(plan.wide||0),2600):null;if(way){plan.escAt=t;plan.route=way;next(me,plan,hit,ctr);return}plan.wide=Math.min(300,(plan.wide||0)+50);plan.route=[];next(me,plan,hit,ctr)}
 // 섬 땅 칸 목록으로 무게중심과 가장 먼 땅까지의 거리를 구한다(360도 둘러보기 중심).
 function center(cells){let x=0,z=0,n=0;cells.forEach(([a,b])=>{x+=a;z+=b;n++});if(!n)return{x:0,z:0,ext:400};x/=n;z/=n;let e=0;cells.forEach(([a,b])=>{e=Math.max(e,Math.hypot(a-x,b-z))});return{x,z,ext:e}}
 const api={orbit,escape,next,steer,move,center,clear,wrap,SPEED};
