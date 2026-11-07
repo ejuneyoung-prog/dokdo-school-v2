@@ -158,12 +158,14 @@ const toastE=$('#toast');let toastT=0;function toast(x){toastE.textContent=x;toa
 let wallet=null,busy=false,again=false;
 // 서도는 첫날 열리고, 동도 정상은 며칠 모아야 오른다. 다음 목표가 싼 곳부터 보이도록 서도를 앞에 둔다.
 const PASS={stay:[2,6,'서도 주민숙소','e-stay','v-stay','서도 데크에서 동도를 바라봅니다'],camp:[1,30,'동도 정상 캠핑','e-camp','v-camp','동도 우산봉 정상에서 쉽니다']};
-const opened=m=>!PASS[m]||!!((st.pass|0)&PASS[m][0]);
+// 크리에이터 모드: 서버가 운영자 계정으로 확인한 때만 켜진다. 켜진 동안은 st의 복사본으로 놀고, 끄면 원래 기록으로 돌아간다.
+let creator=false,stBack=null,ownerOK=false,ownerEpoch=0;
+const opened=m=>creator||!PASS[m]||!!((st.pass|0)&PASS[m][0]);
 function passUI(){Object.keys(PASS).forEach(m=>{const p=PASS[m],x=opened(m)?p[2]:p[2]+' · 대황 '+p[1];$('#'+p[3]).textContent=x;$('#'+p[4]).textContent=x})}
 function goalUI(){const a=Object.keys(PASS).filter(m=>!opened(m)).map(m=>[PASS[m][2],PASS[m][1]]),b=ITEMS.filter(i=>!(st.own&i[0])).sort((x,y)=>(y[0]===64)-(x[0]===64)||x[2]-y[2]).map(i=>[i[1],i[2]]),g=[...a,...b][0],e=$('#goal');e.hidden=!g;if(!g)return;$('#g-text').textContent=st.c>=g[1]?g[0]+' 열 수 있습니다':'다음 목표 '+g[0]+' · 대황 '+(g[1]-st.c)+'개 더';$('#g-fill').style.width=Math.min(100,st.c/g[1]*100)+'%'}
 function ui(){$('#shell').textContent=st.c;$('#shell2').textContent=st.c;passUI();goalUI()}
 function tryGo(m){if(opened(m)){heal(m);return true}const p=PASS[m];if(st.c>=p[1]){st.c-=p[1];st.pass=(st.pass|0)|p[0];keep();chime();toast(p[2]+' 열림 · 대황 -'+p[1]);heal(m);return true}toast('대황 '+p[1]+'개가 필요합니다 · 지금 '+st.c+'개');openDeck();return false}
-function keep(){save(WK,JSON.stringify(st));ui();if(!wallet)return;if(busy){again=true;return}busy=true;wallet.set({...st}).catch(()=>{wallet=null}).finally(()=>{busy=false;if(again){again=false;keep()}})}
+function keep(){if(creator){ui();return}save(WK,JSON.stringify(st));ui();if(!wallet)return;if(busy){again=true;return}busy=true;wallet.set({...st}).catch(()=>{wallet=null}).finally(()=>{busy=false;if(again){again=false;keep()}})}
 function gain(k,why){st.c+=k;st.t+=k;keep();toast(why+' · 대황 +'+k);chime()}
 ui();
 const deck=$('#deck'),dBody=$('#d-body');let dTab='q';
@@ -234,11 +236,21 @@ const sb=$('#snd');sb.onclick=()=>{startAudio();on=!on;sb.setAttribute('aria-pre
 document.querySelectorAll('.vol').forEach((x,i,all)=>{x.value=level;x.addEventListener('input',()=>{startAudio();level=+x.value;all.forEach(y=>{if(y!==x)y.value=level});save('vol',level);if(mix)mix.gain.setTargetAtTime(volNow(),AC.currentTime,.08)})});
 // 세션 확인에 SDK를 쓰지 않습니다. 이 페이지는 계정 서버에 접속하지 않고 브라우저의 로그인 표시만 읽습니다.
 function signedIn(){const c=window.DOKDO_AUTH_CONFIG,keys=!c?['dokdo-account-session-v2','dokdo-account-session-v1']:[c.googleEnabled===true||c.kakaoEnabled===true||c.privateRecordsEnabled===true?'dokdo-account-session-v2':'dokdo-account-session-v1'];for(const k of keys){try{const v=JSON.parse(localStorage.getItem(k)||'null');if(v&&v.user&&v.user.id)return true}catch(e){}}return false}
+function sessionToken(){const c=window.DOKDO_AUTH_CONFIG,keys=!c?['dokdo-account-session-v2','dokdo-account-session-v1']:[c.googleEnabled===true||c.kakaoEnabled===true||c.privateRecordsEnabled===true?'dokdo-account-session-v2':'dokdo-account-session-v1'];for(const k of keys){try{const v=JSON.parse(localStorage.getItem(k)||'null');if(v&&typeof v.access_token==='string'&&v.access_token)return v.access_token}catch(e){}}return ''}
+const cBtn=$('#creator'),cTag=$('#cmode');
+function setCreator(v){if(v===creator)return;if(v){if(!ownerOK)return;stBack=JSON.stringify(st);creator=true;st.pass=Object.values(PASS).reduce((a,p)=>a|p[0],0);st.own=ITEMS.reduce((a,i)=>a|i[0],0);st.c=99999;toast('크리에이터 모드 · 모든 장소와 꾸미기가 열립니다. 기록은 저장하지 않습니다')}else{let back=null;try{back=JSON.parse(stBack)}catch(e){try{back=JSON.parse(load(WK)||'')}catch(e2){}}if(!back||typeof back!=='object'){toast('원래 기록을 되돌리지 못해 크리에이터 모드를 그대로 둡니다');return}creator=false;st=back;stBack=null;if(mode&&!opened(mode))heal('sea');toast('크리에이터 모드를 껐습니다 · 원래 기록으로 돌아왔습니다')}deco(me.b,st.on);dirty=true;cBtn.setAttribute('aria-pressed',creator);cBtn.textContent=creator?'크리에이터 모드 끄기':'크리에이터 모드';cTag.hidden=!creator;ui();if(!deck.hidden)dview();try{pad()}catch(e){}}
+function lockOwner(){ownerOK=false;const was=!cBtn.hidden;cBtn.hidden=true;if(creator)setCreator(false);if(was)try{pad()}catch(e){}}
+// 이 기기에서 한 번이라도 운영자로 확인됐을 때만, 로그인이 오래되어 확인을 못 하면 안내한다(다른 학습자에게는 띄우지 않음).
+const CSEEN='dokdo-heal-creator-seen';let staleShown=false;
+function staleHint(){if(staleShown||load(CSEEN)!=='1')return;staleShown=true;toast('크리에이터 확인 실패 · 계정 화면을 열었다 와 주세요')}
+async function checkOwner(){const ep=++ownerEpoch,tk=sessionToken();if(!tk){lockOwner();return false}try{const r=await fetch('/api/camp-creator',{headers:{Authorization:'Bearer '+tk},cache:'no-store'});const ok=r.ok&&(await r.json()).creator===true;if(ep!==ownerEpoch)return false;if(!ok||tk!==sessionToken()){lockOwner();if(r.status===401)staleHint();return false}const was=cBtn.hidden;ownerOK=true;cBtn.hidden=false;save(CSEEN,'1');if(was)try{pad()}catch(e){}return true}catch(e){if(ep===ownerEpoch)lockOwner();return false}}
+cBtn.onclick=async()=>{if(creator){setCreator(false);return}if(await checkOwner())setCreator(true)};
+addEventListener('storage',e=>{if(!e.key||/^dokdo-account-session/.test(e.key))checkOwner()});addEventListener('pageshow',()=>checkOwner());checkOwner();
 if(!signedIn()){$('#enter').classList.add('guest');$('#login-cta').hidden=false;$('#start').textContent='로그인 없이 둘러보기'}
 if(matchMedia('(pointer:coarse)').matches)hint.textContent='바다를 누르면 이동, 끌면 둘러보기, 두 손가락으로 가까이 보기';
 const enter=m=>{startAudio();$('#enter').hidden=true;if(!tryGo(m))heal('sea');hint.hidden=false;setTimeout(()=>{hint.style.opacity=0},9000)};$('#start').onclick=()=>enter('sea');$('#e-camp').onclick=()=>enter('camp');$('#e-stay').onclick=()=>enter('stay');
 addEventListener('pointerdown',()=>{if(AC&&AC.state!=='running')AC.resume()});document.addEventListener('visibilitychange',()=>{if(!document.hidden&&AC)AC.resume();if(!document.hidden&&silent)silent.play().catch(()=>{})});
-if(window.claude&&claude.use)Promise.all([claude.use('db'),claude.use('user')]).then(async([db,u])=>{if(!db||!u)return;const id=await u.id();if(!id)return;const ref=db.doc('data/users/'+id+'/wallet'),sn=await ref.get();wallet=ref;const v=sn.exists&&sn.data();if(v&&typeof v.t==='number'&&v.t>=st.t){Object.assign(st,v);deco(me.b,st.on);dirty=true;save(WK,JSON.stringify(st));ui()}else if(st.t)keep()}).catch(()=>{});
+if(window.claude&&claude.use)Promise.all([claude.use('db'),claude.use('user')]).then(async([db,u])=>{if(!db||!u)return;const id=await u.id();if(!id)return;const ref=db.doc('data/users/'+id+'/wallet'),sn=await ref.get();wallet=ref;const v=sn.exists&&sn.data();let baseT=st.t;if(creator){try{baseT=JSON.parse(stBack).t}catch(e){}}if(v&&typeof v.t==='number'&&v.t>=baseT){if(creator){try{const b=JSON.parse(stBack);Object.assign(b,v);stBack=JSON.stringify(b)}catch(e){}return}Object.assign(st,v);deco(me.b,st.on);dirty=true;save(WK,JSON.stringify(st));ui()}else if(st.t)keep()}).catch(()=>{});
 // 함께 있는 사람들
 const others=new Map();let room=null,alone=true;
 function peerUp(list){const seen=new Set();let cnt=1;list.forEach(p=>{if(p.isMe)return;const q=p.presence||{};if(typeof q.x!=='number'||typeof q.z!=='number')return;cnt++;seen.add(p.peer);let o=others.get(p.peer);if(!o){const h=typeof q.h==='number'?q.h:.5;o={b:boat(h),x:q.x,z:q.z,r:q.r||0,tag:tag(''),wave:0};s.add(o.b);others.set(p.peer,o)}o.v=q.v==='camp'||q.v==='stay'?q.v:'';o.gx=Math.max(-3000,Math.min(3000,q.x));o.gz=Math.max(-3000,Math.min(3000,q.z));o.gr=+q.r||0;o.tag.na.textContent=clean(String(q.n||'친구').slice(0,8))||'친구';o.k=(q.k|0)&127;deco(o.b,o.k);const say=clean(String(q.say||'').slice(0,30));if(say!==o.say){o.say=say;o.tag.bu.textContent=say;o.tag.bu.hidden=!say;if(say){o.wave=performance.now();chime()}}});
