@@ -40,6 +40,7 @@ button[aria-pressed=true],#send{background:var(--lime);color:var(--ink)}
 #enter p{margin:0;color:var(--mute)}
 #enter .note{font-size:14px}
 #vr{color:var(--mute);font-size:14px}
+#cmode{color:var(--lime);font-size:14px;font-weight:600}
 .tabs{display:flex;gap:6px}
 .tabs button{flex:1;min-width:0;padding-inline:6px}
 .tabs button[aria-selected=true]{box-shadow:inset 0 -3px 0 var(--lime)}
@@ -96,7 +97,7 @@ body:has(#deck:not([hidden])) #toast{top:calc(14px + env(safe-area-inset-top,0px
 </head><body>
 <canvas id="stage" aria-label="독도에서 힐링하기 3D 장면"></canvas>
 <div id="tags"></div>
-<div id="top" class="card"><a class="back" href="../?area=learn">← 스쿨로 돌아가기</a><h1>독도에서 힐링하기</h1><div id="count">바다로 나가는 중</div><div id="now"></div><div id="vr" hidden>화면 속 가상 체험입니다</div><button id="goal" hidden><span id="g-text"></span><span id="g-bar"><span id="g-fill"></span></span></button></div>
+<div id="top" class="card"><a class="back" href="../?area=learn">← 스쿨로 돌아가기</a><h1>독도에서 힐링하기</h1><div id="count">바다로 나가는 중</div><div id="now"></div><div id="vr" hidden>화면 속 가상 체험입니다</div><div id="cmode" hidden>크리에이터 모드 · 기록 저장 안 함</div><button id="goal" hidden><span id="g-text"></span><span id="g-bar"><span id="g-fill"></span></span></button></div>
 <div id="me" class="card"><label for="nick">내 이름</label><input id="nick" maxlength="8" autocomplete="off"><input class="vol" type="range" min="0" max="100" aria-label="소리 크기"><button id="snd" aria-pressed="true">소리 켜짐</button></div>
 <div id="hint" hidden>바다를 누르면 이동, 끌면 둘러보기, 휠이나 두 손가락으로 가까이 보기</div>
 <div id="toast" role="status" hidden></div>
@@ -105,7 +106,7 @@ body:has(#deck:not([hidden])) #toast{top:calc(14px + env(safe-area-inset-top,0px
 <div id="info" class="card" hidden><b></b><span></span></div>
 <div id="dock" class="card">
  <div class="tabs" role="tablist" aria-label="메뉴"><button role="tab" id="t-rest" aria-selected="true">쉼터</button><button role="tab" id="t-sail" aria-selected="false">항해</button><button role="tab" id="t-talk" aria-selected="false">인사</button><button id="t-deck">대황 <b id="shell">0</b></button></div>
- <div class="row" id="p-rest"><button id="v-sea" aria-pressed="false">바다에서 보기</button><button id="v-camp" aria-pressed="false">동도 정상 캠핑</button><button id="v-stay" aria-pressed="false">서도 주민숙소</button><button id="breath">3분 쉬기</button></div>
+ <div class="row" id="p-rest"><button id="v-sea" aria-pressed="false">바다에서 보기</button><button id="v-camp" aria-pressed="false">동도 정상 캠핑</button><button id="v-stay" aria-pressed="false">서도 주민숙소</button><button id="breath">3분 쉬기</button><button id="creator" hidden aria-pressed="false">크리에이터 모드</button></div>
  <div class="row" id="p-sail" hidden><button id="go-seo">서도로 가기</button><button id="go-dong">동도로 가기</button><button id="auto" aria-pressed="false">자동 항해</button><button id="look">360도 둘러보기</button><button id="bow" aria-pressed="false">뱃머리 시점</button></div>
  <div class="row" id="p-talk" hidden><button id="wave">손 흔들기</button><button class="q">풍경이 참 좋아요</button><button class="q">같이 쉬어요</button><button class="q">또 만나요</button></div>
  <form id="say"><input id="text" maxlength="30" placeholder="말풍선으로 인사하기" autocomplete="off" aria-label="말풍선 내용"><button id="send" type="submit">보내기</button></form>
