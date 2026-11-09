@@ -80,11 +80,27 @@ def view2d(page):
     expect(page.locator('#v-breath')).to_be_visible()
     expect(page.locator('#v-card')).to_be_hidden()
     expect(page.locator('#v-stop')).to_be_visible()
+    before = heal_state(page).get('c', 0)
     page.evaluate("dispatchEvent(new CustomEvent('dokdo-view-minute'))")
-    expect(page.locator('#toast')).to_contain_text('독도 바라보기 · 대황 +1')
+    assert heal_state(page)['c'] == before + 1, 'one 대황 per minute of looking'
     page.locator('#v-stop').click()
     expect(page.locator('#v-card')).to_be_visible()
     expect(page.locator('#v-breath')).to_be_hidden()
+    page.locator('#v-go').click()
+    page.keyboard.press('Escape')
+    expect(page.locator('#v-card')).to_be_visible()
+    # 그림 뒤의 3D 화면은 Tab으로 잡히지 않는다
+    assert page.evaluate("document.querySelector('#enter').inert && document.querySelector('#dock').inert")
+    assert page.evaluate("(()=>{const ids=[...document.querySelectorAll('[id]')].map(e=>e.id);return ids.length===new Set(ids).size})()"), 'ids are unique'
+    assert page.evaluate("document.querySelector('#v-sea').tagName") == 'BUTTON'
+    # 세로 화면은 두 섬이 폭에 맞게(가로 1000) 들어온다
+    if page.viewport_size['width'] < page.viewport_size['height']:
+        assert page.get_attribute('#v-art', 'viewBox').split()[2] == '1000'
+    page.locator('#v-go').click()
+    page.locator('#v-3d2').click()
+    expect(page.locator('#view')).to_be_hidden()
+    expect(page.locator('#start')).to_be_focused()
+    assert not page.evaluate("document.querySelector('#enter').inert")
     for scene, name in [('dawn', '새벽의 독도'), ('night', '밤의 독도')]:
         page.goto(page.url.split('?')[0] + '?scene=' + scene)
         expect(page.locator('#v-time')).to_have_text(name)
