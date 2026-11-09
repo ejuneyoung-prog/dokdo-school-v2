@@ -167,13 +167,13 @@ def card(context, label):
     biggest = page.evaluate("""()=>{const r=e=>{const b=document.querySelector(e).getBoundingClientRect();return b.width*b.height};return {start:r('#v3-first-class'),login:r('#account-link'),live:r('#v3-live-entry'),lang:r('#v3-main-language')}}""")
     assert biggest['start'] == max(biggest.values()), biggest
     assert entry.locator('.v3-choice-name > span').all_inner_texts() == ['독도에서', '힐링하기']
-    rows = page.evaluate("""()=>{const lines=[...document.querySelectorAll('#camp-title > span')].map(e=>e.getBoundingClientRect());
-      const buttons=[...document.querySelectorAll('#v3-entry .v3-choice-action')].map(e=>e.getBoundingClientRect());
-      const size=parseFloat(getComputedStyle(document.querySelector('#camp-title')).fontSize);
-      return {size,lines:lines.map(r=>Math.round(r.height)),oneRowEach:lines.every(r=>r.height<size*1.9)&&lines[1].top>=lines[0].bottom-1,
-              heights:buttons.map(r=>Math.round(r.height))}}""")
-    assert rows['oneRowEach'], rows
-    assert len(set(rows['heights'])) == 1, rows
+    # 힐링 칸은 두 칸 아래 가로 전체 그림 칸: 제목은 한 줄, 다른 칸보다 넓고 그림이 보인다(11/10)
+    rows = page.evaluate("""()=>{const box=e=>document.querySelector(e).getBoundingClientRect();
+      const lines=[...document.querySelectorAll('#camp-title > span')].map(e=>e.getBoundingClientRect());
+      const c=box('#camp-entry'),l=box('#v3-enter-learn'),p=box('#v3-enter-play'),art=box('#camp-entry .camp-art'),act=box('#camp-action');
+      return {oneLine:Math.abs(lines[0].top-lines[1].top)<2,below:c.top>=Math.max(l.bottom,p.bottom)-1,
+              wide:c.width>=l.width+p.width,art:art.height>=100,action:act.height>0&&act.bottom<=c.bottom}}""")
+    assert all(rows.values()), rows
     page.evaluate('DokdoApp.editProfile()')
     page.fill('#nickname', NICK)
     page.locator('#age-form button[type=submit]').click()
