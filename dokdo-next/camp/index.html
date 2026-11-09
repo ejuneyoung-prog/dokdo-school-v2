@@ -133,7 +133,8 @@ body:has(#deck:not([hidden])) #toast{top:calc(14px + env(safe-area-inset-top,0px
 body.v2d #toast{top:calc(68px + env(safe-area-inset-top,0px));bottom:auto}
 /* 가로 화면은 카드를 왼쪽에, 그림은 남은 자리에 두 섬이 오도록(view.js frame) */
 @media (min-aspect-ratio:11/10){#v-card{left:max(24px,env(safe-area-inset-left,0px));bottom:24px;transform:none;width:min(360px,42vw)}body.v2d #toast{top:calc(14px + env(safe-area-inset-top,0px))}}
-@media (min-aspect-ratio:11/10) and (max-height:500px){#v-card{bottom:12px;padding:10px 14px;gap:6px}#v-card h2{font-size:20px}#view .note{display:none}#v-go{min-height:46px;padding:8px;font-size:17px}}
+body:has(#view.watching) #toast{top:calc(60px + env(safe-area-inset-top,0px))}/* 바라보는 중에는 위 가운데의 '1분째' 표시를 가리지 않게 */
+@media (min-aspect-ratio:11/10) and (max-height:500px){#v-card{bottom:12px;padding:10px 14px;gap:6px}#v-card h2{font-size:20px}#v-go{min-height:46px;padding:8px;font-size:17px}}
 #view.watching #v-card,#view.watching>.back{display:none}
 #view.watching #v-bar{display:flex}
 #view.watching #v-dot{display:block;animation:vbreath 10s ease-in-out infinite}

@@ -83,6 +83,8 @@ def view2d(page):
     before = heal_state(page).get('c', 0)
     page.evaluate("dispatchEvent(new CustomEvent('dokdo-view-minute'))")
     assert heal_state(page)['c'] == before + 1, 'one 대황 per minute of looking'
+    expect(page.locator('#toast')).to_be_visible()
+    assert page.evaluate("(()=>{const a=document.querySelector('#toast').getBoundingClientRect(),b=document.querySelector('#v-min').getBoundingClientRect();return a.bottom<=b.top||b.bottom<=a.top||a.right<=b.left||b.right<=a.left})()"), 'toast does not cover the minute line'
     page.locator('#v-stop').click()
     expect(page.locator('#v-card')).to_be_visible()
     expect(page.locator('#v-breath')).to_be_hidden()
@@ -326,11 +328,14 @@ def blocked(browser):
     expect(page.locator('#err')).to_be_visible()
     # 3D를 못 켜도 2D 그림은 본다. 3D 단추를 누르면 안내와 홈 길이 나온다.
     expect(page.locator('#view')).to_be_visible()
+    page.wait_for_load_state('load')
+    expect(page.locator('#v-reward')).to_be_hidden()
     page.locator('#v-go').click()
     expect(page.locator('#v-breath')).to_be_visible()
     page.locator('#v-stop').click()
     into3d(page)
     expect(page.locator('#err a.back')).to_be_visible()
+    expect(page.locator('#err a.back')).to_be_focused()
     page.locator('#err a.back').click()
     page.wait_for_function("!location.pathname.includes('/camp')")
     context.close()

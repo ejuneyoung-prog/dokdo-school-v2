@@ -12,7 +12,8 @@ function sun(now){const r=Math.PI/180,d=now/864e5-10957.5,g=(357.529+.98560028*d
  let ha=((lst-ra)%360+540)%360-180;const alt=Math.asin(Math.sin(lat)*Math.sin(dec)+Math.cos(lat)*Math.cos(dec)*Math.cos(ha*r))/r;return{alt,am:ha<0}}
 function sceneOf(now){const s=sun(now);return s.alt< -5?'night':s.alt>10?'day':s.am?'dawn':'dusk'}
 let pick='';try{pick=new URLSearchParams(location.search).get('scene')||''}catch(e){}
-const sc=NAME[pick]?pick:sceneOf(Date.now());V.dataset.scene=sc;$('#v-time').textContent=NAME[sc];
+function scene(){const sc=NAME[pick]?pick:sceneOf(Date.now());if(V.dataset.scene!==sc){V.dataset.scene=sc;$('#v-time').textContent=NAME[sc]}}
+scene();if(!NAME[pick])setInterval(scene,60000);// 오래 바라보면 해 지는 대로 그림도 바뀐다
 document.body.classList.add('v2d');
 // 그림이 떠 있는 동안 뒤의 3D 화면은 누르거나 Tab으로 갈 수 없게 둔다(inert).
 function lock(on){[...document.body.children].forEach(e=>{if(e!==V&&e.id!=='toast'&&e.tagName!=='SCRIPT')e.inert=on})}
@@ -24,17 +25,17 @@ function frame(){const W=innerWidth,H=innerHeight,cv=!V.classList.contains('watc
  else{const R=cv?cv.right+12:0,room=W-R;w=Math.max(1600,1000*W/Math.max(room,1)*1.1);h=w*H/W;x=805-(R+room/2)*w/W;y=600-.62*h}
  art.setAttribute('viewBox',[x,y,w,h].map(Math.round).join(' '))}
 frame();addEventListener('resize',frame);
-let au=null,timer=0,t0=0,mins=0,on=true,paid=false;
+let au=null,timer=0,t0=0,mins=0,on=true;
 const breath=$('#v-breath'),left=$('#v-min'),snd=$('#v-snd');
 // 소리 크기는 3D 화면에서 맞춘 값(vol, 0~100, 기본 45)을 따른다.
 function vol(){let v=45;try{const x=parseFloat(localStorage.getItem('vol'));if(x>=0&&x<=100)v=x}catch(e){}return Math.min(1,.8*Math.pow(v/45,1.6))}
-function play(){try{if(!au){au=new Audio('./waves.mp3');au.loop=true;au.setAttribute('playsinline','')}au.volume=vol();if(au.volume>0)au.play().catch(()=>{})}catch(e){}}
+function play(){try{if(!au){au=new Audio('./waves.mp3');au.loop=true;au.setAttribute('playsinline','')}const v=vol();au.volume=v;if(v>0)au.play().catch(()=>{})}catch(e){}}
 function beat(){const e=(Date.now()-t0)/1000,w=e%10<4?'들이쉬고':'내쉬고';if(breath.textContent!==w)breath.textContent=w;const m=Math.floor(e/60);if(m>mins){mins=m;left.textContent=m+'분째 바라보는 중';dispatchEvent(new CustomEvent('dokdo-view-minute'))}}
 function start(){V.classList.add('watching');frame();t0=Date.now();mins=0;left.textContent='바라보는 중';breath.hidden=left.hidden=false;if(on)play();clearInterval(timer);timer=setInterval(beat,250);beat();$('#v-stop').focus()}
 function stop(){clearInterval(timer);timer=0;V.classList.remove('watching');breath.hidden=left.hidden=true;if(au)au.pause();frame()}
 function to3d(){stop();V.hidden=true;lock(false);document.body.classList.remove('v2d');dispatchEvent(new CustomEvent('dokdo-view-3d'));const b=$('#err a')||$('#start');if(b)b.focus()}
 // healing.js가 준비되지 못하면(3D를 못 켜는 기기) 대황 약속 문구를 숨긴다.
-function reward(){$('#v-reward').hidden=!window.DokdoHealReady}
+function reward(){const h=!window.DokdoHealReady;if($('#v-reward').hidden!==h){$('#v-reward').hidden=h;frame()}}
 addEventListener('load',()=>{reward();if(!V.hidden)lock(true)});// 늦게 생긴 #err까지 막는다
 $('#v-go').onclick=()=>{reward();start()};
 $('#v-stop').onclick=()=>{stop();$('#v-go').focus()};
