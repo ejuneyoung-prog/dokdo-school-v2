@@ -227,6 +227,8 @@ $('#scenery').onclick=()=>setScene(true);sceneB.onclick=()=>setScene(false);addE
 const RS=180;let rest=null;
 function endRest(){rest=null;body.classList.remove('resting');$('#rest').hidden=true;pad();$('#breath').focus()}
 $('#breath').onclick=()=>{startAudio();rest={t:performance.now(),m:0,ph:-1,z:1};body.classList.add('resting');$('#rest').hidden=false;pad();$('#r-end').focus()};$('#r-end').onclick=endRest;
+// 2D 독도 바라보기(view.js): 1분마다 대황 1개, 3분 쉬기와 같은 하루 10개 한도
+addEventListener('dokdo-view-minute',()=>{if(st.rD!==today()){st.rD=today();st.rN=0}if(st.rN<10){st.rN++;gain(1,'독도 바라보기')}});
 function resting(n){const e=(n-rest.t)/1000*rest.z,l=Math.max(0,RS-e),m=Math.floor(e/60);if(m>rest.m){rest.m=m;if(st.rD!==today()){st.rD=today();st.rN=0}if(st.rN<10){st.rN++;gain(1,'쉬는 시간')}}$('#r-left').textContent=Math.floor(l/60)+':'+String(Math.floor(l%60)).padStart(2,'0');const c=e%10,inh=c<4,k=inh?c/4:1-(c-4)/6;if(inh!==(rest.ph===1)){rest.ph=inh?1:0;$('#r-word').textContent=inh?'들이쉬고':'내쉬고';if(inh)bell()}if(!calm)$('#r-dot').style.transform='scale('+(.8+k*.4)+')';if(!calm)yaw+=.00035;if(l<=0){endRest();toast('잘 쉬셨습니다')}}
 // 말 거르기
 const BAD=/시발|씨발|ㅅㅂ|ㅆㅂ|병신|ㅂㅅ|좆|존나|ㅈㄴ|개새|새끼|지랄|닥쳐|꺼져|섹스|야동|보지|자지|fuck|shit|bitch|다케시마|타케시마|竹島|takeshima/i;
@@ -306,7 +308,8 @@ let sent=0;function push(n){if(!room||!dirty||n-sent<220)return;sent=n;dirty=fal
 function fit(){r.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();pad()}addEventListener('resize',fit);fit();
 const bob=(b,x,z,rot,n)=>{const a=calm?0:1;b.position.set(x,a*Math.sin(n*.0013+x*.01)*.5,z);b.rotation.set(a*Math.sin(n*.0011+z*.01)*.04,rot,a*Math.sin(n*.0009)*.05)};
 const duskC=new T.Color('#fdb78f'),nightC=new T.Color('#0d1430'),greyC=new T.Color('#b9c2ca');const nearShore=()=>Math.min(Math.hypot(me.x-peakW[0],me.z-peakW[2]),Math.hypot(me.x-peakE[0],me.z-peakE[2]));let last=performance.now(),nearNow=null,infoTm=0;const info=$('#info'),infoN=$('#info b'),infoT=$('#info span');
-function tick(n){const dt=Math.min(.05,(n-last)/1000);last=n;seaU.t.value=n/1000;
+function tick(n){if(body.classList.contains('v2d')){last=n;requestAnimationFrame(tick);return}// 2D 그림을 보는 동안 3D는 그리지 않는다(배터리)
+ const dt=Math.min(.05,(n-last)/1000);last=n;seaU.t.value=n/1000;
  const seated=isSeat(mode);let mv=0,tr=0;if(!seated){if(keys.w||keys.arrowup)mv=1;if(keys.s||keys.arrowdown)mv=-.6;if(keys.a||keys.arrowleft)tr=1;if(keys.d||keys.arrowright)tr=-1}
  if(mv||tr){if(auto)setAuto(false);me.tx=null;me.r+=tr*dt*1.1}
  else if(!seated)mv=SAIL.steer(me,plan,dt,hit,ctr);
