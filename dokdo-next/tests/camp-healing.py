@@ -171,8 +171,9 @@ def card(context, label):
     rows = page.evaluate("""()=>{const box=e=>document.querySelector(e).getBoundingClientRect();
       const lines=[...document.querySelectorAll('#camp-title > span')].map(e=>e.getBoundingClientRect());
       const c=box('#camp-entry'),l=box('#v3-enter-learn'),p=box('#v3-enter-play'),art=box('#camp-entry .camp-art'),act=box('#camp-action');
-      return {oneLine:Math.abs(lines[0].top-lines[1].top)<2,below:c.top>=Math.max(l.bottom,p.bottom)-1,
-              wide:c.width>=l.width+p.width,art:art.height>=100,action:act.height>0&&act.bottom<=c.bottom}}""")
+      const s=box('#v3-first-class');
+      return {oneLine:Math.abs(lines[0].top-lines[1].top)<2,below:c.top>=Math.max(l.bottom,p.bottom)-1,startFirst:s.bottom<=Math.min(l.top,p.top,c.top),
+              wide:c.width>=l.width+p.width,art:art.height>=90,action:act.height>0&&act.bottom<=c.bottom}}""")
     assert all(rows.values()), rows
     page.evaluate('DokdoApp.editProfile()')
     page.fill('#nickname', NICK)
