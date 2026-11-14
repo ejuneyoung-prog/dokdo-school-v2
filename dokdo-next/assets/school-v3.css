@@ -459,3 +459,5 @@ html[lang=en] .school-v3 .brand small{letter-spacing:0;margin-right:0}
 .school-v3 .v3-entry .v3-choice-camp .v3-choice-name span+span{margin-left:.3em}
 .school-v3 .v3-entry .v3-choice-camp .v3-choice-description{display:block;font-size:.9375rem;line-height:1.5;margin:2px 12px 10px}
 .school-v3 .v3-entry .v3-choice-camp .v3-choice-action{display:inline-block;width:auto;min-height:0;margin:0;padding:9px 22px;border-radius:999px;font-size:1rem;line-height:1.4}
+/* 결과 화면의 '독도로 가기' 한 줄(힐링 2단계) */
+.school-v3 .v3-result-sea{display:block;width:100%;font-size:1rem;line-height:1.8;color:#2f6577;margin-top:8px;text-decoration:underline;text-underline-offset:4px}
