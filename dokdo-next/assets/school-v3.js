@@ -116,7 +116,7 @@ function decorateResult(){
 const start=$('start-lesson');start.replaceChildren();const startLabel=document.createElement('span');startLabel.id='v3-start-label';start.append(startLabel);$('v3-start-slot').append(start);
 $('v3-review-slot').append($('start-review'));
 $('v3-island-slot').append($('play-entry-island'));
-$('v3-main-language').onclick=()=>$('language').click();$('v3-profile-entry').onclick=()=>App.editProfile();$('v3-profile-menu').onclick=()=>{$('v3-more').open=false;App.editProfile();};$('v3-channel-about').onclick=()=>{$('v3-more').open=false;const d=$('channel-info-dialog');if(d&&!d.open)d.showModal();};$('v3-enter-learn').onclick=enterLearning;$('v3-first-class').onclick=()=>{if(enterLearning())$('start-lesson').click();};$('v3-learn-nav').onclick=enterLearning;
+$('v3-main-language').onclick=()=>$('language').click();$('v3-profile-entry').onclick=()=>App.editProfile();$('v3-profile-menu').onclick=()=>{$('v3-more').open=false;App.editProfile();};$('v3-home-site').addEventListener('click',()=>{$('v3-more').open=false;});$('v3-channel-about').onclick=()=>{$('v3-more').open=false;const d=$('channel-info-dialog');if(d&&!d.open)d.showModal();};$('v3-enter-learn').onclick=enterLearning;$('v3-first-class').onclick=()=>{if(enterLearning())$('start-lesson').click();};$('v3-learn-nav').onclick=enterLearning;
 $('brand-home').onclick=enterMain;$('v3-main-home').onclick=enterMain;
 $('v3-channel-home').onclick=enterMain;$('channel-feed-retry').onclick=()=>loadChannel(true);$('v3-info-sources').onclick=()=>$('open-sources').click();
 $('nav-map').onclick=()=>{const previous=learningEntered;learningEntered=true;const moved=originalMap();if(moved===false)learningEntered=previous;syncArea();};
