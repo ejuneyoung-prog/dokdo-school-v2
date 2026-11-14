@@ -262,7 +262,7 @@ body.school-v3{--body:GmarketSans,"Apple SD Gothic Neo","Malgun Gothic",sans-ser
 .school-v3 .v3-choice-camp:focus-visible{outline:3px solid #2F6470;outline-offset:3px}
 .school-v3 .v3-choice .v3-choice-action{margin-top:auto}
 
-/* 첫 화면: 가장 눈에 띄는 단추는 1교시 시작 하나. 세 공간과 실시간·영어는 그 아래에 작게 둡니다. */
+/* 첫 화면: 맨 위의 가장 진한 단추는 1교시 시작 하나. 그 아래 배움터·놀이터 두 칸, 그 아래 힐링 그림 칸(11/10 교수님 지시로 크게), 실시간·영어는 맨 아래 작게. */
 .school-v3 .v3-entry-welcome{margin:0 auto 16px}
 .school-v3 .v3-entry-welcome h1{font-size:clamp(1.875rem,4.2vw,2.75rem);line-height:1.3;margin-bottom:8px;word-break:keep-all}
 .v3-first-class{display:block;width:100%;max-width:420px;margin:18px auto 0;padding:18px 16px;border:0;border-bottom:5px solid #2c6433;border-radius:16px;background:#3f7c40;color:#fff;font:700 1.375rem/1.4 var(--heading);text-align:center;cursor:pointer}
@@ -448,5 +448,17 @@ html[lang=en] .school-v3 .brand small{letter-spacing:0;margin-right:0}
 
 /* 길잡이 줄(wayfinder.css): 문제 푸는 집중 화면에서는 머리글과 함께 숨긴다. */
 .v3-in-lesson #v3-way{display:none}
+
+/* 첫 화면 '독도에서 힐링하기'(11/10 교수님 반영): 배움터·놀이터 두 칸 아래에 가로 전체 그림 칸으로 크게.
+   그림은 남쪽 바다에서 본 노을 녘 두 섬(왼쪽 서도, 오른쪽 동도). */
+.school-v3 .v3-entry .v3-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.school-v3 .v3-entry .v3-choice-camp{grid-column:1/-1;padding:0 0 14px;overflow:hidden}
+.school-v3 .v3-entry .v3-choice-camp .camp-art{height:clamp(96px,26vw,120px);margin:0 0 10px;border-radius:12px 12px 0 0;background:#3b5474}
+.school-v3 .v3-entry .v3-choice-camp .camp-art svg{width:100%;height:100%;max-height:none}
+.school-v3 .v3-entry .v3-choice-camp .v3-choice-name,.school-v3:lang(en) .v3-entry .v3-choice-camp .v3-choice-name{font-size:1.375rem}
+.school-v3 .v3-entry .v3-choice-camp .v3-choice-name span{display:inline}
+.school-v3 .v3-entry .v3-choice-camp .v3-choice-name span+span{margin-left:.3em}
+.school-v3 .v3-entry .v3-choice-camp .v3-choice-description{display:block;font-size:.9375rem;line-height:1.5;margin:2px 12px 10px}
+.school-v3 .v3-entry .v3-choice-camp .v3-choice-action{display:inline-block;width:auto;min-height:0;margin:0;padding:9px 22px;border-radius:999px;font-size:1rem;line-height:1.4}
 /* 결과 화면의 '독도로 가기' 한 줄(힐링 2단계) */
 .school-v3 .v3-result-sea{display:block;width:100%;font-size:1rem;line-height:1.8;color:#2f6577;margin-top:8px;text-decoration:underline;text-underline-offset:4px}
