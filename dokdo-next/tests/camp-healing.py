@@ -213,6 +213,24 @@ def walk(context, label):
     page.close()
     print('ok', label)
 
+def open_profile(page):
+    # webkit 휴대폰 화면에서 가끔 닉네임 창이 열리지 않아 30초를 기다리다 실패했다(11/14 main 2회).
+    # 추정 원인: 앞 시험(walk)의 학교 화면이 닫히며 남긴 저장이 새 화면에 늦게 도착해 두 탭 충돌 보호가 켜진다.
+    # 안 열리면 그때의 보호 상태와 안내 문구를 기록에 남기고, 사람이 하듯 새로고침한 뒤 한 번 더 연다.
+    dialog = page.locator('#age-dialog')
+    for attempt in range(2):
+        page.wait_for_function('window.DokdoApp && DokdoApp.state')
+        page.evaluate('DokdoApp.editProfile()')
+        try:
+            expect(dialog).to_be_visible(timeout=5000)
+            return
+        except AssertionError:
+            why = page.evaluate('({blocked:DokdoApp.store.blocked,error:DokdoApp.store.error})')
+            print('profile dialog did not open', attempt, why, page.locator('#toast').all_inner_texts())
+            page.reload()
+    expect(dialog).to_be_visible()
+
+
 def card(context, label):
     page = context.new_page()
     # 닉네임을 힐링존 주소로 건네는 것은 만 14세 이상이 확인된 기기뿐입니다.
@@ -234,7 +252,7 @@ def card(context, label):
       return {oneLine:Math.abs(lines[0].top-lines[1].top)<2,below:c.top>=Math.max(l.bottom,p.bottom)-1,startFirst:s.bottom<=Math.min(l.top,p.top,c.top),
               wide:c.width>=l.width+p.width,art:art.height>=90,action:act.height>0&&act.bottom<=c.bottom}}""")
     assert all(rows.values()), rows
-    page.evaluate('DokdoApp.editProfile()')
+    open_profile(page)
     page.fill('#nickname', NICK)
     page.locator('#age-form button[type=submit]').click()
     expect(page.locator('#age-dialog')).to_be_hidden()
@@ -299,7 +317,7 @@ def member(browser):
     expect(page.locator('#start')).to_have_text('바다에서 독도 보기')
     page.goto(f'{base}/')
     expect(page.locator('#account-link')).to_have_text('내 기록')
-    page.evaluate('DokdoApp.editProfile()')
+    open_profile(page)
     page.fill('#nickname', '독코')
     page.locator('#age-form button[type=submit]').click()
     expect(page.locator('#account-link')).to_have_text('독코')
