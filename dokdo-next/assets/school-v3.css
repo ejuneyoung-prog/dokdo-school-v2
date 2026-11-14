@@ -448,3 +448,5 @@ html[lang=en] .school-v3 .brand small{letter-spacing:0;margin-right:0}
 
 /* 길잡이 줄(wayfinder.css): 문제 푸는 집중 화면에서는 머리글과 함께 숨긴다. */
 .v3-in-lesson #v3-way{display:none}
+/* 결과 화면의 '독도로 가기' 한 줄(힐링 2단계) */
+.school-v3 .v3-result-sea{display:block;width:100%;font-size:1rem;line-height:1.8;color:#2f6577;margin-top:8px;text-decoration:underline;text-underline-offset:4px}
