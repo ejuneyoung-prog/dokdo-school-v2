@@ -442,6 +442,7 @@ html[lang=en] .school-v3 .brand small{letter-spacing:0;margin-right:0}
 .v3-about-history li,.channel-history li{display:grid;grid-template-columns:3.1em minmax(0,1fr);gap:8px;align-items:baseline;font-size:14px;line-height:1.5;color:#4a644f}
 .v3-about-history b,.channel-history b{font:600 14px/1.5 var(--heading);color:#24795b}
 .school-v3 .v3-about-channel .text-button{margin-top:9px;padding:6px 0;min-height:40px;font-size:14px;color:#24795b;text-align:left}
+.school-v3 .v3-about-channel .text-button{display:flex;align-items:center;width:100%}.school-v3 .v3-about-channel #v3-home-site{margin-top:0;text-decoration:none}
 .channel-operator{font-family:var(--heading);color:#203f35}
 .channel-history{margin:6px 0 16px;gap:7px}.channel-history li{grid-template-columns:6.4em minmax(0,1fr);font-size:15px}
 
