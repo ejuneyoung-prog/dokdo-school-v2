@@ -215,16 +215,19 @@ def walk(context, label):
 
 def open_profile(page):
     # webkit 휴대폰 화면에서 가끔 닉네임 창이 열리지 않아 30초를 기다리다 실패했다(11/14 main 2회).
-    # 앱이 준비된 뒤 열고, 안 열리면 그때 뜬 안내 문구를 기록에 남기고 한 번 더 연다.
-    page.wait_for_function('window.DokdoApp && DokdoApp.state')
+    # 추정 원인: 앞 시험(walk)의 학교 화면이 닫히며 남긴 저장이 새 화면에 늦게 도착해 두 탭 충돌 보호가 켜진다.
+    # 안 열리면 그때의 보호 상태와 안내 문구를 기록에 남기고, 사람이 하듯 새로고침한 뒤 한 번 더 연다.
     dialog = page.locator('#age-dialog')
     for attempt in range(2):
+        page.wait_for_function('window.DokdoApp && DokdoApp.state')
         page.evaluate('DokdoApp.editProfile()')
         try:
             expect(dialog).to_be_visible(timeout=5000)
             return
         except AssertionError:
-            print('profile dialog did not open', attempt, page.locator('#toast').all_inner_texts())
+            why = page.evaluate('({blocked:DokdoApp.store.blocked,error:DokdoApp.store.error})')
+            print('profile dialog did not open', attempt, why, page.locator('#toast').all_inner_texts())
+            page.reload()
     expect(dialog).to_be_visible()
 
 
