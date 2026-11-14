@@ -65,6 +65,49 @@ def until(page, script, timeout=30000):
 def heal_state(page):
     return json.loads(page.evaluate("localStorage.getItem('dokdo-heal')||'{}'"))
 
+def into3d(page):
+    page.locator('#v-3d').click()
+    expect(page.locator('#view')).to_be_hidden()
+
+def view2d(page):
+    # 11/10: 들어오면 2D 그림(독도 바라보기)이 먼저. 할 일은 '바라보기 시작' 하나, 3D는 단추 하나 뒤.
+    expect(page.locator('#view')).to_be_visible()
+    expect(page.locator('#v-go')).to_have_text('바라보기 시작')
+    expect(page.locator('#view a.back')).to_have_attribute('href', '../')
+    assert page.evaluate("document.body.classList.contains('v2d')"), '3D drawing pauses while the picture is shown'
+    assert page.evaluate("document.documentElement.scrollWidth<=innerWidth"), 'no sideways scroll'
+    page.locator('#v-go').click()
+    expect(page.locator('#v-breath')).to_be_visible()
+    expect(page.locator('#v-card')).to_be_hidden()
+    expect(page.locator('#v-stop')).to_be_visible()
+    before = heal_state(page).get('c', 0)
+    page.evaluate("dispatchEvent(new CustomEvent('dokdo-view-minute'))")
+    assert heal_state(page)['c'] == before + 1, 'one 대황 per minute of looking'
+    expect(page.locator('#toast')).to_be_visible()
+    assert page.evaluate("(()=>{const a=document.querySelector('#toast').getBoundingClientRect(),b=document.querySelector('#v-min').getBoundingClientRect();return a.bottom<=b.top||b.bottom<=a.top||a.right<=b.left||b.right<=a.left})()"), 'toast does not cover the minute line'
+    page.locator('#v-stop').click()
+    expect(page.locator('#v-card')).to_be_visible()
+    expect(page.locator('#v-breath')).to_be_hidden()
+    page.locator('#v-go').click()
+    page.keyboard.press('Escape')
+    expect(page.locator('#v-card')).to_be_visible()
+    # 그림 뒤의 3D 화면은 Tab으로 잡히지 않는다
+    assert page.evaluate("document.querySelector('#enter').inert && document.querySelector('#dock').inert")
+    assert page.evaluate("(()=>{const ids=[...document.querySelectorAll('[id]')].map(e=>e.id);return ids.length===new Set(ids).size})()"), 'ids are unique'
+    assert page.evaluate("document.querySelector('#v-sea').tagName") == 'BUTTON'
+    # 세로 화면은 두 섬이 폭에 맞게(가로 1000) 들어온다
+    if page.viewport_size['width'] < page.viewport_size['height']:
+        assert page.get_attribute('#v-art', 'viewBox').split()[2] == '1000'
+    page.locator('#v-go').click()
+    page.locator('#v-3d2').click()
+    expect(page.locator('#view')).to_be_hidden()
+    expect(page.locator('#start')).to_be_focused()
+    assert not page.evaluate("document.querySelector('#enter').inert")
+    for scene, name in [('dawn', '새벽의 독도'), ('night', '밤의 독도')]:
+        page.goto(page.url.split('?')[0] + '?scene=' + scene)
+        expect(page.locator('#v-time')).to_have_text(name)
+        assert page.get_attribute('#view', 'data-scene') == scene
+
 def walk(context, label):
     page = context.new_page()
     errors, sounds, external = [], [], []
@@ -74,6 +117,7 @@ def walk(context, label):
     page.on('request', lambda r: external.append(r.url) if '127.0.0.1' not in r.url and not r.url.startswith(('data:', 'blob:')) else None)
 
     page.goto(f'{base}/camp/?nick={quote(NICK)}')
+    expect(page.locator('#view')).to_be_visible()
     expect(page.locator('#enter h2')).to_have_text('독도에서 힐링하기')
     expect(page.locator('#enter .note').first).to_contain_text('가상 체험')
     expect(page.locator('#enter a.back')).to_have_attribute('href', '../')
@@ -89,6 +133,8 @@ def walk(context, label):
     assert page.locator('#meet').count() == 0, 'old visitor room is gone'
     assert '사람에게도 보입니다' not in page.content(), 'solo mode does not promise shared decorations'
 
+    into3d(page)
+    assert not page.evaluate("document.body.classList.contains('v2d')")
     page.locator('#start').click()
     expect(page.locator('#enter')).to_be_hidden()
     assert page.evaluate("getComputedStyle(document.querySelector('.rock')).backgroundColor") == 'rgba(0, 0, 0, 0)'
@@ -148,6 +194,7 @@ def walk(context, label):
 
     page.evaluate("localStorage.setItem('dokdo-heal',JSON.stringify({c:20}))")
     page.reload()
+    into3d(page)
     page.locator('#start').click()
     page.locator('#t-deck').click()
     page.locator('#deck [data-d="i"]').click()
@@ -158,6 +205,7 @@ def walk(context, label):
 
     assert all('cdn.jsdelivr.net' in u or 'api.open-meteo.com' in u for u in external), external
     assert all('nick' not in u for u in external), 'nickname stays out of outside requests'
+    into3d(page)
     page.locator('#enter a.back').click()
     page.wait_for_function("location.pathname.endsWith('/') && !location.pathname.includes('/camp')")
     expect(page.locator('#v3-entry')).to_be_visible()
@@ -228,6 +276,7 @@ def rain(browser):
         # 비 소리 음량은 1.2초에 걸쳐 바뀌는 값으로만 설정된다. 그 값을 모아 소리가 났는지 판단한다.
         page.add_init_script("window.__gain=[];const o=AudioParam.prototype.setTargetAtTime;AudioParam.prototype.setTargetAtTime=function(v,t,c){if(c===1.2)window.__gain.push(v);return o.call(this,v,t,c)}")
         page.goto(f'{base}/camp/')
+        into3d(page)
         page.locator('#start').click()
         expect(page.locator('#now')).to_contain_text('비' if name == 'rain' else '맑음', timeout=25000)
         until(page, 'window.__gain.length>20', timeout=25000)
@@ -259,13 +308,35 @@ def member(browser):
     context.close()
     print('ok signed-in header and camp entry')
 
+def picture(browser, options):
+    context = browser.new_context(**options)
+    use_three(context)
+    weather(context, 0)
+    page = context.new_page()
+    errors = []
+    page.on('pageerror', lambda e: errors.append(str(e)))
+    page.goto(f'{base}/camp/')
+    view2d(page)
+    assert not errors, errors
+    context.close()
+    print('ok 2D picture first, 3D one button away')
+
 def blocked(browser):
     context = browser.new_context()
     context.route(CDN, lambda r: r.abort())
     page = context.new_page()
     page.goto(f'{base}/camp/')
     expect(page.locator('#err')).to_be_visible()
+    # 3D를 못 켜도 2D 그림은 본다. 3D 단추를 누르면 안내와 홈 길이 나온다.
+    expect(page.locator('#view')).to_be_visible()
+    page.wait_for_load_state('load')
+    expect(page.locator('#v-reward')).to_be_hidden()
+    page.locator('#v-go').click()
+    expect(page.locator('#v-breath')).to_be_visible()
+    page.locator('#v-stop').click()
+    into3d(page)
     expect(page.locator('#err a.back')).to_be_visible()
+    expect(page.locator('#err a.back')).to_be_focused()
     page.locator('#err a.back').click()
     page.wait_for_function("!location.pathname.includes('/camp')")
     context.close()
@@ -283,6 +354,8 @@ try:
             walk(context, label)
             card(context, label)
             context.close()
+        picture(browser, {'viewport': {'width': 1280, 'height': 800}})
+        picture(browser, {k: v for k, v in pw.devices['iPhone 13'].items() if k != 'default_browser_type'})
         rain(browser)
         member(browser)
         blocked(browser)
