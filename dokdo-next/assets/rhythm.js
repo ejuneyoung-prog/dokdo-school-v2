@@ -84,8 +84,8 @@ const fall=()=>SPEED[prefs.speed];
 function songNow(){if(!ac)return 0;const lat=(ac.outputLatency||ac.baseLatency||0)*1000;return (ac.currentTime-startAt)*1000-lat-prefs.offset;}
 
 async function start(){
- song=CH.find(s=>s.id===prefs.song)||CH[0];if(!song)return;
  if(loading||playing)return;
+ song=CH.find(s=>s.id===prefs.song)||CH[0];if(!song)return;
  const a=ctx();if(!a){$('status').textContent=tr('이 브라우저는 소리 재생을 지원하지 않습니다.','This browser cannot play audio here.');return;}
  loading=true;$('start').disabled=true;$('status').textContent=tr('곡을 불러오는 중… (2~4MB)','Loading the song… (2–4 MB)');
  if(a.state==='suspended')await a.resume();
@@ -100,7 +100,8 @@ function begin(buf){
  src=ac.createBufferSource();src.buffer=buf;gain=ac.createGain();gain.gain.value=0.9;src.connect(gain);gain.connect(ac.destination);
  startAt=ac.currentTime+2.0;src.start(startAt);// 2초 뒤 시작: 첫 노트가 내려올 시간
  playing=true;paused=false;cancelAnimationFrame(raf);raf=root.requestAnimationFrame(frame);
- $('board').focus({preventScroll:true});}
+ $('board').focus({preventScroll:true});
+ if(doc.hidden)pause();}
 // 놀이 중에는 판 밖(길잡이·머리말·곡 고르기·바닥글)을 누르거나 탭으로 갈 수 없게 한다. 스페이스로 시작 단추가 다시 눌리던 문제(검수 11/15).
 function setInert(on){for(const el of doc.querySelectorAll('body > .way, body > .header, body > .footer, body > .skip, #main > :not(#stage)')){if(on)el.setAttribute('inert','');else el.removeAttribute('inert');}}
 // 멈추거나 창을 떠나면 누르고 있던 줄을 모두 뗀 것으로 친다(떼는 신호를 놓쳐 긴 노트가 퍼펙트가 되던 문제).
