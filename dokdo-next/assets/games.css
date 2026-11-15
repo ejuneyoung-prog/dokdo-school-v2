@@ -149,5 +149,6 @@
 .quick.q-runner{background:#3f7c40;box-shadow:0 3px 0 #2c6433}
 .quick.q-fish{background:#1f5d73;box-shadow:0 3px 0 #13414f}
 .quick.q-type{background:#3b4a52;box-shadow:0 3px 0 #252f35}
+.quick.q-rhythm{grid-column:1/-1;background:#14303f;box-shadow:0 3px 0 #0a1c26}
 @media (max-width:760px){.quick-play{max-width:none}.intro>div:first-child{width:100%}}
 @media (max-width:360px){.quick{padding:10px 12px}.quick b{font-size:15px}}
