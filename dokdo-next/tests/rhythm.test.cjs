@@ -57,6 +57,11 @@ test('every chart is sorted, in four lanes, inside the song and playable', () =>
       a.ok(n[0][0] >= 1000, 'first note leaves time to get ready');
     }
     a.ok(s.easy.length < s.normal.length, 'easy has fewer notes');
+    for (const lv of ['easy', 'normal']) {
+      const n = s[lv], per = [0, 1, 2, 3].map((l) => n.filter((x) => x[1] === l).length / n.length);
+      a.ok(per.every((p) => p >= 0.15), s.id + ' ' + lv + ' uses all four lanes ' + per.map((p) => p.toFixed(2)));
+    }
+    a.ok(s.easy.filter((x) => x[2] > 0).length / s.easy.length <= 0.2, s.id + ' easy keeps long notes rare');
   }
 });
 
@@ -94,4 +99,13 @@ test('playground lists the rhythm game as a plain link', () => {
   a.match(games, /href="\.\/rhythm\.html" id="rhythm-card-link"/);
   const lang = read('assets/ui-language.js');
   for (const k of ['독도 리듬 놀이', '리듬 놀이 시작', '자유 놀이 · 시제품']) a.ok(lang.includes('"' + k + '"'), k);
+});
+
+test('during play the rest of the page is inert, pausing lets go of held lanes, Space cannot restart', () => {
+  const js = read('assets/rhythm.js'), page = read('rhythm.html');
+  a.match(page, /<canvas id="board" tabindex="-1"/);
+  a.match(js, /function setInert\(on\)/);
+  a.match(js, /function pause\(\)\{if\(!playing\|\|paused\)return;releaseAll\(\);/);
+  a.match(js, /if\(loading\|\|playing\)return;/);
+  a.match(page, /data-en="With Bluetooth earphones, if the lights reach the line before the sound, press \+/);
 });

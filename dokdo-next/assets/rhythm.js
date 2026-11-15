@@ -76,32 +76,39 @@ async function load(song){if(buffers[song.id])return buffers[song.id];const r=aw
 function blip(kind){if(!ac||kind==='miss')return;const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime;o.type='sine';o.frequency.value=kind==='perfect'?1320:kind==='great'?990:660;g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.05,t+0.005);g.gain.exponentialRampToValueAtTime(0.0001,t+0.08);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+0.1);}
 
 // 한 판
-let song=null,run=null,src=null,startAt=0,playing=false,paused=false,raf=0,lastSr=0,flash=[0,0,0,0],pops=[],glow=0;
+let fading=false,loading=false,song=null,run=null,src=null,gain=null,startAt=0,playing=false,paused=false,raf=0,flash=[0,0,0,0],pops=[],glow=0;
 const held=new Set(),pointers=new Map();
+const NAME={perfect:'PERFECT',great:'GREAT',good:'GOOD',miss:'MISS'},COL={perfect:'#e8ffa0',great:'#9ee6ff',good:'#ffd79a',miss:'#ff9a9a'};
+let total=0,shown=-1;
 const fall=()=>SPEED[prefs.speed];
 function songNow(){if(!ac)return 0;const lat=(ac.outputLatency||ac.baseLatency||0)*1000;return (ac.currentTime-startAt)*1000-lat-prefs.offset;}
 
 async function start(){
  song=CH.find(s=>s.id===prefs.song)||CH[0];if(!song)return;
+ if(loading||playing)return;
  const a=ctx();if(!a){$('status').textContent=tr('이 브라우저는 소리 재생을 지원하지 않습니다.','This browser cannot play audio here.');return;}
+ loading=true;$('start').disabled=true;$('status').textContent=tr('곡을 불러오는 중… (2~4MB)','Loading the song… (2–4 MB)');
  if(a.state==='suspended')await a.resume();
- $('start').disabled=true;$('status').textContent=tr('곡을 불러오는 중… (3~5MB)','Loading the song… (3–5 MB)');
- let buf;try{buf=await load(song);}catch(e){$('status').textContent=tr('곡을 불러오지 못했습니다. 인터넷 연결을 확인하고 다시 눌러 주세요.','Could not load the song. Check the connection and try again.');$('start').disabled=false;return;}
- $('status').textContent='';$('start').disabled=false;
+ let buf;try{buf=await load(song);}catch(e){$('status').textContent=tr('곡을 불러오지 못했습니다. 인터넷 연결을 확인하고 다시 눌러 주세요.','Could not load the song. Check the connection and try again.');loading=false;$('start').disabled=false;return;}
+ loading=false;$('status').textContent='';$('start').disabled=false;
  begin(buf);}
 function begin(buf){
- stopAudio();run=createRun(song[prefs.level]);held.clear();pointers.clear();pops=[];glow=0;flash=[0,0,0,0];
- $('stage').hidden=false;$('menu').hidden=true;$('result').hidden=true;doc.body.classList.add('r-playing');
+ stopAudio();run=createRun(song[prefs.level]);total=totalOf(song[prefs.level]);shown=-1;fading=false;held.clear();pointers.clear();pops=[];glow=0;flash=[0,0,0,0];
+ $('stage').hidden=false;$('menu').hidden=true;$('result').hidden=true;doc.body.classList.add('r-playing');setInert(true);$('sr').textContent='';
  $('hud-song').textContent=(en()?song.titleEn:song.title)+' · '+(prefs.level==='easy'?tr('쉬움','Easy'):tr('보통','Normal'));
  resize();
- src=ac.createBufferSource();src.buffer=buf;const g=ac.createGain();g.gain.value=0.9;src.connect(g).connect(ac.destination);
+ src=ac.createBufferSource();src.buffer=buf;gain=ac.createGain();gain.gain.value=0.9;src.connect(gain);gain.connect(ac.destination);
  startAt=ac.currentTime+2.0;src.start(startAt);// 2초 뒤 시작: 첫 노트가 내려올 시간
  playing=true;paused=false;cancelAnimationFrame(raf);raf=root.requestAnimationFrame(frame);
- $('board').focus?.();}
-function stopAudio(){if(src){try{src.stop();}catch(e){}src.disconnect();src=null;}}
-function pause(){if(!playing||paused)return;paused=true;ac.suspend();$('menu').hidden=false;$('resume').focus();}
-function resume(){if(!paused)return;paused=false;$('menu').hidden=true;ac.resume();raf=root.requestAnimationFrame(frame);}
-function leave(){playing=false;paused=false;stopAudio();if(ac&&ac.state==='suspended')ac.resume();cancelAnimationFrame(raf);$('stage').hidden=true;doc.body.classList.remove('r-playing');renderSongs();$('start').focus();}
+ $('board').focus({preventScroll:true});}
+// 놀이 중에는 판 밖(길잡이·머리말·곡 고르기·바닥글)을 누르거나 탭으로 갈 수 없게 한다. 스페이스로 시작 단추가 다시 눌리던 문제(검수 11/15).
+function setInert(on){for(const el of doc.querySelectorAll('body > .way, body > .header, body > .footer, body > .skip, #main > :not(#stage)')){if(on)el.setAttribute('inert','');else el.removeAttribute('inert');}}
+// 멈추거나 창을 떠나면 누르고 있던 줄을 모두 뗀 것으로 친다(떼는 신호를 놓쳐 긴 노트가 퍼펙트가 되던 문제).
+function releaseAll(){if(!run)return;const now=songNow();for(let i=0;i<4;i++)run.release(i,now);held.clear();pointers.clear();}
+function stopAudio(){if(src){try{src.stop();}catch(e){}src.disconnect();src=null;}if(gain){gain.disconnect();gain=null;}}
+function pause(){if(!playing||paused)return;releaseAll();paused=true;cancelAnimationFrame(raf);ac.suspend();$('menu').hidden=false;$('resume').focus();}
+function resume(){if(!paused)return;paused=false;$('menu').hidden=true;ac.resume();cancelAnimationFrame(raf);raf=root.requestAnimationFrame(frame);$('board').focus({preventScroll:true});}
+function leave(){playing=false;paused=false;stopAudio();if(ac&&ac.state==='suspended')ac.resume();cancelAnimationFrame(raf);$('stage').hidden=true;doc.body.classList.remove('r-playing');setInert(false);renderSongs();$('start').focus();}
 function finish(){playing=false;cancelAnimationFrame(raf);stopAudio();
  const total=totalOf(song[prefs.level]),c=run.counts,acc=accuracy(c,total),score=scoreOf(c,total),grade=gradeOf(acc,c);
  $('r-grade').textContent=grade;$('r-score').textContent=score.toLocaleString();
@@ -109,21 +116,22 @@ function finish(){playing=false;cancelAnimationFrame(raf);stopAudio();
  const B=best(),old=B[song.id]&&B[song.id][prefs.level];
  if(!old||score>old.score){B[song.id]=B[song.id]||{};B[song.id][prefs.level]={score,acc,grade,combo:run.maxCombo};store.set(STORE.best,B);$('r-best').textContent=old?tr('새 최고 기록입니다!','New best!'):tr('첫 기록을 남겼습니다.','First record saved.');}
  else $('r-best').textContent=tr('최고 기록 ','Best ')+old.score.toLocaleString();
- $('result').hidden=false;$('again').focus();}
+ $('result').hidden=false;$('again').focus();$('sr').textContent=tr('끝났습니다. ','Finished. ')+grade+' · '+score.toLocaleString()+tr('점','');}
 
 // 입력
 function hit(lane){if(!playing||paused)return;const k=run.press(lane,songNow());flash[lane]=1;if(k){blip(k);pop(k,lane);}}
 function lift(lane){if(!playing||paused)return;run.release(lane,songNow());}
 function pop(kind,lane){pops.push({kind,lane,t:root.performance.now()});if(pops.length>12)pops.shift();}
-doc.addEventListener('keydown',e=>{if(!playing)return;if(e.code==='Escape'||e.code==='KeyP'){e.preventDefault();paused?resume():pause();return;}const lane=KEYS.indexOf(e.code);if(lane<0||e.repeat||e.metaKey||e.ctrlKey||e.altKey)return;e.preventDefault();if(held.has(lane))return;held.add(lane);hit(lane);});
+doc.addEventListener('keydown',e=>{if(!playing)return;if(e.code==='Escape'||e.code==='KeyP'){e.preventDefault();if(!e.repeat)paused?resume():pause();return;}const lane=KEYS.indexOf(e.code);if(lane<0||e.repeat||e.metaKey||e.ctrlKey||e.altKey)return;e.preventDefault();if(held.has(lane))return;held.add(lane);hit(lane);});
 doc.addEventListener('keyup',e=>{const lane=KEYS.indexOf(e.code);if(lane<0)return;held.delete(lane);lift(lane);});
 const board=$('board');
 function laneAt(x){const r=board.getBoundingClientRect(),L=layout(r.width,r.height),i=Math.floor((x-r.left-L.left)/L.lane);return i>=0&&i<4?i:-1;}
 board.addEventListener('pointerdown',e=>{if(!playing)return;e.preventDefault();const lane=laneAt(e.clientX);if(lane<0)return;try{board.setPointerCapture(e.pointerId);}catch(err){}pointers.set(e.pointerId,lane);hit(lane);});
-const up=e=>{const lane=pointers.get(e.pointerId);if(lane===undefined)return;pointers.delete(e.pointerId);if(![...pointers.values()].includes(lane))lift(lane);};
+const up=e=>{const lane=pointers.get(e.pointerId);if(lane===undefined)return;pointers.delete(e.pointerId);if(!touching(lane))lift(lane);};
+function touching(lane){for(const v of pointers.values())if(v===lane)return true;return false;}
 board.addEventListener('pointerup',up);board.addEventListener('pointercancel',up);
 board.addEventListener('contextmenu',e=>e.preventDefault());
-doc.addEventListener('visibilitychange',()=>{if(doc.hidden)pause();});
+doc.addEventListener('visibilitychange',()=>{if(doc.hidden)pause();});root.addEventListener('blur',()=>{if(playing&&!paused)pause();});
 $('start').onclick=start;$('pause').onclick=()=>paused?resume():pause();$('resume').onclick=resume;
 $('retry').onclick=()=>{if(ac&&ac.state==='suspended')ac.resume();begin(buffers[song.id]);};
 $('again').onclick=()=>begin(buffers[song.id]);$('quit').onclick=leave;$('back').onclick=leave;
@@ -131,7 +139,7 @@ $('again').onclick=()=>begin(buffers[song.id]);$('quit').onclick=leave;$('back')
 // 그리기
 let W=0,H=0,dpr=1;const g2=board.getContext('2d');
 function resize(){const r=board.getBoundingClientRect();dpr=Math.min(root.devicePixelRatio||1,2);W=Math.max(1,Math.round(r.width));H=Math.max(1,Math.round(r.height));board.width=W*dpr;board.height=H*dpr;}
-root.addEventListener('resize',()=>{if(playing)resize();});
+root.addEventListener('resize',()=>{if(playing){resize();if(paused)draw(songNow());}});
 function layout(w,h){const lane=Math.min(110,Math.max(64,(w-32)/4)),width=lane*4,left=(w-width)/2,hitY=h-Math.max(84,h*0.16),horizon=h*0.2;return{lane,width,left,hitY,horizon};}
 function sky(L){const g=g2.createLinearGradient(0,0,0,H);g.addColorStop(0,'#081521');g.addColorStop(0.55,'#0f2c3a');g.addColorStop(1,'#123d45');g2.fillStyle=g;g2.fillRect(0,0,W,H);
  // 수평선과 두 섬(서도는 높고 뾰족, 동도는 낮고 넓게) + 동도 등대
@@ -143,12 +151,16 @@ function sky(L){const g=g2.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0815
  const beam=0.25+glow*0.75;
  if(!reduce){const a=(root.performance.now()/1600)%(Math.PI*2),len=Math.max(W,700);g2.save();g2.globalCompositeOperation='lighter';const grd=g2.createRadialGradient(lx,ly-16*s,0,lx,ly-16*s,len*0.6);grd.addColorStop(0,'rgba(232,255,160,'+(0.35*beam)+')');grd.addColorStop(1,'rgba(232,255,160,0)');g2.fillStyle=grd;g2.beginPath();g2.moveTo(lx,ly-16*s);g2.arc(lx,ly-16*s,len*0.6,a-0.12,a+0.12);g2.closePath();g2.fill();g2.restore();}
  g2.fillStyle='rgba(232,255,160,'+(0.5+beam*0.5)+')';g2.beginPath();g2.arc(lx,ly-17*s,3.2*s+beam*2,0,Math.PI*2);g2.fill();}
-function frame(){if(!playing||paused)return;const now=songNow();run.tick(now);
+function frame(){if(!playing||paused)return;const now=songNow();run.tick(now);draw(now);
+ if(now>song.duration+300){finish();return;}
+ if(run.done(now)&&!fading&&now>song.duration-2500){fading=true;gain.gain.setTargetAtTime(0.0001,ac.currentTime,0.6);}
+ raf=root.requestAnimationFrame(frame);}
+function draw(now){
  const L=layout(W,H);g2.setTransform(dpr,0,0,dpr,0,0);sky(L);
  // 줄
  for(let i=0;i<4;i++){const x=L.left+i*L.lane;g2.fillStyle=i%2?'rgba(255,255,255,0.035)':'rgba(255,255,255,0.06)';g2.fillRect(x,L.horizon,L.lane,H-L.horizon);
   if(flash[i]>0){g2.fillStyle='rgba(182,216,12,'+(0.22*flash[i])+')';g2.fillRect(x,L.horizon,L.lane,L.hitY-L.horizon);flash[i]=Math.max(0,flash[i]-0.08);}
-  if(held.has(i)||[...pointers.values()].includes(i))flash[i]=Math.max(flash[i],0.6);}
+  if(held.has(i)||touching(i))flash[i]=Math.max(flash[i],0.6);}
  // 판정선과 글자
  g2.fillStyle='#b6d80c';g2.fillRect(L.left,L.hitY-2,L.width,4);
  g2.font='700 16px Gmarket,"Apple SD Gothic Neo",sans-serif';g2.textAlign='center';g2.textBaseline='middle';
@@ -156,20 +168,17 @@ function frame(){if(!playing||paused)return;const now=songNow();run.tick(now);
  // 노트
  const F=fall(),span=L.hitY-L.horizon,yOf=t=>L.hitY-(t-now)/F*span;
  for(const n of run.notes){if(n.t-now>F)break;const x=L.left+n.lane*L.lane+6,w=L.lane-12;
-  if(n.len>0&&n.tail==null){const y1=Math.min(L.hitY,yOf(n.t)),y2=Math.max(L.horizon,yOf(n.t+n.len));if(y1>y2){g2.fillStyle=n.head==='miss'?'rgba(150,160,170,0.35)':n.holding?'rgba(182,216,12,0.55)':'rgba(130,200,220,0.45)';g2.fillRect(x+w*0.3,y2,w*0.4,y1-y2);}}
+  if(n.len>0&&n.tail==null){const y1=Math.min(L.hitY,yOf(n.t)),y2=Math.max(L.horizon,yOf(n.t+n.len));if(y1>y2){g2.fillStyle=n.holding?'rgba(182,216,12,0.55)':'rgba(130,200,220,0.45)';g2.fillRect(x+w*0.3,y2,w*0.4,y1-y2);}}
   if(n.head)continue;const y=yOf(n.t);if(y<L.horizon-10||y>H+20)continue;
   const k=Math.max(0.55,(y-L.horizon)/span);g2.save();g2.shadowColor='#e8ffa0';g2.shadowBlur=reduce?0:14*k;g2.fillStyle=n.len>0?'#8fe3ff':'#f4ffd0';const h=12*k+4;g2.beginPath();if(g2.roundRect)g2.roundRect(x,y-h/2,w,h,h/2);else g2.rect(x,y-h/2,w,h);g2.fill();g2.restore();}
  // 판정 글자·콤보
- const pn=root.performance.now(),NAME={perfect:'PERFECT',great:'GREAT',good:'GOOD',miss:'MISS'},COL={perfect:'#e8ffa0',great:'#9ee6ff',good:'#ffd79a',miss:'#ff9a9a'};
- while(run.events.length){const e=run.events.shift();if(e.kind==='miss')pop('miss',e.lane);}
+ const pn=root.performance.now();
+ for(const e of run.events)if(e.kind==='miss')pop('miss',e.lane);run.events.length=0;
  pops=pops.filter(p=>pn-p.t<450);for(const p of pops){const a=1-(pn-p.t)/450;g2.globalAlpha=a;g2.fillStyle=COL[p.kind];g2.font='700 15px Gmarket,"Apple SD Gothic Neo",sans-serif';g2.fillText(NAME[p.kind],L.left+(p.lane+0.5)*L.lane,L.hitY-34-(1-a)*14);g2.globalAlpha=1;}
  if(run.combo>=5){g2.fillStyle='rgba(255,255,255,0.85)';g2.font='700 34px Gmarket,"Apple SD Gothic Neo",sans-serif';g2.fillText(String(run.combo),W/2,L.horizon+(L.hitY-L.horizon)*0.38);g2.font='700 13px Gmarket,"Apple SD Gothic Neo",sans-serif';g2.fillText('COMBO',W/2,L.horizon+(L.hitY-L.horizon)*0.38+26);}
- const total=totalOf(song[prefs.level]),c=run.counts,judged=c.perfect+c.great+c.good+c.miss;
+ const c=run.counts,judged=c.perfect+c.great+c.good+c.miss;
  glow+=((judged?accuracy(c,judged)/100:0.3)*Math.min(1,run.combo/30+0.4)-glow)*0.05;
- $('hud-score').textContent=scoreOf(c,total).toLocaleString();
- if(pn-lastSr>4000){lastSr=pn;$('sr').textContent=tr('콤보 ','Combo ')+run.combo;}
- if(run.done(now)||(now>song.duration+500)){finish();return;}
- raf=root.requestAnimationFrame(frame);}
+ const sc=scoreOf(c,total);if(sc!==shown){shown=sc;$('hud-score').textContent=sc.toLocaleString();}}
 
 // ── 고정 문구 (한국어/영어) ──
 function applyStatic(){const E=en();for(const n of doc.querySelectorAll('[data-en]')){if(!n.dataset.ko)n.dataset.ko=n.textContent;n.textContent=E?n.dataset.en:n.dataset.ko;}

@@ -43,7 +43,7 @@
   <div class="r-group" role="group" aria-label="내려오는 속도" data-en-label="Falling speed"><span class="r-lab" data-en="Speed">속도</span><button type="button" class="r-chip" data-speed="slow" data-en="Slow">느리게</button><button type="button" class="r-chip" data-speed="mid" data-en="Normal">보통</button><button type="button" class="r-chip" data-speed="fast" data-en="Fast">빠르게</button></div>
   <div class="r-group" role="group" aria-label="소리 맞추기" data-en-label="Audio offset"><span class="r-lab" data-en="Sync">소리 맞추기</span><button type="button" class="r-chip" id="offset-down" aria-label="노트를 더 일찍" data-en-label="Notes earlier">−</button><output id="offset" aria-live="polite">0ms</output><button type="button" class="r-chip" id="offset-up" aria-label="노트를 더 늦게" data-en-label="Notes later">+</button></div>
  </div>
- <p class="r-note" data-en="If the notes feel late with Bluetooth earphones, press + a few times.">블루투스 이어폰에서 노트가 소리보다 빠르게 느껴지면 +를 몇 번 눌러 맞추세요.</p>
+ <p class="r-note" data-en="With Bluetooth earphones, if the lights reach the line before the sound, press + a few times.">블루투스 이어폰에서 노트가 소리보다 빠르게 느껴지면 +를 몇 번 눌러 맞추세요.</p>
  <button class="primary r-start" id="start" type="button" data-en="Start">시작하기</button>
  <p class="r-note" id="status" role="status"></p>
 
@@ -52,7 +52,7 @@
    <div><small id="hud-song"></small><strong id="hud-score">0</strong></div>
    <button type="button" class="r-pause" id="pause" aria-label="잠시 멈춤" data-en-label="Pause">Ⅱ</button>
   </div>
-  <canvas id="board" aria-hidden="true"></canvas>
+  <canvas id="board" tabindex="-1" aria-hidden="true"></canvas>
   <span class="r-sr" id="sr" aria-live="polite"></span>
   <div class="r-menu" id="menu" hidden>
    <h2 data-en="Paused">잠시 멈춤</h2>

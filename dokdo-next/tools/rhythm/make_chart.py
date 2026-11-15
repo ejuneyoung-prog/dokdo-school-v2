@@ -10,7 +10,7 @@ assets/rhythm-charts.js 를 만든다. 생성물은 손으로 고치지 않는�
 
 분석은 numpy 없이 표준 라이브러리만 쓴다. 맥의 afconvert 로 mp3 를 11025Hz 모노 WAV 로 푼다.
 """
-import array, json, math, os, subprocess, sys, tempfile, wave
+import array, json, math, os, shutil, subprocess, sys, tempfile, wave
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -30,6 +30,8 @@ LEVELS = {'easy': {'density': 1.05, 'sub': 1, 'gap': 1}, 'normal': {'density': 2
 
 
 def decode(path):
+    if not shutil.which('afconvert'):
+        sys.exit('afconvert 가 없습니다. 이 도구는 맥에서만 돌립니다(노트 생성물은 저장소에 들어 있어 앱 실행에는 필요 없습니다).')
     with tempfile.TemporaryDirectory() as tmp:
         wav = os.path.join(tmp, 'a.wav')
         subprocess.run(['afconvert', '-f', 'WAVE', '-d', 'LEI16@%d' % RATE, '-c', '1', str(path), wav], check=True)
@@ -235,30 +237,41 @@ def make(song):
             chosen.add(i)
         idx = sorted(chosen)
         notes = []
+        # 줄 배정: 이 곡에서 고른 노트들의 음색(고음−저음 기울기)을 4등분해 낮은 소리일수록 왼쪽(D), 높을수록 오른쪽(K).
+        # 곡마다 기준을 따로 잡아 네 줄이 고르게 쓰이게 한다(처음 판은 J·K에 85%가 몰렸다, 검수 11/15).
+        tilts = []
+        for i in idx:
+            f = int(round(grid[i][1] * FPS))
+            tilts.append((hi[f] - lo[f]) if f < len(lo) else 0.0)
+        cuts = sorted(tilts)
+        q = [cuts[int(len(cuts) * r)] for r in (0.25, 0.5, 0.75)] if cuts else [0, 0, 0]
+        hold_gap = 3 if name == 'easy' else 2
+        free_at = [0.0] * 4
         last_lane, run = -1, 0
         for n, i in enumerate(idx):
             k, t = grid[i]
             f = int(round(t * FPS))
-            tilt = (hi[f] - lo[f]) if f < len(lo) else 0
-            # 저음이 큰 소리는 왼쪽(D·F), 고음이 큰 소리는 오른쪽(J·K). 박 번호로 두 칸 중 하나.
-            side = 0 if tilt < -1.0 else 2
-            lane = side + (k // sub + n) % 2
+            lane = sum(1 for c in q if tilts[n] > c)
             if lane == last_lane:
                 run += 1
-                if run >= 2:
-                    lane = (lane + 1) % 4 if side == 0 else (lane + 3) % 4
+                if run >= 2:  # 같은 줄 세 번째는 가운데 쪽 이웃 줄로
+                    lane = lane + 1 if lane < 2 else lane - 1
                     run = 0
             else:
                 run = 0
+            if free_at[lane] > t - 0.1:  # 앞의 긴 노트가 아직 그 줄을 쓰고 있으면 비어 있는 줄로
+                lane = min(range(4), key=lambda l: (free_at[l] > t - 0.1, abs(l - lane)))
             last_lane = lane
-            # 길게 누르기: 다음 노트까지 2박 이상 비고, 그 사이 소리가 이어지면
+            # 길게 누르기: 다음 노트까지 비어 있고(쉬움 3박, 보통 2박 이상) 소리가 1박 뒤에도 크게 남아 있을 때만
             length = 0
             nxt = grid[idx[n + 1]][1] if n + 1 < len(idx) else end
-            if nxt - t >= 2 * step:
+            if nxt - t >= hold_gap * step:
                 f2 = int(round((t + step) * FPS))
-                if f2 < len(lo) and lo[f2] + hi[f2] > lo[f] + hi[f] - 2.5:
+                if f2 < len(lo) and lo[f2] + hi[f2] > lo[f] + hi[f] - 1.0:
                     length = min(2 * step, nxt - t - step)
-            notes.append([int(round(t * 1000)), lane, int(round(length * 1000)) if length >= step * 0.9 else 0])
+            length_ms = int(round(length * 1000)) if length >= step * 0.9 else 0
+            free_at[lane] = t + length_ms / 1000
+            notes.append([int(round(t * 1000)), lane, length_ms])
         charts[name] = notes
     return {
         'id': song['id'], 'title': song['title'], 'titleEn': song['titleEn'], 'file': './' + song['file'],
@@ -282,7 +295,8 @@ def main():
         sys.exit(0 if ok else 1)
     OUT.write_text(text, encoding='utf-8')
     for d in data:
-        print(d['id'], 'bpm', d['bpm'], 'easy', len(d['easy']), 'normal', len(d['normal']), 'holds', sum(1 for n in d['normal'] if n[2]))
+        lanes = lambda ns: [sum(1 for n in ns if n[1] == l) for l in range(4)]
+        print(d['id'], 'bpm', d['bpm'], 'easy', len(d['easy']), lanes(d['easy']), 'holds', sum(1 for n in d['easy'] if n[2]), '| normal', len(d['normal']), lanes(d['normal']), 'holds', sum(1 for n in d['normal'] if n[2]))
 
 
 if __name__ == '__main__':
