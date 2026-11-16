@@ -10,17 +10,19 @@ const WEIGHT={perfect:1,great:0.7,good:0.3,miss:0};
 const KEYS=['KeyD','KeyF','KeyJ','KeyK'];
 const LABELS=['D','F','J','K'];
 const SPEED={slow:2000,mid:1500,fast:1100};
-const STORE={best:'dk-rhythm-best-v1',prefs:'dk-rhythm-prefs-v1'};
+// 점수는 1,000점 만점(정확도 기준이라 곡 길이와 상관없이 같은 잣대). 100만 점 시절 기록과 섞이지 않게 저장 이름을 v2로 바꿨다.
+const MAX=1000;
+const STORE={best:'dk-rhythm-best-v2',prefs:'dk-rhythm-prefs-v1'};
 const HOLD_GRACE=120;// 꼬리 끝 이만큼 앞에서 떼도 성공으로 친다(ms)
 
 function judge(delta){const a=Math.abs(delta);if(a<=WIN.perfect)return 'perfect';if(a<=WIN.great)return 'great';if(a<=WIN.good)return 'good';return null;}
 function totalOf(notes){return notes.reduce((n,x)=>n+(x[2]>0?2:1),0);}// 긴 노트는 머리와 꼬리를 따로 센다
 function accuracy(c,total){if(!total)return 0;const s=c.perfect*WEIGHT.perfect+c.great*WEIGHT.great+c.good*WEIGHT.good;return Math.round(s/total*1000)/10;}
-function scoreOf(c,total){if(!total)return 0;const s=c.perfect*WEIGHT.perfect+c.great*WEIGHT.great+c.good*WEIGHT.good;return Math.round(s/total*1000000);}
+function scoreOf(c,total){if(!total)return 0;const s=c.perfect*WEIGHT.perfect+c.great*WEIGHT.great+c.good*WEIGHT.good;return Math.round(s/total*MAX);}
 function gradeOf(acc,c){if(c&&c.miss===0&&c.good===0&&c.great===0&&c.perfect>0)return 'S+';if(acc>=95)return 'S';if(acc>=90)return 'A';if(acc>=80)return 'B';if(acc>=70)return 'C';return 'D';}
 function validChart(notes,duration){if(!Array.isArray(notes)||!notes.length)return false;let last=-1;for(const n of notes){if(!Array.isArray(n)||n.length!==3)return false;const[t,l,len]=n;if(!Number.isInteger(t)||!Number.isInteger(l)||!Number.isInteger(len))return false;if(t<last||t<0||t+len>duration||l<0||l>3||len<0)return false;last=t;}return true;}
 function cleanPrefs(p){p=p&&typeof p==='object'?p:{};return{level:p.level==='normal'?'normal':'easy',speed:Object.hasOwn(SPEED,p.speed)?p.speed:'mid',offset:Number.isInteger(p.offset)?Math.max(-200,Math.min(200,p.offset)):0,song:typeof p.song==='string'?p.song:'',vibe:p.vibe!==false};}
-function cleanBest(b){const out={};if(!b||typeof b!=='object')return out;for(const[id,v]of Object.entries(b)){if(!/^[a-z]{2,20}$/.test(id)||!v||typeof v!=='object')continue;for(const lv of['easy','normal']){const r=v[lv];if(r&&Number.isInteger(r.score)&&r.score>=0&&r.score<=1000000&&typeof r.acc==='number'&&r.acc>=0&&r.acc<=100){out[id]=out[id]||{};out[id][lv]={score:r.score,acc:r.acc,grade:typeof r.grade==='string'?r.grade.slice(0,2):gradeOf(r.acc),combo:Number.isInteger(r.combo)?r.combo:0};}}}return out;}
+function cleanBest(b){const out={};if(!b||typeof b!=='object')return out;for(const[id,v]of Object.entries(b)){if(!/^[a-z]{2,20}$/.test(id)||!v||typeof v!=='object')continue;for(const lv of['easy','normal']){const r=v[lv];if(r&&Number.isInteger(r.score)&&r.score>=0&&r.score<=MAX&&typeof r.acc==='number'&&r.acc>=0&&r.acc<=100){out[id]=out[id]||{};out[id][lv]={score:r.score,acc:r.acc,grade:typeof r.grade==='string'?r.grade.slice(0,2):gradeOf(r.acc),combo:Number.isInteger(r.combo)?r.combo:0};}}}return out;}
 function createStore(ls){return{get(k,d){try{const v=ls&&ls.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},set(k,v){try{ls&&ls.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}};}
 
 // 한 판의 상태. 화면 없이도 돌아가게 시각(ms)만 받는다.
@@ -118,10 +120,10 @@ function resume(){if(!paused)return;paused=false;$('menu').hidden=true;ac.resume
 function leave(){playing=false;paused=false;stopAudio();if(ac&&ac.state==='suspended')ac.resume();cancelAnimationFrame(raf);$('stage').hidden=true;doc.body.classList.remove('r-playing');setInert(false);renderSongs();$('start').focus();}
 function finish(){playing=false;cancelAnimationFrame(raf);stopAudio();
  const total=totalOf(song[prefs.level]),c=run.counts,acc=accuracy(c,total),score=scoreOf(c,total),grade=gradeOf(acc,c);
- $('r-grade').textContent=grade;$('r-score').textContent=score.toLocaleString();
+ $('r-grade').textContent=grade;$('r-score').textContent=score.toLocaleString()+' / '+MAX.toLocaleString();
  $('r-detail').textContent=tr('정확도 '+acc+'% · 최대 콤보 '+run.maxCombo+' · 퍼펙트 '+c.perfect+' · 그레이트 '+c.great+' · 굿 '+c.good+' · 놓침 '+c.miss,'Accuracy '+acc+'% · Max combo '+run.maxCombo+' · Perfect '+c.perfect+' · Great '+c.great+' · Good '+c.good+' · Miss '+c.miss);
  const B=best(),old=B[song.id]&&B[song.id][prefs.level];
- if(!old||score>old.score){B[song.id]=B[song.id]||{};B[song.id][prefs.level]={score,acc,grade,combo:run.maxCombo};store.set(STORE.best,B);$('r-best').textContent=old?tr('새 최고 기록입니다!','New best!'):tr('첫 기록을 남겼습니다.','First record saved.');}
+ if(!old||score>old.score||(score===old.score&&run.maxCombo>(old.combo||0))){B[song.id]=B[song.id]||{};B[song.id][prefs.level]={score,acc,grade,combo:run.maxCombo};store.set(STORE.best,B);$('r-best').textContent=old?tr('새 최고 기록입니다!','New best!'):tr('첫 기록을 남겼습니다.','First record saved.');}
  else $('r-best').textContent=tr('최고 기록 ','Best ')+old.score.toLocaleString();
  $('result').hidden=false;$('again').focus();$('sr').textContent=tr('끝났습니다. ','Finished. ')+grade+' · '+score.toLocaleString()+tr('점','');}
 
@@ -198,5 +200,5 @@ doc.addEventListener('dokdo:language',relabel);
 relabel();
 return{get run(){return run;},songNow,start,pause,resume};
 }
-return{WIN,WEIGHT,KEYS,SPEED,STORE,judge,totalOf,accuracy,scoreOf,gradeOf,validChart,cleanPrefs,cleanBest,createStore,createRun,boot};
+return{MAX,WIN,WEIGHT,KEYS,SPEED,STORE,judge,totalOf,accuracy,scoreOf,gradeOf,validChart,cleanPrefs,cleanBest,createStore,createRun,boot};
 });

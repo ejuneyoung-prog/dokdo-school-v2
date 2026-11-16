@@ -14,10 +14,12 @@ test('timing windows: perfect 45ms, great 90ms, good 135ms, otherwise no hit', (
   a.equal(R.judge(-90), 'great'); a.equal(R.judge(120), 'good'); a.equal(R.judge(136), null); a.equal(R.judge(-500), null);
 });
 
-test('score is out of 1,000,000 and a hold counts head and tail', () => {
+test('score is out of 1,000 and a hold counts head and tail', () => {
   const notes = [[1000, 0, 0], [2000, 1, 800]];
   a.equal(R.totalOf(notes), 3);
-  a.equal(R.scoreOf({ perfect: 3, great: 0, good: 0, miss: 0 }, 3), 1000000);
+  a.equal(R.MAX, 1000);
+  a.equal(R.scoreOf({ perfect: 3, great: 0, good: 0, miss: 0 }, 3), 1000);
+  a.equal(R.scoreOf({ perfect: 1, great: 1, good: 1, miss: 1 }, 4), 500);
   a.equal(R.scoreOf({ perfect: 0, great: 0, good: 0, miss: 3 }, 3), 0);
   a.equal(R.accuracy({ perfect: 1, great: 1, good: 1, miss: 1 }, 4), 50);
   a.equal(R.gradeOf(100, { perfect: 3, great: 0, good: 0, miss: 0 }), 'S+');
@@ -80,14 +82,14 @@ test('rhythm page sends nothing: no analytics, no outside hosts, records only on
   a.ok(page.includes('src="./assets/ui-language.js"') && page.includes('data-language-toggle'));
   a.doesNotMatch(js, /https?:\/\//);
   a.doesNotMatch(js, /DokdoAnalytics|sendBeacon|XMLHttpRequest/);
-  a.match(js, /dk-rhythm-best-v1/);
+  a.match(js, /dk-rhythm-best-v2/);
   a.doesNotMatch(js, /dokdo-korea-school-cinematic-v1/, 'does not touch the school record');
 });
 
 test('stored records and settings are cleaned before use', () => {
   a.deepEqual(R.cleanPrefs({ level: 'hard', speed: 'warp', offset: 999, song: 7 }), { level: 'easy', speed: 'mid', offset: 200, song: '', vibe: true });
   a.equal(R.cleanPrefs({ vibe: false }).vibe, false, 'vibration can be turned off and stays off');
-  a.deepEqual(R.cleanBest({ letsmove: { easy: { score: 5, acc: 50, grade: 'D', combo: 3 }, normal: { score: -1, acc: 1 } }, '<x>': {} }), { letsmove: { easy: { score: 5, acc: 50, grade: 'D', combo: 3 } } });
+  a.deepEqual(R.cleanBest({ letsmove: { easy: { score: 5, acc: 50, grade: 'D', combo: 3 }, normal: { score: 630000, acc: 63 } }, '<x>': {} }), { letsmove: { easy: { score: 5, acc: 50, grade: 'D', combo: 3 } } });
   const mem = {}, st = R.createStore({ getItem: (k) => mem[k] ?? null, setItem: (k, v) => { mem[k] = v; } });
   st.set('k', { a: 1 }); a.deepEqual(st.get('k', null), { a: 1 });
   const broken = R.createStore({ getItem: () => { throw Error('blocked'); }, setItem: () => { throw Error('blocked'); } });
