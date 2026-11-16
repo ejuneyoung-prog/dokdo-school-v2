@@ -15,6 +15,7 @@
 .rhythm-app .r-song[aria-pressed=true]{border-color:var(--accent);background:#eef6e6;box-shadow:0 0 0 2px #b6d80c66 inset}
 .rhythm-app .r-options{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center}
 .rhythm-app .r-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.rhythm-app .r-group[hidden]{display:none}
 .rhythm-app .r-lab{font-size:.875rem;color:#3f5e4c;font-weight:700;margin-right:4px}
 .rhythm-app .r-chip{min-height:40px;min-width:44px;padding:6px 14px;border-radius:999px;border:1px solid #a9c2ad;background:#fff;color:#24523b;font:inherit;font-size:.875rem;cursor:pointer}
 .rhythm-app .r-chip[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}

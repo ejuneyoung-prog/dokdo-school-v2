@@ -85,7 +85,8 @@ test('rhythm page sends nothing: no analytics, no outside hosts, records only on
 });
 
 test('stored records and settings are cleaned before use', () => {
-  a.deepEqual(R.cleanPrefs({ level: 'hard', speed: 'warp', offset: 999, song: 7 }), { level: 'easy', speed: 'mid', offset: 200, song: '' });
+  a.deepEqual(R.cleanPrefs({ level: 'hard', speed: 'warp', offset: 999, song: 7 }), { level: 'easy', speed: 'mid', offset: 200, song: '', vibe: true });
+  a.equal(R.cleanPrefs({ vibe: false }).vibe, false, 'vibration can be turned off and stays off');
   a.deepEqual(R.cleanBest({ letsmove: { easy: { score: 5, acc: 50, grade: 'D', combo: 3 }, normal: { score: -1, acc: 1 } }, '<x>': {} }), { letsmove: { easy: { score: 5, acc: 50, grade: 'D', combo: 3 } } });
   const mem = {}, st = R.createStore({ getItem: (k) => mem[k] ?? null, setItem: (k, v) => { mem[k] = v; } });
   st.set('k', { a: 1 }); a.deepEqual(st.get('k', null), { a: 1 });
@@ -108,4 +109,12 @@ test('during play the rest of the page is inert, pausing lets go of held lanes, 
   a.match(js, /function pause\(\)\{if\(!playing\|\|paused\)return;releaseAll\(\);/);
   a.match(js, /if\(loading\|\|playing\)return;/);
   a.match(page, /data-en="With Bluetooth earphones, if the lights reach the line before the sound, press \+/);
+});
+
+test('vibration is offered only where the browser has it, and can be switched off', () => {
+  const js = read('assets/rhythm.js'), page = read('rhythm.html'), css = read('assets/rhythm.css');
+  a.match(page, /id="vibe-group"[^>]*hidden/);
+  a.match(css, /\.r-group\[hidden\]\{display:none\}/);
+  a.match(js, /typeof nav\.vibrate==='function'/);
+  a.match(js, /if\(!canVibe\|\|!prefs\.vibe\)return;/);
 });
