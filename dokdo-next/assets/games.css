@@ -151,3 +151,7 @@
 .quick.q-type{background:#3b4a52;box-shadow:0 3px 0 #252f35}
 @media (max-width:760px){.quick-play{max-width:none}.intro>div:first-child{width:100%}}
 @media (max-width:360px){.quick{padding:10px 12px}.quick b{font-size:15px}}
+
+/* 진동 켬/끔: 진동이 되는 휴대폰에서만 달리기 화면 아래 안내 밑에 보인다(assets/haptic.js). 놀이터 모든 게임이 같은 설정을 쓴다. */
+.haptic-toggle{display:block;margin:10px auto 0;min-height:40px;padding:6px 16px;border-radius:999px;border:1px solid #a9c2ad;background:#fff;color:#24523b;font-size:.875rem}
+.haptic-toggle[aria-pressed=false]{color:#6a7d72;background:#f1f3f0}

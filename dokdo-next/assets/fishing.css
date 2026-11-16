@@ -97,3 +97,8 @@
 @media(prefers-reduced-motion:reduce){.fish-app .f-xp i{transition:none}}
 /* 좁은 화면에서도 HUD 이름이 말줄임표로 잘리지 않게 두 줄까지 허용합니다. */
 @media(max-width:560px){.fish-app .f-hud small{white-space:normal;overflow:visible;line-height:1.35}}
+
+/* 진동 켬/끔: 진동이 되는 휴대폰에서만 보인다(assets/haptic.js) */
+.f-haptic{display:block;margin:0 auto 10px;min-height:40px;padding:6px 16px;border-radius:999px;border:1px solid #a9c2ad;background:#fff;color:#24523b;font:inherit;font-size:.875rem;cursor:pointer}
+.f-haptic[aria-pressed=false]{color:#6a7d72;background:#f1f3f0}
+.f-haptic[hidden]{display:none}
