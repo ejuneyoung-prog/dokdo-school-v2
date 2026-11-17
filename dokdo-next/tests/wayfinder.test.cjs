@@ -19,7 +19,7 @@ test('wayfinder strip is sticky, dark and its buttons are large enough to tap', 
 });
 
 test('every page outside the first screen loads the strip with a home button', () => {
-  const pages = { 'games.html': './', 'fishing.html': './', 'typing.html': './', 'privacy.html': './', 'account.html': 'https://dokdo-school-v2.vercel.app/dokdo-next/' };
+  const pages = { 'games.html': './', 'fishing.html': './', 'typing.html': './', 'rhythm.html': './', 'privacy.html': './', 'account.html': 'https://dokdo-school-v2.vercel.app/dokdo-next/' };
   for (const [page, home] of Object.entries(pages)) {
     const html = read(page);
     assert.match(html, /<link rel="stylesheet" href="\.\/assets\/wayfinder\.css">/, page + ' loads wayfinder.css');
@@ -30,7 +30,7 @@ test('every page outside the first screen loads the strip with a home button', (
 });
 
 test('games below the playground also go one step up to the playground', () => {
-  for (const [page, id] of [['fishing.html', 'fish-back-playground'], ['typing.html', 'type-back-playground']]) {
+  for (const [page, id] of [['fishing.html', 'fish-back-playground'], ['typing.html', 'type-back-playground'], ['rhythm.html', 'rhythm-back-playground']]) {
     const html = read(page);
     assert.ok(html.includes('<a class="way-up" href="./games.html" id="' + id + '"'), page);
     assert.equal(html.split('id="' + id + '"').length, 2, page + ' has one way back, not two');

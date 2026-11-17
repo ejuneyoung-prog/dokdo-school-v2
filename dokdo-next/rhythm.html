@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ko" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="dokdo-mode" content="live">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#0f2430">
+<meta name="robots" content="noindex">
+<meta name="description" content="독도 리듬 놀이: 독도코리아 노래에 맞춰 내려오는 불빛을 D·F·J·K로 칩니다. 기록은 이 기기에만 저장합니다.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<title>독도 리듬 놀이 · 독도 코리아 스쿨</title>
+<link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
+<link rel="icon" type="image/png" sizes="32x32" href="./assets/icon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./assets/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="./assets/icon-512.png">
+<link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
+<link rel="stylesheet" href="./assets/games.css">
+<link rel="stylesheet" href="./assets/rhythm.css">
+<link rel="stylesheet" href="./assets/wayfinder.css">
+<script defer src="./assets/ui-language.js"></script>
+<script defer src="./assets/rhythm-charts.js"></script>
+<script defer src="./assets/rhythm.js"></script>
+</head>
+<body class="play-page rhythm-page">
+<a class="skip" href="#main" data-en="Skip to content">본문으로 바로가기</a>
+<nav class="way" aria-label="길잡이" data-en-label="Wayfinding"><a class="way-home" href="./" aria-label="홈 · 처음 화면으로" data-en-label="Home · first screen"><b aria-hidden="true">⌂</b><span data-en="Home">홈</span></a><a class="way-up" href="./games.html" id="rhythm-back-playground" aria-label="독도 놀이터로 돌아가기" data-en-label="Back to Dokdo Playground"><span data-en="← Playground">← 놀이터</span></a><span class="way-here" data-en="Now · Dokdo Rhythm">지금 · 독도 리듬 놀이</span></nav>
+<header class="header"><a class="brand" href="./games.html"><svg viewBox="4.1 1.0 100.1 24.1" aria-hidden="true"><path d="M49.7 24.7 48.1 22.2 46.5 16.6 37.8 4.2 36.9 1.0 34.6 1.1 33.3 2.9 29.9 2.9 28.7 4.4 26.4 4.4 25.3 5.6 24.2 5.6 22.1 6.9 20.8 10.1 16.3 16.7 15.5 17.0 14.0 17.0 12.9 18.1 10.7 22.1 8.9 20.9 5.8 20.9 4.3 22.5 4.1 25.1 49.7 25.0Z" fill="#325E8F"/><path d="M34.1 2.3 33.3 3.0 30.0 3.0 28.7 4.5 26.4 4.5 25.4 5.7 24.2 5.7 22.0 7.1 20.9 10.1 16.3 16.9 13.9 17.2 12.9 18.3 10.8 22.2 8.8 20.9 5.8 21.0 4.4 22.5 4.2 24.9 30.8 24.9 34.6 15.4 31.5 9.1Z" fill="#1B314B"/><path d="M54.4 19.7 52.0 25.0 57.8 25.0 56.2 20.6 55.6 19.8Z" fill="#4179B9"/><path d="M61.9 24.8 61.9 25.0 104.2 25.0 104.1 23.6 101.8 20.8 98.1 18.7 96.0 16.6 93.0 14.7 89.5 13.4 87.0 11.9 83.1 10.7 81.0 12.2 78.2 13.4 76.2 12.1 75.2 10.7 74.0 10.7 72.0 12.0Z" fill="#86ABD5"/><path d="M73.9 11.0 71.8 12.4 62.1 24.6 62.1 24.9 73.1 24.9 75.5 20.1 75.5 19.8 72.3 15.9Z" fill="#4179B9"/></svg><span><span data-en="Dokdo Rhythm">독도 리듬 놀이</span><small data-en="Dokdo Korea School · Dokdo Playground">독도 코리아 스쿨 · 독도 놀이터</small></span></a><button class="language-switch" type="button" data-language-toggle>English</button></header>
+<main id="main" class="rhythm-app">
+ <div class="r-intro">
+  <div>
+   <p class="r-eyebrow">DOKDO KOREA RHYTHM · <span data-en="Prototype">시제품</span></p>
+   <h1 data-en="Dokdo Rhythm">독도 리듬 놀이</h1>
+   <p class="r-lead" data-en="Lights fall to the beat of Dokdo Korea songs. Hit them on the line with D · F · J · K, or tap the four lanes on a phone.">독도코리아 노래에 맞춰 불빛이 내려옵니다. 선에 닿을 때 D · F · J · K를 누르세요. 휴대폰은 아래 네 칸을 누릅니다.</p>
+  </div>
+  <span class="r-badge" data-en="Records stay on this device">기록은 이 기기에만 저장</span>
+ </div>
+
+ <div class="r-songs" id="songs" role="group" aria-label="곡 고르기" data-en-label="Choose a song"></div>
+
+ <div class="r-options">
+  <div class="r-group" role="group" aria-label="난이도" data-en-label="Difficulty"><span class="r-lab" data-en="Difficulty">난이도</span><button type="button" class="r-chip" data-level="easy" data-en="Easy">쉬움</button><button type="button" class="r-chip" data-level="normal" data-en="Normal">보통</button></div>
+  <div class="r-group" role="group" aria-label="내려오는 속도" data-en-label="Falling speed"><span class="r-lab" data-en="Speed">속도</span><button type="button" class="r-chip" data-speed="slow" data-en="Slow">느리게</button><button type="button" class="r-chip" data-speed="mid" data-en="Normal">보통</button><button type="button" class="r-chip" data-speed="fast" data-en="Fast">빠르게</button></div>
+  <div class="r-group" role="group" aria-label="소리 맞추기" data-en-label="Audio offset"><span class="r-lab" data-en="Sync">소리 맞추기</span><button type="button" class="r-chip" id="offset-down" aria-label="노트를 더 일찍" data-en-label="Notes earlier">−</button><output id="offset" aria-live="polite">0ms</output><button type="button" class="r-chip" id="offset-up" aria-label="노트를 더 늦게" data-en-label="Notes later">+</button></div>
+  <div class="r-group" id="vibe-group" role="group" aria-label="진동" data-en-label="Vibration" hidden><span class="r-lab" data-en="Vibration">진동</span><button type="button" class="r-chip" data-vibe="on" data-en="On">켬</button><button type="button" class="r-chip" data-vibe="off" data-en="Off">끔</button></div>
+ </div>
+ <p class="r-note" data-en="With Bluetooth earphones, if the lights reach the line before the sound, press + a few times.">블루투스 이어폰에서 노트가 소리보다 빠르게 느껴지면 +를 몇 번 눌러 맞추세요.</p>
+ <button class="primary r-start" id="start" type="button" data-en="Start">시작하기</button>
+ <p class="r-note" id="status" role="status"></p>
+
+ <section class="r-stage" id="stage" hidden aria-label="리듬 놀이 화면" data-en-label="Rhythm play">
+  <div class="r-hud">
+   <div><small id="hud-song"></small><strong id="hud-score">0</strong></div>
+   <button type="button" class="r-pause" id="pause" aria-label="잠시 멈춤" data-en-label="Pause">Ⅱ</button>
+  </div>
+  <canvas id="board" tabindex="-1" aria-hidden="true"></canvas>
+  <span class="r-sr" id="sr" aria-live="polite"></span>
+  <div class="r-menu" id="menu" hidden>
+   <h2 data-en="Paused">잠시 멈춤</h2>
+   <button type="button" class="primary" id="resume" data-en="Continue">이어 하기</button>
+   <button type="button" class="r-secondary" id="retry" data-en="Restart">처음부터</button>
+   <button type="button" class="r-secondary" id="quit" data-en="Choose another song">곡 다시 고르기</button>
+  </div>
+  <div class="r-result" id="result" hidden>
+   <p class="r-eyebrow">RESULT</p>
+   <div class="r-grade" id="r-grade">S</div>
+   <div class="r-big" id="r-score">0</div>
+   <p class="r-detail" id="r-detail"></p>
+   <p class="r-best" id="r-best"></p>
+   <button type="button" class="primary" id="again" data-en="Play again">한 번 더</button>
+   <button type="button" class="r-secondary" id="back" data-en="Choose another song">곡 다시 고르기</button>
+  </div>
+ </section>
+
+ <details class="r-how">
+  <summary data-en="How it works">이렇게 놉니다</summary>
+  <ul>
+   <li data-en="Perfect within ±45 ms, Great ±90 ms, Good ±135 ms of the line. Later than that is a miss.">선에서 ±45ms 안이면 퍼펙트, ±90ms 그레이트, ±135ms 굿, 그보다 늦으면 놓침입니다.</li>
+   <li data-en="Score is out of 1,000: Perfect counts in full, Great 70%, Good 30%. A long light counts twice, at its head and at its tail.">점수는 1,000점 만점입니다. 퍼펙트는 다, 그레이트는 70%, 굿은 30%를 받습니다. 긴 불빛은 머리와 꼬리를 따로 셉니다.</li>
+   <li data-en="Long lights: keep holding until the tail reaches the line.">긴 불빛은 꼬리가 선에 닿을 때까지 누르고 있습니다.</li>
+   <li data-en="The better you play, the brighter the lighthouse on Dokdo shines.">잘 칠수록 수평선의 독도 등대 빛이 밝아집니다.</li>
+   <li data-en="Notes were made by analysing the beat of each song automatically. Tell us where they feel off.">노트는 곡의 박자를 자동으로 분석해 만들었습니다. 박자가 어긋나는 곳이 있으면 알려 주세요.</li>
+  </ul>
+ </details>
+</main>
+<footer class="footer"><a href="./games.html" data-en="Dokdo Playground">독도 놀이터</a><a href="./privacy.html" data-en="Privacy Policy">개인정보 처리방침</a><a href="./?area=learn" data-en="Dokdo Learning">독도 배움터</a><span data-en="Rhythm records are saved only on this device, apart from playground tickets and island XP. Nothing is sent.">리듬 기록은 이 기기에만 저장하고 어디로도 보내지 않습니다. 놀이터 도전권·섬 경험치와는 따로입니다.</span></footer>
+<noscript><p class="error">리듬 놀이를 하려면 JavaScript를 켜 주세요. <a href="./games.html">독도 놀이터로 돌아가기</a></p></noscript>
+</body></html>

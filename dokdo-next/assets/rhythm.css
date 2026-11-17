@@ -1,0 +1,46 @@
+/* 독도 리듬 놀이: 놀이터 V3(games.css)의 밝은 화면 위에 곡 고르기와 밤바다 놀이판을 더한다. 모든 규칙은 .rhythm-app 아래에만 건다. */
+.rhythm-app{--card:#fffef8;--panel:#edf3e8;--accent:#1c6650;--night:#0b2230;display:flex;flex-direction:column;gap:16px;padding-top:32px}
+.rhythm-app h1,.rhythm-app h2{letter-spacing:-.05em}
+.rhythm-app .r-intro{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 20px}
+.rhythm-app .r-eyebrow{display:block;font-size:.875rem;letter-spacing:.12em;font-weight:700;color:#3f6d59}
+.rhythm-app h1{font-size:clamp(2rem,4.3vw,3rem);line-height:1.3;margin:8px 0 6px}
+.rhythm-app .r-lead{font-size:1rem;color:#486653;max-width:44rem;line-height:1.7}
+.rhythm-app .r-note{color:#4c6856;font-size:.875rem;margin:0}
+.rhythm-app .r-badge{display:inline-block;background:var(--panel);border:1px solid var(--line);color:#3f5e4c;border-radius:999px;padding:5px 14px;font-size:.875rem}
+.rhythm-app .r-songs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.rhythm-app .r-song{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:4px;text-align:left;cursor:pointer;color:var(--ink);font:inherit}
+.rhythm-app .r-song b{font-size:1.05rem;letter-spacing:-.03em}
+.rhythm-app .r-song .sub,.rhythm-app .r-song .rec{font-size:.875rem;color:#4c6856}
+.rhythm-app .r-song .rec{color:#2f5d48;font-weight:700}
+.rhythm-app .r-song[aria-pressed=true]{border-color:var(--accent);background:#eef6e6;box-shadow:0 0 0 2px #b6d80c66 inset}
+.rhythm-app .r-options{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center}
+.rhythm-app .r-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.rhythm-app .r-group[hidden]{display:none}
+.rhythm-app .r-lab{font-size:.875rem;color:#3f5e4c;font-weight:700;margin-right:4px}
+.rhythm-app .r-chip{min-height:40px;min-width:44px;padding:6px 14px;border-radius:999px;border:1px solid #a9c2ad;background:#fff;color:#24523b;font:inherit;font-size:.875rem;cursor:pointer}
+.rhythm-app .r-chip[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.rhythm-app output{min-width:58px;text-align:center;font-size:.875rem;font-variant-numeric:tabular-nums}
+.rhythm-app .r-start{max-width:360px;font-size:1rem;min-height:54px}
+.rhythm-app .r-start:disabled{opacity:.6;cursor:progress}
+.rhythm-app .r-how{border-top:1px solid var(--line);padding-top:14px;color:#4c6856;font-size:.875rem}
+.rhythm-app .r-how summary{cursor:pointer;font-weight:700}
+.rhythm-app .r-how ul{margin:10px 0 0 18px;line-height:1.9}
+/* 놀이판: 화면 전체를 덮는다 */
+.rhythm-app .r-stage{position:fixed;inset:0;z-index:80;background:var(--night);display:flex;flex-direction:column;touch-action:none;user-select:none;-webkit-user-select:none}
+.rhythm-app .r-stage[hidden]{display:none}
+.rhythm-app .r-hud{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:max(10px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 8px max(16px,env(safe-area-inset-left));color:#e9f2ea}
+.rhythm-app .r-hud small{display:block;font-size:.8125rem;color:#9fb9b0}
+.rhythm-app .r-hud strong{font-size:1.5rem;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.rhythm-app .r-pause{min-width:48px;min-height:48px;border-radius:999px;border:1px solid #ffffff40;background:#ffffff14;color:#fff;font-size:1.1rem;cursor:pointer}
+.rhythm-app #board{flex:1;width:100%;min-height:0;display:block;outline:none}
+.rhythm-app .r-menu,.rhythm-app .r-result{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,380px);background:#fffef8;border-radius:18px;padding:24px 22px;display:grid;gap:10px;text-align:center;box-shadow:0 20px 60px #0008}
+.rhythm-app .r-menu[hidden],.rhythm-app .r-result[hidden]{display:none}
+.rhythm-app .r-menu h2{font-size:1.4rem;margin:0 0 6px}
+.rhythm-app .r-secondary{min-height:46px;border-radius:9px;border:1px solid #a9c2ad;background:#fff;color:#24523b;font:inherit;font-size:.9375rem;cursor:pointer}
+.rhythm-app .r-grade{font-size:4rem;line-height:1;font-weight:700;color:var(--accent);letter-spacing:-.04em}
+.rhythm-app .r-big{font-size:2rem;font-weight:700;font-variant-numeric:tabular-nums}
+.rhythm-app .r-detail,.rhythm-app .r-best{font-size:.875rem;color:#4c6856;margin:0;line-height:1.7}
+.rhythm-app .r-best{color:#2f5d48;font-weight:700}
+.rhythm-app .r-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+body.r-playing{overflow:hidden}
+@media(max-width:800px){.rhythm-app .r-songs{grid-template-columns:1fr}}
