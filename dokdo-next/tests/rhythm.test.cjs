@@ -120,3 +120,17 @@ test('vibration is offered only where the browser has it, and can be switched of
   a.match(js, /typeof nav\.vibrate==='function'/);
   a.match(js, /if\(!canVibe\|\|!prefs\.vibe\)return;/);
 });
+
+test('each song carries its beats, and the screen pulses on them (not when motion is reduced)', () => {
+  for (const s of CHARTS) {
+    const b = s.beats, step = 60000 / s.bpm;
+    a.ok(Array.isArray(b) && b.length > 50, s.id + ' has beats');
+    for (let i = 1; i < b.length; i++) a.ok(b[i] - b[i - 1] > step * 0.8 && b[i] - b[i - 1] < step * 1.2, s.id + ' beat gap near the tempo at ' + b[i]);
+    a.ok(b[0] <= s.easy[0][0] && b[b.length - 1] >= s.normal[s.normal.length - 1][0] - step, s.id + ' beats cover the notes');
+    const on = s.normal.filter((n) => b.some((t, i) => Math.abs(n[0] - t) <= 2 || (i + 1 < b.length && Math.abs(n[0] - (t + b[i + 1]) / 2) <= 2))).length;
+    a.equal(on, s.normal.length, s.id + ' every note sits on a beat or half beat');
+  }
+  const js = read('assets/rhythm.js');
+  a.match(js, /const B=song\.beats\|\|\[\];/);
+  a.match(js, /pulse=reduce\?0:/);
+});
