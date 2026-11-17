@@ -84,7 +84,7 @@ async function load(song){if(buffers[song.id])return buffers[song.id];const r=aw
 function blip(kind){if(!ac||kind==='miss')return;const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime;o.type='sine';o.frequency.value=kind==='perfect'?1320:kind==='great'?990:660;g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.05,t+0.005);g.gain.exponentialRampToValueAtTime(0.0001,t+0.08);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+0.1);}
 
 // 한 판
-let fading=false,loading=false,song=null,run=null,src=null,gain=null,startAt=0,playing=false,paused=false,raf=0,flash=[0,0,0,0],pops=[],glow=0;
+let fading=false,loading=false,song=null,run=null,src=null,gain=null,startAt=0,playing=false,paused=false,raf=0,flash=[0,0,0,0],pops=[],glow=0,beatAt=0;
 const held=new Set(),pointers=new Map();
 const NAME={perfect:'PERFECT',great:'GREAT',good:'GOOD',miss:'MISS'},COL={perfect:'#e8ffa0',great:'#9ee6ff',good:'#ffd79a',miss:'#ff9a9a'};
 let total=0,shown=-1;
@@ -101,7 +101,7 @@ async function start(){
  loading=false;$('status').textContent='';$('start').disabled=false;
  begin(buf);}
 function begin(buf){
- stopAudio();run=createRun(song[prefs.level]);total=totalOf(song[prefs.level]);shown=-1;fading=false;held.clear();pointers.clear();pops=[];glow=0;flash=[0,0,0,0];
+ stopAudio();run=createRun(song[prefs.level]);total=totalOf(song[prefs.level]);shown=-1;fading=false;held.clear();pointers.clear();pops=[];glow=0;flash=[0,0,0,0];beatAt=0;
  $('stage').hidden=false;$('menu').hidden=true;$('result').hidden=true;doc.body.classList.add('r-playing');setInert(true);$('sr').textContent='';
  $('hud-song').textContent=(en()?song.titleEn:song.title)+' · '+(prefs.level==='easy'?tr('쉬움','Easy'):tr('보통','Normal'));
  resize();
@@ -166,16 +166,22 @@ function frame(){if(!playing||paused)return;const now=songNow();run.tick(now);dr
  raf=root.requestAnimationFrame(frame);}
 function draw(now){
  const L=layout(W,H);g2.setTransform(dpr,0,0,dpr,0,0);sky(L);
+ const F=fall(),span=L.hitY-L.horizon,yOf=t=>L.hitY-(t-now)/F*span;
+ // 박: 곡에서 찾은 박 시각. 지금 막 지난 박(last)과 그 박이 지난 시간으로 판정선·마디 맥박을 만든다.
+ const B=song.beats||[];if(beatAt>B.length)beatAt=B.length;while(beatAt>0&&B[beatAt-1]>now)beatAt--;while(beatAt<B.length&&B[beatAt]<=now)beatAt++;
+ const last=beatAt-1,since=last>=0?now-B[last]:1e9,bar=last>=0&&last%4===0,pulse=reduce?0:Math.max(0,1-since/(bar?260:180))*(bar?1:0.6);
+ if(pulse>0&&bar){g2.fillStyle='rgba(182,216,12,'+(0.07*pulse)+')';g2.fillRect(L.left,L.horizon,L.width,H-L.horizon);}
  // 줄
  for(let i=0;i<4;i++){const x=L.left+i*L.lane;g2.fillStyle=i%2?'rgba(255,255,255,0.035)':'rgba(255,255,255,0.06)';g2.fillRect(x,L.horizon,L.lane,H-L.horizon);
   if(flash[i]>0){g2.fillStyle='rgba(182,216,12,'+(0.22*flash[i])+')';g2.fillRect(x,L.horizon,L.lane,L.hitY-L.horizon);flash[i]=Math.max(0,flash[i]-0.08);}
   if(held.has(i)||touching(i))flash[i]=Math.max(flash[i],0.6);}
- // 판정선과 글자
- g2.fillStyle='#b6d80c';g2.fillRect(L.left,L.hitY-2,L.width,4);
+ // 박자선: 박마다 가는 가로선이 노트와 같은 속도로 내려온다. 마디 첫 박은 조금 굵고 밝다.
+ for(let j=Math.max(0,beatAt-1);j<B.length&&B[j]-now<=F;j++){const y=yOf(B[j]);if(y>L.hitY||y<L.horizon)continue;const m=j%4===0;g2.fillStyle=m?'rgba(255,255,255,0.2)':'rgba(255,255,255,0.08)';g2.fillRect(L.left,y-(m?1:0.5),L.width,m?2:1);}
+ // 판정선과 글자: 박마다 한 번 밝고 두꺼워졌다가 돌아온다.
+ const lh=4+4*pulse;g2.save();if(pulse>0){g2.shadowColor='#e8ffa0';g2.shadowBlur=18*pulse;}g2.fillStyle=pulse>0.5?'#e8ffa0':'#b6d80c';g2.fillRect(L.left,L.hitY-lh/2,L.width,lh);g2.restore();
  g2.font='700 16px Gmarket,"Apple SD Gothic Neo",sans-serif';g2.textAlign='center';g2.textBaseline='middle';
  for(let i=0;i<4;i++){g2.fillStyle='rgba(255,255,255,0.55)';g2.fillText(LABELS[i],L.left+(i+0.5)*L.lane,L.hitY+28);}
  // 노트
- const F=fall(),span=L.hitY-L.horizon,yOf=t=>L.hitY-(t-now)/F*span;
  for(const n of run.notes){if(n.t-now>F)break;const x=L.left+n.lane*L.lane+6,w=L.lane-12;
   if(n.len>0&&n.tail==null){const y1=Math.min(L.hitY,yOf(n.t)),y2=Math.max(L.horizon,yOf(n.t+n.len));if(y1>y2){g2.fillStyle=n.holding?'rgba(182,216,12,0.55)':'rgba(130,200,220,0.45)';g2.fillRect(x+w*0.3,y2,w*0.4,y1-y2);}}
   if(n.head)continue;const y=yOf(n.t);if(y<L.horizon-10||y>H+20)continue;

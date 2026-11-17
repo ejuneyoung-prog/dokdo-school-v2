@@ -276,13 +276,15 @@ def make(song):
     return {
         'id': song['id'], 'title': song['title'], 'titleEn': song['titleEn'], 'file': './' + song['file'],
         'bpm': round(bpm, 2), 'duration': int(duration * 1000), 'easy': charts['easy'], 'normal': charts['normal'],
+        # 박 시각(ms). 화면의 박자선과 판정선 맥박이 쓴다. 0번째·4번째… 박이 마디 첫 박(노트 가산점과 같은 기준).
+        'beats': [int(round(t * 1000)) for t in beats],
     }
 
 
 def render(data):
     body = json.dumps(data, ensure_ascii=False, separators=(',', ':'))
     return ('/* 독도 리듬 노트 — tools/rhythm/make_chart.py 가 만든 생성물입니다. 손으로 고치지 마세요.\n'
-            ' * 노트 한 개 = [시각(ms), 줄(0~3 = D·F·J·K), 길게 누르기 길이(ms, 0이면 짧은 노트)] */\n'
+            ' * 노트 한 개 = [시각(ms), 줄(0~3 = D·F·J·K), 길게 누르기 길이(ms, 0이면 짧은 노트)], beats = 박 시각(ms) */\n'
             "(function(root){const charts=%s;if(typeof module==='object'&&module.exports)module.exports=charts;else root.DokdoRhythmCharts=charts;})(typeof globalThis!=='undefined'?globalThis:this);\n" % body)
 
 
