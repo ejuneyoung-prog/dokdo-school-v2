@@ -168,7 +168,7 @@ function draw(now){
  const L=layout(W,H);g2.setTransform(dpr,0,0,dpr,0,0);sky(L);
  const F=fall(),span=L.hitY-L.horizon,yOf=t=>L.hitY-(t-now)/F*span;
  // 박: 곡에서 찾은 박 시각. 지금 막 지난 박(last)과 그 박이 지난 시간으로 판정선·마디 맥박을 만든다.
- const B=song.beats||[];while(beatAt>0&&B[beatAt-1]>now)beatAt--;while(beatAt<B.length&&B[beatAt]<=now)beatAt++;
+ const B=song.beats||[];if(beatAt>B.length)beatAt=B.length;while(beatAt>0&&B[beatAt-1]>now)beatAt--;while(beatAt<B.length&&B[beatAt]<=now)beatAt++;
  const last=beatAt-1,since=last>=0?now-B[last]:1e9,bar=last>=0&&last%4===0,pulse=reduce?0:Math.max(0,1-since/(bar?260:180))*(bar?1:0.6);
  if(pulse>0&&bar){g2.fillStyle='rgba(182,216,12,'+(0.07*pulse)+')';g2.fillRect(L.left,L.horizon,L.width,H-L.horizon);}
  // 줄
