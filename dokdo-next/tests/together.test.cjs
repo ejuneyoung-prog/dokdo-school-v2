@@ -40,13 +40,14 @@ test('ship stages: seven ranks, three built now, grade and price only go up, ben
 test('the grade ladder is the school ladder (same order, aliases read the same)', () => {
   a.deepEqual(R.GRADES, Core.GRADES);
   for (const [old, now] of Object.entries({ CR1: 'DK1', PR1: 'DK6', HEAD: 'DK9' })) a.equal(B.normGrade(old), now);
-  a.equal(B.gradeLabel('M1'), '중학 1학년'); a.equal(B.gradeLabel('DK3'), '독코민 Lv.3'); a.equal(B.gradeLabel('nope'), '');
+  a.equal(B.gradeName('M1'), '중학 1학년'); a.equal(B.gradeLabel('M1'), 'Lv.8 · 중학 1학년', 'the Lv number children see in the school'); a.equal(B.gradeLabel('DK3'), '독코민 Lv.3'); a.equal(B.gradeLabel('nope'), '');
 });
 
 test('nickname is the only free text: trimmed, no tags or control characters, 12 letters', () => {
   a.equal(U.cleanNick('  <b>독도\u0007 지킴이</b>  '), 'b독도 지킴이/b');
   a.equal([...U.cleanNick('가'.repeat(30))].length, 12);
   a.equal(U.cleanNick(null), '');
+  a.equal(U.cleanNick('a\u202Eb\u200Bc\uFEFF'), 'abc', 'no direction flips or invisible letters');
   a.equal(U.cleanCC('zz'), 'KR'); a.equal(U.cleanCC('US'), 'US');
 });
 
@@ -57,6 +58,8 @@ test('stored state is cleaned: bad id rejected, stage capped to built ships, big
   a.deepEqual(st.raised, { days: 3, last: '' });
   a.equal(U.tidy({ id: 's1234abcd', stage: 1, flag: 'l' }).flag, 'm', 'a new captain cannot keep the big flag');
   a.deepEqual(U.tidy(st).spot, U.spotOf('s1234abcd'), 'the boat comes back to the same spot');
+  const now = KST('2026-11-20T10:00'), fut = U.tidy({ id: 's1234abcd', traps: [now + 365 * 24 * H], raised: { days: 2, last: '2027-01-01' } }, now);
+  a.deepEqual(fut.traps, [now], 'a trap thrown in the future is pulled back to now'); a.equal(fut.raised.last, '', 'a future raise day does not lock today');
 });
 
 test('raising the flag counts once a Korean day, and a missed day never resets the count', () => {
@@ -66,6 +69,14 @@ test('raising the flag counts once a Korean day, and a missed day never resets t
   a.ok(R.raise(st, KST('2026-11-21T00:00')), 'new day at midnight in Korea');
   a.ok(R.raise(st, KST('2026-11-25T07:00')), 'after missing days');
   a.equal(st.raised.days, 3);
+});
+
+test('after midnight the flag comes first, even with traps still in the water', () => {
+  const st = U.create('선장', 'KR', 0, () => .1), t = KST('2026-11-20T23:55');
+  R.raise(st, t); R.throwTraps(st, t);
+  a.equal(R.phase(st, KST('2026-11-21T00:05')), 'raise');
+  R.raise(st, KST('2026-11-21T00:05')); a.equal(R.phase(st, KST('2026-11-21T00:05')), 'wait');
+  a.equal(R.phase(st, KST('2026-11-21T01:00')), 'haul');
 });
 
 test('waving counts up to the daily cap, then stops counting until tomorrow', () => {
@@ -87,13 +98,15 @@ test('trap loop: raise, throw, wait, haul, throw again right away; rank shortens
 });
 
 test('rolling follows the table boundaries', () => {
-  a.equal(R.roll(0).id, 'mullung'); a.equal(R.roll(.319).id, 'mullung'); a.equal(R.roll(.33).id, 'gasibae');
-  a.equal(R.roll(.61).id, 'octopus'); a.equal(R.roll(.93).id, 'dohwa'); a.equal(R.roll(1.5).id, 'dohwa'); a.equal(R.roll(NaN).id, 'mullung');
+  a.equal(R.roll(0).id, 'mullung'); a.equal(R.roll(.399).id, 'mullung'); a.equal(R.roll(.41).id, 'gasibae');
+  a.equal(R.roll(.78).id, 'octopus'); a.equal(R.roll(.93).id, 'dohwa'); a.equal(R.roll(1.5).id, 'dohwa'); a.equal(R.roll(NaN).id, 'mullung');
+  a.ok(C.CATCH.find((c) => c.id === 'octopus').p < Math.min(...C.CATCH.filter((c) => !c.rare && c.id !== 'octopus').map((c) => c.p)), 'octopus, on the weakest source, is the least common of the common three');
+  for (const c of C.CATCH) for (const u of c.url) a.match(u, /^https:\/\//, c.id + ' source link');
 });
 
 test('selling and building: study opens the rank, money builds it', () => {
   const st = U.create('선장', 'KR', 0, () => .4);
-  st.bag = { octopus: 2, dohwa: 1 }; a.equal(R.sellAll(st), 80); a.equal(st.money, 80); a.deepEqual(st.bag, {});
+  st.bag = { octopus: 2, dohwa: 1 }; a.equal(R.sellAll(st), 100); a.equal(st.money, 100); a.deepEqual(st.bag, {});
   a.deepEqual(R.nextStage(st, 'K').need, ['grade', 'money']);
   st.money = 150; a.deepEqual(R.nextStage(st, 'E6').need, ['grade']);
   a.ok(!R.build(st, 'E6')); a.ok(R.build(st, 'M1')); a.equal(st.stage, 2); a.equal(st.money, 0);
@@ -136,7 +149,9 @@ test('sea layout: higher ranks anchor closer to Dokdo, boats keep apart and stay
 test('sample boats are clearly samples and look plausible', () => {
   const f = S.sampleFleet();
   a.equal(f.length, C.SAMPLE_SHIPS); a.deepEqual(S.sampleFleet(), f, 'same every time');
-  for (const s of f) { a.ok(s.sample); a.match(s.nick, /^견본 선장 \d+$/); a.ok(s.waves <= s.days * C.WAVE_PER_DAY); a.ok(s.stage >= 1 && s.stage <= 3); }
+  for (const s of f) { a.ok(s.sample); a.match(s.nick, /^견본 선장 \d+$/); a.ok(s.waves <= s.days * C.WAVE_PER_DAY); a.ok(s.stage >= 1 && s.stage <= 3); a.ok(s.days <= 20); }
+  const pl = F.myPlace([{ id: 'a', waves: 10 }, { id: 'me', me: true, waves: 4 }, { id: 'c', waves: 1 }]);
+  a.deepEqual(pl, { rank: 2, of: 3, ahead: 7 }, 'my place and the waves needed to pass the captain ahead');
 });
 
 test('local store saves and reads back a cleaned state, and survives a blocked storage', () => {
@@ -149,8 +164,9 @@ test('local store saves and reads back a cleaned state, and survives a blocked s
 });
 
 test('school bridge: hall of fame is read-only, cleaned, and a copied nickname alone is not enough', async () => {
-  const tops = B.parseTops({ tops: [{ nick: ' 별빛 ', level: 'DK2' }, { nick: '별빛', level: 'DK2' }, { nick: '<img>', level: 'X' }, { nick: '', level: 'K' }, null] });
-  a.deepEqual(tops, [{ nick: '별빛', level: 'DK2' }, { nick: 'img', level: '' }]);
+  const tops = B.parseTops({ tops: [{ nick: ' 별빛 ', level: '독코민 Lv.2' }, { nick: '별빛', level: 'DK2' }, { nick: '<img>', level: 'X' }, { nick: '', level: 'K' }, null, { nick: 'sea', level: 'Dokkomin Lv.12' }, { nick: '바다', level: 'Lv.8' }] });
+  a.deepEqual(tops, [{ nick: '별빛', level: 'DK2' }, { nick: 'img', level: '' }, { nick: 'sea', level: 'DK12' }, { nick: '바다', level: 'M1' }], 'the school sends the shown label, read back to a grade');
+  a.equal(B.parseLevel('박사 2년차'), 'PHD2'); a.equal(B.parseLevel('Lv.0'), ''); a.equal(B.parseLevel('Lv.99'), '');
   a.deepEqual(B.parseTops({}), []);
   a.ok(B.inHall(tops, '별빛', 'DK5')); a.ok(!B.inHall(tops, '별빛', 'U1'), 'same nickname, lower grade'); a.ok(!B.inHall(tops, 'img', 'DK12'), 'rows without a grade never match');
   // 주소 확인: 운영 Apps Script 주소 모양만 받는다
@@ -166,12 +182,21 @@ test('school bridge: hall of fame is read-only, cleaned, and a copied nickname a
 
 test('school bridge: grade is read from the school record only, nickname only arrives by address and is removed from it', () => {
   const ls = (v) => ({ getItem: (k) => (k === B.SCHOOL_KEY ? v : null) });
-  a.equal(B.schoolGrade(ls(JSON.stringify({ grade: 'U2', name: '실명' }))), 'U2');
+  // 스쿨은 학년을 저장하지 않고 맞힌 수로 계산한다: 실제 기록 모양(m)으로 같은 계산을 하는지
+  const m = {}; for (let i = 0; i < 240; i++) m[920001 + i] = { att: 2, cor: 2 };
+  const real = { grade: 'K', name: '실명', m }, want = Core.gradeProgress(Core.gradeScore(real)).grade;
+  a.notEqual(want, 'K'); a.equal(B.schoolGrade(ls(JSON.stringify(real))), want); a.deepEqual(B.school(ls(JSON.stringify(real))), { grade: want, has: true });
+  a.equal(B.schoolGrade(ls(JSON.stringify({ grade: 'U2', m: {} }))), 'U2', 'an older stored grade still counts if it is higher');
   a.equal(B.schoolGrade(ls(JSON.stringify({ grade: 'HEAD' }))), 'DK9');
+  a.deepEqual(B.school(ls(null)), { grade: 'K', has: false });
   a.equal(B.schoolGrade(ls('{bad')), 'K'); a.equal(B.schoolGrade(ls(null)), 'K');
   let replaced = '';
-  const got = B.incoming({ href: 'https://x.test/dokdo-next/together/?nick=%EB%B0%94%EB%8B%A4&cc=us&k=1#a' }, { replaceState: (_, __, u) => { replaced = u; } });
-  a.deepEqual(got, { nick: '바다', cc: 'US' }); a.equal(replaced, '/dokdo-next/together/?k=1#a');
+  const got = B.incoming({ href: 'https://x.test/dokdo-next/together/?nick=%EB%B0%94%EB%8B%A4&cc=us&k=1' }, { replaceState: (_, __, u) => { replaced = u; } });
+  a.deepEqual(got, { nick: '바다', cc: 'US' }); a.equal(replaced, '/dokdo-next/together/?k=1');
+  const hashed = B.incoming({ href: 'https://x.test/dokdo-next/together/#nick=%EB%B3%84&cc=CA' }, { replaceState: (_, __, u) => { replaced = u; } });
+  a.deepEqual(hashed, { nick: '별', cc: 'CA' }); a.equal(replaced, '/dokdo-next/together/', 'the hash (never sent to the server) is cleared too');
+  a.equal(B.mayShare(), false, 'without the school privacy check, sharing stays closed');
+  a.equal(B.campUrl('바다', false), '../camp/'); a.equal(B.campUrl('바다', true), '../camp/?nick=%EB%B0%94%EB%8B%A4');
   const src = read('together/bridge.js');
   a.doesNotMatch(src, /setItem|removeItem/, 'never writes the school record');
   a.doesNotMatch(src, /v\.name|v\.nick|v\.flag/, 'reads only the grade from the school record');
@@ -184,6 +209,10 @@ test('page rules: one CDN (same three.js and hash as the camp), only the hall-of
   a.match(page, /connect-src 'self' https:\/\/script\.google\.com https:\/\/script\.googleusercontent\.com https:\/\/\*\.googleusercontent\.com;/);
   a.match(page, /form-action 'none'/); a.match(page, /href="\.\.\/privacy\.html"/); a.match(page, /href="\.\.\/"/);
   a.doesNotMatch(page, /analytics|googletagmanager|gtag|kakao/i);
+  a.ok(page.indexOf('src="../assets/dokdo-core.js"') > 0 && page.indexOf('src="../assets/privacy-gate.js"') < page.indexOf('src="./bridge.js"'), 'school grade rule and privacy check load before the bridge');
+  a.match(page, /<section class="goal" id="goal" aria-label="다음 목표">/); a.match(page, /<p id="sr" class="sr" aria-live="polite">/);
+  a.match(read('together/app.js'), /\$\('count'\)\.textContent=fmt\(1\+hallOthers\(\)\.length\)/, 'the headline count has no sample boats');
+  a.match(read('together/app.js'), /nick:ok\?st\.nick:''/, 'the photo leaves out the nickname unless sharing is allowed');
   const order = ['config.js', 'user.js', 'rules.js', 'fleet.js', 'store.js', 'net.js', 'bridge.js', 'flag.js', 'terrain.js', 'ship.js', 'sea.js', 'share.js', 'app.js'].map((f) => page.indexOf('src="./' + f + '"'));
   a.ok(order.every((v, i) => v > 0 && (i === 0 || v > order[i - 1])), 'scripts load in dependency order');
   for (const f of ['app.js', 'sea.js', 'share.js', 'store.js', 'user.js', 'rules.js', 'fleet.js', 'net.js', 'ship.js', 'flag.js']) {

@@ -1,14 +1,15 @@
-/* 배(집) 모양 모듈. 단계마다 모양 함수 하나. 면을 단순하게 깎아(flatShading, 적은 면) 휴대폰에서 가볍게 돈다.
+/* 배(집) 모양 모듈. 색은 브랜드 규정 V2를 따른다(지붕 차콜 판, 부표 라임 = 누를 것). 금빛은 명예의 전당 돛대·깃봉에만.
+ *  단계마다 모양 함수 하나. 면을 단순하게 깎아(flatShading, 적은 면) 휴대폰에서 가볍게 돈다.
  * 배 이름·모양을 바꾸거나 4~7단계를 더할 때는 BUILDERS에 함수만 더한다(config.js SHIPS와 짝).
  * 집짓기 = 배 위 선실: 1단계 돛과 태극기 → 2단계 선실 한 칸 → 3단계 2층 선실·창 불빛·굴뚝. 섬 위에는 아무것도 짓지 않는다. */
 (function(root){
 'use strict';
 function make(T,tex){
  const M={wood:new T.MeshStandardMaterial({color:0x8a5a36,flatShading:true}),plank:new T.MeshStandardMaterial({color:0xc69a6b,flatShading:true}),
-  wall:new T.MeshStandardMaterial({color:0xf1e6d2,flatShading:true}),roof:new T.MeshStandardMaterial({color:0x3f6f8f,flatShading:true}),
+  wall:new T.MeshStandardMaterial({color:0xf1e6d2,flatShading:true}),roof:new T.MeshStandardMaterial({color:0x2e3135,flatShading:true}),
   win:new T.MeshStandardMaterial({color:0x6d8aa0,emissive:0xffd77a,emissiveIntensity:0,flatShading:true}),
   dark:new T.MeshStandardMaterial({color:0x40362f,flatShading:true}),gold:new T.MeshStandardMaterial({color:0xd8b04a,metalness:.4,roughness:.45,flatShading:true}),
-  buoy:new T.MeshStandardMaterial({color:0xff7a2e,flatShading:true})};
+  buoy:new T.MeshStandardMaterial({color:0xb6d80c,emissive:0x2a3300,flatShading:true})};
  const sails={};for(const k of Object.keys(tex.sails))sails[k]=new T.MeshStandardMaterial({map:tex.sails[k],side:T.DoubleSide,flatShading:true});
  const flagM=new T.MeshBasicMaterial({map:tex.flag,side:T.DoubleSide});
  function hull(L,W){const sh=new T.Shape();sh.moveTo(-W,-L*.4);sh.lineTo(W,-L*.4);sh.quadraticCurveTo(W*1.1,L*.1,0,L*.5);sh.quadraticCurveTo(-W*1.1,L*.1,-W,-L*.4);

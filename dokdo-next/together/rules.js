@@ -16,7 +16,8 @@ const slots=st=>ship(st).traps;
 const ready=(at,now,st)=>now-at>=WAIT(st);
 const leftMs=(at,now,st)=>Math.max(0,WAIT(st)-(now-at));
 // 통발 상태: 'raise'(먼저 태극기) · 'throw'(던질 자리 있음) · 'wait'(기다리는 중) · 'haul'(건질 것 있음)
-function phase(st,now=Date.now()){if(!raisedToday(st,now)&&!st.traps.length)return'raise';if(st.traps.some(t=>ready(t,now,st)))return'haul';if(st.traps.length<slots(st))return raisedToday(st,now)?'throw':'raise';return'wait'}
+// 오늘 태극기를 아직 안 올렸으면 무엇보다 먼저 'raise'(자정을 넘겨 통발이 물에 있어도 올릴 길이 막히지 않게, 레드팀 11/20).
+function phase(st,now=Date.now()){if(!raisedToday(st,now))return'raise';if(st.traps.some(t=>ready(t,now,st)))return'haul';if(st.traps.length<slots(st))return'throw';return'wait'}
 // 빈 자리마다 통발을 던진다. 오늘 태극기를 올린 뒤에만 던질 수 있다. 던진 개수를 돌려준다.
 function throwTraps(st,now=Date.now()){if(!raisedToday(st,now))return 0;let n=0;while(st.traps.length<slots(st)){st.traps.push(now);n++}return n}
 // 확률표에서 하나 고르기. r은 0 이상 1 미만.

@@ -1,6 +1,7 @@
 /* DOKDO TOGETHER 설정값. 숫자·이름·표는 모두 여기서만 바꾼다(교수님 결정 2026-11-20: 통발 1시간, 문어 포함).
  * 생물 출처: 독도새우 3종 — 서울신문 2017.11.15 "대부분 통발로 잡지만", 종·수심은 낚시 놀이(assets/fishing.js SRC 6·7)와 같다.
- *            문어 — 매일신문 2009.4.17 "독도 근해에 워낙 그물과 통발을 많이 놓으니까 문어들이 … 잡혀버린다고들 한다"(전언, 근거 약함).
+ *            문어 — 매일신문 2009.4.17 "독도 근해에 워낙 그물과 통발을 많이 놓으니까 문어들이 … 잡혀버린다고들 한다"(전언, 근거 약함[확인필요]).
+ *                   기사 취지는 독도 근해 문어가 줄었다는 것이라, 흔한 것 가운데 가장 드물게(15%) 둔다(레드팀 11/20). 교수님 결정으로 넣음(11/20).
  * 홍게는 독도 근해 통발 조업을 확인하지 못해 넣지 않았다(통발 사고 기사는 독도에서 168km 떨어진 공해). */
 (function(root){
 'use strict';
@@ -12,10 +13,10 @@ const C={
  TRAP_MINUTES:60,           // 통발을 던지고 건질 수 있을 때까지(분)
  // 통발에 드는 것: 흔한 것 셋, 귀한 것 하나. en은 널리 확실한 영어 이름만(새우 셋은 비움, 낚시 놀이와 같은 원칙). p는 확률(합 1), value는 팔 때 받는 돈.
  CATCH:[
-  {id:'mullung',name:'물렁가시붉은새우',en:'',alias:'꽃새우',rare:false,p:.32,value:12,src:'서울신문 2017 · 경북매일 2018'},
-  {id:'gasibae',name:'가시배새우',en:'',alias:'닭새우',rare:false,p:.28,value:15,src:'서울신문 2017 · 경북매일 2018'},
-  {id:'octopus',name:'문어',en:'Octopus',alias:'',rare:false,p:.32,value:10,src:'매일신문 2009(전언)'},
-  {id:'dohwa',name:'도화새우',en:'',alias:'독도새우 가운데 가장 큼',rare:true,p:.08,value:60,src:'서울신문 2017 · 서울신문 2019'}
+  {id:'mullung',name:'물렁가시붉은새우',en:'',alias:'꽃새우',rare:false,p:.40,value:12,src:'서울신문 2017 · 경북매일 2018',url:['https://m.go.seoul.co.kr/news/2017/11/15/20171115012008','https://kbmaeil.com/article/201805040221061']},
+  {id:'gasibae',name:'가시배새우',en:'',alias:'닭새우',rare:false,p:.37,value:15,src:'서울신문 2017 · 경북매일 2018',url:['https://m.go.seoul.co.kr/news/2017/11/15/20171115012008','https://kbmaeil.com/article/201805040221061']},
+  {id:'octopus',name:'문어',en:'Octopus',alias:'',rare:false,p:.15,value:20,src:'매일신문 2009(전언)',url:['https://www.imaeil.com/page/view/2009041709164933381']},
+  {id:'dohwa',name:'도화새우',en:'',alias:'독도새우 가운데 가장 큼',rare:true,p:.08,value:60,src:'서울신문 2017 · 서울신문 2019',url:['https://m.go.seoul.co.kr/news/2017/11/15/20171115012008','https://m.go.seoul.co.kr/news/2019/05/29/20190529500039']}
  ],
  // 배(집) 단계 = 선장 계급. 학년(grade)이 그 단계를 열고, 통발로 번 돈(price)으로 짓는다. 1차는 1~3단계만 모양이 있다.
  // 계급이 높을수록 받는 혜택(교수님 2026-11-20 "계급이 높은 사람들에 대한 혜택, 계급화 몰입"):

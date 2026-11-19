@@ -46,7 +46,7 @@ check('Apps Script endpoint is only configured in site-config.js, not hardcoded 
 check('No common embedded credential patterns',not re.search(r'AIza[0-9A-Za-z_-]{30,}|sk-[A-Za-z0-9]{35,}',all_js))
 check('No eval or dynamic Function constructor',not re.search(r'\beval\s*\(|new\s+Function\s*\(',all_js))
 fonts={p.relative_to(ROOT).as_posix() for p in ROOT.rglob('*') if p.suffix.lower() in ['.woff','.woff2','.ttf','.otf','.ttc'] and 'node_modules' not in p.parts}
-check('Only the licensed font files are distributed',fonts=={'assets/fonts/GmarketSansMedium.woff2','assets/fonts/GmarketSansBold.woff2','assets/fonts/BebasNeue.woff2'} and (ROOT/'assets/fonts/GmarketSans-OFL.txt').exists() and (ROOT/'assets/fonts/BebasNeue-OFL.txt').exists())
+check('Only the licensed font files are distributed',fonts=={'assets/fonts/GmarketSansMedium.woff2','assets/fonts/GmarketSansBold.woff2','assets/fonts/BebasNeue.woff2','assets/fonts/BarlowCondensed-600.woff2','assets/fonts/BarlowCondensed-700.woff2'} and (ROOT/'assets/fonts/GmarketSans-OFL.txt').exists() and (ROOT/'assets/fonts/BebasNeue-OFL.txt').exists() and (ROOT/'assets/fonts/BarlowCondensed-OFL.txt').exists())
 check('No service worker with unknown stale caches',(ROOT/'sw.js').exists()==False and 'serviceWorker.register' not in all_js)
 check('Default page is not a synthetic demo','name="dokdo-mode" content="live"' in (ROOT/'index.html').read_text())
 check('Demo has a distinct route','name="dokdo-mode" content="demo"' in (ROOT/'demo.html').read_text())
