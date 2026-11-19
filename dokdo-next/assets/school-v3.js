@@ -53,7 +53,7 @@ function refresh(){
  label('v3-main-language','English','한국어');$('v3-main-language').setAttribute('aria-label',copy('Switch to English','한국어로 바꾸기'));
  label('v3-entry-title','내 독도 학력은 몇 학년?','What’s your Dokdo grade?');label('v3-entry-description','배우고, 놀며 독도와 가까워져요.','Learn, play, and get closer to Dokdo.');
  lines('v3-choice-learn-title','독도\n배움터','Dokdo Learning');label('v3-choice-learn-description','문제를 풀며 독도를 알아가요.','Discover Dokdo, one question at a time.');label('v3-choice-learn-action','배움터 들어가기 →','Start learning →');
-lines('camp-title','독도에서\n힐링하기','Dokdo Retreat');label('together-desc','독도 앞바다에 내 배 띄우기','Float your boat by Dokdo');label('camp-desc','파도 소리를 들으며 쉬어가요.','Rest by the waves.');label('camp-action','힐링하러 가기 →','Take a break →');
+lines('camp-title','독도에서\n힐링하기','Dokdo Retreat');label('together-desc','독도 앞바다에 내 배 띄우기','Your own boat by Dokdo (in Korean)');label('camp-desc','파도 소리를 들으며 쉬어가요.','Rest by the waves.');label('camp-action','힐링하러 가기 →','Take a break →');
  lines('v3-choice-play-title','독도\n놀이터','Dokdo Playground');label('v3-choice-play-description','게임하며 나의 섬을 가꿔요.','Play games and grow your own island.');label('v3-choice-play-action','놀이터 들어가기 →','Start playing →');
  {const home=$('v3-main-home'),mark=document.createElement('b'),word=document.createElement('span');mark.setAttribute('aria-hidden','true');mark.textContent='⌂';word.textContent=copy('홈','Home');home.replaceChildren(mark,word);}$('v3-main-home').setAttribute('aria-label',copy('홈 · 처음 화면으로','Home · first screen'));label('v3-back-learning','← 배움터로 돌아가기','← Back to Dokdo Learning');
  const s=App.state;if(!s)return;

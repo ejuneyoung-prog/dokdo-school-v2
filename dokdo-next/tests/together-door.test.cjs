@@ -21,5 +21,5 @@ test('nickname and country go to TOGETHER only through the same child-protection
   a.match(js, /const campNick=window\.DokdoPrivacy\.mayShare\(\)\?/);
   a.match(js, /const tgCC=campNick&&\/\^\[A-Z\]\{2\}\$\/\.test\(s\.flag\|\|''\)\?s\.flag:'';/);
   a.match(js, /\$\('together-entry'\)\.href='\.\/together\/'\+\(campNick\?'#nick='\+encodeURIComponent\(campNick\)\+\(tgCC\?'&cc='\+tgCC:''\):''\)/, 'in the hash, which never reaches the server logs');
-  a.match(js, /label\('together-desc','독도 앞바다에 내 배 띄우기','Float your boat by Dokdo'\)/);
+  a.match(js, /label\('together-desc','독도 앞바다에 내 배 띄우기','Your own boat by Dokdo \(in Korean\)'\)/, 'the page is Korean only, so the English door says so');
 });
