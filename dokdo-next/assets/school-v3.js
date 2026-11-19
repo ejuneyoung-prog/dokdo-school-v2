@@ -62,8 +62,8 @@ lines('camp-title','독도에서\n힐링하기','Dokdo Retreat');label('together
  label('v3-first-class',begun?'이어서 시작하기':'1교시 시작',begun?'Continue learning':'Start Period 1');
  // 힐링 공간은 스쿨 저장소를 읽지 않습니다. 닉네임은 주소로만 건네고, 없으면 붙이지 않습니다.
  const campNick=window.DokdoPrivacy.mayShare()?(s.name||'').trim():'';if($('camp-entry'))$('camp-entry').href='./camp/'+(campNick?'?nick='+encodeURIComponent(campNick):'');
- // DOKDO TOGETHER도 같은 원칙: 어린이 보호 확인을 통과한 때만 닉네임과 나라(두 글자 코드)를 주소로 건넵니다.
- const tgCC=campNick&&/^[A-Z]{2}$/.test(s.flag||'')?s.flag:'';if($('together-entry'))$('together-entry').href='./together/'+(campNick?'?nick='+encodeURIComponent(campNick)+(tgCC?'&cc='+tgCC:''):'');
+ // DOKDO TOGETHER도 같은 원칙: 어린이 보호 확인을 통과한 때만 닉네임과 나라(두 글자 코드)를 건넵니다. 주소 뒤 조각(#)이라 서버 접속 기록에 남지 않습니다.
+ const tgCC=campNick&&/^[A-Z]{2}$/.test(s.flag||'')?s.flag:'';if($('together-entry'))$('together-entry').href='./together/'+(campNick?'#nick='+encodeURIComponent(campNick)+(tgCC?'&cc='+tgCC:''):'');
  const en=document.documentElement.lang==='en',p=s.learningProfile,unit=C.unitInfo(p?.course?.unit||1),game=gameRecord(),summary=window.DokdoAppModel.summary(s);
  label('v3-area-label','DOKDO KOREA SCHOOL · 독도 배움터','DOKDO KOREA SCHOOL · LEARNING');
  label('v3-greeting','오늘도, 한 걸음만.','One little step today.');label('v3-subtitle','알아갈수록 가까워지는 나의 독도.','A little learning brings Dokdo closer.');
