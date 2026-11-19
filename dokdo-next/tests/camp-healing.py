@@ -240,6 +240,7 @@ def card(context, label):
     expect(entry).to_be_visible()
     assert entry.get_attribute('href') == './camp/'
     assert page.locator('#v3-entry .v3-choice-grid > *').count() == 3
+    assert page.locator('#together-entry').get_attribute('href') == './together/'
     assert page.locator('#v3-entry-title').inner_text() == '내 독도 학력은 몇 학년?'
     biggest = page.evaluate("""()=>{const r=e=>{const b=document.querySelector(e).getBoundingClientRect();return b.width*b.height};return {start:r('#v3-first-class'),login:r('#account-link'),live:r('#v3-live-entry'),lang:r('#v3-main-language')}}""")
     assert biggest['start'] == max(biggest.values()), biggest
