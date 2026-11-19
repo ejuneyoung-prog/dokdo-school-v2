@@ -1,0 +1,76 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net/npm/three@0.160.0/; style-src 'self' 'unsafe-inline'; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; img-src 'self' data: blob:; font-src 'self'; media-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#0d3a5a">
+<meta name="description" content="독도 앞바다에 태극기를 단 내 배를 띄우고 매일 돌보는 곳. 독도 코리아 스쿨의 DOKDO TOGETHER입니다. 화면 속 가상 체험입니다.">
+<meta property="og:title" content="DOKDO TOGETHER · 독도 앞바다에 내 배를 띄우세요">
+<meta property="og:description" content="태극기를 올리고, 통발을 던지고, 내 배를 키워 독도를 함께 지킵니다.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://dokdo-school-v2.vercel.app/dokdo-next/assets/share/dokdo-school-v5-20261106-logo.png">
+<title>DOKDO TOGETHER · 독도 코리아 스쿨</title>
+<link rel="icon" href="../assets/icon-32.png">
+<link rel="stylesheet" href="./together.css">
+</head><body>
+<canvas id="sea" aria-label="독도 앞바다 3D 장면. 끌어서 둘러보고 두 손가락으로 가까이 볼 수 있습니다."></canvas>
+<div id="tags" aria-hidden="true"></div>
+<header class="top">
+ <a class="back" href="../" aria-label="독도 코리아 스쿨로 가기">← 스쿨</a>
+ <div class="stat"><span class="k">독도를 지킨 날</span><b id="days">0</b><span class="u">일째</span></div>
+ <div class="stat"><span class="k">지금 독도 앞바다의 배</span><b id="count">1</b><span class="u">척</span></div>
+</header>
+<p class="proto" id="proto">시제품 · 다른 배는 <span id="sample-n">0</span>척이 견본입니다</p>
+<section class="goal" id="goal" aria-live="polite"><p id="goal-text">태극기를 올려 오늘의 독도를 지키세요</p><div class="bar"><i id="goal-bar"></i></div></section>
+<nav class="dock" aria-label="놀이 메뉴">
+ <div class="row main-row">
+  <button id="wave" class="wave" type="button" aria-label="태극기 흔들기">🇰🇷<span>흔들기</span></button>
+  <button id="main" class="main" type="button">태극기 올리기</button>
+  <button id="view" class="view" type="button" aria-pressed="false">독도<span>전체</span></button>
+ </div>
+ <div class="row menu">
+  <button type="button" data-panel="bag">창고</button>
+  <button type="button" data-panel="ship">배 키우기</button>
+  <button type="button" data-panel="deco">꾸미기</button>
+  <button type="button" data-panel="rank">태극기 순위</button>
+  <button type="button" id="photo">사진 남기기</button>
+  <a id="camp" href="../camp/">캠핑장</a>
+ </div>
+</nav>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden>
+ <div class="card"><header><h2 id="sheet-title"></h2><button type="button" class="x" id="sheet-x" aria-label="닫기">✕</button></header><div id="sheet-body"></div></div>
+</div>
+<div class="sheet welcome" id="welcome" role="dialog" aria-modal="true" aria-labelledby="w-title" hidden>
+ <div class="card">
+  <p class="brand">DOKDO TOGETHER</p>
+  <h1 id="w-title">독도 앞바다에<br>내 배를 띄우세요</h1>
+  <p class="lead">태극기를 단 작은 배 한 척을 드립니다. 매일 태극기를 올리고, 통발을 던지고, 배를 키워 독도를 함께 지켜요.</p>
+  <label for="w-nick">선장 이름(닉네임)</label>
+  <input id="w-nick" maxlength="12" autocomplete="off" spellcheck="false" placeholder="실명은 쓰지 마세요">
+  <label for="w-cc">나라</label>
+  <select id="w-cc"></select>
+  <button type="button" id="w-go" class="main">내 배 받기</button>
+  <p class="fine">이름과 기록은 이 기기에만 저장되고 어디에도 보내지 않습니다. 화면 속 가상 체험입니다. <a href="../privacy.html">개인정보 안내</a></p>
+ </div>
+</div>
+<div class="sheet shot" id="shot" role="dialog" aria-modal="true" aria-label="공유 이미지" hidden>
+ <div class="card"><header><h2>사진 남기기</h2><button type="button" class="x" id="shot-x" aria-label="닫기">✕</button></header><p id="shot-help"></p><img id="shot-img" alt="내 배와 태극기, 독도를 지킨 날이 담긴 세로 사진"></div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<noscript><p class="nojs">DOKDO TOGETHER는 자바스크립트를 켜야 볼 수 있습니다.</p></noscript>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" integrity="sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O" crossorigin="anonymous"></script>
+<script src="../assets/site-config.js"></script>
+<script src="../assets/haptic.js"></script>
+<script src="./config.js"></script>
+<script src="./user.js"></script>
+<script src="./rules.js"></script>
+<script src="./fleet.js"></script>
+<script src="./store.js"></script>
+<script src="./net.js"></script>
+<script src="./bridge.js"></script>
+<script src="./flag.js"></script>
+<script src="./terrain.js"></script>
+<script src="./ship.js"></script>
+<script src="./sea.js"></script>
+<script src="./share.js"></script>
+<script src="./app.js"></script>
+</body></html>
