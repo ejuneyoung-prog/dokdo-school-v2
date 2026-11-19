@@ -85,7 +85,7 @@ with sync_playwright() as pw:
     page.click('#main')
     expect(page.locator('#main')).to_be_disabled()
     expect(page.locator('#main')).to_contain_text('기다리는 중')
-    expect(page.locator('#goal-text')).to_contain_text('통발 기다리는 중')
+    expect(page.locator('#goal-text')).to_contain_text(re.compile(r'다음 계급 .*· 통발 \d'))  # 기다리는 동안에도 다음 목표와 남은 시간
     assert len(state(page)['traps']) == 1
     print('ok raise and throw')
 
