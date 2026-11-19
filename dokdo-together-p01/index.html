@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>독도 태극기 광장 · DOKDO TOGETHER</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="scene.js"></script>
+<script defer src="controls.js"></script>
+</head>
+<body>
+<main>
+  <header><p class="brand">DOKDO TOGETHER</p><h1>독도 태극기 광장</h1><p class="mode">싱글 플레이 시제품 · 함께 보이는 캐릭터는 자동 캐릭터입니다.</p></header>
+  <section class="play" aria-label="광장 조작">
+    <canvas id="plaza" tabindex="0" aria-label="3D 독도 광장" aria-describedby="help">이 브라우저는 캔버스를 지원하지 않습니다.</canvas>
+    <p id="error" hidden>광장 화면을 초기화할 수 없습니다.</p>
+    <div class="pad" aria-label="이동">
+      <button type="button" data-direction="up" aria-label="위로 이동">↑</button>
+      <button type="button" data-direction="left" aria-label="왼쪽으로 이동">←</button>
+      <button type="button" data-direction="down" aria-label="아래로 이동">↓</button>
+      <button type="button" data-direction="right" aria-label="오른쪽으로 이동">→</button>
+    </div>
+    <button type="button" id="wave" aria-pressed="false">태극기 흔들기</button>
+  </section>
+  <p id="help">방향 버튼을 누르고 있으면 이동합니다. 키보드는 방향키 또는 WASD로 이동하고 스페이스바로 태극기를 흔듭니다.</p>
+</main>
+</body>
+</html>
