@@ -1,5 +1,6 @@
 // 2D 독멍(11/10 교수님: "힐링을 시작하면 2D 그림을 보면서 힐링을 하면 되는 거 아냐, 3D로 관광을 하는 거고").
-// 힐링존에 들어오면 이 그림이 먼저 보인다. three.js 없이 돌아서, 3D를 못 켜는 기기에서도 바라보기는 된다.
+// 11/20 교수님 결정으로 첫 화면에서는 빠졌다. 들어오면 바로 3D 동도 선착장이고, 이 그림은 메뉴 › 쉼터의 '독도 바라보기'로 연다.
+// three.js 없이 돌아서, 3D를 못 켜는 기기(healing.js가 준비되지 않음)에서는 예전처럼 이 그림을 바로 띄운다.
 // 그림은 독도 위치의 해 높이로 새벽·한낮·노을·밤을 고른다(?scene=dawn|day|dusk|night 로 골라 볼 수 있음).
 // 1분마다 'dokdo-view-minute'를 알리면 healing.js가 대황을 준다(3분 쉬기와 같은 하루 10개 한도).
 (function(){
@@ -14,10 +15,8 @@ function sceneOf(now){const s=sun(now);return s.alt< -5?'night':s.alt>10?'day':s
 let pick='';try{pick=new URLSearchParams(location.search).get('scene')||''}catch(e){}
 function scene(){const sc=NAME[pick]?pick:sceneOf(Date.now());if(V.dataset.scene!==sc){V.dataset.scene=sc;$('#v-time').textContent=NAME[sc]}}
 scene();if(!NAME[pick])setInterval(scene,60000);// 오래 바라보면 해 지는 대로 그림도 바뀐다
-document.body.classList.add('v2d');
 // 그림이 떠 있는 동안 뒤의 3D 화면은 누르거나 Tab으로 갈 수 없게 둔다(inert).
 function lock(on){[...document.body.children].forEach(e=>{if(e!==V&&e.id!=='toast'&&e.tagName!=='SCRIPT')e.inert=on})}
-lock(true);
 // 그림 틀: 두 섬(가로 305~1305)이 카드에 가리지 않는 자리에 오도록 viewBox를 고른다.
 const art=$('#v-art'),card=$('#v-card');
 function frame(){const W=innerWidth,H=innerHeight,cv=!V.classList.contains('watching')&&card.offsetParent?card.getBoundingClientRect():null;let x,y,w,h;
@@ -33,14 +32,18 @@ function play(){try{if(!au){au=new Audio('./waves.mp3');au.loop=true;au.setAttri
 function beat(){const e=(Date.now()-t0)/1000,w=e%10<4?'들이쉬고':'내쉬고';if(breath.textContent!==w)breath.textContent=w;const m=Math.floor(e/60);if(m>mins){mins=m;left.textContent=m+'분째 바라보는 중';dispatchEvent(new CustomEvent('dokdo-view-minute'))}}
 function start(){V.classList.add('watching');frame();t0=Date.now();mins=0;left.textContent='바라보는 중';breath.hidden=left.hidden=false;if(on)play();clearInterval(timer);timer=setInterval(beat,250);beat();$('#v-stop').focus()}
 function stop(){clearInterval(timer);timer=0;V.classList.remove('watching');breath.hidden=left.hidden=true;if(au)au.pause();frame()}
-function to3d(){stop();V.hidden=true;lock(false);document.body.classList.remove('v2d');dispatchEvent(new CustomEvent('dokdo-view-3d'));const b=$('#err a')||$('#start');if(b)b.focus()}
+let back=null;// 그림을 연 단추(3D에서 열었을 때). 닫으면 그 단추로 돌아간다.
+function to3d(){stop();V.hidden=true;lock(false);document.body.classList.remove('v2d');dispatchEvent(new CustomEvent('dokdo-view-3d'));const b=$('#err a')||back||$('#start');if(b)b.focus()}
+function open(from){back=from||null;if(back){$('#v-3d').textContent='3D 바다로 돌아가기';$('#v-3d2').textContent='돌아가기'}V.hidden=false;document.body.classList.add('v2d');lock(true);reward();frame();if(back)dispatchEvent(new CustomEvent('dokdo-view-open'));try{$('#v-go').focus({preventScroll:true})}catch(e){}}
 // healing.js가 준비되지 못하면(3D를 못 켜는 기기) 대황 약속 문구를 숨긴다.
 function reward(){const h=!window.DokdoHealReady;if($('#v-reward').hidden!==h){$('#v-reward').hidden=h;frame()}}
+// 3D를 못 켜면(healing.js가 준비되지 않음) 예전처럼 그림을 바로 띄운다. 스크립트가 다 돈 뒤에 판단한다.
+document.addEventListener('DOMContentLoaded',()=>{if(!window.DokdoHealReady)open(null)});
 addEventListener('load',()=>{reward();if(!V.hidden)lock(true)});// 늦게 생긴 #err까지 막는다
+const look=$('#v-look');if(look)look.onclick=()=>open(look);
 $('#v-go').onclick=()=>{reward();start()};
 $('#v-stop').onclick=()=>{stop();$('#v-go').focus()};
 snd.onclick=()=>{on=!on;snd.textContent=on?'소리 끄기':'소리 켜기';if(on)play();else if(au)au.pause()};
 $('#v-3d').onclick=to3d;$('#v-3d2').onclick=to3d;
 addEventListener('keydown',e=>{if(e.key==='Escape'&&V.classList.contains('watching')){stop();$('#v-go').focus()}});
-try{$('#v-go').focus({preventScroll:true})}catch(e){}
 })();

@@ -95,7 +95,7 @@ const dirW=[peakE[0]-SPOT['주민숙소'][0],peakE[2]-SPOT['주민숙소'][2]],d
 const stay={x:SPOT['주민숙소'][0]+dirW[0]*20,y:Math.max(4,SPOT['주민숙소'][1])+1,z:SPOT['주민숙소'][2]+dirW[1]*20,lx:peakE[0],lz:peakE[2]};
 {const d=new T.Mesh(new T.BoxGeometry(22,1.2,14),new T.MeshStandardMaterial({color:0xb98a5a,flatShading:true}));d.position.set(stay.x,stay.y-.6,stay.z);d.rotation.y=Math.atan2(dirW[0],dirW[1]);s.add(d)}
 const camp={x:peakE[0],y:peakE[1]+1,z:peakE[2],lx:peakW[0],lz:peakW[2]};let flame,fireL;
-// 동도 선착장: 접안시설 끝에 서서 서도를 바라본다(2단계, Lv5).
+// 동도 선착장: 접안시설 끝에 서서 서도를 바라본다(11/20부터 Lv1, 체험이 여기서 시작).
 const quay=(()=>{const[x,z]=toW(840,215);return{x,y:2.9,z,lx:peakW[0],lz:peakW[2]}})();
 const SEAT={camp,stay,dock:quay},isSeat=m=>!!SEAT[m];
 {const G=new T.Group();G.position.set(camp.x,camp.y,camp.z);s.add(G);const pad=new T.Mesh(new T.CylinderGeometry(14,17,6,14),new T.MeshStandardMaterial({color:0x6d8f4b,flatShading:true}));pad.position.y=-3;G.add(pad);
@@ -173,7 +173,7 @@ const el=(tg,cl,tx)=>{const e=document.createElement(tg);if(cl)e.className=cl;if
 const toastE=$('#toast');let toastT=0,scene=false;function toast(x){if(scene)return;toastE.textContent=x;toastE.hidden=false;$('#hint').hidden=true;clearTimeout(toastT);toastT=setTimeout(()=>{toastE.hidden=true},2600)}
 let wallet=null,busy=false,again=false;
 // 서도는 첫날 열리고, 동도 정상은 며칠 모아야 오른다. 다음 목표가 싼 곳부터 보이도록 서도를 앞에 둔다.
-// 2단계부터 장소는 레벨로 열린다(선착장 Lv5, 서도 Lv10, 동도 정상 Lv20). 1단계에 대황으로 연 곳(pass 비트)은 그대로 열려 있다.
+// 2단계부터 장소는 레벨로 열린다(선착장 Lv1 — 11/20부터 처음부터 열림, 서도 Lv10, 동도 정상 Lv20). 1단계에 대황으로 연 곳(pass 비트)은 그대로 열려 있다.
 const PASS={dock:[0,0,'동도 선착장','e-dock','v-dock','선착장에서 서도를 바라봅니다'],stay:[2,6,'서도 주민숙소','e-stay','v-stay','서도 데크에서 동도를 바라봅니다'],camp:[1,30,'동도 정상 캠핑','e-camp','v-camp','동도 우산봉 정상에서 쉽니다']};
 // 크리에이터 모드: 서버가 운영자 계정으로 확인한 때만 켜진다. 켜진 동안은 st의 복사본으로 놀고, 끄면 원래 기록으로 돌아간다.
 let creator=false,stBack=null,ownerOK=false,ownerEpoch=0;
@@ -219,7 +219,7 @@ $('#t-deck').onclick=()=>{startAudio();deck.hidden=false;dview();$('#d-close').f
 addEventListener('keydown',e=>{if(e.key==='Escape'&&!deck.hidden)closeDeck()});
 // 아래 판은 평소 한 줄(메뉴 이름만). 메뉴를 누르면 그 줄 위에 단추가 열리고, 다시 누르면 닫힌다.
 const dock=$('#dock'),TAB=['rest','sail','talk'];let tabNow='';function setTab(k){tabNow=tabNow===k?'':k;TAB.forEach(q=>{$('#p-'+q).hidden=q!==tabNow;$('#t-'+q).setAttribute('aria-expanded',q===tabNow)});$('#say').hidden=tabNow!=='talk';pad()}
-const pad=()=>{const h=dock.offsetHeight,base=h?$('#menu').offsetHeight+12:0;document.documentElement.style.setProperty('--dk',h+'px');if(base)cam.setViewOffset(innerWidth,innerHeight,0,base/2,innerWidth,innerHeight);else cam.clearViewOffset()};
+const pad=()=>{const h=dock.offsetHeight,base=h?$('#quick').offsetHeight+12:0;document.documentElement.style.setProperty('--dk',h+'px');if(base)cam.setViewOffset(innerWidth,innerHeight,0,base/2,innerWidth,innerHeight);else cam.clearViewOffset()};
 // 풍경만 보기: 판과 이름표를 모두 숨기고 독도만 남긴다. 구석의 작은 단추나 Esc로 돌아온다.
 const sceneB=$('#unscene');function setScene(v){scene=v;body.classList.toggle('scenery',v);sceneB.hidden=!v;if(v){stopFish();deck.hidden=true;toastE.hidden=true;sceneB.focus()}else $('#scenery').focus();pad()}
 $('#scenery').onclick=()=>setScene(true);sceneB.onclick=()=>setScene(false);addEventListener('keydown',e=>{if(e.key==='Escape'&&scene)setScene(false)});TAB.forEach(q=>$('#t-'+q).onclick=()=>setTab(q));pad();
@@ -243,7 +243,7 @@ cv.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;const o=pt
  if(pts.size===2){const[a,b]=[...pts.values()],d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);if(pinch)dist=Math.min(420,Math.max(zmin(),dist*pinch/d));pinch=d;moved=99;return}
  const dx=e.clientX-o.clientX,dy=e.clientY-o.clientY;moved+=Math.abs(dx)+Math.abs(dy);dragT=performance.now();yaw-=dx*.009;pitch=Math.min(1.25,Math.max(bowView?-.3:.04,pitch+dy*.004))});
 const zmin=()=>isSeat(mode)?10:26;const ray=new T.Raycaster(),pl=new T.Plane(new T.Vector3(0,1,0),0),nd=new T.Vector2(),pp=new T.Vector3();
-const up=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=0;if(moved<7&&e.type==='pointerup'){nd.set(e.clientX/innerWidth*2-1,-e.clientY/innerHeight*2+1);ray.setFromCamera(nd,cam);if(!mode||mode==='sea'){if(ray.ray.intersectPlane(pl,pp)&&!hit(pp.x,pp.z)){if(auto){toast('자동 항해 중 · 끄기는 항해 메뉴에서');return}if(mode)leave();go(pp.x,pp.z)}}}};
+const up=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=0;if(moved<7&&e.type==='pointerup'){nd.set(e.clientX/innerWidth*2-1,-e.clientY/innerHeight*2+1);ray.setFromCamera(nd,cam);if(!mode||mode==='sea'){if(ray.ray.intersectPlane(pl,pp)&&!hit(pp.x,pp.z)){if(auto){setAuto(false);toast('자동 항해를 껐습니다 · 켜기는 메뉴 › 항해')}if(mode)leave();go(pp.x,pp.z);dispatchEvent(new CustomEvent('dokdo-heal-tap'))}}}};
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 cv.addEventListener('wheel',e=>{e.preventDefault();dist=Math.min(420,Math.max(zmin(),dist*(1+e.deltaY*.001)))},{passive:false});
 const keys={};addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;keys[e.key.toLowerCase()]=1});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=0});
@@ -290,9 +290,29 @@ function staleHint(){if(staleShown||load(CSEEN)!=='1')return;staleShown=true;toa
 async function checkOwner(){const ep=++ownerEpoch,tk=sessionToken();if(!tk){lockOwner();return false}try{const r=await fetch('/api/camp-creator',{headers:{Authorization:'Bearer '+tk},cache:'no-store'});const ok=r.ok&&(await r.json()).creator===true;if(ep!==ownerEpoch)return false;if(!ok||tk!==sessionToken()){lockOwner();if(r.status===401)staleHint();return false}const was=cBtn.hidden;ownerOK=true;cBtn.hidden=false;save(CSEEN,'1');if(was)try{pad()}catch(e){}return true}catch(e){if(ep===ownerEpoch)lockOwner();return false}}
 cBtn.onclick=async()=>{if(creator){setCreator(false);return}if(await checkOwner())setCreator(true)};
 addEventListener('storage',e=>{if(!e.key||/^dokdo-account-session/.test(e.key))checkOwner()});addEventListener('pageshow',()=>checkOwner());checkOwner();
-if(!signedIn()){$('#enter').classList.add('guest');$('#login-cta').hidden=false;$('#start').textContent='로그인 없이 둘러보기'}
+if(!signedIn()){$('#enter').classList.add('guest');$('#login-cta').hidden=false;$('#e-gx').hidden=false}
 if(matchMedia('(pointer:coarse)').matches)hint.textContent='바다를 누르면 이동, 끌면 둘러보기, 두 손가락으로 가까이 보기';
-const enter=m=>{startAudio();$('#enter').hidden=true;if(!tryGo(m))heal('sea');hint.hidden=false;setTimeout(()=>{hint.style.opacity=0},9000)};$('#start').onclick=()=>enter('sea');$('#e-camp').onclick=()=>enter('camp');$('#e-stay').onclick=()=>enter('stay');$('#e-dock').onclick=()=>enter('dock');
+const enter=m=>{startAudio();$('#enter').hidden=true;if(!tryGo(m))heal('sea');hint.hidden=false;setTimeout(()=>{hint.style.opacity=0},9000)};$('#start').onclick=()=>enter('sea');$('#e-camp').onclick=()=>enter('camp');$('#e-stay').onclick=()=>enter('stay');$('#e-go').onclick=()=>enter('dock');
+// ── 11/20 합치기 1단계(교수님: "자동으로 많이 되게, 누가 봐도 직관적이고 쉽게. 메뉴가 다 나와 있어서 복잡하다") ──
+// 아래 판 기본은 둘: 장소에 맞는 라임 단추 하나와 '메뉴'. 선착장·서도·정상에서는 '배 타고 바다로', 바다에서는 '낚시하기'.
+// '메뉴'를 누르면 목표 게이지·소리 크기·시각·날씨·안내와 원래 메뉴 줄(쉼터·항해·인사·대황·풍경만 보기)이 열린다.
+const act=$('#act'),more=$('#more'),mTop=$('#m-top'),menuRow=$('#menu');
+function actUI(){act.textContent=isSeat(mode)?'배 타고 바다로':'낚시하기'}
+// 배 타고 바다로: 선착장을 떠나 배에 오르고, 자동 항해로 독도를 돈다. 바다를 누르면 자동 항해를 끄고 그쪽으로 간다.
+act.onclick=()=>{if(isSeat(mode)){setAuto(true);if(st.gd)toast('배가 저절로 독도를 돕니다 · 바다를 누르면 그쪽으로')}else openDeck('f');actUI()};
+function setMore(v){mTop.hidden=menuRow.hidden=!v;more.setAttribute('aria-expanded',v);if(!v&&tabNow)setTab(tabNow);pad()}
+more.onclick=()=>setMore(menuRow.hidden);
+new MutationObserver(actUI).observe($('#dock'),{subtree:true,attributes:true,attributeFilter:['aria-pressed']});actUI();
+// 2D 독도 바라보기를 3D 안에서 열면 그림 쪽이 파도 소리를 내므로 3D 소리는 잠시 줄이고, 닫으면 되돌린다.
+addEventListener('dokdo-view-open',()=>{if(mix)mix.gain.setTargetAtTime(0,AC.currentTime,.3)});
+addEventListener('dokdo-view-3d',()=>{if(mix)mix.gain.setTargetAtTime(volNow(),AC.currentTime,.5)});
+// 사용 설명서(guide.js)가 쓰는 창구. 설명서를 마쳤는지는 기록의 gd 칸에 keep()으로 남긴다.
+const spotR=new T.Raycaster(),spotN=new T.Vector2(),spotP=new T.Vector3(),spotPl=new T.Plane(new T.Vector3(0,1,0),0);
+window.DokdoHeal={seated:()=>isSeat(mode),fishing:()=>!deck.hidden&&dTab==='f',toast,guided:v=>{if(v&&!st.gd){st.gd=1;keep()}return!!st.gd},
+ // 누를 곳 표시용: 배를 비켜 화면 아래쪽 몇 자리 가운데 바다(섬이 아닌 곳)인 첫 자리. 없으면 null.
+ spot:()=>{if(isSeat(mode))return null;const W=innerWidth,H=innerHeight,lim=$('#dock').getBoundingClientRect().top-50;
+  for(const[a,b]of[[.25,.68],[.75,.68],[.25,.58],[.75,.58],[.5,.8]]){const x=a*W,y=Math.min(b*H,lim);spotN.set(x/W*2-1,-y/H*2+1);spotR.setFromCamera(spotN,cam);if(spotR.ray.intersectPlane(spotPl,spotP)&&!hit(spotP.x,spotP.z))return{x,y}}return null}};
+// ── 합치기 1단계 끝 ──
 addEventListener('pointerdown',()=>{if(AC&&AC.state!=='running')AC.resume()});document.addEventListener('visibilitychange',()=>{if(!document.hidden&&AC)AC.resume();if(!document.hidden&&silent)silent.play().catch(()=>{})});
 if(window.claude&&claude.use)Promise.all([claude.use('db'),claude.use('user')]).then(async([db,u])=>{if(!db||!u)return;const id=await u.id();if(!id)return;const ref=db.doc('data/users/'+id+'/wallet'),sn=await ref.get();wallet=ref;const v=sn.exists&&sn.data();let baseT=st.t;if(creator){try{baseT=JSON.parse(stBack).t}catch(e){}}if(v&&typeof v.t==='number'&&v.t>=baseT){if(creator){try{const b=JSON.parse(stBack);Object.assign(b,v);stBack=JSON.stringify(b)}catch(e){}return}Object.assign(st,v);EC.tidy(st);deco(me.b,st.on);dirty=true;save(WK,JSON.stringify(st));ui()}else if(st.t)keep()}).catch(()=>{}).finally(giveGift);
 // 함께 있는 사람들
