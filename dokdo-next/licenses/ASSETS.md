@@ -27,6 +27,7 @@
 ## 글꼴
 - Gmarket Sans: https://corp.gmarket.com/fonts/
 - Bebas Neue: SIL OFL 1.1, @fontsource/bebas-neue. 원문 assets/fonts/BebasNeue-OFL.txt
+- Barlow Condensed(600·700, 라틴): SIL OFL 1.1, @fontsource/barlow-condensed 5.3.0. 원문 assets/fonts/BarlowCondensed-OFL.txt. 그룹 브랜드 규정 V2(2026-11-08)의 영문·숫자 강조 서체
 - CSS에서 웹폰트 URL만 참조하며 폰트 바이너리는 포함하지 않습니다.
 - 네트워크 차단 시 대체 글꼴로 모든 기능이 작동해야 합니다.
 
