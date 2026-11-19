@@ -86,6 +86,8 @@ def run(browser, band, consent=False):
     page.locator(f'.answer-option[data-index="{answer}"]').click()
     page.wait_for_timeout(700)
     camp = page.get_attribute('#camp-entry', 'href') if page.locator('#camp-entry').count() else ''
+    # DOKDO TOGETHER 문도 같은 원칙(닉네임·나라는 어린이 보호 확인을 통과한 때만)
+    camp += ' ' + (page.get_attribute('#together-entry', 'href') if page.locator('#together-entry').count() else '')
     context.close()
     assert not errors, errors
     return sent, note, camp, saved

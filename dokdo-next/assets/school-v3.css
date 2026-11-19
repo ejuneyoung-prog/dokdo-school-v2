@@ -462,3 +462,13 @@ html[lang=en] .school-v3 .brand small{letter-spacing:0;margin-right:0}
 .school-v3 .v3-entry .v3-choice-camp .v3-choice-action{display:inline-block;width:auto;min-height:0;margin:0;padding:9px 22px;border-radius:999px;font-size:1rem;line-height:1.4}
 /* 결과 화면의 '독도로 가기' 한 줄(힐링 2단계) */
 .school-v3 .v3-result-sea{display:block;width:100%;font-size:1rem;line-height:1.8;color:#2f6577;margin-top:8px;text-decoration:underline;text-underline-offset:4px}
+
+/* DOKDO TOGETHER 문(11/20): 세 갈래 칸 아래 가로 띠 하나. 그룹 브랜드 규정 V2: 차콜 #232528 바탕·흰 글자·라임 테두리, 영문 이름은 발로 컨덴스드, 14px 이상. 1교시 단추보다 작게 둡니다. */
+@font-face{font-family:"Barlow Condensed";font-style:normal;font-weight:700;font-display:swap;src:url("./fonts/BarlowCondensed-700.woff2") format("woff2")}
+.school-v3 .v3-together{display:flex;align-items:center;gap:12px;margin:10px 0 12px;padding:10px 14px;border:2px solid #B6D80C;border-radius:14px;background:#232528;color:#FFFFFF;text-decoration:none;text-align:left}
+.school-v3 .v3-together:focus-visible{outline:3px solid #232528;outline-offset:3px}
+.school-v3 .v3-together-flag{flex:0 0 auto;width:36px;height:24px;border-radius:3px}
+.school-v3 .v3-together-text{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.35}
+.school-v3 .v3-together-text b{color:#B6D80C;font-family:"Barlow Condensed",GmarketSans,sans-serif;font-weight:700;font-size:1.125rem;letter-spacing:.05em}
+.school-v3 .v3-together-text span{font-size:.9375rem;word-break:keep-all}
+.school-v3 .v3-together-go{font-size:1.125rem;color:#B6D80C}
