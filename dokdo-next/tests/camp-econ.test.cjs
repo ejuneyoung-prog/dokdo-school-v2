@@ -70,6 +70,7 @@ test('old phase-1 saves load without losing anything', () => {
   assert.deepEqual(st.fish, {});
   assert.equal(st.gd, 0, 'old saves have not seen the guide yet');
   assert.equal(E.tidy({ gd: 1 }).gd, 1, 'guide done stays done');
+  assert.equal(E.tidy({ gd: 2 }).gd, 2, 'a brand-new save keeps its guide-pending mark');
   assert.equal(E.tidy({ gd: 'x' }).gd, 0);
   const bad = E.tidy({ fish: { jari: 2, '<img>': 3, sora: -1, malj: 1.5 }, hx: -9 });
   assert.deepEqual(bad.fish, { jari: 2 });

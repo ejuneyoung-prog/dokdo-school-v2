@@ -149,11 +149,25 @@ def walk(context, label):
     expect(page.locator('#enter a.back')).to_have_attribute('href', '../')
     expect(page.locator('#top a.back')).to_have_attribute('href', '../')
     expect(page.locator('#login-cta')).to_have_attribute('href', '../account.html?next=camp%2F')
+    # 큰 라임 단추는 '동도 선착장에서 시작' 하나. 로그인은 그 아래 작은 글자 링크(주소·동작은 그대로).
     expect(page.locator('#login-cta')).to_be_visible()
-    expect(page.locator('#e-go')).to_have_text('로그인 없이 동도 선착장에서 시작', use_inner_text=True)
+    expect(page.locator('#e-go')).to_have_text('동도 선착장에서 시작')
+    entry = page.evaluate("""()=>{const q=e=>document.querySelector(e),b=e=>q(e).getBoundingClientRect(),c=e=>getComputedStyle(q(e));
+      return {lime:[...q('#enter').querySelectorAll('a,button')].filter(e=>e.offsetParent&&getComputedStyle(e).backgroundColor==='rgb(182, 216, 12)').map(e=>e.id),
+              loginBelow:b('#login-cta').top>=b('#e-go').bottom,loginSize:parseFloat(c('#login-cta').fontSize),goFirst:b('#e-go').top<b('#e-more').top}}""")
+    assert entry == {'lime': ['e-go'], 'loginBelow': True, 'loginSize': entry['loginSize'], 'goFirst': True} and entry['loginSize'] >= 14, entry
+    # 다른 곳(바다·서도·동도 정상)은 접어 둔 링크 하나 뒤에
+    expect(page.locator('#e-alt')).to_be_hidden()
+    expect(page.locator('#e-more')).to_have_attribute('aria-expanded', 'false')
+    page.locator('#e-more').click()
+    expect(page.locator('#e-alt')).to_be_visible()
     expect(page.locator('#start')).to_have_text('바다에서 독도 보기')
-    big = page.evaluate("""()=>{const r=e=>{const b=document.querySelector(e).getBoundingClientRect();return b.width*b.height};return {go:r('#e-go'),sea:r('#start'),stay:r('#e-stay'),camp:r('#e-camp')}}""")
-    assert big['go'] > max(big['sea'], big['stay'], big['camp']), big
+    page.locator('#e-more').click()
+    expect(page.locator('#e-alt')).to_be_hidden()
+    # 입구가 떠 있는 동안 아래 판과 환영 알림은 숨어 있다(입구 단추를 가리지 않게).
+    expect(page.locator('#dock')).to_be_hidden()
+    page.wait_for_timeout(1200)
+    expect(page.locator('#toast')).to_be_hidden()
     # 동도 선착장은 처음부터 열림(Lv1). 서도 Lv10, 동도 정상 Lv20은 그대로.
     expect(page.locator('#e-dock')).to_have_text('동도 선착장')
     expect(page.locator('#e-stay')).to_contain_text('Lv10')
@@ -169,6 +183,8 @@ def walk(context, label):
 
     page.locator('#e-go').click()
     expect(page.locator('#enter')).to_be_hidden()
+    expect(page.locator('#dock')).to_be_visible()
+    expect(page.locator('#toast')).to_contain_text('처음 오신 것을 환영합니다')
     assert not page.evaluate("document.body.classList.contains('v2d')")
     expect(page.locator('#v-dock')).to_have_attribute('aria-pressed', 'true')
     # 아래 판 기본: 라임 단추 하나 + 메뉴. 메뉴 줄과 판은 닫혀 있다.
@@ -192,27 +208,38 @@ def walk(context, label):
     expect(page.locator('#count')).to_contain_text('혼자 쉬는 중')
     assert page.evaluate("document.querySelector('#top').getBoundingClientRect().height") < 70
     assert page.evaluate("document.querySelector('#dock').getBoundingClientRect().height") < 80
-    # 1 → 2: 배 타고 바다로 누르면 배에 오르고 자동 항해가 켜진다.
-    page.locator('#act').click()
+    # 1 → 2: 배 타고 바다로 누르면 배에 오르고 자동 항해가 켜진다. 두 번 눌러도 낚시 판까지 열리지 않는다.
+    page.locator('#act').dblclick()
     expect(page.locator('#v-dock')).to_have_attribute('aria-pressed', 'false')
     expect(page.locator('#auto')).to_have_attribute('aria-pressed', 'true')
+    expect(page.locator('#bow')).to_have_attribute('aria-pressed', 'false')
     expect(page.locator('#act')).to_have_text('낚시하기')
+    page.wait_for_timeout(900)  # 글자가 바뀐 뒤 0.8초 동안의 누름은 무시된다(두 번 눌림 방지)
+    expect(page.locator('#deck')).to_be_hidden()
+    assert page.evaluate("getComputedStyle(document.querySelector('#act')).touchAction") == 'manipulation'
     expect(page.locator('#g-say')).to_contain_text('배가 저절로 독도를 돌아요')
     # 2 → 3: 바다를 누르면 자동 항해가 꺼지고 그쪽으로 간다.
     tap_sea(page)
     expect(page.locator('#auto')).to_have_attribute('aria-pressed', 'false')
-    expect(page.locator('#toast')).to_contain_text('자동 항해를 껐습니다')
+    expect(page.locator('#toast')).to_contain_text('잠시 뒤 다시 저절로 돌아요')
+    # 알림은 위쪽 ⌂ 홈·소리 단추를 가리지 않는다
+    assert page.evaluate("""(()=>{const t=document.querySelector('#toast').getBoundingClientRect();return ['#top .back','#snd'].every(s=>{const b=document.querySelector(s).getBoundingClientRect();return t.bottom<=b.top||b.bottom<=t.top||t.right<=b.left||b.right<=t.left})})()""")
     expect(page.locator('#g-say')).to_contain_text('낚시하기')
     ringed(page, '#act')
-    # 3 → 끝: 낚시하기를 누르면 낚시 판이 열리고 설명서가 끝난다. 다시 나오지 않도록 기록에 남는다.
+    # 3 → 4: 낚시하기를 누르면 낚시 판이 열리고, 고리가 실제 '낚싯줄 던지기' 단추로 옮겨 간다.
     page.locator('#act').click()
     expect(page.locator('#deck')).to_be_visible()
     expect(page.locator('#deck [data-d="f"]')).to_have_attribute('aria-selected', 'true')
     expect(page.locator('#d-body .cast')).to_have_text('낚싯줄 던지기')
+    expect(page.locator('#g-say')).to_contain_text('낚싯줄 던지기')
+    expect(page.locator('#g-num')).to_have_text('4 / 4')
+    ringed(page, '#d-body .cast')
+    # 4 → 끝: 처음 던지면 설명서가 끝나고, 다시 나오지 않도록 기록에 남는다. 끝에 엉뚱한 알림은 없다.
+    page.locator('#d-body .cast').click()
     expect(page.locator('#guide')).to_have_count(0)
     expect(page.locator('#g-ring')).to_have_count(0)
-    expect(page.locator('#toast')).to_contain_text('언제든 메뉴 › 쉼터에서 선착장으로')
     assert heal_state(page)['gd'] == 1
+    assert '선착장으로 돌아올' not in (page.locator('#toast').text_content() or '')
     page.locator('#d-close').click()
 
     # 메뉴를 누르면 목표 게이지·소리 크기·시각·날씨·가상 체험 안내와 원래 메뉴 줄이 열린다.
@@ -244,13 +271,20 @@ def walk(context, label):
     expect(page.locator('#unscene')).to_be_visible()
     page.locator('#unscene').click()
     expect(page.locator('#dock')).to_be_visible()
-    # 11/20: 자동 항해 중에 바다를 누르면 자동 항해를 끄고 그쪽으로 간다(다시 켜기는 메뉴 › 항해).
+    # 11/20: 자동 항해 중에 바다를 누르면 자동 항해를 끄고 그쪽으로 간다. 배가 닿고 15초 동안 아무것도 안 하면 다시 저절로 돈다.
     page.locator('#t-sail').click()
-    page.locator('#auto').click()
+    if not page.locator('#auto').get_attribute('aria-pressed') == 'true':
+        page.locator('#auto').click()
     expect(page.locator('#auto')).to_have_attribute('aria-pressed', 'true')
     tap_sea(page)
     expect(page.locator('#auto')).to_have_attribute('aria-pressed', 'false')
-    expect(page.locator('#toast')).to_contain_text('켜기는 메뉴 › 항해')
+    if label == 'pc':
+        until(page, "document.querySelector('#auto').getAttribute('aria-pressed')==='true'", timeout=45000)
+        # 항해 메뉴에서 직접 끈 것은 그대로 둔다.
+        page.locator('#auto').click()
+        expect(page.locator('#auto')).to_have_attribute('aria-pressed', 'false')
+        page.wait_for_timeout(17000)
+        expect(page.locator('#auto')).to_have_attribute('aria-pressed', 'false')
     page.locator('#t-sail').click()
     expect(page.locator('#tags .tag:not(.me) .name')).to_have_count(0)
     expect(page.locator('#tags .tag:not(.me) .bubble:visible')).to_have_count(0)
@@ -262,10 +296,11 @@ def walk(context, label):
     page.locator('#t-deck').click()
     page.locator('#deck [data-d="q"]').click()
     choice = page.locator('#d-body button.opt').first
+    before = heal_state(page)['c']  # 바위를 보면 대황이 1개씩 붙으므로 문제 앞뒤로 센다
     choice.click()
     won = 'right' in (choice.get_attribute('class') or '')
     state = heal_state(page)
-    assert state['qN'] == 1 and state['c'] == (102 if won else 100), state
+    assert state['qN'] == 1 and state['c'] == before + (2 if won else 0), state
     page.locator('#deck [data-d="f"]').click()
     expect(page.locator('#d-body .lvl')).to_contain_text('Lv 1')
     expect(page.locator('#d-body .cast')).to_have_text('낚싯줄 던지기')
@@ -274,22 +309,33 @@ def walk(context, label):
     page.locator('#v-stay').click()
     expect(page.locator('#toast')).to_contain_text('서도 주민숙소는 Lv10에 열립니다')
     page.locator('#d-close').click()
+    # 쉼터 › 바다에서 보기도 자동 항해로 시작한다(뱃머리 시점 아님).
+    page.locator('#v-sea').click()
+    expect(page.locator('#auto')).to_have_attribute('aria-pressed', 'true')
+    expect(page.locator('#bow')).to_have_attribute('aria-pressed', 'false')
     # 쉼터에서 여는 2D 독도 바라보기(1분 대황 그대로)
     page.locator('#v-look').click()
     view2d(page)
 
-    # 사용 설명서를 본 적 없는 옛 기록에는 한 번 나온다. 건너뛰면 새로고침해도 다시 나오지 않는다.
+    # 이전부터 기록이 있던 사람(gd 칸 없음)에게는 설명서를 띄우지 않는다.
     page.evaluate("localStorage.setItem('dokdo-heal',JSON.stringify({c:20}))")
     page.reload()
     page.locator('#e-go').click()
+    page.wait_for_timeout(600)
+    expect(page.locator('#guide')).to_have_count(0)
+    # 기록이 없던 브라우저(새 기록)에는 나온다. 건너뛰면 새로고침해도 다시 나오지 않는다.
+    page.evaluate("localStorage.removeItem('dokdo-heal')")
+    page.reload()
+    page.locator('#e-go').click()
     expect(page.locator('#g-say')).to_have_text('배에 올라 바다로 나가요')
+    expect(page.locator('#g-num')).to_have_text('1 / 4')
     page.emulate_media(reduced_motion='reduce')
     assert page.evaluate("getComputedStyle(document.querySelector('#g-ring')).animationName") == 'none', 'no pulse with reduced motion'
     page.emulate_media(reduced_motion='no-preference')
     assert page.evaluate("getComputedStyle(document.querySelector('#g-ring')).animationName") == 'gpulse'
     page.locator('#g-skip').click()
     expect(page.locator('#guide')).to_have_count(0)
-    assert heal_state(page)['gd'] == 1 and heal_state(page)['c'] >= 20, 'skip is saved, 대황 untouched'
+    assert heal_state(page)['gd'] == 1 and heal_state(page)['c'] >= 100, 'skip is saved, 대황 untouched'
     expect(page.locator('#act')).to_have_text('배 타고 바다로')
     menu(page)
     page.locator('#t-deck').click()
@@ -299,8 +345,12 @@ def walk(context, label):
     page.reload()
     assert heal_state(page)['own'] & 1 and page.input_value('#nick') == NICK[:8]
     expect(page.locator('#guide')).to_have_count(0)
+    # 입구의 '바다에서 독도 보기'도 자동 항해로 시작한다.
+    page.locator('#e-more').click()
     page.locator('#start').click()
     expect(page.locator('#act')).to_have_text('낚시하기')
+    expect(page.locator('#auto')).to_have_attribute('aria-pressed', 'true')
+    expect(page.locator('#bow')).to_have_attribute('aria-pressed', 'false')
     page.wait_for_timeout(600)
     expect(page.locator('#guide')).to_have_count(0)
     page.reload()
@@ -396,6 +446,7 @@ def rain(browser):
         # 비 소리 음량은 1.2초에 걸쳐 바뀌는 값으로만 설정된다. 그 값을 모아 소리가 났는지 판단한다.
         page.add_init_script("window.__gain=[];const o=AudioParam.prototype.setTargetAtTime;AudioParam.prototype.setTargetAtTime=function(v,t,c){if(c===1.2)window.__gain.push(v);return o.call(this,v,t,c)}")
         page.goto(f'{base}/camp/')
+        page.locator('#e-more').click()
         page.locator('#start').click()
         expect(page.locator('#now')).to_contain_text('비' if name == 'rain' else '맑음', timeout=25000)
         until(page, 'window.__gain.length>20', timeout=25000)
@@ -447,6 +498,34 @@ def picture(browser, options):
     context.close()
     print('ok 3D first, 2D picture from 쉼터')
 
+def sizes(browser):
+    # 휴대폰 작은 화면(375×667)에서 입구 카드가 넘기지 않고 다 보이고, 가로(844×390)에서는 메뉴가 화면을 덮지 않는다.
+    for w, h in [(375, 667), (844, 390)]:
+        context = browser.new_context(viewport={'width': w, 'height': h})
+        use_three(context)
+        weather(context, 0)
+        page = context.new_page()
+        page.goto(f'{base}/camp/')
+        expect(page.locator('#e-go')).to_be_visible()
+        if (w, h) == (375, 667):
+            fit = page.evaluate("(()=>{const e=document.querySelector('#enter'),c=e.firstElementChild.getBoundingClientRect();return {scroll:e.scrollHeight<=e.clientHeight+1,top:c.top>=0,bottom:c.bottom<=innerHeight}})()")
+            assert fit == {'scroll': True, 'top': True, 'bottom': True}, fit
+        page.locator('#e-go').click()
+        menu(page)
+        fits = "(()=>{const d=document.querySelector('#dock').getBoundingClientRect(),q=document.querySelector('#quick').getBoundingClientRect();return d.height<=innerHeight*.62+1&&q.bottom<=innerHeight&&q.top>=d.top})()"
+        if h < 500:
+            assert page.evaluate(fits), 'menu with the info lines fits in landscape'
+        page.locator('#t-talk').click()
+        expect(page.locator('#say')).to_be_visible()
+        box = page.evaluate("(()=>{const d=document.querySelector('#dock').getBoundingClientRect(),q=document.querySelector('#quick').getBoundingClientRect();return {h:d.height,top:d.top,qb:q.bottom}})()")
+        if h < 500:
+            assert box['h'] <= h * .62 + 1 and box['qb'] <= h, box
+            expect(page.locator('#m-top')).to_be_hidden()  # 판을 열면 정보 줄은 접힌다(가로)
+            page.locator('#t-talk').click()
+            expect(page.locator('#m-top')).to_be_visible()
+        context.close()
+    print('ok entry fits 375x667, menu leaves the view at 844x390')
+
 def blocked(browser):
     context = browser.new_context()
     context.route(CDN, lambda r: r.abort())
@@ -485,10 +564,11 @@ try:
         picture(browser, {'viewport': {'width': 1280, 'height': 800}})
         picture(browser, {k: v for k, v in pw.devices['iPhone 13'].items() if k != 'default_browser_type'})
         rain(browser)
+        sizes(browser)
         member(browser)
         blocked(browser)
         browser.close()
-    assert len(sealed) >= 6 and not strays, (len(sealed), strays)
+    assert len(sealed) >= 8 and not strays, (len(sealed), strays)
     print('ok nothing left this machine for the operating servers')
 finally:
     server.shutdown()

@@ -95,7 +95,6 @@ body.resting #dock,body.resting #sub,body.resting #top,body.resting #info,body.r
 #err{z-index:9;background:var(--ink);align-content:center;gap:14px}
 #dock{grid-template-columns:minmax(0,1fr)}
 .login-cta{display:block;background:var(--lime);color:var(--ink);font-size:16px;padding:12px;border-radius:10px;text-decoration:none}
-#enter.guest #e-go{background:none;color:var(--white);box-shadow:inset 0 0 0 2px var(--lime)}
 .back{display:inline-flex;align-items:center;min-height:44px}
 .row button,.tabs button{min-height:44px}
 body{word-break:keep-all;overflow-wrap:break-word}
@@ -142,10 +141,14 @@ body:has(#view.watching) #toast{top:calc(60px + env(safe-area-inset-top,0px))}/*
 @media (prefers-reduced-motion:reduce){#v-world,.v-ray,.v-glint,.v-wave,#view.watching #v-dot{animation:none}}
 #toast{z-index:11}
 /* 11/20 합치기 1단계: 들어오면 바로 3D 동도 선착장. 첫 화면은 할 일 하나(라임 단추), 나머지는 '메뉴' 안에. */
-#enter .alt-h{font-size:14px;margin-top:4px}
+#enter>div{gap:10px;padding:18px 22px}
+#enter .login-cta{background:none;color:var(--white);font-size:15px;text-decoration:underline;text-underline-offset:3px;padding:10px;justify-self:center;min-height:44px;box-sizing:border-box}
+#e-more{background:none;color:var(--mute);font-size:14px;text-decoration:underline;text-underline-offset:3px;justify-self:center;min-height:44px;padding:8px 10px}
+#enter .note{line-height:1.45}
 #enter .alt{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 #enter .alt button{flex:1 1 40%;min-width:0;min-height:44px;font-size:14px;padding:8px;color:var(--mute)}
 #quick{display:flex;gap:6px}
+#act,#more{touch-action:manipulation}
 #act{flex:1 1 auto;min-width:0;background:var(--lime);color:var(--ink);font-size:17px;min-height:50px}
 #more{flex:none;min-height:50px;padding-inline:18px}
 #more[aria-expanded=true]{box-shadow:inset 0 -3px 0 var(--lime)}
@@ -156,10 +159,10 @@ body:has(#view.watching) #toast{top:calc(60px + env(safe-area-inset-top,0px))}/*
 #dock #sub{position:static;transform:none;width:auto;justify-content:flex-start;text-align:left;text-shadow:none;pointer-events:auto;padding-inline:4px}
 #m-top .mnote{margin:0;padding-inline:4px;color:var(--mute);font-size:14px}
 #vr{display:none!important}/* 가상 체험 안내는 메뉴의 한 줄(.mnote)이 늘 보여 준다 */
-#top .back,#snd{box-shadow:0 2px 6px rgba(0,0,0,.35)}
+#top .back,#snd{box-shadow:0 2px 6px rgba(35,37,40,.45)}
 #snd,#snd[aria-pressed=true]{background:var(--ink);color:var(--white);min-height:44px;padding-inline:14px}/* 라임은 아래 할 일 단추 하나에만 */
 /* 사용 설명서(guide.js): 차콜 말풍선과 라임 고리 */
-#guide{position:fixed;z-index:6;left:16px;top:80px;box-sizing:border-box;background:#2E3135;border:2px solid #B6D80C;border-radius:14px;padding:12px 14px 6px;display:grid;gap:4px;color:#fff;font-size:16px;line-height:1.45;text-align:left;box-shadow:0 4px 16px rgba(0,0,0,.35)}
+#guide{position:fixed;z-index:6;left:16px;top:80px;box-sizing:border-box;background:#2E3135;border:2px solid #B6D80C;border-radius:14px;padding:12px 14px 6px;display:grid;gap:4px;color:#fff;font-size:16px;line-height:1.45;text-align:left;box-shadow:0 4px 16px rgba(35,37,40,.45)}
 #guide p{margin:0}
 #g-num{color:var(--mute);font-size:14px}
 #g-skip{justify-self:end;background:none;color:var(--mute);font-size:14px;text-decoration:underline;padding:6px 4px;min-height:44px}
@@ -169,6 +172,11 @@ body:has(#view.watching) #toast{top:calc(60px + env(safe-area-inset-top,0px))}/*
 @media (prefers-reduced-motion:reduce){#g-ring{animation:none}}
 body.guiding #hint,body.guiding #info{display:none!important}
 @media (max-width:520px){body.guiding #toast{top:calc(64px + env(safe-area-inset-top,0px));bottom:auto}}
+/* 알림은 위쪽 ⌂ 홈·소리 단추를 가리지 않는다. 대황 판이 열려 있으면 판 위쪽(닫기)을 피해 아래에. */
+@media (min-width:521px){#toast{top:calc(64px + env(safe-area-inset-top,0px))}}
+body:has(#deck:not([hidden])) #toast{top:auto;bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+/* 가로로 낮은 화면: 메뉴가 화면을 덮지 않게 높이를 62%로 묶는다. 라임 단추 줄은 늘 맨 아래, 넘치면 정보 줄 안에서 넘긴다. */
+@media (max-height:500px){#dock{display:flex;flex-direction:column;gap:6px;max-height:62dvh}#dock>*{flex:none}#m-top{flex:0 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y}#dock:has(#p-rest:not([hidden]),#p-sail:not([hidden]),#p-talk:not([hidden])) #m-top{display:none}}/* 판을 열면 정보 줄은 접는다 */
 </style>
 </head><body>
 <canvas id="stage" aria-label="독도에서 힐링하기 3D 장면"></canvas>
@@ -177,7 +185,7 @@ body.guiding #hint,body.guiding #info{display:none!important}
 <div id="hint" hidden>바다를 누르면 이동, 끌면 둘러보기, 휠이나 두 손가락으로 가까이 보기</div>
 <div id="toast" role="status" hidden></div>
 <div id="rest" hidden><div id="r-dot"><span id="r-word">들이쉬고</span></div><div id="r-left">3:00</div><input class="vol" type="range" min="0" max="100" aria-label="소리 크기"><button id="r-end">끝내기</button></div>
-<div id="enter"><div><h2>독도에서 힐링하기</h2><p>동도 선착장에서 배를 타고 독도 바다로 나갑니다. 파도 소리를 들으며 쉬어 가세요.</p><a id="login-cta" class="login-cta" href="../account.html?next=camp%2F" hidden>로그인하고 들어가기</a><button id="e-go"><span id="e-gx" hidden>로그인 없이 </span><span id="e-dock">동도 선착장</span>에서 시작</button><p class="alt-h">다른 곳에서 시작</p><div class="alt"><button id="start">바다에서 독도 보기</button><button id="e-stay">서도 주민숙소</button><button id="e-camp">동도 정상 캠핑</button></div><p class="note">화면 속 가상 체험입니다. 실제 독도는 천연보호구역이라 머물 수 있는 곳과 시간이 제한됩니다.</p><p class="note">날씨 자료 <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></p><a class="back" href="../" aria-label="홈 · 처음 화면으로">⌂ 홈으로 돌아가기</a></div></div>
+<div id="enter"><div><h2>독도에서 힐링하기</h2><p>동도 선착장에서 배를 타고 독도 바다로 나갑니다.</p><button id="e-go"><span id="e-dock">동도 선착장</span>에서 시작</button><a id="login-cta" class="login-cta" href="../account.html?next=camp%2F" hidden>로그인하고 들어가기</a><button id="e-more" aria-expanded="false" aria-controls="e-alt">다른 곳에서 시작</button><div class="alt" id="e-alt" hidden><button id="start">바다에서 독도 보기</button><button id="e-stay">서도 주민숙소</button><button id="e-camp">동도 정상 캠핑</button></div><p class="note">화면 속 가상 체험입니다. 실제 독도는 천연보호구역이라 머물 수 있는 곳과 시간이 제한됩니다. 날씨 자료 <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></p><a class="back" href="../" aria-label="홈 · 처음 화면으로">⌂ 홈으로 돌아가기</a></div></div>
 <section id="view" aria-labelledby="v-title" hidden><svg id="v-art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
 <defs>
 <linearGradient id="v-sky" x1="0" y1="0" x2="0" y2="1"><stop offset=".55" style="stop-color:var(--s1)"/><stop offset=".85" style="stop-color:var(--s2)"/><stop offset="1" style="stop-color:var(--s3)"/></linearGradient>

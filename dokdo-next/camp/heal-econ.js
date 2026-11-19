@@ -14,7 +14,7 @@ const placeLv=m=>{const p=PLACES.find(q=>q[0]===m);return p?p[1]:1};
 // 배움터 기록(문자열이나 객체)에서 xp만 읽는다. 이상한 값은 0으로 본다.
 function schoolXp(raw){try{const v=typeof raw==='string'?JSON.parse(raw):raw,x=v&&v.xp;return Number.isFinite(x)&&x>0?Math.floor(x):0}catch(e){return 0}}
 const kstDay=(now=Date.now())=>new Date(now+9*3600000).toISOString().slice(0,10);
-// 저장값을 고쳐 읽는다. 옛 기록(1단계)에는 새 칸이 없으므로 0으로 채운다. gd는 사용 설명서를 마쳤는지(1)를 적는 칸(11/20).
+// 저장값을 고쳐 읽는다. 옛 기록(1단계)에는 새 칸이 없으므로 0으로 채운다. gd는 사용 설명서 칸(11/20): 0 옛 기록(띄우지 않음), 2 이 브라우저에서 처음 만든 기록(설명서 대기), 1 마침·건너뜀.
 function tidy(st){for(const k of ['hx','xG','xC','fN','gift','ate','gd'])if(!Number.isFinite(st[k])||st[k]<0)st[k]=0;if(typeof st.xD!=='string')st.xD='';
  const f={};if(st.fish&&typeof st.fish==='object')for(const[id,n]of Object.entries(st.fish))if(/^[a-z_]{2,12}$/.test(id)&&Number.isInteger(n)&&n>0)f[id]=Math.min(n,999);st.fish=f;return st}
 function roll(st,day){if(st.xD!==day){st.xD=day;st.xG=0;st.xC=0;st.fN=0}}
