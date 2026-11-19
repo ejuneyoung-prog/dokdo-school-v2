@@ -26,20 +26,22 @@ function gradeLabel(g){g=normGrade(g);if(!g)return'';if(/^DK/.test(g))return gra
 function parseLevel(v){const t=String(v==null?'':v).trim();let m;if((m=/^(?:독코민|Dokkomin)\s*Lv\.?\s*(\d+)$/i.exec(t)))return normGrade('DK'+m[1]);
  if((m=/^Lv\.?\s*(\d+)$/i.exec(t)))return R.GRADES[+m[1]-1]&&+m[1]>0?R.GRADES[+m[1]-1]:'';const c=normGrade(t);if(c)return c;
  for(const g of R.GRADES)if(gradeName(g)===t)return g;return''}
-// 주소 뒤 조각(#nick=&cc=, 스쿨 문)이나 예전 방식의 ?nick=. 읽은 뒤 주소에서 지운다.
+// 주소 뒤 조각(#nick=&cc=, 스쿨 문). 읽은 뒤 주소에서 지운다.
 function incoming(loc,hist){const out={nick:'',cc:''};try{const u=new URL((loc||root.location).href),h=new URLSearchParams(u.hash.replace(/^#/,''));
- out.nick=h.get('nick')||u.searchParams.get('nick')||'';out.cc=(h.get('cc')||u.searchParams.get('cc')||'').toUpperCase();
+ /* 닉네임은 주소 뒤 조각(#)으로만 받는다(?nick=은 서버 접속 기록에 남는다). ?nick=이 와도 쓰지 않고 지우기만 한다. */out.nick=h.get('nick')||'';out.cc=(h.get('cc')||'').toUpperCase();
  if(u.searchParams.has('nick')||u.searchParams.has('cc')||h.has('nick')||h.has('cc')){u.searchParams.delete('nick');u.searchParams.delete('cc');h.delete('nick');h.delete('cc');const rest=h.toString();(hist||root.history).replaceState(null,'',u.pathname+u.search+(rest?'#'+rest:''))}}catch(e){}return out}
 // 스쿨 학년(읽기만). 기록이 없거나 깨졌으면 {grade:'K', has:false}.
 function school(storage){try{const ls=storage||root.localStorage,raw=ls&&ls.getItem(SCHOOL_KEY);if(!raw)return{grade:'K',has:false};const v=JSON.parse(raw);
  let g='K';if(v&&v.m&&typeof v.m==='object'&&Core&&Core.gradeProgress&&Core.gradeScore)g=normGrade(Core.gradeProgress(Core.gradeScore(v)).grade)||'K';
  const old=normGrade(v&&v.grade);if(old&&R.gradeRank(old)>R.gradeRank(g))g=old;return{grade:g,has:!!(v&&v.m)}}catch(e){return{grade:'K',has:false}}}
 const schoolGrade=storage=>school(storage).grade;
+// 목표 학년까지의 진척(0~1)과 남은 점수(첫 정답 1, 다시 맞힘 0.5 — 스쿨 gradeScore와 같은 셈). 학년 칸은 5×(순위+1)씩(dokdo-core gradeTierNeed).
+function toward(target,storage){try{const ls=storage||root.localStorage,raw=ls&&ls.getItem(SCHOOL_KEY),v=raw?JSON.parse(raw):null,score=v&&v.m&&Core?Core.gradeScore(v):0,T=R.gradeRank(target),need=5*T*(T+1)/2;return{have:score,need,left:Math.max(0,Math.ceil(need-score)),p:need?Math.min(1,score/need):1}}catch(e){return{have:0,need:0,left:0,p:0}}}
 // 어린이 보호: 스쿨의 확인을 그대로. 없거나 실패하면 막는다.
 function mayShare(){try{return!!(root.DokdoPrivacy&&root.DokdoPrivacy.mayShare())}catch(e){return false}}
 // 명예의 전당 명단. 실패하면 빈 목록(견본으로 채우지 않는다 — 진짜 명단처럼 보이면 안 된다).
 const BIDI=/[\u0000-\u001f\u007f<>​-‏‪-‮⁠-⁩﻿]/g;
-const cleanNick=v=>[...String(v==null?'':v).replace(BIDI,'').replace(/\s+/g,' ').trim()].slice(0,20).join('');
+const cleanNick=v=>[...String(v==null?'':v).normalize('NFC').replace(BIDI,'').replace(/\s+/g,' ').trim()].slice(0,20).join('');
 function parseTops(data){if(!data||!Array.isArray(data.tops))return[];const seen=new Set(),out=[];
  for(const r of data.tops){const nick=cleanNick(r&&r.nick),level=parseLevel(r&&r.level);if(!nick||seen.has(nick))continue;seen.add(nick);out.push({nick,level})}return out.slice(0,20)}
 function apiUrl(){const c=root.DOKDO_SITE_CONFIG&&root.DOKDO_SITE_CONFIG.leaderboard,u=c&&c.apiUrl;return typeof u==='string'&&/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(u)?u:''}
@@ -52,5 +54,5 @@ function inHall(tops,nick,grade){const n=cleanNick(nick);return!!n&&tops.some(t=
 const buzz=k=>{try{root.DokdoHaptic&&root.DokdoHaptic.buzz(k)}catch(e){}};
 // 캠핑장 문: 보호 확인을 통과한 때만 닉네임을 붙인다(캠핑장은 ?nick=을 스쿨 문에서 온 것으로 믿는다).
 const campUrl=(nick,ok)=>'../camp/'+(nick&&ok?'?nick='+encodeURIComponent(nick):'');
-return{SCHOOL_URL,SCHOOL_KEY,normGrade,gradeName,gradeLabel,parseLevel,incoming,school,schoolGrade,mayShare,cleanNick,parseTops,apiUrl,hallOfFame,inHall,buzz,campUrl};
+return{SCHOOL_URL,SCHOOL_KEY,normGrade,gradeName,gradeLabel,parseLevel,incoming,school,schoolGrade,toward,mayShare,cleanNick,parseTops,apiUrl,hallOfFame,inHall,buzz,campUrl};
 });

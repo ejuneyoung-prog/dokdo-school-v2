@@ -11,7 +11,9 @@ function raise(st,now=Date.now()){if(raisedToday(st,now))return false;st.raised.
 // 태극기 흔들기: 하루 WAVE_PER_DAY번까지만 센다. 센 횟수를 돌려준다(못 세면 0).
 function wave(st,now=Date.now()){const d=kstDay(now);if(st.waves.day!==d){st.waves.day=d;st.waves.n=0}if(st.waves.n>=C.WAVE_PER_DAY)return 0;st.waves.n++;st.waves.total++;return 1}
 // 기다림은 설정값 하나(TRAP_MINUTES)에 계급 배율(wait)을 곱한다. 던질 때의 배율을 쓰도록 통발마다 다 되는 시각을 따로 두지 않고, 지금 계급으로 센다(계급은 내려가지 않는다).
-const WAIT=st=>Math.round(C.TRAP_MINUTES*60000*(st?ship(st).wait:1));
+// 처음 던진 통발(이 배로 아직 아무것도 건지지 않았을 때)만 FIRST_TRAP_MINUTES.
+const first=st=>!!st&&!st.earned&&!Object.keys(st.bag||{}).length&&!st.hauled;
+const WAIT=st=>Math.round((first(st)?Math.min(C.FIRST_TRAP_MINUTES,C.TRAP_MINUTES):C.TRAP_MINUTES*(st?ship(st).wait:1))*60000);
 const slots=st=>ship(st).traps;
 const ready=(at,now,st)=>now-at>=WAIT(st);
 const leftMs=(at,now,st)=>Math.max(0,WAIT(st)-(now-at));
@@ -23,7 +25,7 @@ function throwTraps(st,now=Date.now()){if(!raisedToday(st,now))return 0;let n=0;
 // 확률표에서 하나 고르기. r은 0 이상 1 미만.
 function roll(r){let t=Math.min(.999999,Math.max(0,+r||0));for(const c of C.CATCH){t-=c.p;if(t<0)return c}return C.CATCH[C.CATCH.length-1]}
 // 다 된 통발을 모두 건진다. 잡은 것 목록을 돌려준다. 건진 자리는 비어서 바로 다시 던질 수 있다.
-function haul(st,now=Date.now(),rnd=Math.random){const got=[];st.traps=st.traps.filter(at=>{if(!ready(at,now,st))return true;const c=roll(rnd());st.bag[c.id]=(st.bag[c.id]||0)+1;got.push(c);return false});return got}
+function haul(st,now=Date.now(),rnd=Math.random){const got=[];st.traps=st.traps.filter(at=>{if(!ready(at,now,st))return true;const c=roll(rnd());st.bag[c.id]=(st.bag[c.id]||0)+1;got.push(c);return false});if(got.length)st.hauled=(st.hauled|0)+got.length;return got}
 const valueOf=id=>(C.CATCH.find(c=>c.id===id)||{}).value||0;
 // 팔기: 창고의 모든 것을 판다. 받은 돈을 돌려준다.
 function sellAll(st){let m=0;for(const[id,n]of Object.entries(st.bag))m+=valueOf(id)*n;st.bag={};st.money+=m;st.earned+=m;return m}

@@ -45,7 +45,8 @@ test('the grade ladder is the school ladder (same order, aliases read the same)'
 
 test('nickname is the only free text: trimmed, no tags or control characters, 12 letters', () => {
   a.equal(U.cleanNick('  <b>독도\u0007 지킴이</b>  '), 'b독도 지킴이/b');
-  a.equal([...U.cleanNick('가'.repeat(30))].length, 12);
+  a.equal([...U.cleanNick('가'.repeat(30))].length, 20, 'same length rule as the hall-of-fame check');
+  a.equal(U.cleanNick('\u1100\u1161'), '\uAC00', 'NFC like the school');
   a.equal(U.cleanNick(null), '');
   a.equal(U.cleanNick('a\u202Eb\u200Bc\uFEFF'), 'abc', 'no direction flips or invisible letters');
   a.equal(U.cleanCC('zz'), 'KR'); a.equal(U.cleanCC('US'), 'US');
@@ -73,6 +74,7 @@ test('raising the flag counts once a Korean day, and a missed day never resets t
 
 test('after midnight the flag comes first, even with traps still in the water', () => {
   const st = U.create('선장', 'KR', 0, () => .1), t = KST('2026-11-20T23:55');
+  st.hauled = 1; // 첫 통발(짧은 시간)이 아닌 평소 통발
   R.raise(st, t); R.throwTraps(st, t);
   a.equal(R.phase(st, KST('2026-11-21T00:05')), 'raise');
   R.raise(st, KST('2026-11-21T00:05')); a.equal(R.phase(st, KST('2026-11-21T00:05')), 'wait');
@@ -90,10 +92,13 @@ test('trap loop: raise, throw, wait, haul, throw again right away; rank shortens
   const st = U.create('선장', 'KR', 0, () => .3), t = KST('2026-11-20T09:00');
   a.equal(R.throwTraps(st, t), 0, 'no trap before the flag');
   R.raise(st, t); a.equal(R.phase(st, t), 'throw'); a.equal(R.throwTraps(st, t), 1); a.equal(R.phase(st, t), 'wait');
-  a.equal(R.phase(st, t + 59 * 60000), 'wait'); a.equal(R.haul(st, t + 59 * 60000).length, 0);
-  a.equal(R.phase(st, t + H), 'haul');
-  const got = R.haul(st, t + H, () => .95); a.equal(got.length, 1); a.equal(got[0].id, 'dohwa');
-  a.equal(R.phase(st, t + H), 'throw'); a.equal(R.throwTraps(st, t + H), 1);
+  a.equal(R.WAIT(st), C.FIRST_TRAP_MINUTES * 60000, 'the very first trap is short so a first visit can finish one round');
+  a.equal(R.phase(st, t + 2 * 60000), 'wait'); a.equal(R.haul(st, t + 2 * 60000).length, 0);
+  a.equal(R.phase(st, t + 3 * 60000), 'haul');
+  const got = R.haul(st, t + 3 * 60000, () => .95); a.equal(got.length, 1); a.equal(got[0].id, 'dohwa');
+  a.equal(R.WAIT(st), C.TRAP_MINUTES * 60000, 'after the first catch the professor\'s 60 minutes apply');
+  a.equal(R.phase(st, t + 3 * 60000), 'throw'); a.equal(R.throwTraps(st, t + H), 1);
+  a.equal(R.phase(st, t + H + 59 * 60000), 'wait'); a.equal(R.phase(st, t + 2 * H), 'haul');
   st.stage = 3; a.equal(R.slots(st), 3); a.equal(R.WAIT(st), 45 * 60000);
 });
 
@@ -192,11 +197,14 @@ test('school bridge: grade is read from the school record only, nickname only ar
   a.equal(B.schoolGrade(ls('{bad')), 'K'); a.equal(B.schoolGrade(ls(null)), 'K');
   let replaced = '';
   const got = B.incoming({ href: 'https://x.test/dokdo-next/together/?nick=%EB%B0%94%EB%8B%A4&cc=us&k=1' }, { replaceState: (_, __, u) => { replaced = u; } });
-  a.deepEqual(got, { nick: '바다', cc: 'US' }); a.equal(replaced, '/dokdo-next/together/?k=1');
+  a.deepEqual(got, { nick: '', cc: '' }, 'a nickname in ?nick= (kept in server logs) is not used'); a.equal(replaced, '/dokdo-next/together/?k=1', 'but it is still wiped from the address');
   const hashed = B.incoming({ href: 'https://x.test/dokdo-next/together/#nick=%EB%B3%84&cc=CA' }, { replaceState: (_, __, u) => { replaced = u; } });
   a.deepEqual(hashed, { nick: '별', cc: 'CA' }); a.equal(replaced, '/dokdo-next/together/', 'the hash (never sent to the server) is cleared too');
   a.equal(B.mayShare(), false, 'without the school privacy check, sharing stays closed');
-  a.equal(B.campUrl('바다', false), '../camp/'); a.equal(B.campUrl('바다', true), '../camp/?nick=%EB%B0%94%EB%8B%A4');
+  a.equal(B.campUrl('바다', false), '../camp/');
+  const m2 = {}; for (let i = 0; i < 20; i++) m2[920001 + i] = { att: 1, cor: 1 };
+  const tw = B.toward('M1', ls(JSON.stringify({ m: m2 })));
+  a.equal(tw.need, 5 * 7 * 8 / 2, 'M1 needs the school ladder sum 5+10+…+35'); a.equal(tw.left, tw.need - 20); a.ok(tw.p > 0 && tw.p < 1); a.equal(B.campUrl('바다', true), '../camp/?nick=%EB%B0%94%EB%8B%A4');
   const src = read('together/bridge.js');
   a.doesNotMatch(src, /setItem|removeItem/, 'never writes the school record');
   a.doesNotMatch(src, /v\.name|v\.nick|v\.flag/, 'reads only the grade from the school record');
@@ -213,6 +221,8 @@ test('page rules: one CDN (same three.js and hash as the camp), only the hall-of
   a.match(page, /<section class="goal" id="goal" aria-label="다음 목표">/); a.match(page, /<p id="sr" class="sr" aria-live="polite">/);
   a.match(read('together/app.js'), /\$\('count'\)\.textContent=fmt\(1\+hallOthers\(\)\.length\)/, 'the headline count has no sample boats');
   a.match(read('together/app.js'), /nick:ok\?st\.nick:''/, 'the photo leaves out the nickname unless sharing is allowed');
+  a.match(read('together/sea.js'), /밖으로 나가는 사진에는 견본 배를 넣지 않는다/);
+  a.ok(!C.CATCH.some((c) => /꽃새우|닭새우|가장 큼/.test(c.alias)), 'no nicknames or comparisons the sources do not state');
   const order = ['config.js', 'user.js', 'rules.js', 'fleet.js', 'store.js', 'net.js', 'bridge.js', 'flag.js', 'terrain.js', 'ship.js', 'sea.js', 'share.js', 'app.js'].map((f) => page.indexOf('src="./' + f + '"'));
   a.ok(order.every((v, i) => v > 0 && (i === 0 || v > order[i - 1])), 'scripts load in dependency order');
   for (const f of ['app.js', 'sea.js', 'share.js', 'store.js', 'user.js', 'rules.js', 'fleet.js', 'net.js', 'ship.js', 'flag.js']) {

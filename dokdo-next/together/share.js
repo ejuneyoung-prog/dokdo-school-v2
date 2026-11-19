@@ -24,8 +24,8 @@ async function make(scene,info,doc){const d=doc||root.document;try{if(d.fonts&&d
  text(x,(info.hall?'★ ':'')+(info.title||''),44,by,{w:700,color:'#FFFFFF'});
  text(x,info.nick||'독도 코리아 스쿨 선장',84,by+90,{stroke:true});
  text(x,'독도를 지킨 날 '+(info.days|0)+'일째',64,by+200,{color:'#B6D80C',stroke:true});
- if(info.grade)text(x,'독도 코리아 스쿨 · '+info.grade,38,by+290,{w:500,color:'#A7ABB0'});
- text(x,info.url||'',30,H-80,{w:500,color:'#A7ABB0'});
+ if(info.grade)text(x,'독도 코리아 스쿨 · '+info.grade,42,by+290,{w:500,color:'#A7ABB0'});
+ text(x,info.url||'',40,H-80,{w:500,color:'#A7ABB0'});
  return c}
 const toBlob=c=>new Promise(r=>{try{c.toBlob(b=>r(b),'image/png')}catch(e){r(null)}});
 // 앱 안 브라우저(인스타그램·페이스북·카카오톡·라인·틱톡·네이버)는 내려받기가 막히는 일이 많아 길게 눌러 저장하게 한다.

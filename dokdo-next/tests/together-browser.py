@@ -34,7 +34,7 @@ def route_all(context):
         url = route.request.url
         if url.startswith('https://script.google.com/'):
             hall_calls.append((route.request.method, url))
-            route.fulfill(status=200, content_type='application/json', body=json.dumps({'tops': [{'nick': '<b>명예</b>', 'level': 'DK2', 'at': 'x'}]}))
+            route.fulfill(status=200, content_type='application/json', body=json.dumps({'tops': [{'nick': '<b>명예</b>', 'level': '독코민 Lv.12', 'at': 'x'}]}))
         elif url.startswith(ALLOWED):
             route.continue_()
         else:
@@ -57,11 +57,11 @@ with sync_playwright() as pw:
     page.on('pageerror', lambda e: errors.append(str(e)))
 
     # 1. 주소로 받은 닉네임과 나라는 채워지고 주소에서 지워진다
-    page.goto(f'{base}/together/?nick=%EB%B0%94%EB%8B%A4%EC%84%A0%EC%9E%A5&cc=US')
+    page.goto(f'{base}/together/#nick=%EB%B0%94%EB%8B%A4%EC%84%A0%EC%9E%A5&cc=US')  # 스쿨 문이 쓰는 주소 뒤 조각
     expect(page.locator('#welcome')).to_be_visible()
     assert page.input_value('#w-nick') == '바다선장', page.input_value('#w-nick')
     assert page.input_value('#w-cc') == 'US'
-    assert 'nick=' not in page.url and 'cc=' not in page.url, page.url
+    assert 'nick=' not in page.url and 'cc=' not in page.url and '#' not in page.url, page.url
     print('ok nickname arrives by address and leaves the address')
 
     # 2. 빈 이름은 받지 않고, 이름을 적으면 배를 받는다
@@ -82,6 +82,7 @@ with sync_playwright() as pw:
     page.click('#main')
     expect(page.locator('#days')).to_have_text('1')
     expect(page.locator('#main')).to_have_text('통발 던지기')
+    page.wait_for_timeout(800)  # 두 번 빨리 누르기 막기(0.7초)
     page.click('#main')
     expect(page.locator('#main')).to_be_disabled()
     expect(page.locator('#main')).to_contain_text('기다리는 중')
@@ -142,12 +143,28 @@ with sync_playwright() as pw:
     assert hall_calls and all(m == 'GET' and u.startswith('https://script.google.com/macros/s/TEST_ONLY_NOT_LIVE/exec?tops=1') for m, u in hall_calls), hall_calls
     assert page.locator('#tags script, #tags b b').count() == 0
     assert not page.evaluate("document.querySelector('#tags')?.innerHTML.includes('<b>명예')")
+    expect(page.locator('#count')).to_have_text('2')  # 내 배 + 명예의 전당 배 1척(견본은 머리 숫자에 넣지 않음)
     print('ok hall of fame read only, escaped')
 
     # 9. 스쿨과 캠핑장 문
     assert page.get_attribute('.back', 'href') == '../'
     assert page.get_attribute('#camp', 'href') == '../camp/', 'no nickname to the camp without the privacy check'
     ctx.close()
+    assert not errors, errors
+
+    # 10. 어린이 보호: 같은 기기에서 고른 나이대에 따라 캠핑장 주소의 닉네임이 달라진다
+    for band, expect_nick in (('20+', True), ('10-11', False)):
+        c2 = browser.new_context(viewport={'width': 390, 'height': 844})
+        route_all(c2)
+        c2.add_init_script(f"localStorage.setItem('dokdo-device-age-v1','{band}');localStorage.setItem('{KEY}',JSON.stringify({{v:1,id:'s1234abcd',nick:'보호시험',cc:'KR'}}))")
+        p2 = c2.new_page()
+        p2.on('pageerror', lambda e: errors.append(str(e)))
+        p2.goto(f'{base}/together/')
+        expect(p2.locator('#main')).to_be_visible()
+        href = p2.get_attribute('#camp', 'href')
+        assert (href == '../camp/?nick=%EB%B3%B4%ED%98%B8%EC%8B%9C%ED%97%98') == expect_nick, (band, href)
+        c2.close()
+    print('ok camp link carries the nickname only where the school allows sharing')
     assert not errors, errors
     assert not strays, strays
     browser.close()

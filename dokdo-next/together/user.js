@@ -5,12 +5,12 @@
 const VERSION=1;
 // 닉네임: 앞뒤 공백 정리, 제어문자·꺾쇠 제거, 12글자까지. 비어 있으면 ''.
 // 글자 방향을 뒤집거나 보이지 않는 글자(U+200B~200F, 202A~202E, 2060~2069, FEFF)도 지운다.
-function cleanNick(v){return [...String(v==null?'':v).replace(/[\u0000-\u001f\u007f<>\u200b-\u200f\u202a-\u202e\u2060-\u2069\ufeff]/g,'').replace(/\s+/g,' ').trim()].slice(0,12).join('')}
+function cleanNick(v){return [...String(v==null?'':v).normalize('NFC').replace(/[\u0000-\u001f\u007f<>\u200b-\u200f\u202a-\u202e\u2060-\u2069\ufeff]/g,'').replace(/\s+/g,' ').trim()].slice(0,20).join('')}
 const cleanCC=v=>/^[A-Z]{2}$/.test(String(v||''))?String(v):'KR';
 const newId=(rnd=Math.random)=>'s'+Math.floor(rnd()*36**8).toString(36).padStart(8,'0');
 // 처음 받는 배: 독도 둘레 바다 위 자리(각도 a, 거리 r)는 id로 정해 다시 와도 같은 자리에 있다.
 function spotOf(id){let h=2166136261;for(const ch of String(id)){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)>>>0}return{a:(h%3600)/3600*Math.PI*2,r:2}}
-function create(nick,cc,now=Date.now(),rnd=Math.random){const id=newId(rnd);return tidy({v:VERSION,id,nick:cleanNick(nick),cc:cleanCC(cc),made:now,stage:1,flag:'m',sail:'plain',spot:spotOf(id),raised:{days:0,last:''},waves:{total:0,day:'',n:0},traps:[],bag:{},money:0,earned:0})}
+function create(nick,cc,now=Date.now(),rnd=Math.random){const id=newId(rnd);return tidy({v:VERSION,id,nick:cleanNick(nick),cc:cleanCC(cc),made:now,stage:1,flag:'m',sail:'plain',spot:spotOf(id),raised:{days:0,last:''},waves:{total:0,day:'',n:0},traps:[],bag:{},money:0,earned:0,hauled:0})}
 const num=(v,max=1e9)=>Number.isFinite(v)&&v>=0?Math.min(Math.floor(v),max):0;
 // 저장값을 믿지 않고 고쳐 읽는다(손으로 고친 값, 옛 판, 깨진 값).
 function tidy(st,now=Date.now()){if(!st||typeof st!=='object')return null;if(typeof st.id!=='string'||!/^s[0-9a-z]{8}$/.test(st.id))return null;
@@ -25,6 +25,6 @@ function tidy(st,now=Date.now()){if(!st||typeof st!=='object')return null;if(typ
  o.waves={total:num(st.waves&&st.waves.total),day:day(st.waves&&st.waves.day),n:num(st.waves&&st.waves.n,C.WAVE_PER_DAY)};
  const slots=C.SHIPS[o.stage-1].traps;o.traps=(Array.isArray(st.traps)?st.traps:[]).filter(t=>Number.isFinite(t)&&t>0).map(t=>Math.min(t,now)).slice(0,slots);
  o.bag={};const ids=new Set(C.CATCH.map(c=>c.id));if(st.bag&&typeof st.bag==='object')for(const[k,v]of Object.entries(st.bag))if(ids.has(k)&&num(v,9999)>0)o.bag[k]=num(v,9999);
- o.money=num(st.money);o.earned=num(st.earned);return o}
+ o.money=num(st.money);o.earned=num(st.earned);o.hauled=num(st.hauled);return o}
 return{VERSION,cleanNick,cleanCC,newId,spotOf,create,tidy};
 });

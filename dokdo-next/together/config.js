@@ -10,13 +10,15 @@ const C={
  STORE_KEY:'dokdo-together-v1',
  // 게임 속 돈 이름은 아직 정하지 않았다(교수님 결정 대기). 정하면 이 두 줄만 바꾼다.
  MONEY:{ko:'돈',en:'coins'},
- TRAP_MINUTES:60,           // 통발을 던지고 건질 수 있을 때까지(분)
+ TRAP_MINUTES:60,           // 통발을 던지고 건질 수 있을 때까지(분, 교수님 결정 11/20)
+ // 처음 온 사람의 첫 통발만 짧게: 첫 방문에 던지기→건지기→팔기 한 바퀴를 돌아 보게 한다(레드팀 2: 첫 60분 공백). 60으로 두면 끈다.
+ FIRST_TRAP_MINUTES:3,
  // 통발에 드는 것: 흔한 것 셋, 귀한 것 하나. en은 널리 확실한 영어 이름만(새우 셋은 비움, 낚시 놀이와 같은 원칙). p는 확률(합 1), value는 팔 때 받는 돈.
  CATCH:[
-  {id:'mullung',name:'물렁가시붉은새우',en:'',alias:'꽃새우',rare:false,p:.40,value:12,src:'서울신문 2017 · 경북매일 2018',url:['https://m.go.seoul.co.kr/news/2017/11/15/20171115012008','https://kbmaeil.com/article/201805040221061']},
-  {id:'gasibae',name:'가시배새우',en:'',alias:'닭새우',rare:false,p:.37,value:15,src:'서울신문 2017 · 경북매일 2018',url:['https://m.go.seoul.co.kr/news/2017/11/15/20171115012008','https://kbmaeil.com/article/201805040221061']},
+  {id:'mullung',name:'물렁가시붉은새우',en:'',alias:'',rare:false,p:.40,value:12,src:'서울신문 2017 · 경북매일 2018',url:['https://m.go.seoul.co.kr/news/2017/11/15/20171115012008','https://kbmaeil.com/article/201805040221061']},
+  {id:'gasibae',name:'가시배새우',en:'',alias:'',rare:false,p:.37,value:15,src:'서울신문 2017 · 경북매일 2018',url:['https://m.go.seoul.co.kr/news/2017/11/15/20171115012008','https://kbmaeil.com/article/201805040221061']},
   {id:'octopus',name:'문어',en:'Octopus',alias:'',rare:false,p:.15,value:20,src:'매일신문 2009(전언)',url:['https://www.imaeil.com/page/view/2009041709164933381']},
-  {id:'dohwa',name:'도화새우',en:'',alias:'독도새우 가운데 가장 큼',rare:true,p:.08,value:60,src:'서울신문 2017 · 서울신문 2019',url:['https://m.go.seoul.co.kr/news/2017/11/15/20171115012008','https://m.go.seoul.co.kr/news/2019/05/29/20190529500039']}
+  {id:'dohwa',name:'도화새우',en:'',alias:'대형종, 최대 25cm',rare:true,p:.08,value:60,src:'서울신문 2017 · 서울신문 2019',url:['https://m.go.seoul.co.kr/news/2017/11/15/20171115012008','https://m.go.seoul.co.kr/news/2019/05/29/20190529500039']}
  ],
  // 배(집) 단계 = 선장 계급. 학년(grade)이 그 단계를 열고, 통발로 번 돈(price)으로 짓는다. 1차는 1~3단계만 모양이 있다.
  // 계급이 높을수록 받는 혜택(교수님 2026-11-20 "계급이 높은 사람들에 대한 혜택, 계급화 몰입"):
