@@ -81,16 +81,47 @@ const NAMES=[['독도등대',[490,85],'동도 봉우리의 등대입니다. 주�
 ['탕건봉',[1190,900],'서도 북쪽 끝. 선비의 탕건을 닮았습니다.'],['물골',[1250,645],'서도 북쪽 해안. 하루 약 400리터의 물이 고입니다.'],['코끼리바위',[1180,225],'서도 남쪽. 코를 늘어뜨린 코끼리 모습입니다.'],
 ['삼형제굴바위',[745,590],'동굴 입구가 세 개인 바위입니다.'],['촛대바위',[810,395],'동도와 서도 사이. 촛대처럼 생겼습니다.'],['보찰바위',[1745,97],'서도 남서쪽. 거북손을 뜻하는 보찰을 닮은 바위입니다.'],['큰가제바위',[860,790],'서도 북동쪽의 낮은 바위. 가제는 강치를 부르던 말입니다.'],['작은가제바위',[965,860],'서도 북동쪽의 낮은 바위. 큰가제바위와 함께 강치가 자주 나타났습니다.'],
 ['천장굴',[525,185],'동도 정상 부근의 깊은 웅덩이. 바닷물이 드나듭니다.'],['독립문바위',[195,250],'파도가 뚫은 아치가 독립문을 닮았습니다.'],['숫돌바위',[720,214],'동도 선착장 가까이. 독도의용수비대원들이 칼을 갈았다는 곳입니다.'],['해녀바위',[515,90],'동도 남쪽. 제주 해녀들이 쉬던 바위입니다.']];
-const FAC={'독도등대':30,'독도경비대':16,'선착장':8,'주민숙소':16};
+const FAC={'독도등대':30,'독도경비대':16,'선착장':8,'주민숙소':24};
 const box=(w,h,d,color,x,y,z,parent)=>{const m=new T.Mesh(new T.BoxGeometry(w,h,d),new T.MeshStandardMaterial({color,flatShading:true}));m.position.set(x,y+h/2,z);(parent||s).add(m);return m};
-let lampM,beam,winMs=[];const SPOT={};const setOn=(nm,ix,iy,R)=>{let[x,z]=toW(ix,iy),by=hAt(x,z),bx=x,bz=z;if(R)for(let a=-R;a<=R;a+=CELL)for(let b=-R;b<=R;b+=CELL){const q=hAt(x+a,z+b);if(q>by){by=q;bx=x+a;bz=z+b}}const g=new T.Group();g.position.set(bx,Math.max(3,by)-1,bz);s.add(g);SPOT[nm]=[bx,Math.max(3,by),bz];return g};
+let lampM,beam,winMs=[],DK=null;const SPOT={};const setOn=(nm,ix,iy,R)=>{let[x,z]=toW(ix,iy),by=hAt(x,z),bx=x,bz=z;if(R)for(let a=-R;a<=R;a+=CELL)for(let b=-R;b<=R;b+=CELL){const q=hAt(x+a,z+b);if(q>by){by=q;bx=x+a;bz=z+b}}const g=new T.Group();g.position.set(bx,Math.max(3,by)-1,bz);s.add(g);SPOT[nm]=[bx,Math.max(3,by),bz];return g};
 {const L=setOn('독도등대',490,85,130);L.position.y=Math.min(L.position.y,86);SPOT['독도등대'][1]=L.position.y;box(14,6,10,0xf4f4f0,0,0,0,L);const tw=new T.Mesh(new T.CylinderGeometry(2,2.4,13,12),new T.MeshStandardMaterial({color:0xffffff}));tw.position.set(0,12,0);L.add(tw);const lp=new T.Mesh(new T.CylinderGeometry(1.5,1.5,2.4,10),new T.MeshStandardMaterial({color:0xfff2b0,emissive:0xffd966,emissiveIntensity:.8}));lp.position.set(0,19.5,0);L.add(lp);lampM=lp.material;beam=new T.Group();beam.position.set(0,19.5,0);L.add(beam);[1,-1].forEach(k=>{const c=new T.Mesh(new T.ConeGeometry(22,620,14,1,true),new T.MeshBasicMaterial({color:0xfff3c4,transparent:true,opacity:0,side:T.DoubleSide,depthWrite:false,fog:false}));c.rotation.z=k*Math.PI/2;c.position.x=k*310;beam.add(c)});const cap=new T.Mesh(new T.ConeGeometry(2.2,1.8,10),new T.MeshStandardMaterial({color:0xc23b32}));cap.position.set(0,21.6,0);L.add(cap);
  const P=setOn('독도경비대',640,140,90);box(29,34,17,0x6a5b4e,0,-34,0,P);box(26,7,14,0xe6e7e4,0,0,0,P);box(27,1,15,0x4f7fa3,0,7,0,P);const a=new T.Mesh(new T.CylinderGeometry(.25,.5,18,6),new T.MeshStandardMaterial({color:0xbfc4c8}));a.position.set(-16,9,0);P.add(a);
  const[hx,hz]=toW(790,205),[ax,az]=toW(840,215),[bx,bz]=toW(735,195);const D=new T.Group();D.position.set(0,0,0);s.add(D);
- const pier=new T.Mesh(new T.BoxGeometry(70,3,18),new T.MeshStandardMaterial({color:0xcdbfa6,flatShading:true}));pier.position.set(ax,1.4,az);pier.rotation.y=Math.atan2(az-hz,ax-hx)*-1+Math.PI/2;D.add(pier);
- const wl=Math.hypot(bx-hx,bz-hz)*2;const walk=new T.Mesh(new T.BoxGeometry(wl,2.4,6),pier.material);walk.position.set(hx,1.3,hz);walk.rotation.y=-Math.atan2(bz-hz,bx-hx);D.add(walk);
- for(let i=-1;i<=8;i++){const u=i/8;block.set(Math.round((ax+(bx-ax)*u)/CELL)+','+Math.round((az+(bz-az)*u)/CELL),1)}
- const H=setOn('주민숙소',985,430,0);H.position.y=Math.max(4,H.position.y);box(16,9,10,0xf6f4ee,0,0,0,H);box(17,1,11,0x4f7fa3,0,9,0,H);winMs=[box(3,3,.3,0x6d8aa0,-4,3.5,5.1,H),box(3,3,.3,0x6d8aa0,4,3.5,5.1,H),box(4,2.4,.3,0x6d8aa0,0,3.5,7.1,P)].map(m=>m.material);H.rotation.y=Math.atan2(peakE[0]-H.position.x,peakE[2]-H.position.z)}
+ // 동도 선착장(11/20 교수님: 실제처럼 더 크게): 사진처럼 해안과 나란한 넓은 접안 판(바다 쪽 턱·계선주) + 가운데에서 섬으로 잇는 연결 판 + 한쪽 끝 섬 쪽 날개(ㄱ자).
+ // 선착장 자리(quay)를 판 가운데에 두고, 가장 가까운 물가 방향(땅 높이 3을 넘는 곳)을 찾아 그쪽을 섬 쪽(+z)으로 돌린다. 판 윗면은 2.9로 quay.y와 같다.
+ let lr=999,la=0;for(let a=0;a<360;a+=5){const c=Math.cos(a*Math.PI/180),n2=Math.sin(a*Math.PI/180);for(let r=0;r<lr&&r<220;r+=3)if(hAt(ax+c*r,az+n2*r)>3){lr=r;la=a*Math.PI/180;break}}if(lr>220)lr=40;
+ const ldx=Math.cos(la),ldz=Math.sin(la),Q=new T.Group();Q.position.set(ax,0,az);Q.rotation.y=Math.atan2(ldx,ldz);D.add(Q);
+ const CM=new T.MeshStandardMaterial({color:0xd5cbb6,flatShading:true}),CE=new T.MeshStandardMaterial({color:0x9c927f,flatShading:true}),WH=new T.MeshStandardMaterial({color:0xf2f2ee}),BL=new T.MeshStandardMaterial({color:0x3a3d42});
+ const part=(w,h,d,x,y,z,m)=>{const o=new T.Mesh(new T.BoxGeometry(w,h,d),m);o.position.set(x,y,z);Q.add(o);return o};
+ const rq=Q.rotation.y,toWd=(lx,lz)=>[ax+lx*Math.cos(rq)+lz*Math.sin(rq),az-lx*Math.sin(rq)+lz*Math.cos(rq)];
+ // 연결 판은 섬 벼랑 밑(땅 높이 12를 넘는 곳)까지 뻗어 섬에 닿는다(11/20 교수님: 선착장이 섬에 닿게). 끝은 벼랑 속으로 조금 묻힌다.
+ let lc=lr;while(lc<lr+160&&hAt(ax+ldx*lc,az+ldz*lc)<=12)lc+=3;
+ const PL=100,PW=28,CL=Math.max(10,lc-PW/2+8),top=2.9,dep=7,y0=top-dep/2;
+ part(PL,dep,PW,0,y0,0,CM);part(PL,.7,1.4,0,top+.35,-(PW/2-.7),CE);
+ for(let x=-PL/2+7;x<=PL/2-7;x+=12){const o=new T.Mesh(new T.CylinderGeometry(.7,.85,1.3,8),BL);o.position.set(x,top+.65,-(PW/2-3));Q.add(o)}
+ part(18,dep,CL,0,y0,PW/2+CL/2-1,CM);part(34,dep,16,-PL/2+17,y0,PW/2+7,CM);
+ for(let x=-PL/2+35;x<=PL/2-1;x+=5){if(Math.abs(x)<10)continue;part(.35,1.6,.35,x,top+.8,PW/2-.4,WH)}
+ part(PL/2-11,.25,.25,(PL/2+10)/2,top+1.5,PW/2-.4,WH);part(PL/2-45,.25,.25,(-PL/2+35-10)/2,top+1.5,PW/2-.4,WH);
+ const blk=(x0,x1,z0,z1)=>{for(let x=x0;x<=x1;x+=6)for(let z=z0;z<=z1;z+=6){const[wx,wz]=toWd(x,z);block.set(Math.round(wx/CELL)+','+Math.round(wz/CELL),1)}};
+ blk(-PL/2,PL/2,-PW/2,PW/2);blk(-9,9,PW/2,PW/2+CL);blk(-PL/2,-PL/2+34,PW/2,PW/2+15);
+ // 동도 정상 계단(11/20 교수님: 계단은 있지만 레벨이 되어야 오른다): 연결 판 끝에서 동도 우산봉 쪽으로 벼랑을 타고 오르는 나무 계단과 난간.
+ // 걷다가 계단 밑에 닿으면 Lv20 전에는 막히고 알림, 열렸으면 동도 정상 캠핑 자리로 올라간다.
+ {const[sx,sz]=toWd(0,PW/2+CL-4),gx=peakE[0]-sx,gz=peakE[2]-sz,gl=Math.hypot(gx,gz)||1,ux=gx/gl,uz=gz/gl,WD=new T.MeshStandardMaterial({color:0x9a6a44,flatShading:true}),RL=new T.MeshStandardMaterial({color:0x7a5236});
+  const S=new T.Group();S.position.set(sx,0,sz);S.rotation.y=Math.atan2(ux,uz);s.add(S);
+  // 한 칸 1.6씩 오르고, 그 높이의 벼랑 표면이 나오는 자리에 디딤판을 놓아 비탈을 따라 이어지게 한다.
+  const pts=[];let d=2,y=top;for(let i=0;i<26;i++){y+=1.6;while(d<220&&hAt(sx+ux*d,sz+uz*d)<y-1.4)d+=.5;d+=1.2;pts.push([d,y])}
+  pts.forEach(([dd,yy],i)=>{const st2=new T.Mesh(new T.BoxGeometry(8,.9,3.2),WD);st2.position.set(0,yy-.45,dd);S.add(st2);
+   if(i%2===0)[-4.2,4.2].forEach(k=>{const po=new T.Mesh(new T.BoxGeometry(.35,2.4,.35),RL);po.position.set(k,yy+1.2,dd);S.add(po)})});
+  for(let i=1;i<pts.length;i++){const[d0,y0]=pts[i-1],[d1,y1]=pts[i],len=Math.hypot(d1-d0,y1-y0);[-4.2,4.2].forEach(k=>{const rl=new T.Mesh(new T.BoxGeometry(.25,.25,len),RL);rl.position.set(k,(y0+y1)/2+2.4,(d0+d1)/2);rl.rotation.x=-Math.atan2(y1-y0,d1-d0);S.add(rl)})}
+  DK={ax,az,rq,PL,PW,CL,top,gate:[sx,sz]}}
+ // 서도 주민숙소(11/20 교수님: 실제처럼 물가로 내리고 더 크게): 서도 동쪽 물가 콘크리트 마당 위의 4층 짙은 회색 벽돌 건물, 파란 지붕 두 단, 깃대 셋.
+ // 지형 꼭대기 쪽 자리에서 동도 방향으로 물가(땅 높이 2 아래)가 나올 때까지 내려와 앉는다. 이름표·서도 데크(stay)도 이 자리를 따른다.
+ const H=setOn('주민숙소',985,430,0);{const[h0x,,h0z]=SPOT['주민숙소'],vx=peakE[0]-h0x,vz=peakE[2]-h0z,vl=Math.hypot(vx,vz)||1;let k=0;while(k<240&&hAt(h0x+vx/vl*k,h0z+vz/vl*k)>2)k+=2;
+  const nx=h0x+vx/vl*Math.max(0,k-4),nz=h0z+vz/vl*Math.max(0,k-4);H.position.set(nx,5,nz);SPOT['주민숙소']=[nx,5,nz];H.rotation.y=Math.atan2(vx,vz)}
+ box(34,5,26,0xcfc6b2,0,-5,4,H);box(20,16,12,0x4c5056,0,0,-3,H);box(21.5,.9,13.5,0x3f6fb2,0,16,-3,H);box(12,12,10,0x4c5056,15,0,-2,H);box(13.5,.9,11.5,0x3f6fb2,15,12,-2,H);
+ const wins=[];[3.2,7.2,11.2].forEach(y=>[-6,0,6].forEach(x=>wins.push(box(2.8,1.9,.3,0x6d8aa0,x,y,3.1,H))));[3.2,7.2].forEach(y=>wins.push(box(2.6,1.8,.3,0x6d8aa0,15,y,3.1,H)));
+ [-9,-7,-5].forEach((x,i)=>{const pole=new T.Mesh(new T.CylinderGeometry(.15,.15,9,6),new T.MeshStandardMaterial({color:0xd9dcdf}));pole.position.set(x,20.5,-1);H.add(pole);box(2.2,1.4,.1,i===1?0x3b6ea8:0xffffff,x+1.2,23.2,-1,H)});
+ winMs=[...wins,box(4,2.4,.3,0x6d8aa0,0,3.5,7.1,P)].map(m=>m.material)}
 const dirW=[peakE[0]-SPOT['주민숙소'][0],peakE[2]-SPOT['주민숙소'][2]],dl=Math.hypot(dirW[0],dirW[1]);dirW[0]/=dl;dirW[1]/=dl;
 const stay={x:SPOT['주민숙소'][0]+dirW[0]*20,y:Math.max(4,SPOT['주민숙소'][1])+1,z:SPOT['주민숙소'][2]+dirW[1]*20,lx:peakE[0],lz:peakE[2]};
 {const d=new T.Mesh(new T.BoxGeometry(22,1.2,14),new T.MeshStandardMaterial({color:0xb98a5a,flatShading:true}));d.position.set(stay.x,stay.y-.6,stay.z);d.rotation.y=Math.atan2(dirW[0],dirW[1]);s.add(d)}
@@ -98,6 +129,11 @@ const camp={x:peakE[0],y:peakE[1]+1,z:peakE[2],lx:peakW[0],lz:peakW[2]};let flam
 // 동도 선착장: 접안시설 끝에 서서 서도를 바라본다(11/20부터 Lv1, 체험이 여기서 시작).
 const quay=(()=>{const[x,z]=toW(840,215);return{x,y:2.9,z,lx:peakW[0],lz:peakW[2]}})();
 const SEAT={camp,stay,dock:quay},isSeat=m=>!!SEAT[m];
+// 동도 선착장에서는 걸어 다닐 수 있다(11/20 교수님: 동도에서는 조금 자유롭게). 접안 판·연결 판·날개 위만 걷고, 연결 판 끝은 동도 정상 계단 밑이다.
+const walk={on:false,x:0,z:0,tx:null,tz:null,r:0,said:0};
+const dkLocal=(x,z)=>{const dx=x-DK.ax,dz=z-DK.az,c=Math.cos(DK.rq),n2=Math.sin(DK.rq);return[dx*c-dz*n2,dx*n2+dz*c]};
+const onDock=(x,z)=>{if(!DK)return false;const[lx,lz]=dkLocal(x,z),{PL,PW,CL}=DK;return(Math.abs(lx)<=PL/2-1.5&&Math.abs(lz)<=PW/2-1.5)||(Math.abs(lx)<=7.5&&lz>=PW/2-3&&lz<=PW/2+CL-3)||(lx>=-PL/2+1.5&&lx<=-PL/2+32.5&&lz>=PW/2-3&&lz<=PW/2+13.5)};
+const atStairs=(x,z)=>{if(!DK)return false;const[lx,lz]=dkLocal(x,z);return Math.abs(lx)<=7.5&&lz>=DK.PW/2+DK.CL-9};
 {const G=new T.Group();G.position.set(camp.x,camp.y,camp.z);s.add(G);const pad=new T.Mesh(new T.CylinderGeometry(14,17,6,14),new T.MeshStandardMaterial({color:0x6d8f4b,flatShading:true}));pad.position.y=-3;G.add(pad);
  const tent=new T.Mesh(new T.ConeGeometry(6.2,6.6,4),new T.MeshStandardMaterial({color:0xe9e2cf,flatShading:true}));tent.position.set(-7,3.3,-5);tent.rotation.y=.8;G.add(tent);
  [[.6],[-.6],[1.6]].forEach(([r])=>{const l=new T.Mesh(new T.CylinderGeometry(.28,.28,3.4,6),new T.MeshStandardMaterial({color:0x5a3b22}));l.rotation.z=Math.PI/2;l.rotation.y=r;l.position.y=.4;G.add(l)});
@@ -128,9 +164,9 @@ const dest=(p,d)=>{const a=Math.atan2(p[0]-me.x,p[2]-me.z);let x=p[0]-Math.sin(a
 let mode=null,auto=false,dusk=0;const autoB=$('#auto'),VB={camp:$('#v-camp'),sea:$('#v-sea'),stay:$('#v-stay'),dock:$('#v-dock')};
 const setAuto=v=>{auto=v;plan.auto=v;autoB.setAttribute('aria-pressed',v);if(v){leave();plan.route=[];plan.wide=0;plan.stuck=0;SAIL.next(me,plan,hit,ctr);dist=Math.max(dist,90);pitch=.22}else{plan.route=[]}};
 function leave(){if(!mode)return;const m=mode;mode=null;$('#vr').hidden=true;VB[m].setAttribute('aria-pressed',false);me.b.userData.parts.forEach(o=>o.visible=true);if(m==='sea'||bowView){if(bowView)bowBtn.click()}dist=70;pitch=.2;yaw=me.r;dirty=true}
-function heal(m){if(mode===m){leave();return}if(auto)setAuto(false);leave();me.tx=null;ring.visible=false;mode=m;VB[m].setAttribute('aria-pressed',true);dirty=true;mark();
+function heal(m){walk.on=false;if(mode===m){leave();return}if(auto)setAuto(false);leave();me.tx=null;ring.visible=false;mode=m;VB[m].setAttribute('aria-pressed',true);dirty=true;mark();
  if(m==='sea'){if(me.z<640||Math.abs(me.x)>400){me.x=-60;me.z=900}me.r=0;setAuto(true);return}// 11/20: 바다로 나가면 어떤 길이든 자동 항해로 독도를 돈다(뱃머리 시점은 항해 메뉴에서)
- me.b.userData.parts.forEach(o=>o.visible=false);if(bowView)bowBtn.click();me.b.userData.parts.forEach(o=>o.visible=false);me.b.userData.rig.forEach(o=>{if(o===me.b.userData.who)o.visible=true});const t=SEAT[m];yaw=Math.atan2(t.x-t.lx,t.z-t.lz)+(m==='stay'?.28:m==='dock'?-.78:0);pitch=m==='camp'?.14:m==='dock'?.28:.16;dist=m==='camp'?27:m==='dock'?60:14.5}// 선착장(11/20): 선장은 작게, 바다와 서도·바위가 보이게 비스듬히 멀리서
+ me.b.userData.parts.forEach(o=>o.visible=false);if(bowView)bowBtn.click();me.b.userData.parts.forEach(o=>o.visible=false);me.b.userData.rig.forEach(o=>{if(o===me.b.userData.who)o.visible=true});const t=SEAT[m];yaw=Math.atan2(t.x-t.lx,t.z-t.lz)+(m==='stay'?.28:m==='dock'?-.78:0);pitch=m==='camp'?.14:m==='dock'?.28:.16;dist=m==='camp'?27:m==='dock'?60:14.5;if(m==='dock'&&DK){const q=seatOf('dock',1);Object.assign(walk,{on:true,x:q.x,z:q.z,tx:null,r:Math.atan2(q.x-quay.lx,q.z-quay.lz)});if(!walk.tip){walk.tip=1;setTimeout(()=>toast('선착장 바닥을 누르면 그쪽으로 걸어가요'),1200)}}}// 선착장(11/20): 선장은 작게, 바다와 서도·바위가 보이게 비스듬히 멀리서
 const mark=()=>{$('#vr').hidden=!isSeat(mode)};autoB.onclick=()=>setAuto(!auto);VB.camp.onclick=()=>tryGo('camp');VB.sea.onclick=()=>heal('sea');VB.stay.onclick=()=>tryGo('stay');VB.dock.onclick=()=>tryGo('dock');
 $('#go-seo').onclick=()=>{leave();setAuto(false);dest(peakW,330);dist=Math.min(dist,60)};
 $('#go-dong').onclick=()=>{leave();setAuto(false);dest(peakE,300);dist=Math.min(dist,60)};
@@ -244,7 +280,7 @@ cv.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;const o=pt
  if(pts.size===2){const[a,b]=[...pts.values()],d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);if(pinch)dist=Math.min(420,Math.max(zmin(),dist*pinch/d));pinch=d;moved=99;return}
  const dx=e.clientX-o.clientX,dy=e.clientY-o.clientY;moved+=Math.abs(dx)+Math.abs(dy);dragT=performance.now();yaw-=dx*.009;pitch=Math.min(1.25,Math.max(bowView?-.3:.04,pitch+dy*.004))});
 const zmin=()=>isSeat(mode)?10:26;const ray=new T.Raycaster(),pl=new T.Plane(new T.Vector3(0,1,0),0),nd=new T.Vector2(),pp=new T.Vector3();
-const up=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=0;if(moved<7&&e.type==='pointerup'){nd.set(e.clientX/innerWidth*2-1,-e.clientY/innerHeight*2+1);ray.setFromCamera(nd,cam);if(!mode||mode==='sea'){if(ray.ray.intersectPlane(pl,pp)&&!hit(pp.x,pp.z)){if(auto){setAuto(false);resumeT=1;if(!resumeSaid){resumeSaid=1;toast('잠시 뒤 다시 저절로 돌아요')}}if(mode)leave();go(pp.x,pp.z);dispatchEvent(new CustomEvent('dokdo-heal-tap'))}}}};
+const up=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=0;if(moved<7&&e.type==='pointerup'){nd.set(e.clientX/innerWidth*2-1,-e.clientY/innerHeight*2+1);ray.setFromCamera(nd,cam);if(!mode||mode==='sea'){if(ray.ray.intersectPlane(pl,pp)&&!hit(pp.x,pp.z)){if(auto){setAuto(false);resumeT=1;if(!resumeSaid){resumeSaid=1;toast('잠시 뒤 다시 저절로 돌아요')}}if(mode)leave();go(pp.x,pp.z);dispatchEvent(new CustomEvent('dokdo-heal-tap'))}}else if(mode==='dock'&&walk.on&&DK){const pd=new T.Plane(new T.Vector3(0,1,0),-DK.top);if(ray.ray.intersectPlane(pd,pp)&&(onDock(pp.x,pp.z)||atStairs(pp.x,pp.z))){walk.tx=pp.x;walk.tz=pp.z}}}};
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 cv.addEventListener('wheel',e=>{e.preventDefault();dist=Math.min(420,Math.max(zmin(),dist*(1+e.deltaY*.001)))},{passive:false});
 const keys={};addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;keys[e.key.toLowerCase()]=1});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=0});
@@ -371,7 +407,14 @@ function tick(n){if(body.classList.contains('v2d')){last=n;requestAnimationFrame
  if(mv){SAIL.move(me,plan,mv,dt,hit,ctr,2600);dirty=true}
  ring.visible=me.tx!=null&&!auto;if(ring.visible){ring.position.x=me.tx;ring.position.z=me.tz}
  if(me.say&&n-me.sayT>=8000){me.say='';dirty=true}
- if(seated){const t=SEAT[mode],q=seatOf(mode,1);me.b.position.set(q.x,q.y-2.85,q.z);me.b.rotation.set(0,Math.atan2(q.x-t.lx,q.z-t.lz),0)}else bob(me.b,me.x,me.z,me.r,n);
+ if(seated&&mode==='dock'&&walk.on){let fx=0,fz=0;const kf=(keys.w||keys.arrowup?1:0)-(keys.s||keys.arrowdown?1:0),ks=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0);
+  if(kf||ks){walk.tx=null;fx=-Math.sin(yaw)*kf+Math.cos(yaw)*ks;fz=-Math.cos(yaw)*kf-Math.sin(yaw)*ks}else if(walk.tx!=null){const dx=walk.tx-walk.x,dz=walk.tz-walk.z,d=Math.hypot(dx,dz);if(d<.8)walk.tx=null;else{fx=dx;fz=dz}}
+  const l=Math.hypot(fx,fz);let moving=false;if(l){fx/=l;fz/=l;const sp=10*dt,nx=walk.x+fx*sp,nz=walk.z+fz*sp;
+   if(atStairs(nx,nz)){walk.tx=null;if(opened('camp'))tryGo('camp');else if(n-walk.said>4000){walk.said=n;toast('동도 정상 계단은 Lv'+EC.placeLv('camp')+'부터 오를 수 있습니다 · 지금 Lv'+LV().L)}}
+   else{for(const t of [0,.45,-.45,.9,-.9,1.3,-1.3]){const c=Math.cos(t),n3=Math.sin(t),gx=fx*c-fz*n3,gz=fx*n3+fz*c,mx=walk.x+gx*sp,mz=walk.z+gz*sp;if(onDock(mx,mz)||atStairs(mx,mz)){walk.x=mx;walk.z=mz;fx=gx;fz=gz;moving=true;break}}if(!moving)walk.tx=null}
+   if(moving){walk.r=Math.atan2(-fx,-fz);dirty=true}}
+  if(mode==='dock')me.b.position.set(walk.x,DK.top-2.85+(moving?Math.abs(Math.sin(n*.014))*.45:0),walk.z),me.b.rotation.set(0,walk.r,0)}
+ else if(seated){const t=SEAT[mode],q=seatOf(mode,1);me.b.position.set(q.x,q.y-2.85,q.z);me.b.rotation.set(0,Math.atan2(q.x-t.lx,q.z-t.lz),0)}else bob(me.b,me.x,me.z,me.r,n);
  swim(me.b,n);if(rest)resting(n);
  me.b.userData.who.position.y=2.85+(n-me.wave<1800?Math.abs(Math.sin(n*.012))*1.3:0);
  const showSay=me.say;me.tag.bu.hidden=!showSay;if(showSay&&me.tag.bu.textContent!==showSay)me.tag.bu.textContent=showSay;me.tag.na.textContent=clean(nick.value.trim())||'친구';
