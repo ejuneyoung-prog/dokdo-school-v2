@@ -301,7 +301,10 @@ const act=$('#act'),more=$('#more'),mTop=$('#m-top'),menuRow=$('#menu');let actA
 // 글자가 바뀐 뒤 0.8초는 누름을 무시한다(두 번 눌러 '배 타고 바다로' 다음 '낚시하기'까지 눌리지 않게).
 function actUI(){const x=isSeat(mode)?'배 타고 바다로':'낚시하기';if(act.textContent!==x){act.textContent=x;actAt=Date.now()}}
 // 배 타고 바다로: 선착장을 떠나 배에 오르고, 자동 항해로 독도를 돈다. 바다를 누르면 자동 항해를 끄고 그쪽으로 간다.
-act.onclick=()=>{if(Date.now()-actAt<800)return;if(isSeat(mode)){setAuto(true);if(st.gd!==2)toast('배가 저절로 독도를 돕니다 · 바다를 누르면 그쪽으로')}else openDeck('f');actUI()};
+// 배는 앉아 있던 자리(선착장 등) 바로 옆 바다에서 떠난다(11/20 레드팀: 먼 바다로 순간 이동하던 것). 자리에서 가장 가까운 물(섬·접안시설에 닿지 않는 곳)에
+// 배를 두고 섬 바깥쪽을 보게 한다. 자동 항해는 그 자리에서 각도가 가장 가까운 바퀴 점부터 이어 돈다(sail.js orbit).
+function launch(){if(!isSeat(mode))return;const p=me.b.position;for(let r=0;r<=480;r+=6)for(let k=0;k<36;k++){const a=k/36*Math.PI*2,x=p.x+Math.sin(a)*r,z=p.z+Math.cos(a)*r;if(!hit(x,z)){me.x=x;me.z=z;me.r=Math.atan2(ctr[0]-x,ctr[1]-z);me.tx=null;return}}}
+act.onclick=()=>{if(Date.now()-actAt<800)return;if(isSeat(mode)){launch();setAuto(true);if(st.gd!==2)toast('배가 저절로 독도를 돕니다 · 바다를 누르면 그쪽으로')}else openDeck('f');actUI()};
 function setMore(v){mTop.hidden=menuRow.hidden=!v;more.setAttribute('aria-expanded',v);if(!v&&tabNow)setTab(tabNow);pad()}
 more.onclick=()=>setMore(menuRow.hidden);
 new MutationObserver(actUI).observe($('#dock'),{subtree:true,attributes:true,attributeFilter:['aria-pressed']});actUI();
@@ -322,11 +325,11 @@ addEventListener('dokdo-view-3d',()=>{if(mix)mix.gain.setTargetAtTime(volNow(),A
 // 사용 설명서(guide.js)가 쓰는 창구. 설명서는 이 브라우저에서 처음 만든 기록(gd=2)에만 뜨고, 마치거나 건너뛰면 gd=1이 된다.
 // 크리에이터 모드에서는 띄우지 않는다.
 const spotR=new T.Raycaster(),spotN=new T.Vector2(),spotP=new T.Vector3(),spotPl=new T.Plane(new T.Vector3(0,1,0),0);
-window.DokdoHeal={seated:()=>isSeat(mode),fishing:()=>!deck.hidden&&dTab==='f',toast,creator:()=>creator,pos:()=>[me.x,me.z],
+window.DokdoHeal={seated:()=>isSeat(mode),fishing:()=>!deck.hidden&&dTab==='f',toast,creator:()=>creator,pos:()=>[me.x,me.z],dock:()=>[quay.x,quay.z],
  guided:v=>{if(v&&st.gd===2){st.gd=1;keep()}return creator||st.gd!==2},
  // 누를 곳 표시용: 배를 비켜 화면 아래쪽 몇 자리 가운데 바다(섬이 아닌 곳)인 첫 자리. 없으면 null.
  spot:()=>{if(isSeat(mode))return null;const W=innerWidth,H=innerHeight,lim=$('#dock').getBoundingClientRect().top-50;
-  for(const[a,b]of[[.25,.68],[.75,.68],[.25,.58],[.75,.58],[.5,.8]]){const x=a*W,y=Math.min(b*H,lim);spotN.set(x/W*2-1,-y/H*2+1);spotR.setFromCamera(spotN,cam);if(spotR.ray.intersectPlane(spotPl,spotP)&&!hit(spotP.x,spotP.z))return{x,y}}return null}};
+  for(const[a,b]of[[.25,.68],[.75,.68],[.25,.58],[.75,.58],[.5,.8]]){const x=a*W,y=Math.min(b*H,lim);spotN.set(x/W*2-1,-y/H*2+1);spotR.setFromCamera(spotN,cam);if(spotR.ray.intersectPlane(spotPl,spotP)&&!hit(spotP.x,spotP.z)&&document.elementFromPoint(x,y)===cv)return{x,y}}return null}};// 바위 안내판 등이 덮은 자리는 빼고
 // ── 합치기 1단계 끝 ──
 addEventListener('pointerdown',()=>{if(AC&&AC.state!=='running')AC.resume()});document.addEventListener('visibilitychange',()=>{if(!document.hidden&&AC)AC.resume();if(!document.hidden&&silent)silent.play().catch(()=>{})});
 if(window.claude&&claude.use)Promise.all([claude.use('db'),claude.use('user')]).then(async([db,u])=>{if(!db||!u)return;const id=await u.id();if(!id)return;const ref=db.doc('data/users/'+id+'/wallet'),sn=await ref.get();wallet=ref;const v=sn.exists&&sn.data();let baseT=st.t;if(creator){try{baseT=JSON.parse(stBack).t}catch(e){}}if(v&&typeof v.t==='number'&&v.t>=baseT){if(creator){try{const b=JSON.parse(stBack);Object.assign(b,v);stBack=JSON.stringify(b)}catch(e){}return}Object.assign(st,v);EC.tidy(st);deco(me.b,st.on);dirty=true;save(WK,JSON.stringify(st));ui()}else if(st.t)keep()}).catch(()=>{}).finally(giveGift);

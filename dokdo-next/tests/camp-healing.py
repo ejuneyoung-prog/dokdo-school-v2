@@ -80,12 +80,15 @@ def ringed(page, sel):
     until(page, """(()=>{const r=document.querySelector('#g-ring'),t=document.querySelector('%s');if(!r||r.hidden||!t)return false;const a=r.getBoundingClientRect(),b=t.getBoundingClientRect();return a.left<=b.left&&a.top<=b.top&&a.right>=b.right&&a.bottom>=b.bottom})()""" % sel, timeout=5000)
 
 def tap_sea(page):
-    """바다 한 점을 짧게 누른다. 자리는 healing.js가 섬이 아닌 곳으로 골라 준다."""
+    """바다 한 점을 짧게 누른다. 자리는 healing.js가 섬이 아닌 곳으로 골라 준다.
+    배가 섬 가까이에서 움직이면 고른 자리가 누르는 순간 섬 쪽으로 바뀔 수 있어, 자동 항해가 꺼질 때까지 몇 번 다시 누른다."""
     for _ in range(40):
         spot = page.evaluate('DokdoHeal.spot()')
         if spot:
             page.mouse.click(spot['x'], spot['y'])
-            return spot
+            page.wait_for_timeout(300)
+            if page.evaluate("document.querySelector('#auto').getAttribute('aria-pressed')") != 'true':
+                return spot
         page.wait_for_timeout(250)
     raise AssertionError('no sea spot on screen')
 
@@ -214,6 +217,9 @@ def walk(context, label):
     expect(page.locator('#auto')).to_have_attribute('aria-pressed', 'true')
     expect(page.locator('#bow')).to_have_attribute('aria-pressed', 'false')
     expect(page.locator('#act')).to_have_text('낚시하기')
+    # 배는 선착장 바로 옆 바다에서 떠난다(먼 바다로 순간 이동하지 않음).
+    gap = page.evaluate("(()=>{const p=DokdoHeal.pos(),d=DokdoHeal.dock();return Math.hypot(p[0]-d[0],p[1]-d[1])})()")
+    assert gap < 120, ('boat starts beside the dock', gap)
     page.wait_for_timeout(900)  # 글자가 바뀐 뒤 0.8초 동안의 누름은 무시된다(두 번 눌림 방지)
     expect(page.locator('#deck')).to_be_hidden()
     assert page.evaluate("getComputedStyle(document.querySelector('#act')).touchAction") == 'manipulation'
@@ -276,8 +282,13 @@ def walk(context, label):
     if not page.locator('#auto').get_attribute('aria-pressed') == 'true':
         page.locator('#auto').click()
     expect(page.locator('#auto')).to_have_attribute('aria-pressed', 'true')
+    # 메뉴(내 배 판 포함)를 닫고 바다를 누른다. 사람도 메뉴를 닫고 바다를 본다.
+    menu(page, False)
     tap_sea(page)
     expect(page.locator('#auto')).to_have_attribute('aria-pressed', 'false')
+    menu(page)
+    page.locator('#t-sail').click()
+    expect(page.locator('#p-sail')).to_be_visible()
     if label == 'pc':
         until(page, "document.querySelector('#auto').getAttribute('aria-pressed')==='true'", timeout=45000)
         # 항해 메뉴에서 직접 끈 것은 그대로 둔다.
