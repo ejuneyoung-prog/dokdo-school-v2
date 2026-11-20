@@ -331,6 +331,13 @@ window.DokdoHeal={seated:()=>isSeat(mode),fishing:()=>!deck.hidden&&dTab==='f',t
  spot:()=>{if(isSeat(mode))return null;const W=innerWidth,H=innerHeight,lim=$('#dock').getBoundingClientRect().top-50;
   for(const[a,b]of[[.25,.68],[.75,.68],[.25,.58],[.75,.58],[.5,.8]]){const x=a*W,y=Math.min(b*H,lim);spotN.set(x/W*2-1,-y/H*2+1);spotR.setFromCamera(spotN,cam);if(spotR.ray.intersectPlane(spotPl,spotP)&&!hit(spotP.x,spotP.z)&&document.elementFromPoint(x,y)===cv)return{x,y}}return null}};// 바위 안내판 등이 덮은 자리는 빼고
 // ── 합치기 1단계 끝 ──
+// ── 11/20 합치기 2단계: 메뉴의 '내 배' 판(board.js)이 읽는 창구. 읽기만 한다. 계산은 원래 것(LV·EC)을 그대로 쓴다. ──
+Object.assign(window.DokdoHeal,{
+ map:()=>({cell:CELL,land,dock:[quay.x,quay.z],ctr,ext:ISLE.ext,peaks:{w:[peakW[0],peakW[2]],e:[peakE[0],peakE[2]]}}),// 지형 칸(땅) 목록, 선착장, 섬 무게중심
+ boat:()=>{const q=isSeat(mode);return{x:q?me.b.position.x:me.x,z:q?me.b.position.z:me.z,seat:q?mode:''}},// 쉼터에 앉아 있으면 그 자리
+ level:()=>LV(),
+ today:()=>{const d=today(),left=EC.catchesLeft(st,d);return{coins:st.c,left,xG:st.xG,capG:EC.CAP.game,xC:st.xC,capC:EC.CAP.clean,look:st.rD===d?st.rN:0,capL:10}}});
+// ── 합치기 2단계 끝 ──
 addEventListener('pointerdown',()=>{if(AC&&AC.state!=='running')AC.resume()});document.addEventListener('visibilitychange',()=>{if(!document.hidden&&AC)AC.resume();if(!document.hidden&&silent)silent.play().catch(()=>{})});
 if(window.claude&&claude.use)Promise.all([claude.use('db'),claude.use('user')]).then(async([db,u])=>{if(!db||!u)return;const id=await u.id();if(!id)return;const ref=db.doc('data/users/'+id+'/wallet'),sn=await ref.get();wallet=ref;const v=sn.exists&&sn.data();let baseT=st.t;if(creator){try{baseT=JSON.parse(stBack).t}catch(e){}}if(v&&typeof v.t==='number'&&v.t>=baseT){if(creator){try{const b=JSON.parse(stBack);Object.assign(b,v);stBack=JSON.stringify(b)}catch(e){}return}Object.assign(st,v);EC.tidy(st);deco(me.b,st.on);dirty=true;save(WK,JSON.stringify(st));ui()}else if(st.t)keep()}).catch(()=>{}).finally(giveGift);
 // 함께 있는 사람들
