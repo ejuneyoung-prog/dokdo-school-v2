@@ -402,18 +402,18 @@ def card(context, label):
     expect(entry).to_be_visible()
     assert entry.get_attribute('href') == './camp/'
     assert page.locator('#v3-entry .v3-choice-grid > *').count() == 3
-    assert page.locator('#together-entry').get_attribute('href') == './together/'
+    assert page.locator('#together-entry').count() == 0  # 11/20 교수님: 첫 화면 DOKDO TOGETHER 띠 삭제
     assert page.locator('#v3-entry-title').inner_text() == '내 독도 학력은 몇 학년?'
     biggest = page.evaluate("""()=>{const r=e=>{const b=document.querySelector(e).getBoundingClientRect();return b.width*b.height};return {start:r('#v3-first-class'),login:r('#account-link'),live:r('#v3-live-entry'),lang:r('#v3-main-language')}}""")
     assert biggest['start'] == max(biggest.values()), biggest
     assert entry.locator('.v3-choice-name > span').all_inner_texts() == ['독도에서', '힐링하기']
-    # 힐링 칸은 두 칸 아래 가로 전체 그림 칸: 제목은 한 줄, 다른 칸보다 넓고 그림이 보인다(11/10)
+    # 힐링 칸은 두 칸 위 가로 전체 그림 칸(11/20 맨 위로): 제목은 한 줄, 다른 칸보다 넓고 실제 장면 그림이 보인다
     rows = page.evaluate("""()=>{const box=e=>document.querySelector(e).getBoundingClientRect();
       const lines=[...document.querySelectorAll('#camp-title > span')].map(e=>e.getBoundingClientRect());
       const c=box('#camp-entry'),l=box('#v3-enter-learn'),p=box('#v3-enter-play'),art=box('#camp-entry .camp-art'),act=box('#camp-action');
       const s=box('#v3-first-class');
-      return {oneLine:Math.abs(lines[0].top-lines[1].top)<2,below:c.top>=Math.max(l.bottom,p.bottom)-1,startFirst:s.bottom<=Math.min(l.top,p.top,c.top),
-              wide:c.width>=l.width+p.width,art:art.height>=90,action:act.height>0&&act.bottom<=c.bottom}}""")
+      return {oneLine:Math.abs(lines[0].top-lines[1].top)<2,above:c.bottom<=Math.min(l.top,p.top)+1,startFirst:s.bottom<=Math.min(l.top,p.top,c.top),
+              wide:c.width>=l.width+p.width,art:art.height>=120&&!!document.querySelector('#camp-entry .camp-art img'),action:act.height>0&&act.bottom<=c.bottom}}""")
     assert all(rows.values()), rows
     open_profile(page)
     page.fill('#nickname', NICK)
