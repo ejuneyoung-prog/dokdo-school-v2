@@ -177,6 +177,11 @@ body.guiding #hint,body.guiding #info{display:none!important}
 body:has(#deck:not([hidden])) #toast{top:auto;bottom:calc(16px + env(safe-area-inset-bottom,0px))}
 /* 가로로 낮은 화면: 메뉴가 화면을 덮지 않게 높이를 62%로 묶는다. 라임 단추 줄은 늘 맨 아래, 넘치면 정보 줄 안에서 넘긴다. */
 @media (max-height:500px){#dock{display:flex;flex-direction:column;gap:6px;max-height:62dvh}#dock>*{flex:none}#m-top{flex:0 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y}#dock:has(#p-rest:not([hidden]),#p-sail:not([hidden]),#p-talk:not([hidden])) #m-top{display:none}}/* 판을 열면 정보 줄은 접는다 */
+/* 11/20 교수님: +/− 거리(멀어지면 새 눈), 하늘 보기. 오른쪽 가운데 세로로, 소리 단추와 같은 차콜 */
+#zoom{position:fixed;right:max(12px,env(safe-area-inset-right,0px));top:50%;transform:translateY(-60%);display:flex;flex-direction:column;gap:8px;z-index:3}
+#zoom button{width:46px;min-height:46px;padding:0;border-radius:14px;background:var(--ink);color:var(--white);font-size:22px;line-height:1;box-shadow:0 2px 6px rgba(35,37,40,.45)}
+#zoom #z-sky{font-size:14px}#zoom #z-sky[aria-pressed=true]{outline:2px solid var(--lime,#b6d80c);outline-offset:1px}
+body.scenery #zoom,body.v2d #zoom{display:none!important}
 </style>
 <link rel="stylesheet" href="./board.css">
 <link rel="stylesheet" href="./wave.css">
@@ -184,6 +189,7 @@ body:has(#deck:not([hidden])) #toast{top:auto;bottom:calc(16px + env(safe-area-i
 <canvas id="stage" aria-label="독도에서 힐링하기 3D 장면"></canvas>
 <div id="tags"></div>
 <div id="top"><a class="back" href="../" aria-label="홈 · 처음 화면으로">⌂ 홈</a><h1 class="sr">독도에서 힐링하기</h1><button id="snd" aria-pressed="true">소리</button></div>
+<div id="zoom" role="group" aria-label="보는 거리와 하늘"><button id="z-in" aria-label="가까이 보기">+</button><button id="z-out" aria-label="멀리 보기(새 눈)">−</button><button id="z-sky" aria-pressed="false" aria-label="하늘 보기">하늘</button></div>
 <div id="hint" hidden>바다를 누르면 이동, 끌면 둘러보기, 휠이나 두 손가락으로 가까이 보기</div>
 <div id="toast" role="status" hidden></div>
 <div id="rest" hidden><div id="r-dot"><span id="r-word">들이쉬고</span></div><div id="r-left">3:00</div><input class="vol" type="range" min="0" max="100" aria-label="소리 크기"><button id="r-end">끝내기</button></div>
@@ -231,6 +237,7 @@ body:has(#deck:not([hidden])) #toast{top:auto;bottom:calc(16px + env(safe-area-i
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" integrity="sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O" crossorigin="anonymous"></script>
 <script src="../assets/account-config.js"></script>
 <script src="../assets/fishing.js"></script>
+<script src="./trap.js"></script>
 <script src="./heal-econ.js"></script>
 <script src="./sail.js"></script>
 <script src="./captain.js"></script>
