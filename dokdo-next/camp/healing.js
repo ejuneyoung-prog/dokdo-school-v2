@@ -81,16 +81,35 @@ const NAMES=[['독도등대',[490,85],'동도 봉우리의 등대입니다. 주�
 ['탕건봉',[1190,900],'서도 북쪽 끝. 선비의 탕건을 닮았습니다.'],['물골',[1250,645],'서도 북쪽 해안. 하루 약 400리터의 물이 고입니다.'],['코끼리바위',[1180,225],'서도 남쪽. 코를 늘어뜨린 코끼리 모습입니다.'],
 ['삼형제굴바위',[745,590],'동굴 입구가 세 개인 바위입니다.'],['촛대바위',[810,395],'동도와 서도 사이. 촛대처럼 생겼습니다.'],['보찰바위',[1745,97],'서도 남서쪽. 거북손을 뜻하는 보찰을 닮은 바위입니다.'],['큰가제바위',[860,790],'서도 북동쪽의 낮은 바위. 가제는 강치를 부르던 말입니다.'],['작은가제바위',[965,860],'서도 북동쪽의 낮은 바위. 큰가제바위와 함께 강치가 자주 나타났습니다.'],
 ['천장굴',[525,185],'동도 정상 부근의 깊은 웅덩이. 바닷물이 드나듭니다.'],['독립문바위',[195,250],'파도가 뚫은 아치가 독립문을 닮았습니다.'],['숫돌바위',[720,214],'동도 선착장 가까이. 독도의용수비대원들이 칼을 갈았다는 곳입니다.'],['해녀바위',[515,90],'동도 남쪽. 제주 해녀들이 쉬던 바위입니다.']];
-const FAC={'독도등대':30,'독도경비대':16,'선착장':8,'주민숙소':16};
+const FAC={'독도등대':30,'독도경비대':16,'선착장':8,'주민숙소':24};
 const box=(w,h,d,color,x,y,z,parent)=>{const m=new T.Mesh(new T.BoxGeometry(w,h,d),new T.MeshStandardMaterial({color,flatShading:true}));m.position.set(x,y+h/2,z);(parent||s).add(m);return m};
 let lampM,beam,winMs=[];const SPOT={};const setOn=(nm,ix,iy,R)=>{let[x,z]=toW(ix,iy),by=hAt(x,z),bx=x,bz=z;if(R)for(let a=-R;a<=R;a+=CELL)for(let b=-R;b<=R;b+=CELL){const q=hAt(x+a,z+b);if(q>by){by=q;bx=x+a;bz=z+b}}const g=new T.Group();g.position.set(bx,Math.max(3,by)-1,bz);s.add(g);SPOT[nm]=[bx,Math.max(3,by),bz];return g};
 {const L=setOn('독도등대',490,85,130);L.position.y=Math.min(L.position.y,86);SPOT['독도등대'][1]=L.position.y;box(14,6,10,0xf4f4f0,0,0,0,L);const tw=new T.Mesh(new T.CylinderGeometry(2,2.4,13,12),new T.MeshStandardMaterial({color:0xffffff}));tw.position.set(0,12,0);L.add(tw);const lp=new T.Mesh(new T.CylinderGeometry(1.5,1.5,2.4,10),new T.MeshStandardMaterial({color:0xfff2b0,emissive:0xffd966,emissiveIntensity:.8}));lp.position.set(0,19.5,0);L.add(lp);lampM=lp.material;beam=new T.Group();beam.position.set(0,19.5,0);L.add(beam);[1,-1].forEach(k=>{const c=new T.Mesh(new T.ConeGeometry(22,620,14,1,true),new T.MeshBasicMaterial({color:0xfff3c4,transparent:true,opacity:0,side:T.DoubleSide,depthWrite:false,fog:false}));c.rotation.z=k*Math.PI/2;c.position.x=k*310;beam.add(c)});const cap=new T.Mesh(new T.ConeGeometry(2.2,1.8,10),new T.MeshStandardMaterial({color:0xc23b32}));cap.position.set(0,21.6,0);L.add(cap);
  const P=setOn('독도경비대',640,140,90);box(29,34,17,0x6a5b4e,0,-34,0,P);box(26,7,14,0xe6e7e4,0,0,0,P);box(27,1,15,0x4f7fa3,0,7,0,P);const a=new T.Mesh(new T.CylinderGeometry(.25,.5,18,6),new T.MeshStandardMaterial({color:0xbfc4c8}));a.position.set(-16,9,0);P.add(a);
  const[hx,hz]=toW(790,205),[ax,az]=toW(840,215),[bx,bz]=toW(735,195);const D=new T.Group();D.position.set(0,0,0);s.add(D);
- const pier=new T.Mesh(new T.BoxGeometry(70,3,18),new T.MeshStandardMaterial({color:0xcdbfa6,flatShading:true}));pier.position.set(ax,1.4,az);pier.rotation.y=Math.atan2(az-hz,ax-hx)*-1+Math.PI/2;D.add(pier);
- const wl=Math.hypot(bx-hx,bz-hz)*2;const walk=new T.Mesh(new T.BoxGeometry(wl,2.4,6),pier.material);walk.position.set(hx,1.3,hz);walk.rotation.y=-Math.atan2(bz-hz,bx-hx);D.add(walk);
- for(let i=-1;i<=8;i++){const u=i/8;block.set(Math.round((ax+(bx-ax)*u)/CELL)+','+Math.round((az+(bz-az)*u)/CELL),1)}
- const H=setOn('주민숙소',985,430,0);H.position.y=Math.max(4,H.position.y);box(16,9,10,0xf6f4ee,0,0,0,H);box(17,1,11,0x4f7fa3,0,9,0,H);winMs=[box(3,3,.3,0x6d8aa0,-4,3.5,5.1,H),box(3,3,.3,0x6d8aa0,4,3.5,5.1,H),box(4,2.4,.3,0x6d8aa0,0,3.5,7.1,P)].map(m=>m.material);H.rotation.y=Math.atan2(peakE[0]-H.position.x,peakE[2]-H.position.z)}
+ // 동도 선착장(11/20 교수님: 실제처럼 더 크게): 사진처럼 해안과 나란한 넓은 접안 판(바다 쪽 턱·계선주) + 가운데에서 섬으로 잇는 연결 판 + 한쪽 끝 섬 쪽 날개(ㄱ자).
+ // 선착장 자리(quay)를 판 가운데에 두고, 가장 가까운 물가 방향(땅 높이 3을 넘는 곳)을 찾아 그쪽을 섬 쪽(+z)으로 돌린다. 판 윗면은 2.9로 quay.y와 같다.
+ let lr=999,la=0;for(let a=0;a<360;a+=5){const c=Math.cos(a*Math.PI/180),n2=Math.sin(a*Math.PI/180);for(let r=0;r<lr&&r<220;r+=3)if(hAt(ax+c*r,az+n2*r)>3){lr=r;la=a*Math.PI/180;break}}if(lr>220)lr=40;
+ const ldx=Math.cos(la),ldz=Math.sin(la),Q=new T.Group();Q.position.set(ax,0,az);Q.rotation.y=Math.atan2(ldx,ldz);D.add(Q);
+ const CM=new T.MeshStandardMaterial({color:0xd5cbb6,flatShading:true}),CE=new T.MeshStandardMaterial({color:0x9c927f,flatShading:true}),WH=new T.MeshStandardMaterial({color:0xf2f2ee}),BL=new T.MeshStandardMaterial({color:0x3a3d42});
+ const part=(w,h,d,x,y,z,m)=>{const o=new T.Mesh(new T.BoxGeometry(w,h,d),m);o.position.set(x,y,z);Q.add(o);return o};
+ const rq=Q.rotation.y,toWd=(lx,lz)=>[ax+lx*Math.cos(rq)+lz*Math.sin(rq),az-lx*Math.sin(rq)+lz*Math.cos(rq)];
+ const PL=100,PW=28,CL=Math.max(10,lr-PW/2+10),top=2.9,dep=7,y0=top-dep/2;
+ part(PL,dep,PW,0,y0,0,CM);part(PL,.7,1.4,0,top+.35,-(PW/2-.7),CE);
+ for(let x=-PL/2+7;x<=PL/2-7;x+=12){const o=new T.Mesh(new T.CylinderGeometry(.7,.85,1.3,8),BL);o.position.set(x,top+.65,-(PW/2-3));Q.add(o)}
+ part(18,dep,CL,0,y0,PW/2+CL/2-1,CM);part(34,dep,16,-PL/2+17,y0,PW/2+7,CM);
+ for(let x=-PL/2+35;x<=PL/2-1;x+=5){if(Math.abs(x)<10)continue;part(.35,1.6,.35,x,top+.8,PW/2-.4,WH)}
+ part(PL/2-11,.25,.25,(PL/2+10)/2,top+1.5,PW/2-.4,WH);part(PL/2-45,.25,.25,(-PL/2+35-10)/2,top+1.5,PW/2-.4,WH);
+ const blk=(x0,x1,z0,z1)=>{for(let x=x0;x<=x1;x+=6)for(let z=z0;z<=z1;z+=6){const[wx,wz]=toWd(x,z);block.set(Math.round(wx/CELL)+','+Math.round(wz/CELL),1)}};
+ blk(-PL/2,PL/2,-PW/2,PW/2);blk(-9,9,PW/2,PW/2+CL);blk(-PL/2,-PL/2+34,PW/2,PW/2+15);
+ // 서도 주민숙소(11/20 교수님: 실제처럼 물가로 내리고 더 크게): 서도 동쪽 물가 콘크리트 마당 위의 4층 짙은 회색 벽돌 건물, 파란 지붕 두 단, 깃대 셋.
+ // 지형 꼭대기 쪽 자리에서 동도 방향으로 물가(땅 높이 2 아래)가 나올 때까지 내려와 앉는다. 이름표·서도 데크(stay)도 이 자리를 따른다.
+ const H=setOn('주민숙소',985,430,0);{const[h0x,,h0z]=SPOT['주민숙소'],vx=peakE[0]-h0x,vz=peakE[2]-h0z,vl=Math.hypot(vx,vz)||1;let k=0;while(k<240&&hAt(h0x+vx/vl*k,h0z+vz/vl*k)>2)k+=2;
+  const nx=h0x+vx/vl*Math.max(0,k-4),nz=h0z+vz/vl*Math.max(0,k-4);H.position.set(nx,5,nz);SPOT['주민숙소']=[nx,5,nz];H.rotation.y=Math.atan2(vx,vz)}
+ box(34,5,26,0xcfc6b2,0,-5,4,H);box(20,16,12,0x4c5056,0,0,-3,H);box(21.5,.9,13.5,0x3f6fb2,0,16,-3,H);box(12,12,10,0x4c5056,15,0,-2,H);box(13.5,.9,11.5,0x3f6fb2,15,12,-2,H);
+ const wins=[];[3.2,7.2,11.2].forEach(y=>[-6,0,6].forEach(x=>wins.push(box(2.8,1.9,.3,0x6d8aa0,x,y,3.1,H))));[3.2,7.2].forEach(y=>wins.push(box(2.6,1.8,.3,0x6d8aa0,15,y,3.1,H)));
+ [-9,-7,-5].forEach((x,i)=>{const pole=new T.Mesh(new T.CylinderGeometry(.15,.15,9,6),new T.MeshStandardMaterial({color:0xd9dcdf}));pole.position.set(x,20.5,-1);H.add(pole);box(2.2,1.4,.1,i===1?0x3b6ea8:0xffffff,x+1.2,23.2,-1,H)});
+ winMs=[...wins,box(4,2.4,.3,0x6d8aa0,0,3.5,7.1,P)].map(m=>m.material)}
 const dirW=[peakE[0]-SPOT['주민숙소'][0],peakE[2]-SPOT['주민숙소'][2]],dl=Math.hypot(dirW[0],dirW[1]);dirW[0]/=dl;dirW[1]/=dl;
 const stay={x:SPOT['주민숙소'][0]+dirW[0]*20,y:Math.max(4,SPOT['주민숙소'][1])+1,z:SPOT['주민숙소'][2]+dirW[1]*20,lx:peakE[0],lz:peakE[2]};
 {const d=new T.Mesh(new T.BoxGeometry(22,1.2,14),new T.MeshStandardMaterial({color:0xb98a5a,flatShading:true}));d.position.set(stay.x,stay.y-.6,stay.z);d.rotation.y=Math.atan2(dirW[0],dirW[1]);s.add(d)}
