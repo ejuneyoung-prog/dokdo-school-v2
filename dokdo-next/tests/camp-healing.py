@@ -879,11 +879,12 @@ def shout_fit(browser):
             page.locator('#flagwave').click()
         expect(page.locator('#sh-tab')).to_be_visible()
         expect(page.locator('#sh-pane')).to_be_hidden()
-        expect(page.locator('#toast')).to_be_visible(timeout=8000)  # 게양 알림
-        clear = page.evaluate("""(()=>{const r=e=>(typeof e==='string'?document.querySelector(e):e).getBoundingClientRect(),p=r('#sh-tab'),off=(a,b)=>a.bottom<=b.top||b.bottom<=a.top||a.right<=b.left||b.right<=a.left,seen=s=>{const e=document.querySelector(s);return e&&e.offsetParent&&!e.hidden};
+        expect(page.locator('#toast')).to_contain_text('태극기를 올렸어요', timeout=8000)  # 게양 알림(느린 기기에서는 이미 사라졌을 수 있어 글자로 확인)
+        clear = page.evaluate("""(()=>{const T=document.querySelector('#toast'),wasH=T.hidden;T.hidden=false;/* 알림이 이미 사라졌어도 그 자리를 잰다 */const r=e=>(typeof e==='string'?document.querySelector(e):e).getBoundingClientRect(),p=r('#sh-tab'),off=(a,b)=>a.bottom<=b.top||b.bottom<=a.top||a.right<=b.left||b.right<=a.left,seen=s=>{const e=document.querySelector(s);return e&&e.offsetParent&&!e.hidden};
           const boat=document.querySelector('#tags .tag.me').getBoundingClientRect();
           return {top:['#top .back','#snd'].every(s=>off(p,r(s))),bottom:[...document.querySelectorAll('#dock button')].filter(e=>e.offsetParent).every(e=>off(p,e.getBoundingClientRect())),
-            info:!seen('#info')||off(p,r('#info')),toast:!seen('#toast')||off(p,r('#toast')),boat:off(p,boat),inside:p.left>=0&&p.right<=innerWidth&&p.top>=0}})()""")
+            info:!seen('#info')||off(p,r('#info')),toast:off(p,r('#toast')),boat:off(p,boat),inside:p.left>=0&&p.right<=innerWidth&&p.top>=0,_:(T.hidden=wasH)}})()""")
+        clear.pop('_', None)
         assert clear == {'top': True, 'bottom': True, 'info': True, 'toast': True, 'boat': True, 'inside': True}, (w, h, clear)
         shot = os.environ.get('SHOT_DIR')
         page.locator('#sh-tab').click()
