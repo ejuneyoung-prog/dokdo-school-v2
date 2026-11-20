@@ -254,6 +254,11 @@ def walk(context, label):
     # 메뉴를 누르면 목표 게이지·소리 크기·시각·날씨·가상 체험 안내와 원래 메뉴 줄이 열린다.
     menu(page)
     expect(page.locator('#m-top')).to_be_visible()
+    # 11/20 레드팀: 소리 크기·시각·날씨·인원·가상 체험 안내는 내 배 판의 '더 보기' 안(처음에는 닫힘).
+    expect(page.locator('#m-extra')).to_be_hidden()
+    expect(page.locator('#b-more')).to_have_attribute('aria-expanded', 'false')
+    page.locator('#b-more').click()
+    expect(page.locator('#m-extra')).to_be_visible()
     expect(page.locator('#m-top .mnote')).to_contain_text('화면 속 가상 체험입니다')
     expect(page.locator('#m-top .vol')).to_be_visible()
     expect(page.locator('#goal')).to_be_visible()
@@ -565,14 +570,23 @@ def board(browser):
         assert page.locator('#goal').count() == 1
         expect(page.locator('#board h2')).to_have_text('내 배')
         texts = page.evaluate("Object.fromEntries([...document.querySelectorAll('#board li')].map(e=>[e.dataset.k,e.textContent]))")
-        assert texts == {'fish': '낚시 7번 남음', 'game': '놀이 경험치 40/100', 'clean': '바다 쓰레기 줍기 15/50', 'look': '바라보기·쉬기 대황 4/10'}, texts
+        assert texts == {'fish': '낚시 7번 남음', 'game': '놀이 경험치 40/100', 'clean': '쓰레기 줍기 15/50', 'look': '바라보기 대황 4/10'}, texts
         assert page.locator('#board li').count() == 4, 'no invented items (흔들기·통발 come later)'
         lv = page.evaluate("DokdoHeal.level().L")
         expect(page.locator('#board .b-lv')).to_have_text(f'Lv {lv} · 대황 123')
         assert page.evaluate("document.querySelector('#g-text').textContent").startswith(f'Lv{lv} ·')
         # 지도: 지형 칸으로 그린 땅이 있고, 선착장 표시가 지도 안에 있다.
-        drawn = page.evaluate("""(()=>{const c=document.querySelector('#board canvas'),x=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let n=0;for(let i=3;i<x.length;i+=4)if(x[i])n++;return {n,all:c.width*c.height}})()""")
-        assert 0.03 * drawn['all'] < drawn['n'] < 0.6 * drawn['all'], drawn
+        drawn = page.evaluate("""(()=>{const c=document.querySelector('#board canvas'),x=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let n=0,soft=0;for(let i=3;i<x.length;i+=4){if(x[i])n++;if(x[i]>0&&x[i]<255)soft++}return {n,soft,all:c.width*c.height}})()""")
+        assert 0.03 * drawn['all'] < drawn['n'] < 0.6 * drawn['all'] and drawn['soft'] > 40, drawn  # 매끈한 경계(부드러운 가장자리 픽셀)
+        # 섬 이름 서도·동도, 범례(내 배·선착장). 이름표는 지도 안.
+        labs = page.evaluate("""(()=>{const m=document.querySelector('#board .b-map').getBoundingClientRect();return [...document.querySelectorAll('#board .b-lab')].map(e=>{const b=e.getBoundingClientRect();return [e.textContent,b.left>=m.left&&b.right<=m.right&&b.top>=m.top&&b.bottom<=m.bottom]})})()""")
+        assert labs == [['서도', True], ['동도', True]], labs
+        assert page.evaluate("[...document.querySelectorAll('#board .b-key span')].map(e=>e.textContent)") == ['내 배', '선착장']
+        # '더 보기'는 처음에 닫혀 있다. 메뉴는 375×667에서 화면의 55% 이하.
+        expect(page.locator('#m-extra')).to_be_hidden()
+        if (w, h) == (375, 667):
+            share = page.evaluate("document.querySelector('#dock').getBoundingClientRect().height/innerHeight")
+            assert share <= 0.55, share
         inside = page.evaluate("""(()=>{const m=document.querySelector('#board .b-map').getBoundingClientRect();return ['.b-dock','.b-dot'].map(s=>{const b=document.querySelector('#board '+s).getBoundingClientRect(),x=b.left+b.width/2,y=b.top+b.height/2;return x>=m.left&&x<=m.right&&y>=m.top&&y<=m.bottom})})()""")
         assert inside == [True, True], inside
         # 선착장에 앉아 있으면 내 배 점은 선착장 표시 가까이에 있다.
@@ -593,16 +607,27 @@ def board(browser):
         assert first != later, (first, later)
         assert page.evaluate("document.querySelector('#board .b-dot').dataset.at") != at0, 'the boat position is live'
         page.wait_for_timeout(300)
-        match = page.evaluate("""(()=>{const d=document.querySelector('#board .b-dot'),[x,z]=d.dataset.at.split(',').map(Number),p=DokdoBoard.toMap(x,z),m=document.querySelector('#board .b-map').getBoundingClientRect(),cx=Math.min(m.width-6,Math.max(6,p[0])),cy=Math.min(m.height-6,Math.max(6,p[1]));return Math.hypot(parseFloat(d.style.left)-cx,parseFloat(d.style.top)-cy)})()""")
+        match = page.evaluate("""(()=>{const d=document.querySelector('#board .b-dot'),[x,z]=d.dataset.at.split(',').map(Number),p=DokdoBoard.place(x,z);return Math.hypot(parseFloat(d.style.left)-p.x,parseFloat(d.style.top)-p.y)})()""")
         assert match < 1.5, match
+        # 지도 밖의 배는 가장자리 안쪽에서 배 쪽을 가리키는 화살표가 된다.
+        far = page.evaluate("""(()=>{const p=DokdoBoard.place(-40,1600),m=document.querySelector('#board .b-map').getBoundingClientRect();return {far:p.far,inside:p.x>0&&p.x<m.width&&p.y>0&&p.y<m.height,down:Math.abs(p.ang-Math.PI/2)<0.3}})()""")
+        assert far == {'far': True, 'inside': True, 'down': True}, far
         # 브랜드: 판 안 글자 14px 이상, 라임은 점과 강조에만, 차콜 판.
         look = page.evaluate("""(()=>{const all=[...document.querySelectorAll('#board *')].filter(e=>e.offsetParent&&e.childNodes.length&&[...e.childNodes].some(n=>n.nodeType===3&&n.textContent.trim()));
           return {min:Math.min(...all.map(e=>parseFloat(getComputedStyle(e).fontSize))),bg:getComputedStyle(document.querySelector('#board')).backgroundColor,dot:getComputedStyle(document.querySelector('#board .b-dot')).backgroundColor,wide:document.querySelector('#board').scrollWidth<=document.querySelector('#board').clientWidth}})()""")
         assert look['min'] >= 14 and look['bg'] == 'rgb(35, 37, 40)' and look['wide'] and look['dot'] in ('rgb(182, 216, 12)', 'rgb(35, 37, 40)'), look
         assert page.evaluate("document.documentElement.scrollWidth<=innerWidth"), 'no sideways scroll'
         if h < 500:
-            fits = page.evaluate("(()=>{const d=document.querySelector('#dock').getBoundingClientRect(),q=document.querySelector('#quick').getBoundingClientRect(),m=document.querySelector('#m-top');return {h:d.height<=innerHeight*.62+1,q:q.bottom<=innerHeight,scroll:getComputedStyle(m).overflowY}})()")
-            assert fits == {'h': True, 'q': True, 'scroll': 'auto'}, fits
+            fits = page.evaluate("(()=>{const d=document.querySelector('#dock').getBoundingClientRect(),q=document.querySelector('#quick').getBoundingClientRect(),m=document.querySelector('#m-top');return {h:d.height<=innerHeight*.62+1,q:q.bottom<=innerHeight,scroll:getComputedStyle(m).overflowY,all:m.scrollHeight<=m.clientHeight+1}})()")
+            assert fits == {'h': True, 'q': True, 'scroll': 'auto', 'all': True}, fits  # 닫힌 상태로는 넘기지 않아도 다 보인다
+            # '더 보기'를 열어 넘치면 아래가 흐려져 더 있다는 것을 보여 주고, 끝까지 넘기면 사라진다.
+            page.locator('#b-more').click()
+            expect(page.locator('#m-extra')).to_be_visible()
+            if page.evaluate("(()=>{const m=document.querySelector('#m-top');return m.scrollHeight>m.clientHeight+2})()"):
+                until(page, "document.querySelector('#m-top').classList.contains('more-below')", timeout=3000)
+                page.evaluate("(()=>{const m=document.querySelector('#m-top');m.scrollTop=m.scrollHeight})()")
+                until(page, "!document.querySelector('#m-top').classList.contains('more-below')", timeout=3000)
+            page.locator('#b-more').click()
         else:
             assert page.evaluate("document.querySelector('#dock').getBoundingClientRect().top") >= 0
         assert not errors, errors

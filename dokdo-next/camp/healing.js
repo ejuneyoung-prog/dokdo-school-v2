@@ -333,7 +333,7 @@ window.DokdoHeal={seated:()=>isSeat(mode),fishing:()=>!deck.hidden&&dTab==='f',t
 // ── 합치기 1단계 끝 ──
 // ── 11/20 합치기 2단계: 메뉴의 '내 배' 판(board.js)이 읽는 창구. 읽기만 한다. 계산은 원래 것(LV·EC)을 그대로 쓴다. ──
 Object.assign(window.DokdoHeal,{
- map:()=>({cell:CELL,land,dock:[quay.x,quay.z],ctr,ext:ISLE.ext}),// 지형 칸(땅) 목록, 선착장, 섬 무게중심
+ map:()=>({cell:CELL,land,dock:[quay.x,quay.z],ctr,ext:ISLE.ext,peaks:{w:[peakW[0],peakW[2]],e:[peakE[0],peakE[2]]}}),// 지형 칸(땅) 목록, 선착장, 섬 무게중심
  boat:()=>{const q=isSeat(mode);return{x:q?me.b.position.x:me.x,z:q?me.b.position.z:me.z,seat:q?mode:''}},// 쉼터에 앉아 있으면 그 자리
  level:()=>LV(),
  today:()=>{const d=today(),left=EC.catchesLeft(st,d);return{coins:st.c,left,xG:st.xG,capG:EC.CAP.game,xC:st.xC,capC:EC.CAP.clean,look:st.rD===d?st.rN:0,capL:10}}});
