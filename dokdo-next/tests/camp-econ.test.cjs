@@ -39,15 +39,16 @@ test('daily caps: games 100, cleanup 50, reset on the next Korean day', () => {
 });
 
 test('places open by level, and places already bought stay open', () => {
-  assert.deepEqual(E.PLACES.map((p) => [p[0], p[1]]), [['sea', 1], ['dock', 5], ['stay', 10], ['camp', 20]]);
+  // 11/20 교수님: 동도 선착장은 처음부터 열려 있고 체험이 여기서 시작한다(Lv5 → Lv1). 새 기록도 선착장에 갈 수 있다.
+  assert.deepEqual(E.PLACES.map((p) => [p[0], p[1]]), [['sea', 1], ['dock', 1], ['stay', 10], ['camp', 20]]);
   assert.ok(E.open('sea', 1, 0));
-  assert.ok(!E.open('dock', 4, 0));
-  assert.ok(E.open('dock', 5, 0));
+  assert.ok(E.open('dock', 1, 0), 'a fresh save can go to the dock');
+  assert.ok(E.open('dock', E.level(fresh(), 0).L, fresh().pass));
   assert.ok(!E.open('stay', 9, 0));
   assert.ok(E.open('stay', 1, 2), 'bought 서도 before stays open');
   assert.ok(E.open('camp', 1, 1), 'bought 동도 정상 before stays open');
   assert.ok(E.open('dock', 1, 2) && E.open('dock', 1, 1), 'anyone who bought a place in phase 1 also has the lower 선착장');
-  assert.equal(E.nextPlace(1, 0)[0], 'dock');
+  assert.equal(E.nextPlace(1, 0)[0], 'stay');
   assert.equal(E.nextPlace(5, 0)[0], 'stay');
   assert.equal(E.nextPlace(5, 2)[0], 'camp');
   assert.equal(E.nextPlace(1, 2)[0], 'camp');
@@ -67,6 +68,10 @@ test('old phase-1 saves load without losing anything', () => {
   const st = E.tidy({ ...old });
   for (const k of Object.keys(old)) assert.deepEqual(st[k], old[k], k);
   assert.deepEqual(st.fish, {});
+  assert.equal(st.gd, 0, 'old saves have not seen the guide yet');
+  assert.equal(E.tidy({ gd: 1 }).gd, 1, 'guide done stays done');
+  assert.equal(E.tidy({ gd: 2 }).gd, 2, 'a brand-new save keeps its guide-pending mark');
+  assert.equal(E.tidy({ gd: 'x' }).gd, 0);
   const bad = E.tidy({ fish: { jari: 2, '<img>': 3, sora: -1, malj: 1.5 }, hx: -9 });
   assert.deepEqual(bad.fish, { jari: 2 });
   assert.equal(bad.hx, 0);

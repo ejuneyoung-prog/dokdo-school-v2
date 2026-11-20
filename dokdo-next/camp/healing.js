@@ -95,7 +95,7 @@ const dirW=[peakE[0]-SPOT['주민숙소'][0],peakE[2]-SPOT['주민숙소'][2]],d
 const stay={x:SPOT['주민숙소'][0]+dirW[0]*20,y:Math.max(4,SPOT['주민숙소'][1])+1,z:SPOT['주민숙소'][2]+dirW[1]*20,lx:peakE[0],lz:peakE[2]};
 {const d=new T.Mesh(new T.BoxGeometry(22,1.2,14),new T.MeshStandardMaterial({color:0xb98a5a,flatShading:true}));d.position.set(stay.x,stay.y-.6,stay.z);d.rotation.y=Math.atan2(dirW[0],dirW[1]);s.add(d)}
 const camp={x:peakE[0],y:peakE[1]+1,z:peakE[2],lx:peakW[0],lz:peakW[2]};let flame,fireL;
-// 동도 선착장: 접안시설 끝에 서서 서도를 바라본다(2단계, Lv5).
+// 동도 선착장: 접안시설 끝에 서서 서도를 바라본다(11/20부터 Lv1, 체험이 여기서 시작).
 const quay=(()=>{const[x,z]=toW(840,215);return{x,y:2.9,z,lx:peakW[0],lz:peakW[2]}})();
 const SEAT={camp,stay,dock:quay},isSeat=m=>!!SEAT[m];
 {const G=new T.Group();G.position.set(camp.x,camp.y,camp.z);s.add(G);const pad=new T.Mesh(new T.CylinderGeometry(14,17,6,14),new T.MeshStandardMaterial({color:0x6d8f4b,flatShading:true}));pad.position.y=-3;G.add(pad);
@@ -129,8 +129,8 @@ let mode=null,auto=false,dusk=0;const autoB=$('#auto'),VB={camp:$('#v-camp'),sea
 const setAuto=v=>{auto=v;plan.auto=v;autoB.setAttribute('aria-pressed',v);if(v){leave();plan.route=[];plan.wide=0;plan.stuck=0;SAIL.next(me,plan,hit,ctr);dist=Math.max(dist,90);pitch=.22}else{plan.route=[]}};
 function leave(){if(!mode)return;const m=mode;mode=null;$('#vr').hidden=true;VB[m].setAttribute('aria-pressed',false);me.b.userData.parts.forEach(o=>o.visible=true);if(m==='sea'||bowView){if(bowView)bowBtn.click()}dist=70;pitch=.2;yaw=me.r;dirty=true}
 function heal(m){if(mode===m){leave();return}if(auto)setAuto(false);leave();me.tx=null;ring.visible=false;mode=m;VB[m].setAttribute('aria-pressed',true);dirty=true;mark();
- if(m==='sea'){if(me.z<640||Math.abs(me.x)>400){me.x=-60;me.z=900}me.r=0;if(!bowView)bowBtn.click();pitch=.2;return}
- me.b.userData.parts.forEach(o=>o.visible=false);if(bowView)bowBtn.click();me.b.userData.parts.forEach(o=>o.visible=false);me.b.userData.rig.forEach(o=>{if(o===me.b.userData.who)o.visible=true});const t=SEAT[m];yaw=Math.atan2(t.x-t.lx,t.z-t.lz)+(m==='stay'?.28:m==='dock'?.22:0);pitch=m==='camp'?.14:.16;dist=m==='camp'?27:m==='dock'?16:14.5}
+ if(m==='sea'){if(me.z<640||Math.abs(me.x)>400){me.x=-60;me.z=900}me.r=0;setAuto(true);return}// 11/20: 바다로 나가면 어떤 길이든 자동 항해로 독도를 돈다(뱃머리 시점은 항해 메뉴에서)
+ me.b.userData.parts.forEach(o=>o.visible=false);if(bowView)bowBtn.click();me.b.userData.parts.forEach(o=>o.visible=false);me.b.userData.rig.forEach(o=>{if(o===me.b.userData.who)o.visible=true});const t=SEAT[m];yaw=Math.atan2(t.x-t.lx,t.z-t.lz)+(m==='stay'?.28:m==='dock'?-.78:0);pitch=m==='camp'?.14:m==='dock'?.28:.16;dist=m==='camp'?27:m==='dock'?60:14.5}// 선착장(11/20): 선장은 작게, 바다와 서도·바위가 보이게 비스듬히 멀리서
 const mark=()=>{$('#vr').hidden=!isSeat(mode)};autoB.onclick=()=>setAuto(!auto);VB.camp.onclick=()=>tryGo('camp');VB.sea.onclick=()=>heal('sea');VB.stay.onclick=()=>tryGo('stay');VB.dock.onclick=()=>tryGo('dock');
 $('#go-seo').onclick=()=>{leave();setAuto(false);dest(peakW,330);dist=Math.min(dist,60)};
 $('#go-dong').onclick=()=>{leave();setAuto(false);dest(peakE,300);dist=Math.min(dist,60)};
@@ -162,9 +162,10 @@ const QZ=[
 ['화산섬 독도를 이루는 암석이 아닌 것은?',['현무암','조면암','화강암','응회암'],2,'독도는 현무암, 조면안산암, 조면암, 응회암 같은 화산암으로 이뤄져 있습니다. 화강암은 땅속 깊은 곳에서 마그마가 천천히 식어 생깁니다.'],
 ['독도에서 쓰는 전기는 주로 어떻게 만들까요?',['디젤 발전기와 태양광 발전','소형 원자력 발전','조력 발전소','수소연료전지 발전소'],0,'독도는 디젤 발전에 기대 오다가 2010년 태양광 발전설비가 들어서면서 전기의 일부를 태양광으로 채우게 됐습니다.']];
 const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date());
-const WK='dokdo-heal';let st={c:0,t:0,own:0,on:0,pass:0,seen:[],qD:'',qN:0,rD:'',rN:0};try{Object.assign(st,JSON.parse(load(WK)||'{}'))}catch(e){}if(!Array.isArray(st.seen))st.seen=[];for(const k of ['c','t','own','on','pass','qN','rN'])if(!Number.isFinite(st[k]))st[k]=0;
+const WK='dokdo-heal',fresh=!load(WK);let st={c:0,t:0,own:0,on:0,pass:0,seen:[],qD:'',qN:0,rD:'',rN:0};try{Object.assign(st,JSON.parse(load(WK)||'{}'))}catch(e){}if(!Array.isArray(st.seen))st.seen=[];for(const k of ['c','t','own','on','pass','qN','rN'])if(!Number.isFinite(st[k]))st[k]=0;
 // 2·3단계: 레벨(스쿨 경험치 + 힐링 경험치), 낚시·교환소·요리, 바다 쓰레기 줍기. 계산은 heal-econ.js에 있다.
-const EC=window.DokdoHealEcon,FD=window.DokdoFishing;EC.tidy(st);const FISH=FD?EC.pool(FD.SP,FD.starsOf):[];
+const EC=window.DokdoHealEcon,FD=window.DokdoFishing;EC.tidy(st);if(fresh)st.gd=2;// 11/20: 처음 만든 기록만 사용 설명서 대기(2). 옛 기록(0)에는 띄우지 않는다.
+const FISH=FD?EC.pool(FD.SP,FD.starsOf):[];
 let lvAt=0,lvHx=-1,lvV=null;const LV=()=>{const n=Date.now();if(!lvV||n-lvAt>1000||lvHx!==st.hx){lvV=EC.level(st,EC.schoolXp(load('dokdo-korea-school-cinematic-v1')));lvAt=n;lvHx=st.hx}return lvV};
 // 받침에 맞춰 조사를 고른다(은/는, 이/가, 을/를).
 const jo=(w,a,b)=>{const c=String(w).charCodeAt(String(w).length-1);return w+(c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28?a:b)};
@@ -173,7 +174,7 @@ const el=(tg,cl,tx)=>{const e=document.createElement(tg);if(cl)e.className=cl;if
 const toastE=$('#toast');let toastT=0,scene=false;function toast(x){if(scene)return;toastE.textContent=x;toastE.hidden=false;$('#hint').hidden=true;clearTimeout(toastT);toastT=setTimeout(()=>{toastE.hidden=true},2600)}
 let wallet=null,busy=false,again=false;
 // 서도는 첫날 열리고, 동도 정상은 며칠 모아야 오른다. 다음 목표가 싼 곳부터 보이도록 서도를 앞에 둔다.
-// 2단계부터 장소는 레벨로 열린다(선착장 Lv5, 서도 Lv10, 동도 정상 Lv20). 1단계에 대황으로 연 곳(pass 비트)은 그대로 열려 있다.
+// 2단계부터 장소는 레벨로 열린다(선착장 Lv1 — 11/20부터 처음부터 열림, 서도 Lv10, 동도 정상 Lv20). 1단계에 대황으로 연 곳(pass 비트)은 그대로 열려 있다.
 const PASS={dock:[0,0,'동도 선착장','e-dock','v-dock','선착장에서 서도를 바라봅니다'],stay:[2,6,'서도 주민숙소','e-stay','v-stay','서도 데크에서 동도를 바라봅니다'],camp:[1,30,'동도 정상 캠핑','e-camp','v-camp','동도 우산봉 정상에서 쉽니다']};
 // 크리에이터 모드: 서버가 운영자 계정으로 확인한 때만 켜진다. 켜진 동안은 st의 복사본으로 놀고, 끄면 원래 기록으로 돌아간다.
 let creator=false,stBack=null,ownerOK=false,ownerEpoch=0;
@@ -187,7 +188,7 @@ function grew(before){const L=LV().L;if(L<=before)return;const p=EC.PLACES.find(
 function keep(){if(creator){ui();return}save(WK,JSON.stringify(st));ui();if(!wallet)return;if(busy){again=true;return}busy=true;wallet.set({...st}).catch(()=>{wallet=null}).finally(()=>{busy=false;if(again){again=false;keep()}})}
 function gain(k,why){st.c+=k;st.t+=k;keep();toast(why+' · 대황 +'+k);chime()}
 ui();
-let gifted=false;const giveGift=()=>{if(gifted)return;gifted=true;if(creator)return;const g=EC.welcome(st);if(g){keep();setTimeout(()=>toast('처음 오신 것을 환영합니다 · 대황 +'+g),900)}};if(!(window.claude&&claude.use))giveGift();
+let gifted=false;const giveGift=()=>{if(gifted)return;gifted=true;if(creator)return;const g=EC.welcome(st);if(g){keep();welcomeLater(g)}};if(!(window.claude&&claude.use))giveGift();
 const deck=$('#deck'),dBody=$('#d-body'),body=document.body;let dTab='q';
 const qToday=()=>{const d=Math.floor(Date.parse(today())/864e5);return[0,1,2].map(j=>QZ[(d*3+j)%QZ.length])};
 function dq(){if(st.qD!==today()){st.qD=today();st.qN=0}if(st.qN>=3){dBody.append(el('p','','오늘의 세 문제를 다 풀었습니다.'),el('p','mute','내일 새 문제가 나옵니다. 3분 쉬기나 바위 찾기로도 대황을 모을 수 있습니다.'));return}
@@ -219,7 +220,7 @@ $('#t-deck').onclick=()=>{startAudio();deck.hidden=false;dview();$('#d-close').f
 addEventListener('keydown',e=>{if(e.key==='Escape'&&!deck.hidden)closeDeck()});
 // 아래 판은 평소 한 줄(메뉴 이름만). 메뉴를 누르면 그 줄 위에 단추가 열리고, 다시 누르면 닫힌다.
 const dock=$('#dock'),TAB=['rest','sail','talk'];let tabNow='';function setTab(k){tabNow=tabNow===k?'':k;TAB.forEach(q=>{$('#p-'+q).hidden=q!==tabNow;$('#t-'+q).setAttribute('aria-expanded',q===tabNow)});$('#say').hidden=tabNow!=='talk';pad()}
-const pad=()=>{const h=dock.offsetHeight,base=h?$('#menu').offsetHeight+12:0;document.documentElement.style.setProperty('--dk',h+'px');if(base)cam.setViewOffset(innerWidth,innerHeight,0,base/2,innerWidth,innerHeight);else cam.clearViewOffset()};
+const pad=()=>{const h=dock.offsetHeight,base=h?$('#quick').offsetHeight+12:0;document.documentElement.style.setProperty('--dk',h+'px');if(base)cam.setViewOffset(innerWidth,innerHeight,0,base/2,innerWidth,innerHeight);else cam.clearViewOffset()};
 // 풍경만 보기: 판과 이름표를 모두 숨기고 독도만 남긴다. 구석의 작은 단추나 Esc로 돌아온다.
 const sceneB=$('#unscene');function setScene(v){scene=v;body.classList.toggle('scenery',v);sceneB.hidden=!v;if(v){stopFish();deck.hidden=true;toastE.hidden=true;sceneB.focus()}else $('#scenery').focus();pad()}
 $('#scenery').onclick=()=>setScene(true);sceneB.onclick=()=>setScene(false);addEventListener('keydown',e=>{if(e.key==='Escape'&&scene)setScene(false)});TAB.forEach(q=>$('#t-'+q).onclick=()=>setTab(q));pad();
@@ -243,7 +244,7 @@ cv.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;const o=pt
  if(pts.size===2){const[a,b]=[...pts.values()],d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);if(pinch)dist=Math.min(420,Math.max(zmin(),dist*pinch/d));pinch=d;moved=99;return}
  const dx=e.clientX-o.clientX,dy=e.clientY-o.clientY;moved+=Math.abs(dx)+Math.abs(dy);dragT=performance.now();yaw-=dx*.009;pitch=Math.min(1.25,Math.max(bowView?-.3:.04,pitch+dy*.004))});
 const zmin=()=>isSeat(mode)?10:26;const ray=new T.Raycaster(),pl=new T.Plane(new T.Vector3(0,1,0),0),nd=new T.Vector2(),pp=new T.Vector3();
-const up=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=0;if(moved<7&&e.type==='pointerup'){nd.set(e.clientX/innerWidth*2-1,-e.clientY/innerHeight*2+1);ray.setFromCamera(nd,cam);if(!mode||mode==='sea'){if(ray.ray.intersectPlane(pl,pp)&&!hit(pp.x,pp.z)){if(auto){toast('자동 항해 중 · 끄기는 항해 메뉴에서');return}if(mode)leave();go(pp.x,pp.z)}}}};
+const up=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=0;if(moved<7&&e.type==='pointerup'){nd.set(e.clientX/innerWidth*2-1,-e.clientY/innerHeight*2+1);ray.setFromCamera(nd,cam);if(!mode||mode==='sea'){if(ray.ray.intersectPlane(pl,pp)&&!hit(pp.x,pp.z)){if(auto){setAuto(false);resumeT=1;if(!resumeSaid){resumeSaid=1;toast('잠시 뒤 다시 저절로 돌아요')}}if(mode)leave();go(pp.x,pp.z);dispatchEvent(new CustomEvent('dokdo-heal-tap'))}}}};
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 cv.addEventListener('wheel',e=>{e.preventDefault();dist=Math.min(420,Math.max(zmin(),dist*(1+e.deltaY*.001)))},{passive:false});
 const keys={};addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;keys[e.key.toLowerCase()]=1});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=0});
@@ -290,9 +291,46 @@ function staleHint(){if(staleShown||load(CSEEN)!=='1')return;staleShown=true;toa
 async function checkOwner(){const ep=++ownerEpoch,tk=sessionToken();if(!tk){lockOwner();return false}try{const r=await fetch('/api/camp-creator',{headers:{Authorization:'Bearer '+tk},cache:'no-store'});const ok=r.ok&&(await r.json()).creator===true;if(ep!==ownerEpoch)return false;if(!ok||tk!==sessionToken()){lockOwner();if(r.status===401)staleHint();return false}const was=cBtn.hidden;ownerOK=true;cBtn.hidden=false;save(CSEEN,'1');if(was)try{pad()}catch(e){}return true}catch(e){if(ep===ownerEpoch)lockOwner();return false}}
 cBtn.onclick=async()=>{if(creator){setCreator(false);return}if(await checkOwner())setCreator(true)};
 addEventListener('storage',e=>{if(!e.key||/^dokdo-account-session/.test(e.key))checkOwner()});addEventListener('pageshow',()=>checkOwner());checkOwner();
-if(!signedIn()){$('#enter').classList.add('guest');$('#login-cta').hidden=false;$('#start').textContent='로그인 없이 둘러보기'}
+if(!signedIn()){$('#enter').classList.add('guest');$('#login-cta').hidden=false}
 if(matchMedia('(pointer:coarse)').matches)hint.textContent='바다를 누르면 이동, 끌면 둘러보기, 두 손가락으로 가까이 보기';
-const enter=m=>{startAudio();$('#enter').hidden=true;if(!tryGo(m))heal('sea');hint.hidden=false;setTimeout(()=>{hint.style.opacity=0},9000)};$('#start').onclick=()=>enter('sea');$('#e-camp').onclick=()=>enter('camp');$('#e-stay').onclick=()=>enter('stay');$('#e-dock').onclick=()=>enter('dock');
+const enter=m=>{startAudio();$('#enter').hidden=true;if(!tryGo(m))heal('sea');hint.hidden=false;setTimeout(()=>{hint.style.opacity=0},9000)};$('#start').onclick=()=>enter('sea');$('#e-camp').onclick=()=>enter('camp');$('#e-stay').onclick=()=>enter('stay');$('#e-go').onclick=()=>enter('dock');
+// ── 11/20 합치기 1단계(교수님: "자동으로 많이 되게, 누가 봐도 직관적이고 쉽게. 메뉴가 다 나와 있어서 복잡하다") ──
+// 아래 판 기본은 둘: 장소에 맞는 라임 단추 하나와 '메뉴'. 선착장·서도·정상에서는 '배 타고 바다로', 바다에서는 '낚시하기'.
+// '메뉴'를 누르면 목표 게이지·소리 크기·시각·날씨·안내와 원래 메뉴 줄(쉼터·항해·인사·대황·풍경만 보기)이 열린다.
+const act=$('#act'),more=$('#more'),mTop=$('#m-top'),menuRow=$('#menu');let actAt=0;
+// 글자가 바뀐 뒤 0.8초는 누름을 무시한다(두 번 눌러 '배 타고 바다로' 다음 '낚시하기'까지 눌리지 않게).
+function actUI(){const x=isSeat(mode)?'배 타고 바다로':'낚시하기';if(act.textContent!==x){act.textContent=x;actAt=Date.now()}}
+// 배 타고 바다로: 선착장을 떠나 배에 오르고, 자동 항해로 독도를 돈다. 바다를 누르면 자동 항해를 끄고 그쪽으로 간다.
+// 배는 앉아 있던 자리(선착장 등) 바로 옆 바다에서 떠난다(11/20 레드팀: 먼 바다로 순간 이동하던 것). 자리에서 가장 가까운 물(섬·접안시설에 닿지 않는 곳)에
+// 배를 두고 섬 바깥쪽을 보게 한다. 자동 항해는 그 자리에서 각도가 가장 가까운 바퀴 점부터 이어 돈다(sail.js orbit).
+function launch(){if(!isSeat(mode))return;const p=me.b.position;for(let r=0;r<=480;r+=6)for(let k=0;k<36;k++){const a=k/36*Math.PI*2,x=p.x+Math.sin(a)*r,z=p.z+Math.cos(a)*r;if(!hit(x,z)){me.x=x;me.z=z;me.r=Math.atan2(ctr[0]-x,ctr[1]-z);me.tx=null;return}}}
+act.onclick=()=>{if(Date.now()-actAt<800)return;if(isSeat(mode)){launch();setAuto(true);if(st.gd!==2)toast('배가 저절로 독도를 돕니다 · 바다를 누르면 그쪽으로')}else openDeck('f');actUI()};
+function setMore(v){mTop.hidden=menuRow.hidden=!v;more.setAttribute('aria-expanded',v);if(!v&&tabNow)setTab(tabNow);pad()}
+more.onclick=()=>setMore(menuRow.hidden);
+new MutationObserver(actUI).observe($('#dock'),{subtree:true,attributes:true,attributeFilter:['aria-pressed']});actUI();
+// 입구가 열려 있는 동안은 아래 판을 숨기고, 환영 인사도 들어간 뒤에 보여 준다(입구 단추를 가리지 않게).
+// '다른 곳에서 시작'은 접어 두었다가 누르면 바다·서도·동도 정상이 열린다.
+dock.hidden=!$('#enter').hidden;
+function welcomeLater(g){const say=()=>setTimeout(()=>toast('처음 오신 것을 환영합니다 · 대황 +'+g),900);if($('#enter').hidden)say();else welcomeLater.q=say}
+new MutationObserver(()=>{if(!$('#enter').hidden)return;if(dock.hidden){dock.hidden=false;pad()}if(welcomeLater.q){welcomeLater.q();welcomeLater.q=null}}).observe($('#enter'),{attributes:true,attributeFilter:['hidden']});
+const eMore=$('#e-more');eMore.onclick=()=>{const v=eMore.getAttribute('aria-expanded')!=='true';eMore.setAttribute('aria-expanded',v);$('#e-alt').hidden=!v};
+// 바다를 눌러 자동 항해가 꺼졌으면, 배가 닿고 15초 동안 아무것도 안 하면 다시 저절로 돈다. 항해 메뉴에서 직접 끈 것은 그대로 둔다.
+let resumeT=0,resumeSaid=0,lastIn=Date.now();
+['pointerdown','keydown','wheel'].forEach(k=>addEventListener(k,()=>{lastIn=Date.now()},{passive:true}));
+autoB.addEventListener('click',()=>{resumeT=0});
+setInterval(()=>{if(!resumeT||auto||isSeat(mode)||me.tx!=null||rest||/\bv2d\b/.test(body.className))return;if(Date.now()-lastIn>15000){resumeT=0;setAuto(true)}},1000);
+// 2D 독도 바라보기를 3D 안에서 열면 그림 쪽이 파도 소리를 내므로 3D 소리는 잠시 줄이고, 닫으면 되돌린다.
+addEventListener('dokdo-view-open',()=>{if(mix)mix.gain.setTargetAtTime(0,AC.currentTime,.3)});
+addEventListener('dokdo-view-3d',()=>{if(mix)mix.gain.setTargetAtTime(volNow(),AC.currentTime,.5)});
+// 사용 설명서(guide.js)가 쓰는 창구. 설명서는 이 브라우저에서 처음 만든 기록(gd=2)에만 뜨고, 마치거나 건너뛰면 gd=1이 된다.
+// 크리에이터 모드에서는 띄우지 않는다.
+const spotR=new T.Raycaster(),spotN=new T.Vector2(),spotP=new T.Vector3(),spotPl=new T.Plane(new T.Vector3(0,1,0),0);
+window.DokdoHeal={seated:()=>isSeat(mode),fishing:()=>!deck.hidden&&dTab==='f',toast,creator:()=>creator,pos:()=>[me.x,me.z],dock:()=>[quay.x,quay.z],
+ guided:v=>{if(v&&st.gd===2){st.gd=1;keep()}return creator||st.gd!==2},
+ // 누를 곳 표시용: 배를 비켜 화면 아래쪽 몇 자리 가운데 바다(섬이 아닌 곳)인 첫 자리. 없으면 null.
+ spot:()=>{if(isSeat(mode))return null;const W=innerWidth,H=innerHeight,lim=$('#dock').getBoundingClientRect().top-50;
+  for(const[a,b]of[[.25,.68],[.75,.68],[.25,.58],[.75,.58],[.5,.8]]){const x=a*W,y=Math.min(b*H,lim);spotN.set(x/W*2-1,-y/H*2+1);spotR.setFromCamera(spotN,cam);if(spotR.ray.intersectPlane(spotPl,spotP)&&!hit(spotP.x,spotP.z)&&document.elementFromPoint(x,y)===cv)return{x,y}}return null}};// 바위 안내판 등이 덮은 자리는 빼고
+// ── 합치기 1단계 끝 ──
 addEventListener('pointerdown',()=>{if(AC&&AC.state!=='running')AC.resume()});document.addEventListener('visibilitychange',()=>{if(!document.hidden&&AC)AC.resume();if(!document.hidden&&silent)silent.play().catch(()=>{})});
 if(window.claude&&claude.use)Promise.all([claude.use('db'),claude.use('user')]).then(async([db,u])=>{if(!db||!u)return;const id=await u.id();if(!id)return;const ref=db.doc('data/users/'+id+'/wallet'),sn=await ref.get();wallet=ref;const v=sn.exists&&sn.data();let baseT=st.t;if(creator){try{baseT=JSON.parse(stBack).t}catch(e){}}if(v&&typeof v.t==='number'&&v.t>=baseT){if(creator){try{const b=JSON.parse(stBack);Object.assign(b,v);stBack=JSON.stringify(b)}catch(e){}return}Object.assign(st,v);EC.tidy(st);deco(me.b,st.on);dirty=true;save(WK,JSON.stringify(st));ui()}else if(st.t)keep()}).catch(()=>{}).finally(giveGift);
 // 함께 있는 사람들

@@ -17,8 +17,8 @@ body{margin:0;background:var(--ink);color:var(--white);font:500 15px/1.35 var(--
 #info b{font-weight:500;color:var(--lime)}
 .place b{font:400 18px var(--num);color:var(--lime);margin-left:6px;letter-spacing:.03em}
 .card{position:fixed;background:rgba(46,49,53,.93);border-radius:14px}
-/* 위쪽은 한 줄: 스쿨로 · 다음 목표 게이지 · 소리 크기. 시각·날씨·인원은 판 없이 글자만 그 아래에 둔다. */
-#top{top:calc(10px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:min(680px,calc(100vw - 32px));box-sizing:border-box;padding:4px 6px;display:flex;align-items:center;gap:8px;background:rgba(46,49,53,.78)}
+/* 위쪽은 ⌂ 홈과 소리 켜고 끄기 둘만(11/20 교수님: "지금 화면에 너무 많이 나와 있어"). 목표 게이지·소리 크기·시각·날씨·인원은 메뉴 안에 둔다. */
+#top{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));display:flex;align-items:center;justify-content:space-between;gap:8px;pointer-events:none}#top>*{pointer-events:auto}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 #top .back{flex:none;min-height:40px;padding:4px 14px}
 #top .vol{margin-left:auto;flex:none}
@@ -85,7 +85,7 @@ body.resting #dock,body.resting #sub,body.resting #top,body.resting #info,body.r
 .vol{width:88px;min-width:0;margin:0;accent-color:var(--lime);cursor:pointer}
 #rest .vol{width:170px}
 #goal,#snd,#nick,#text,#send{min-height:44px}
-#start{background:var(--lime);color:var(--ink);font-size:16px;padding:12px}
+#e-go{background:var(--lime);color:var(--ink);font-size:18px;padding:14px;min-height:56px;border-radius:12px}
 #err{position:fixed;inset:0;display:grid;place-items:center;padding-inline:max(16px,env(safe-area-inset-left,0px));text-align:center}
 @media (max-width:520px){#hint{display:none}#toast{top:auto;bottom:calc(var(--dk,64px) + 20px)}#top{gap:4px}#top .vol{width:64px}#top .back{padding:4px 12px;font-size:15px}#menu{gap:4px}#menu button{padding-inline:6px}}
 .back{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:6px 18px;border-radius:999px;background:#fff;color:#163e36;font-size:16px;font-weight:700;line-height:1;text-decoration:none;white-space:nowrap;box-shadow:0 2px 0 rgba(0,0,0,.25)}
@@ -95,7 +95,6 @@ body.resting #dock,body.resting #sub,body.resting #top,body.resting #info,body.r
 #err{z-index:9;background:var(--ink);align-content:center;gap:14px}
 #dock{grid-template-columns:minmax(0,1fr)}
 .login-cta{display:block;background:var(--lime);color:var(--ink);font-size:16px;padding:12px;border-radius:10px;text-decoration:none}
-#enter.guest #start{background:none;color:var(--mute);font-size:14px;text-decoration:underline;padding:6px}
 .back{display:inline-flex;align-items:center;min-height:44px}
 .row button,.tabs button{min-height:44px}
 body{word-break:keep-all;overflow-wrap:break-word}
@@ -141,17 +140,53 @@ body:has(#view.watching) #toast{top:calc(60px + env(safe-area-inset-top,0px))}/*
 @keyframes vbreath{0%{transform:scale(.8)}40%{transform:scale(1.2)}100%{transform:scale(.8)}}
 @media (prefers-reduced-motion:reduce){#v-world,.v-ray,.v-glint,.v-wave,#view.watching #v-dot{animation:none}}
 #toast{z-index:11}
+/* 11/20 합치기 1단계: 들어오면 바로 3D 동도 선착장. 첫 화면은 할 일 하나(라임 단추), 나머지는 '메뉴' 안에. */
+#enter>div{gap:10px;padding:18px 22px}
+#enter .login-cta{background:none;color:var(--white);font-size:15px;text-decoration:underline;text-underline-offset:3px;padding:10px;justify-self:center;min-height:44px;box-sizing:border-box}
+#e-more{background:none;color:var(--mute);font-size:14px;text-decoration:underline;text-underline-offset:3px;justify-self:center;min-height:44px;padding:8px 10px}
+#enter .note{line-height:1.45}
+#enter .alt{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+#enter .alt button{flex:1 1 40%;min-width:0;min-height:44px;font-size:14px;padding:8px;color:var(--mute)}
+#quick{display:flex;gap:6px}
+#act,#more{touch-action:manipulation}
+#act{flex:1 1 auto;min-width:0;background:var(--lime);color:var(--ink);font-size:17px;min-height:50px}
+#more{flex:none;min-height:50px;padding-inline:18px}
+#more[aria-expanded=true]{box-shadow:inset 0 -3px 0 var(--lime)}
+#m-top{display:grid;gap:6px}
+#m-top .mrow{display:flex;align-items:center;gap:8px}
+#m-top .vol{flex:none;width:110px}
+#m-top #goal{flex:1 1 auto}
+#dock #sub{position:static;transform:none;width:auto;justify-content:flex-start;text-align:left;text-shadow:none;pointer-events:auto;padding-inline:4px}
+#m-top .mnote{margin:0;padding-inline:4px;color:var(--mute);font-size:14px}
+#vr{display:none!important}/* 가상 체험 안내는 메뉴의 한 줄(.mnote)이 늘 보여 준다 */
+#top .back,#snd{box-shadow:0 2px 6px rgba(35,37,40,.45)}
+#snd,#snd[aria-pressed=true]{background:var(--ink);color:var(--white);min-height:44px;padding-inline:14px}/* 라임은 아래 할 일 단추 하나에만 */
+/* 사용 설명서(guide.js): 차콜 말풍선과 라임 고리 */
+#guide{position:fixed;z-index:6;left:16px;top:80px;box-sizing:border-box;background:#2E3135;border:2px solid #B6D80C;border-radius:14px;padding:12px 14px 6px;display:grid;gap:4px;color:#fff;font-size:16px;line-height:1.45;text-align:left;box-shadow:0 4px 16px rgba(35,37,40,.45)}
+#guide p{margin:0}
+#g-num{color:var(--mute);font-size:14px}
+#g-skip{justify-self:end;background:none;color:var(--mute);font-size:14px;text-decoration:underline;padding:6px 4px;min-height:44px}
+#g-ring{position:fixed;z-index:6;box-sizing:border-box;border:3px solid #B6D80C;border-radius:16px;pointer-events:none;animation:gpulse 1.4s ease-out infinite}
+#g-ring.dot{border-radius:50%}
+@keyframes gpulse{0%{box-shadow:0 0 0 0 rgba(182,216,12,.7)}100%{box-shadow:0 0 0 16px rgba(182,216,12,0)}}
+@media (prefers-reduced-motion:reduce){#g-ring{animation:none}}
+body.guiding #hint,body.guiding #info{display:none!important}
+@media (max-width:520px){body.guiding #toast{top:calc(64px + env(safe-area-inset-top,0px));bottom:auto}}
+/* 알림은 위쪽 ⌂ 홈·소리 단추를 가리지 않는다. 대황 판이 열려 있으면 판 위쪽(닫기)을 피해 아래에. */
+@media (min-width:521px){#toast{top:calc(64px + env(safe-area-inset-top,0px))}}
+body:has(#deck:not([hidden])) #toast{top:auto;bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+/* 가로로 낮은 화면: 메뉴가 화면을 덮지 않게 높이를 62%로 묶는다. 라임 단추 줄은 늘 맨 아래, 넘치면 정보 줄 안에서 넘긴다. */
+@media (max-height:500px){#dock{display:flex;flex-direction:column;gap:6px;max-height:62dvh}#dock>*{flex:none}#m-top{flex:0 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y}#dock:has(#p-rest:not([hidden]),#p-sail:not([hidden]),#p-talk:not([hidden])) #m-top{display:none}}/* 판을 열면 정보 줄은 접는다 */
 </style>
 </head><body>
 <canvas id="stage" aria-label="독도에서 힐링하기 3D 장면"></canvas>
 <div id="tags"></div>
-<div id="top" class="card"><a class="back" href="../" aria-label="홈 · 처음 화면으로">⌂ 홈</a><h1 class="sr">독도에서 힐링하기</h1><button id="goal" hidden><span id="g-text"></span><span id="g-bar"><span id="g-fill"></span></span></button><input class="vol" type="range" min="0" max="100" aria-label="소리 크기"><button id="snd" aria-pressed="true">소리</button></div>
-<div id="sub"><span id="now"></span><span id="count">바다로 나가는 중</span><span id="vr" hidden>화면 속 가상 체험입니다</span><span id="cmode" hidden>크리에이터 모드 · 기록 저장 안 함</span></div>
+<div id="top"><a class="back" href="../" aria-label="홈 · 처음 화면으로">⌂ 홈</a><h1 class="sr">독도에서 힐링하기</h1><button id="snd" aria-pressed="true">소리</button></div>
 <div id="hint" hidden>바다를 누르면 이동, 끌면 둘러보기, 휠이나 두 손가락으로 가까이 보기</div>
 <div id="toast" role="status" hidden></div>
 <div id="rest" hidden><div id="r-dot"><span id="r-word">들이쉬고</span></div><div id="r-left">3:00</div><input class="vol" type="range" min="0" max="100" aria-label="소리 크기"><button id="r-end">끝내기</button></div>
-<div id="enter"><div><h2>독도에서 힐링하기</h2><p>파도 소리를 들으며 쉬어 가는 곳입니다. 배움터와 낚시·줍기로 레벨이 오르면 동도 선착장, 서도, 동도 정상에 오를 수 있습니다.</p><a id="login-cta" class="login-cta" href="../account.html?next=camp%2F" hidden>로그인하고 들어가기</a><button id="start">바다에서 독도 보기</button><button id="e-dock">동도 선착장</button><button id="e-stay">서도 주민숙소</button><button id="e-camp">동도 정상 캠핑</button><p class="note">화면 속 가상 체험입니다. 실제 독도는 천연보호구역이라 머물 수 있는 곳과 시간이 제한됩니다.</p><p class="note">날씨 자료 <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></p><a class="back" href="../" aria-label="홈 · 처음 화면으로">⌂ 홈으로 돌아가기</a></div></div>
-<section id="view" aria-labelledby="v-title"><svg id="v-art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<div id="enter"><div><h2>독도에서 힐링하기</h2><p>동도 선착장에서 배를 타고 독도 바다로 나갑니다.</p><button id="e-go"><span id="e-dock">동도 선착장</span>에서 시작</button><a id="login-cta" class="login-cta" href="../account.html?next=camp%2F" hidden>로그인하고 들어가기</a><button id="e-more" aria-expanded="false" aria-controls="e-alt">다른 곳에서 시작</button><div class="alt" id="e-alt" hidden><button id="start">바다에서 독도 보기</button><button id="e-stay">서도 주민숙소</button><button id="e-camp">동도 정상 캠핑</button></div><p class="note">화면 속 가상 체험입니다. 실제 독도는 천연보호구역이라 머물 수 있는 곳과 시간이 제한됩니다. 날씨 자료 <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></p><a class="back" href="../" aria-label="홈 · 처음 화면으로">⌂ 홈으로 돌아가기</a></div></div>
+<section id="view" aria-labelledby="v-title" hidden><svg id="v-art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
 <defs>
 <linearGradient id="v-sky" x1="0" y1="0" x2="0" y2="1"><stop offset=".55" style="stop-color:var(--s1)"/><stop offset=".85" style="stop-color:var(--s2)"/><stop offset="1" style="stop-color:var(--s3)"/></linearGradient>
 <linearGradient id="v-seag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--w1)"/><stop offset=".3" style="stop-color:var(--w2)"/></linearGradient>
@@ -180,11 +215,13 @@ body:has(#view.watching) #toast{top:calc(60px + env(safe-area-inset-top,0px))}/*
 </section>
 <div id="info" class="card" hidden><b></b><span></span></div>
 <div id="dock" class="card">
- <div class="row" id="p-rest" hidden><button id="v-sea" aria-pressed="false">바다에서 보기</button><button id="v-dock" aria-pressed="false">동도 선착장</button><button id="v-camp" aria-pressed="false">동도 정상 캠핑</button><button id="v-stay" aria-pressed="false">서도 주민숙소</button><button id="breath">3분 쉬기</button><button id="creator" hidden aria-pressed="false">크리에이터 모드</button></div>
+ <div id="m-top" hidden><div class="mrow"><button id="goal" hidden><span id="g-text"></span><span id="g-bar"><span id="g-fill"></span></span></button><input class="vol" type="range" min="0" max="100" aria-label="소리 크기"></div><div id="sub"><span id="now"></span><span id="count">바다로 나가는 중</span><span id="vr" hidden>화면 속 가상 체험입니다</span><span id="cmode" hidden>크리에이터 모드 · 기록 저장 안 함</span></div><p class="mnote">화면 속 가상 체험입니다. 실제 독도는 천연보호구역이라 머물 수 있는 곳과 시간이 제한됩니다.</p></div>
+ <div class="row" id="p-rest" hidden><button id="v-sea" aria-pressed="false">바다에서 보기</button><button id="v-dock" aria-pressed="false">동도 선착장</button><button id="v-camp" aria-pressed="false">동도 정상 캠핑</button><button id="v-stay" aria-pressed="false">서도 주민숙소</button><button id="breath">3분 쉬기</button><button id="v-look">독도 바라보기</button><button id="creator" hidden aria-pressed="false">크리에이터 모드</button></div>
  <div class="row" id="p-sail" hidden><button id="go-seo">서도로 가기</button><button id="go-dong">동도로 가기</button><button id="auto" aria-pressed="false">자동 항해</button><button id="look">360도 둘러보기</button><button id="bow" aria-pressed="false">뱃머리 시점</button></div>
  <div class="row" id="p-talk" hidden><button id="wave">손 흔들기</button><button class="q">풍경이 참 좋아요</button><button class="q">같이 쉬어요</button><button class="q">또 만나요</button></div>
  <form id="say" hidden><input id="nick" maxlength="8" autocomplete="off" aria-label="내 이름" title="내 이름" placeholder="내 이름"><input id="text" maxlength="30" placeholder="말풍선으로 인사하기" autocomplete="off" aria-label="말풍선 내용"><button id="send" type="submit">보내기</button></form>
- <div class="tabs" id="menu" aria-label="메뉴"><button id="t-rest" aria-expanded="false" aria-controls="p-rest">쉼터</button><button id="t-sail" aria-expanded="false" aria-controls="p-sail">항해</button><button id="t-talk" aria-expanded="false" aria-controls="p-talk">인사</button><button id="t-deck">대황 <b id="shell">0</b></button><button id="scenery">풍경만 보기</button></div>
+ <div class="tabs" id="menu" aria-label="메뉴" hidden><button id="t-rest" aria-expanded="false" aria-controls="p-rest">쉼터</button><button id="t-sail" aria-expanded="false" aria-controls="p-sail">항해</button><button id="t-talk" aria-expanded="false" aria-controls="p-talk">인사</button><button id="t-deck">대황 <b id="shell">0</b></button><button id="scenery">풍경만 보기</button></div>
+ <div id="quick"><button id="act">배 타고 바다로</button><button id="more" aria-expanded="false" aria-controls="m-top menu">메뉴</button></div>
 </div>
 <button id="unscene" hidden>메뉴 보기</button>
 <div id="deck" class="card" role="dialog" aria-label="대황·낚시·꾸미기" hidden><div class="dhead"><h2>대황 <b id="shell2">0</b></h2><button id="d-close">닫기</button></div><div class="tabs"><button data-d="q" aria-selected="true">오늘의 퀴즈</button><button data-d="f" aria-selected="false">낚시·교환소</button><button data-d="i" aria-selected="false">꾸미기</button><button data-d="r" aria-selected="false">바위 도감</button></div><div id="d-body"></div></div>
@@ -195,4 +232,5 @@ body:has(#view.watching) #toast{top:calc(60px + env(safe-area-inset-top,0px))}/*
 <script src="./heal-econ.js"></script>
 <script src="./sail.js"></script>
 <script src="./healing.js"></script>
+<script src="./guide.js"></script>
 </body></html>
