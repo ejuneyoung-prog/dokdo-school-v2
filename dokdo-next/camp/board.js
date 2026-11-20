@@ -52,13 +52,19 @@ const EDGE=7;
 function place(x,z){const[p,q]=toMap(x,z),cx=Math.min(view.w-EDGE,Math.max(EDGE,p)),cy=Math.min(view.h-EDGE,Math.max(EDGE,q));return{x:cx,y:cy,far:cx!==p||cy!==q,ang:Math.atan2(q-view.h/2,p-view.w/2)}}
 function drawBoat(){if(!view)return;const b=H.boat(),o=place(b.x,b.z);dot.style.left=o.x.toFixed(1)+'px';dot.style.top=o.y.toFixed(1)+'px';dot.classList.toggle('far',o.far);dot.style.setProperty('--ang',o.ang.toFixed(3)+'rad');dot.dataset.at=Math.round(b.x)+','+Math.round(b.z)}
 // ── 숫자 ──
-const ROWS=[['fish',t=>t.left?'낚시 '+t.left+'번 남음':'낚시 오늘 다 함',t=>!t.left],
+// 오늘 할 일은 짧은 줄 넷. 3단계(wave.js, DokdoWave)가 있으면 놀이·줍기를 한 줄로 묶고 태극기 흔들기를 넣는다. 제목 줄에는 지킨 날.
+const BASE=[['fish',t=>t.left?'낚시 '+t.left+'번 남음':'낚시 오늘 다 함',t=>!t.left],
  ['game',t=>'놀이 경험치 '+t.xG+'/'+t.capG,t=>t.xG>=t.capG],
  ['clean',t=>'쓰레기 줍기 '+t.xC+'/'+t.capC,t=>t.xC>=t.capC],
  ['look',t=>'바라보기 대황 '+t.look+'/'+t.capL,t=>t.look>=t.capL]];
-const items=ROWS.map(([k])=>{const li=mk('li');li.dataset.k=k;list.append(li);return li});
+const WAVE=[BASE[0],['wave',t=>'흔들기 '+t.w.waves+'/'+t.w.cap,t=>t.w.waves>=t.w.cap],
+ ['xp',t=>'놀이 '+t.xG+'/'+t.capG+'·줍기 '+t.xC+'/'+t.capC,t=>t.xG>=t.capG&&t.xC>=t.capC],BASE[3]];
+let items=[],keys='',days=null;
 function numbers(){const t=H.today(),L=H.level(),x='Lv '+L.L+' · 대황 '+t.coins;if(lv.dataset.t!==x){lv.dataset.t=x;lv.textContent='';lv.append(mk('b','','Lv '+L.L),' · 대황 ',mk('b','',String(t.coins)))}
- ROWS.forEach(([k,txt,done],i)=>{const li=items[i],s=txt(t);if(li.dataset.t!==s){li.dataset.t=s;li.textContent=s}li.classList.toggle('done',!!done(t))})}
+ const WV=window.DokdoWave&&DokdoWave.today?DokdoWave.today():null;if(WV)t.w=WV;const R=WV?WAVE:BASE,k=R.map(r=>r[0]).join();
+ if(k!==keys){keys=k;list.textContent='';items=R.map(([key])=>{const li=mk('li');li.dataset.k=key;list.append(li);return li})}
+ R.forEach(([key,txt,done],i)=>{const li=items[i],s=txt(t);if(li.dataset.t!==s){li.dataset.t=s;li.textContent=s}li.classList.toggle('done',!!done(t))});
+ if(WV){if(!days){days=mk('span','b-days');title.after(days)}const d='지킨 날 '+WV.kept+'일째';if(days.dataset.t!==d){days.dataset.t=d;days.textContent='';days.setAttribute('aria-label','독도를 지킨 날 '+WV.kept+'일째');days.append('지킨 날 ',mk('b','',String(WV.kept)),'일째')}}}
 // 가로로 낮은 화면에서 메뉴 안이 넘치면 아래쪽을 흐리게 해 더 있다는 것을 보여 준다.
 function fade(){const m=mTop,more=m.scrollHeight>m.clientHeight+2&&m.scrollTop+m.clientHeight<m.scrollHeight-2;m.classList.toggle('more-below',more)}
 mTop.addEventListener('scroll',fade,{passive:true});
@@ -71,5 +77,5 @@ function open(){if(mTop.hidden)return;lastH=dockE.offsetHeight;view=null;tick=0;
 new MutationObserver(open).observe(mTop,{attributes:true,attributeFilter:['hidden']});
 addEventListener('resize',()=>{if(mTop.hidden)return;const r=cv.getBoundingClientRect();if(!view||Math.round(r.width)!==view.w)drawLand();fade()});
 numbers();// 처음부터 글자를 채워 두어 메뉴를 열 때 판 높이가 튀지 않게
-window.DokdoBoard={refresh:()=>{if(!mTop.hidden){numbers();drawBoat();resized();fade()}},toMap:(x,z)=>view?toMap(x,z):null,place:(x,z)=>view?place(x,z):null};
+window.DokdoBoard={refresh:()=>{numbers();if(!mTop.hidden){drawBoat();resized();fade()}},toMap:(x,z)=>view?toMap(x,z):null,place:(x,z)=>view?place(x,z):null};
 })();

@@ -198,7 +198,8 @@ def walk(context, label):
     expect(page.locator('#more')).to_be_visible()
     expect(page.locator('#menu')).to_be_hidden()
     expect(page.locator('#m-top')).to_be_hidden()
-    assert page.evaluate("[...document.querySelectorAll('#dock button')].filter(e=>e.offsetParent).map(e=>e.id)") == ['act', 'more']
+    # 11/20 3단계: 라임 단추 옆에 작은 태극기 흔들기 단추가 붙는다.
+    assert page.evaluate("[...document.querySelectorAll('#dock button')].filter(e=>e.offsetParent).map(e=>e.id)") == ['act', 'flagwave', 'more']
     assert page.evaluate("getComputedStyle(document.querySelector('#act')).backgroundColor") == 'rgb(182, 216, 12)'
     # 사용 설명서 1단계: 배에 올라 바다로. 라임 고리가 그 단추를 짚는다.
     expect(page.locator('#guide')).to_be_visible()
@@ -570,8 +571,9 @@ def board(browser):
         assert page.locator('#goal').count() == 1
         expect(page.locator('#board h2')).to_have_text('내 배')
         texts = page.evaluate("Object.fromEntries([...document.querySelectorAll('#board li')].map(e=>[e.dataset.k,e.textContent]))")
-        assert texts == {'fish': '낚시 7번 남음', 'game': '놀이 경험치 40/100', 'clean': '쓰레기 줍기 15/50', 'look': '바라보기 대황 4/10'}, texts
-        assert page.locator('#board li').count() == 4, 'no invented items (흔들기·통발 come later)'
+        # 3단계: 오늘 할 일은 짧은 줄 넷 그대로. 놀이·줍기 경험치를 한 줄로 묶고 태극기 흔들기를 더한다.
+        assert texts == {'fish': '낚시 7번 남음', 'wave': '흔들기 0/20', 'xp': '놀이 40/100·줍기 15/50', 'look': '바라보기 대황 4/10'}, texts
+        assert page.locator('#board li').count() == 4, 'four short lines (통발은 나중)'
         lv = page.evaluate("DokdoHeal.level().L")
         expect(page.locator('#board .b-lv')).to_have_text(f'Lv {lv} · 대황 123')
         assert page.evaluate("document.querySelector('#g-text').textContent").startswith(f'Lv{lv} ·')
@@ -634,12 +636,289 @@ def board(browser):
         context.close()
     print('ok 내 배 card: map, dot follows the boat, numbers match the save')
 
+SHIFT = """(()=>{const real=Date.now.bind(Date);Date.now=()=>real()+(+localStorage.getItem('__shift')||0);
+  window.__voices=[];addEventListener('dokdo-shout-voice',e=>window.__voices.push(e.detail.file));
+  try{navigator.vibrate=ms=>{(window.__vib=window.__vib||[]).push(ms);return true}}catch(e){}
+  if(!localStorage.getItem('nick'))localStorage.setItem('nick','바다');
+  if(!localStorage.getItem('dokdo-korea-school-cinematic-v1'))localStorage.setItem('dokdo-korea-school-cinematic-v1',JSON.stringify({xp:0,flag:'KR'}))})()"""
+DAY = 86400000
+KDAY = "(()=>new Date(Date.now()+9*3600000).toISOString().slice(0,10))()"
+
+def skip_guide(page):
+    """처음 온 사람의 사용 설명서가 뜨면 건너뛴다(설명서가 떠 있는 동안 외침판은 숨는다)."""
+    until(page, "!document.querySelector('#guide')||!document.querySelector('#guide').hidden", timeout=5000)
+    if page.locator('#guide').count():
+        expect(page.locator('#shout')).to_be_hidden()
+        page.locator('#g-skip').click()
+        expect(page.locator('#guide')).to_have_count(0)
+
+def flagday(browser):
+    """11/20 합치기 3단계: 태극기 게양(하루 한 번, 알림만)·지킨 날(줄지 않음)·흔들기(20번까지 셈, 목소리는 계속)·외침판(내가 눌러도 안 열림, ×n)·말풍선(국기·닉네임)."""
+    context = browser.new_context(viewport={'width': 375, 'height': 667}, has_touch=True, is_mobile=True, device_scale_factor=2)
+    use_three(context)
+    weather(context, 0)
+    context.add_init_script(SHIFT)
+    page = context.new_page()
+    errors, mp3, outside = [], [], []
+    page.on('pageerror', lambda e: errors.append(str(e)))
+    page.on('request', lambda r: mp3.append(r.url.rsplit('/', 1)[-1]) if '/voice/' in r.url else None)
+    page.on('request', lambda r: outside.append(r.url) if '127.0.0.1' not in r.url and not r.url.startswith(('data:', 'blob:', 'https://cdn.jsdelivr.net/npm/three@')) and 'api.open-meteo.com' not in r.url else None)
+    page.goto(f'{base}/camp/')
+    # 입구에 있는 동안은 올리지 않는다(장소를 고른 뒤에).
+    page.wait_for_timeout(1500)
+    assert heal_state(page).get('kN', 0) == 0
+    page.locator('#e-go').click()
+    skip_guide(page)
+    until(page, "(JSON.parse(localStorage.getItem('dokdo-heal')||'{}').kN||0)===1", timeout=8000)
+    assert heal_state(page)['kD'] == page.evaluate(KDAY)
+    # 선착장에서는 선착장 깃대에 올라간다. 알림 한 번으로만 알리고 외침판에는 줄을 남기지 않는다.
+    until(page, "(()=>{const f=DokdoWave.flags();return f.pole===f.top.pole})()", timeout=6000)
+    expect(page.locator('#toast')).to_contain_text('독도를 지킨 날 1일째', timeout=8000)
+    assert page.evaluate("DokdoWave.lines().length") == 0
+    expect(page.locator('#shout')).to_be_hidden()
+    # 같은 날 다시 와도 그대로 1일째.
+    page.reload()
+    page.locator('#e-go').click()
+    page.wait_for_timeout(2500)
+    assert heal_state(page)['kN'] == 1
+    assert page.evaluate("DokdoWave.flags().pole") is not None, 'already raised today: the flag stays up'
+    # 다음 날 2일째(바다에서 시작 → 돛대), 닷새 뒤 3일째(서도 숙소에 앉아 있으면 → 선착장 깃대), 시계를 되돌려도 줄지 않고 깃발은 올라가 있다.
+    page.evaluate("(()=>{const s=JSON.parse(localStorage.getItem('dokdo-heal'));s.pass=(s.pass|0)|2;localStorage.setItem('dokdo-heal',JSON.stringify(s))})()")  # 서도 숙소를 연 기록(1단계 대황 열쇠)
+    for shift, want, where in [(1, 2, 'sea'), (6, 3, 'stay'), (3, 3, 'dock')]:
+        page.evaluate(f"localStorage.setItem('__shift',String({shift}*{DAY}))")
+        page.reload()
+        if where == 'sea':
+            page.locator('#e-more').click()
+            page.locator('#start').click()
+        elif where == 'stay':
+            page.locator('#e-more').click()
+            page.locator('#e-stay').click()
+        else:
+            page.locator('#e-go').click()
+        page.wait_for_timeout(2600)
+        assert heal_state(page)['kN'] == want, (shift, heal_state(page))
+        if where == 'sea':
+            until(page, "(()=>{const f=DokdoWave.flags();return f.mast===f.top.mast})()", timeout=6000)
+        if where == 'stay':
+            until(page, "(()=>{const f=DokdoWave.flags();return f.pole===f.top.pole})()", timeout=6000)
+        if shift == 3:
+            assert heal_state(page)['kD'] > page.evaluate(KDAY), 'stored day is ahead of the turned-back clock'
+            assert page.evaluate("DokdoWave.flags().pole") is not None, 'clock turned back: still shown as raised'
+    # 흔들기 단추: 라임 단추 바로 옆, 작은 태극기와 '흔들기' 글자. 375 폭에서 라임 단추 150px 이상.
+    page.evaluate("localStorage.removeItem('__shift')")
+    page.reload()
+    page.locator('#e-go').click()
+    expect(page.locator('#flagwave')).to_be_visible()
+    row = page.evaluate("""(()=>{const r=s=>document.querySelector(s).getBoundingClientRect(),a=r('#act'),f=r('#flagwave'),m=r('#more'),c=getComputedStyle(document.querySelector('#flagwave')),t=document.querySelector('#flagwave .fw-txt');
+      return {order:[...document.querySelectorAll('#quick button')].map(e=>e.id),line:Math.abs(a.top-f.top)<2&&Math.abs(f.top-m.top)<2,actW:a.width,bg:c.backgroundColor,label:document.querySelector('#flagwave').getAttribute('aria-label'),h:f.height,txt:t.textContent,size:parseFloat(getComputedStyle(t).fontSize),inside:t.getBoundingClientRect().bottom<=f.bottom&&document.querySelector('#flagwave canvas').getBoundingClientRect().bottom<=t.getBoundingClientRect().top+1}})()""")
+    assert row['order'] == ['act', 'flagwave', 'more'] and row['line'] and row['actW'] >= 150 and row['bg'] == 'rgb(35, 37, 40)' and row['label'] == '태극기 흔들기' and row['h'] >= 44 and row['txt'] == '흔들기' and row['size'] >= 14 and row['inside'], row
+    assert not mp3, 'voices are not loaded with the page'
+    wave = page.locator('#flagwave')
+    wave.click()
+    # 말풍선: 첫 줄 [국기] 닉네임(3D 이름표와 같은 이름), 둘째 줄 독도는 한국 땅!
+    bubble = page.locator('#tags .tag.me .bubble')
+    expect(bubble).to_have_text('독도는 한국 땅!')
+    expect(bubble).to_be_visible()
+    assert page.get_attribute('#tags .tag.me .bubble', 'data-who') == '🇰🇷 바다'
+    assert page.evaluate("document.querySelector('#tags .tag.me .name').textContent") == '바다'
+    # 오른팔을 머리 위로 들어 손깃발을 흔든다.
+    until(page, "DokdoWave.waving()&&DokdoWave.arm()<-2&&DokdoWave.handTop().flag>DokdoWave.handTop().head", timeout=3000)
+    if page.evaluate("!!(window.DokdoHaptic&&DokdoHaptic.available)"):
+        assert page.evaluate("(window.__vib||[]).slice(-1)[0]") == 22, 'a slightly stronger buzz (haptic.js cue)'
+    until(page, "window.__voices.length===1", timeout=8000)
+    assert sorted(set(mp3)) == ['shout-f1.mp3', 'shout-f2.mp3', 'shout-m1.mp3', 'shout-m2.mp3'], mp3
+    # 외침판은 내가 눌러도 열리지 않는다. 작은 탭만, 줄은 'HH:MM [국기] 닉네임: 말'.
+    expect(page.locator('#sh-tab')).to_be_visible()
+    expect(page.locator('#sh-pane')).to_be_hidden()
+    first = page.evaluate("DokdoWave.lines()[0]")
+    assert first['who'] == '바다' and first['flag'] == '🇰🇷' and first['text'] == '독도는 한국 땅!' and first['n'] == 1, first
+    page.wait_for_timeout(800)
+    # 소리를 끄면 세기는 하지만 목소리는 내지 않는다.
+    page.locator('#snd').click()
+    wave.click()
+    page.wait_for_timeout(400)
+    assert page.evaluate("window.__voices.length") == 1 and heal_state(page)['wN'] == 2
+    page.locator('#snd').click()
+    for i in range(20):
+        wave.click()
+        page.wait_for_timeout(260)
+        if i == 17:  # 20번째를 센 때 알림 한 번
+            expect(page.locator('#toast')).to_contain_text('오늘 흔들기 20번 모두 셌어요', timeout=3000)
+    until(page, "window.__voices.length>=21", timeout=8000)
+    page.wait_for_timeout(800)
+    voices = page.evaluate("window.__voices")
+    st = heal_state(page)
+    assert st['wN'] == 20 and st['wD'] == page.evaluate(KDAY), st
+    assert len(voices) == 21, ('22 presses, one with the sound off; after 20 the voice keeps playing', len(voices))
+    assert all(a != b for a, b in zip(voices, voices[1:])), voices
+    assert len(set(voices)) >= 3, voices
+    # 같은 말이 이어지면 한 줄에 ×n. 외침판은 여전히 닫혀 있다.
+    lines = page.evaluate("DokdoWave.lines()")
+    assert len(lines) == 1 and lines[0]['n'] == 22, lines
+    expect(page.locator('#sh-pane')).to_be_hidden()
+    page.locator('#sh-tab').click()
+    expect(page.locator('#sh-pane')).to_be_visible()
+    expect(page.locator('#sh-list li')).to_have_count(1)
+    expect(page.locator('#sh-list li')).to_contain_text('🇰🇷 바다: 독도는 한국 땅!×22')
+    assert page.get_attribute('#sh-list', 'aria-live') == 'polite'
+    page.locator('#sh-tab').click()
+    expect(page.locator('#sh-pane')).to_be_hidden()
+    # 내 배 판: 지킨 날과 흔들기 20/20
+    menu(page)
+    expect(page.locator('#board .b-days')).to_have_text('지킨 날 3일째')
+    expect(page.locator('#board .b-days')).to_have_attribute('aria-label', '독도를 지킨 날 3일째')
+    assert page.evaluate("document.querySelector('#board .b-days').parentElement.className") == 'b-head', 'kept days sit in the title line'
+    expect(page.locator('#board li[data-k="wave"]')).to_have_text('흔들기 20/20')
+    # 인사: 정해진 말만(자유 입력 없음). '독도는 한국 땅!'은 흔들기 단추만 낸다.
+    page.locator('#t-talk').click()
+    assert page.locator('#text').count() == 0 and page.locator('#send').count() == 0 and page.locator('form#say').count() == 0
+    assert page.locator('input[type=text],input:not([type]),textarea').count() == 1, 'only the existing name field'
+    expect(page.locator('#nick')).to_be_visible()
+    assert page.evaluate("[...document.querySelectorAll('#p-talk button')].map(b=>b.textContent)") == ['손 흔들기', '풍경이 참 좋아요', '같이 쉬어요', '또 만나요']
+    page.locator('#p-talk .q', has_text='같이 쉬어요').click()
+    expect(bubble).to_have_text('같이 쉬어요')
+    assert page.get_attribute('#tags .tag.me .bubble', 'data-who') == '🇰🇷 바다'
+    page.locator('#wave').click()
+    texts = page.evaluate("DokdoWave.lines().map(l=>l.flag+' '+l.who+': '+l.text)")
+    assert texts[-2:] == ['🇰🇷 바다: 같이 쉬어요', '🇰🇷 바다: 안녕하세요!'], texts
+    # 새 줄만 덧붙는다(앞 줄은 같은 요소 그대로). 30줄까지.
+    page.evaluate("window.__firstLi=document.querySelector('#sh-list li')")
+    for i in range(16):
+        page.locator('#p-talk .q', has_text='같이 쉬어요').click()
+        page.locator('#p-talk .q', has_text='또 만나요').click()
+    assert page.evaluate("DokdoWave.lines().length") == 30, 'at most 30 lines'
+    expect(page.locator('#sh-tab b')).to_have_text('30')
+    assert page.evaluate("document.querySelectorAll('#sh-list li').length") == 30
+    assert page.evaluate("!document.body.contains(window.__firstLi)"), 'the oldest line leaves; others are not re-rendered'
+    # 기기 나이대가 어린이여도 내 화면의 내 줄은 내 닉네임(기기 밖으로 나가지 않음). 다른 사람에게 보낼 이름은 mayShare로(단위 시험).
+    page.evaluate("localStorage.setItem('dokdo-device-age-v1','10-11')")
+    page.locator('#p-talk .q', has_text='같이 쉬어요').click()
+    assert page.evaluate("DokdoWave.lines().slice(-1)[0].who") == '바다'
+    menu(page, False)
+    # 국기 기록이 없으면 나라를 짐작하지 않고 작은 태극기 그림.
+    page.evaluate("localStorage.setItem('dokdo-korea-school-cinematic-v1',JSON.stringify({xp:0}))")
+    wave.click()
+    last = page.evaluate("DokdoWave.lines().slice(-1)[0]")
+    assert last['flag'] == '' and last['who'] == '바다', last
+    page.locator('#sh-tab').click()
+    assert page.evaluate("document.querySelector('#sh-list li:last-child img.fl')!==null"), 'Taegeukgi icon instead of a guessed flag'
+    assert page.get_attribute('#tags .tag.me .bubble', 'data-who') == '바다'
+    assert 'tg' in (page.get_attribute('#tags .tag.me .bubble', 'class') or '')
+    page.locator('#sh-tab').click()
+    # 뱃머리 시점: 화면 아래 가운데에 깃발이 잠깐 흔들리고 2초 안에 사라진다. 흔드는 동안 돛대 태극기도 세게 펄럭인다.
+    page.wait_for_timeout(900)
+    page.locator('#act').click()
+    expect(page.locator('#act')).to_have_text('낚시하기')
+    menu(page)
+    page.locator('#t-sail').click()
+    page.locator('#bow').click()
+    expect(page.locator('#bow')).to_have_attribute('aria-pressed', 'true')
+    menu(page, False)
+    wave.click()
+    expect(page.locator('#fw-bow')).to_be_visible()
+    until(page, "Math.abs(DokdoWave.mastSwing())>0.05", timeout=2000)
+    expect(page.locator('#fw-bow')).to_be_hidden(timeout=2500)
+    assert not errors, errors
+    assert not outside, outside
+    context.close()
+    print('ok flag once a day (toast only), kept days never drop, 20 counted then voice goes on, board ×n, nickname+flag bubble')
+
+def faces(browser):
+    """선장 얼굴: 배 색(hue)을 씨앗으로 늘 같은 얼굴, 씨앗이 다르면 다른 얼굴. 팔다리. 움직임 줄이기면 껑충 뛰지 않는다."""
+    seen = {}
+    for hue in ['0.12', '0.47']:
+        context = browser.new_context(viewport={'width': 390, 'height': 844})
+        use_three(context)
+        weather(context, 0)
+        context.add_init_script(f"localStorage.setItem('hue','{hue}');if(!localStorage.getItem('dokdo-heal'))localStorage.setItem('dokdo-heal',JSON.stringify({{gift:1,c:100}}))")
+        page = context.new_page()
+        page.goto(f'{base}/camp/')
+        face = page.evaluate("JSON.stringify(DokdoHeal.three().boat.userData.who.userData.face)")
+        assert face == page.evaluate("JSON.stringify(DokdoCaptain.face(+localStorage.getItem('hue')))")
+        parts = page.evaluate("(()=>{const w=DokdoHeal.three().boat.userData.who;return {arms:!!(w.userData.armR&&w.userData.armL),kids:w.children.length}})()")
+        assert parts['arms'] and parts['kids'] >= 9, parts
+        page.reload()
+        assert page.evaluate("JSON.stringify(DokdoHeal.three().boat.userData.who.userData.face)") == face, 'same face after reload'
+        seen[hue] = face
+        context.close()
+    assert seen['0.12'] != seen['0.47'], seen
+    # 함께 쓰는 모양: 두 선장의 얼굴 부품은 같은 geometry를 쓴다(배를 지울 때 버릴 것이 없음).
+    context = browser.new_context(viewport={'width': 390, 'height': 844}, reduced_motion='reduce')
+    use_three(context)
+    weather(context, 0)
+    page = context.new_page()
+    page.goto(f'{base}/camp/')
+    shared = page.evaluate("""(()=>{const T=DokdoHeal.three().T,a=new T.Group(),b=new T.Group();[a,b].forEach(g=>{g.add(new T.Mesh(new T.SphereGeometry(1),new T.MeshStandardMaterial()),new T.Mesh(new T.SphereGeometry(1),new T.MeshStandardMaterial()),new T.Mesh(new T.SphereGeometry(1),new T.MeshStandardMaterial()))});
+      DokdoCaptain.dress(a,.3,T);DokdoCaptain.dress(b,.7,T);return a.userData.armR.children[0].geometry===b.userData.armR.children[0].geometry})()""")
+    assert shared, 'arm geometry is shared'
+    page.locator('#e-go').click()
+    skip_guide(page)
+    page.wait_for_timeout(2000)  # 페이지를 연 뒤 처음 1.8초의 몸짓(healing.js 원래 동작)이 끝난 다음에 잰다
+    base_y = page.evaluate("DokdoWave.hop()")
+    page.locator('#flagwave').click()
+    for _ in range(8):
+        page.wait_for_timeout(120)
+        assert page.evaluate("DokdoWave.hop()") == base_y, 'reduced motion: no hop on wave'
+    until(page, "DokdoWave.arm()<-2", timeout=2000)  # 팔은 그대로 든다(흔들지는 않음)
+    context.close()
+    print('ok seeded faces stay the same, differ across seeds, arms raise, shared geometry, no hop with reduced motion')
+
+def shout_fit(browser):
+    """외침판 탭은 오른쪽 위 작은 탭: 위 단추·아래 단추·바위 안내판·내 배를 가리지 않고, 알림과도 겹치지 않는다(375×667, 844×390, 390×844)."""
+    for w, h in [(375, 667), (844, 390), (390, 844)]:
+        context = browser.new_context(viewport={'width': w, 'height': h})
+        use_three(context)
+        weather(context, 0)
+        context.add_init_script(SHIFT)
+        page = context.new_page()
+        page.goto(f'{base}/camp/')
+        page.locator('#e-go').click()
+        page.locator('#flagwave').click()
+        skip_guide(page)
+        for i in range(3):
+            page.locator('#flagwave').click()
+        expect(page.locator('#sh-tab')).to_be_visible()
+        expect(page.locator('#sh-pane')).to_be_hidden()
+        expect(page.locator('#toast')).to_contain_text('태극기를 올렸어요', timeout=8000)  # 게양 알림(느린 기기에서는 이미 사라졌을 수 있어 글자로 확인)
+        clear = page.evaluate("""(()=>{const T=document.querySelector('#toast'),wasH=T.hidden;T.hidden=false;/* 알림이 이미 사라졌어도 그 자리를 잰다 */const r=e=>(typeof e==='string'?document.querySelector(e):e).getBoundingClientRect(),p=r('#sh-tab'),off=(a,b)=>a.bottom<=b.top||b.bottom<=a.top||a.right<=b.left||b.right<=a.left,seen=s=>{const e=document.querySelector(s);return e&&e.offsetParent&&!e.hidden};
+          const boat=document.querySelector('#tags .tag.me').getBoundingClientRect();
+          return {top:['#top .back','#snd'].every(s=>off(p,r(s))),bottom:[...document.querySelectorAll('#dock button')].filter(e=>e.offsetParent).every(e=>off(p,e.getBoundingClientRect())),
+            info:!seen('#info')||off(p,r('#info')),toast:off(p,r('#toast')),boat:off(p,boat),inside:p.left>=0&&p.right<=innerWidth&&p.top>=0,_:(T.hidden=wasH)}})()""")
+        clear.pop('_', None)
+        assert clear == {'top': True, 'bottom': True, 'info': True, 'toast': True, 'boat': True, 'inside': True}, (w, h, clear)
+        shot = os.environ.get('SHOT_DIR')
+        page.locator('#sh-tab').click()
+        expect(page.locator('#sh-pane')).to_be_visible()
+        pane = page.evaluate("""(()=>{const p=document.querySelector('#shout').getBoundingClientRect(),off=(a,b)=>a.bottom<=b.top||b.bottom<=a.top||a.right<=b.left||b.right<=a.left;return ['#top .back','#snd','#quick'].every(s=>off(p,document.querySelector(s).getBoundingClientRect()))})()""")
+        assert pane, (w, h, 'open board leaves the buttons free')
+        if shot:
+            page.wait_for_timeout(400)
+            page.screenshot(path=f'{shot}/pr3-board-{w}x{h}.png')
+        page.locator('#sh-tab').click()
+        menu(page)
+        if h < 500:
+            expect(page.locator('#shout')).to_be_hidden()  # 가로에서 메뉴를 열면 외침판은 숨는다
+        else:
+            clear = page.evaluate("(()=>{const p=document.querySelector('#shout').getBoundingClientRect(),d=document.querySelector('#dock').getBoundingClientRect();return p.bottom<=d.top})()")
+            assert clear, (w, h, 'tab clear of the open menu')
+        if shot:
+            page.wait_for_timeout(600)
+            page.screenshot(path=f'{shot}/pr3-menu-{w}x{h}.png')
+        context.close()
+    print('ok shout tab leaves the top and bottom buttons, info card, boat and toast free')
+
 def blocked(browser):
     context = browser.new_context()
     context.route(CDN, lambda r: r.abort())
     page = context.new_page()
     page.goto(f'{base}/camp/')
     expect(page.locator('#err')).to_be_visible()
+    # 3D를 못 켜도 그날 처음 열면 독도를 지킨 날을 하루 센다(같은 날 다시 열어도 그대로).
+    until(page, "(JSON.parse(localStorage.getItem('dokdo-heal')||'{}').kN||0)===1", timeout=5000)
+    page.reload()
+    expect(page.locator('#err')).to_be_visible()
+    page.wait_for_timeout(500)
+    assert heal_state(page)['kN'] == 1
     # 3D를 못 켜도 2D 그림은 본다(예전처럼 바로 뜬다). 3D 단추를 누르면 안내와 홈 길이 나온다. 설명서는 없다.
     expect(page.locator('#view')).to_be_visible()
     page.wait_for_load_state('load')
@@ -674,6 +953,9 @@ try:
         rain(browser)
         sizes(browser)
         board(browser)
+        flagday(browser)
+        faces(browser)
+        shout_fit(browser)
         member(browser)
         blocked(browser)
         browser.close()

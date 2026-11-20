@@ -61,7 +61,7 @@ function boat(hue){const b=new T.Group(),wood=new T.MeshStandardMaterial({color:
  const body=new T.Mesh(new T.SphereGeometry(1.7,14,10),new T.MeshStandardMaterial({color:new T.Color().setHSL(hue,.6,.6)}));body.scale.y=1.15;body.position.y=1.8;who.add(body);
  const head=new T.Mesh(new T.SphereGeometry(1.75,16,12),new T.MeshStandardMaterial({color:0xf2cfa8}));head.position.y=4.6;who.add(head);
  const hair=new T.Mesh(new T.SphereGeometry(1.86,16,12,0,Math.PI*2,0,1.45),new T.MeshStandardMaterial({color:0x3a2a22}));hair.position.y=4.72;hair.rotation.x=.18;who.add(hair);
- b.add(who);const pet=new T.Group();b.add(pet);b.userData.who=who;b.userData.rig=[mast,sl,who];b.userData.parts=[hull,dk,mast,sl,pet];Object.assign(b.userData,{mast,sl,pet,hc:new T.Color().setHSL(hue,.55,.82),k:0});return b}
+ b.add(who);if(window.DokdoCaptain)DokdoCaptain.dress(who,hue,T);/* 11/20 합치기 3단계: 얼굴·팔다리(captain.js), 배 색으로 늘 같은 얼굴 */const pet=new T.Group();b.add(pet);b.userData.who=who;b.userData.rig=[mast,sl,who];b.userData.parts=[hull,dk,mast,sl,pet];Object.assign(b.userData,{mast,sl,pet,hc:new T.Color().setHSL(hue,.55,.82),k:0});return b}
 const LIME=new T.Color(0xB6D80C);
 function deco(b,k){const u=b.userData;if(u.k===k)return;u.k=k;u.sl.material.color.copy(k&4?LIME:u.hc);
  if(k&1&&!u.flag){u.flag=new T.Mesh(new T.BufferGeometry().setAttribute('position',new T.Float32BufferAttribute([0,7.4,0,0,4.9,0,-3.8,6.2,0],3)),new T.MeshBasicMaterial({color:0xB6D80C,side:T.DoubleSide}));u.mast.add(u.flag)}
@@ -338,6 +338,15 @@ Object.assign(window.DokdoHeal,{
  level:()=>LV(),
  today:()=>{const d=today(),left=EC.catchesLeft(st,d);return{coins:st.c,left,xG:st.xG,capG:EC.CAP.game,xC:st.xC,capC:EC.CAP.clean,look:st.rD===d?st.rN:0,capL:10}}});
 // ── 합치기 2단계 끝 ──
+// ── 11/20 합치기 3단계: 태극기 게양·흔들기·외침판(wave.js)이 쓰는 창구. 새 기록 칸은 shout-core.js가 고쳐 읽고, 저장은 원래 keep()으로 한다. ──
+Object.assign(window.DokdoHeal,{
+ three:()=>({T,scene:s,boat:me.b,quay}),mode:()=>mode,
+ state:()=>st,keep,// st는 크리에이터 모드를 켜고 끌 때 바뀌므로 늘 지금 것을 돌려준다
+ cheer:x=>{const n=performance.now();me.say=String(x).slice(0,30);me.sayT=n;if(!calm)me.wave=n;dirty=true},// 말풍선과 몸짓(소리 없이). 움직임 줄이기 설정이면 껑충 뛰지 않는다
+ bow:()=>bowView,calm:()=>calm,
+ sound:()=>{startAudio();return{AC,mix,on}},// 소리 켜고 끄기와 크기는 mix가 따른다
+ nick:()=>clean(nick.value.trim())||'친구'});
+// ── 합치기 3단계 끝 ──
 addEventListener('pointerdown',()=>{if(AC&&AC.state!=='running')AC.resume()});document.addEventListener('visibilitychange',()=>{if(!document.hidden&&AC)AC.resume();if(!document.hidden&&silent)silent.play().catch(()=>{})});
 if(window.claude&&claude.use)Promise.all([claude.use('db'),claude.use('user')]).then(async([db,u])=>{if(!db||!u)return;const id=await u.id();if(!id)return;const ref=db.doc('data/users/'+id+'/wallet'),sn=await ref.get();wallet=ref;const v=sn.exists&&sn.data();let baseT=st.t;if(creator){try{baseT=JSON.parse(stBack).t}catch(e){}}if(v&&typeof v.t==='number'&&v.t>=baseT){if(creator){try{const b=JSON.parse(stBack);Object.assign(b,v);stBack=JSON.stringify(b)}catch(e){}return}Object.assign(st,v);EC.tidy(st);deco(me.b,st.on);dirty=true;save(WK,JSON.stringify(st));ui()}else if(st.t)keep()}).catch(()=>{}).finally(giveGift);
 // 함께 있는 사람들
@@ -366,7 +375,7 @@ function tick(n){if(body.classList.contains('v2d')){last=n;requestAnimationFrame
  swim(me.b,n);if(rest)resting(n);
  me.b.userData.who.position.y=2.85+(n-me.wave<1800?Math.abs(Math.sin(n*.012))*1.3:0);
  const showSay=me.say;me.tag.bu.hidden=!showSay;if(showSay&&me.tag.bu.textContent!==showSay)me.tag.bu.textContent=showSay;me.tag.na.textContent=clean(nick.value.trim())||'친구';
- put(me.tag.e,me.b.position.x,me.b.position.y+(seated?12:12),me.b.position.z);if(bowView||(seated&&!showSay))me.tag.e.style.visibility='hidden';
+ put(me.tag.e,me.b.position.x,me.b.position.y+(seated?13:25),/* 3단계: 바다에서는 돛대 태극기 위로 */me.b.position.z);if(bowView||(seated&&!showSay))me.tag.e.style.visibility='hidden';
  others.forEach(o=>{if(o.gx!=null){o.x+=(o.gx-o.x)*.07;o.z+=(o.gz-o.z)*.07;o.r+=(o.gr-o.r)*.07}if(o.v){const h=[...String(o.tag.na.textContent)].reduce((a,c)=>a+c.charCodeAt(0),0),q=seatOf(SEAT[o.v]?o.v:'stay',2+h%6),t=SEAT[o.v]||stay;o.b.userData.parts.forEach(x=>x.visible=false);o.b.position.set(q.x,q.y-2.85,q.z);o.b.rotation.set(0,Math.atan2(q.x-t.lx,q.z-t.lz),0)}else{o.b.userData.parts.forEach(x=>x.visible=true);bob(o.b,o.x,o.z,o.r,n)}swim(o.b,n);o.b.userData.who.position.y=2.85+(n-o.wave<1800?Math.abs(Math.sin(n*.012))*1.3:0);put(o.tag.e,o.b.position.x,o.b.position.y+12,o.b.position.z)});
  gulls.forEach((w,i)=>{const u=w.userData,a=u.a+n*.00022*(i%2?1:-1);w.position.set(u.c[0]+Math.cos(a)*u.r,u.c[1]+u.h*.3+Math.sin(n*.001+i)*6,u.c[2]+Math.sin(a)*u.r);w.rotation.y=-a;w.scale.y=1});
  if(scene&&!calm&&!look&&n-dragT>4000)yaw+=dt*.025;
