@@ -553,6 +553,8 @@ def board(browser):
         menu(page)
         expect(page.locator('#board')).to_be_visible()
         assert page.evaluate("document.querySelector('#m-top').firstElementChild.id") == 'board', 'the card comes first in the menu'
+        page.wait_for_timeout(300)
+        assert page.evaluate("Math.abs(parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dk'))-document.querySelector('#dock').offsetHeight)<=1"), 'the 3D view knows the open menu height (--dk)'
         assert page.locator('#board #goal').count() == 1, 'the existing gauge lives in the card (not a copy)'
         assert page.locator('#goal').count() == 1
         expect(page.locator('#board h2')).to_have_text('내 배')

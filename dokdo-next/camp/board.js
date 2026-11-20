@@ -46,8 +46,11 @@ function numbers(){const t=H.today(),L=H.level();lv.textContent='';const a=mk('b
 // 메뉴가 열려 있는 동안만 고친다(배 점은 0.25초마다, 숫자는 1초마다).
 let tm=0,tick=0;
 function run(){if(mTop.hidden){clearInterval(tm);tm=0;return}if(!view&&!drawLand())return;drawBoat();if(tick++%4===0)numbers()}
-function open(){if(mTop.hidden)return;view=null;tick=0;drawLand();run();if(!tm)tm=setInterval(run,250)}
+// 판 높이가 바뀌면(글자가 처음 채워질 때 등) 3D 화면이 아래 판 높이(--dk)를 다시 재도록 알린다.
+const dockE=$('#dock');
+function open(){if(mTop.hidden)return;const h0=dockE.offsetHeight;view=null;tick=0;drawLand();run();if(dockE.offsetHeight!==h0)dispatchEvent(new Event('resize'));if(!tm)tm=setInterval(run,250)}
 new MutationObserver(open).observe(mTop,{attributes:true,attributeFilter:['hidden']});
 addEventListener('resize',()=>{view=null;if(!mTop.hidden)drawLand()});
+numbers();// 처음부터 글자를 채워 두어 메뉴를 열 때 판 높이가 튀지 않게
 window.DokdoBoard={refresh:()=>{if(!mTop.hidden){numbers();drawBoat()}},toMap:(x,z)=>view?toMap(x,z):null};
 })();
