@@ -1,19 +1,18 @@
 'use strict';
-// 스쿨 첫 화면의 DOKDO TOGETHER 문: 세 갈래 칸은 그대로 두고 아래 띠로 단다. 닉네임·나라는 어린이 보호 확인을 통과한 때만 주소로.
+// 스쿨 첫 화면의 DOKDO TOGETHER 문: 11/20 교수님 지시로 첫 화면 띠는 뺐다(./together/ 페이지는 그대로). 주소를 건네는 코드는 문이 다시 생겨도 같은 원칙을 지키도록 남긴다.
 const test = require('node:test');
 const a = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const read = (f) => fs.readFileSync(path.join(__dirname, '..', f), 'utf8');
 
-test('the school home has one TOGETHER door below the three choices, and the three choices stay', () => {
+test('the school home no longer shows the TOGETHER door, and the healing card leads the three choices (11/20)', () => {
   const page = read('index.html');
-  a.equal((page.match(/id="together-entry"/g) || []).length, 1);
-  a.match(page, /<a id="together-entry" class="v3-together" href="\.\/together\/">/);
-  const grid = page.indexOf('v3-choice-grid'), camp = page.indexOf('id="camp-entry"'), door = page.indexOf('id="together-entry"'), links = page.indexOf('class="v3-entry-links"');
-  a.ok(grid < camp && camp < door && door < links, 'after the camp card, before the live and language links');
-  a.match(page, /<svg class="v3-together-flag" viewBox="0 0 36 24" aria-hidden="true"/);
-  a.ok((page.match(/fill="#000000"/g) || []).length >= 4, 'the small flag has its four trigrams');
+  a.equal((page.match(/id="together-entry"/g) || []).length, 0, 'the band below the choices was removed');
+  const grid = page.indexOf('v3-choice-grid'), camp = page.indexOf('id="camp-entry"'), learn = page.indexOf('id="v3-enter-learn"'), play = page.indexOf('id="v3-enter-play"');
+  a.ok(grid < camp && camp < learn && learn < play, 'healing first, then learning and playground');
+  a.match(page, /<span aria-hidden="true" class="v3-choice-art camp-art"><img src="\.\/assets\/heal-scene\.jpg" alt=""/);
+  a.ok(fs.existsSync(path.join(__dirname, '..', 'assets', 'heal-scene.jpg')), 'the scene picture ships with the page');
 });
 
 test('nickname and country go to TOGETHER only through the same child-protection gate as the camp', () => {
