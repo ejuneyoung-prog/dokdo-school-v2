@@ -10,7 +10,10 @@ from playwright.sync_api import sync_playwright, expect
 ROOT = Path(__file__).resolve().parent.parent
 class Quiet(SimpleHTTPRequestHandler):
     def log_message(self, *a): pass
-server = ThreadingHTTPServer(('127.0.0.1', 0), partial(Quiet, directory=str(ROOT)))
+class Roomy(ThreadingHTTPServer):
+    # 기본 대기열(5)이면 스크립트를 한꺼번에 받을 때 연결이 끊겨 화면이 반쯤만 켜진다(학교 화면 닉네임 창 실패의 한 원인).
+    request_queue_size = 256
+server = Roomy(('127.0.0.1', 0), partial(Quiet, directory=str(ROOT)))
 threading.Thread(target=server.serve_forever, daemon=True).start()
 base = f'http://127.0.0.1:{server.server_port}'
 engine = sys.argv[1] if len(sys.argv) > 1 else 'chromium'
@@ -276,8 +279,13 @@ def walk(context, label):
     if not page.locator('#auto').get_attribute('aria-pressed') == 'true':
         page.locator('#auto').click()
     expect(page.locator('#auto')).to_have_attribute('aria-pressed', 'true')
+    # 메뉴(내 배 판 포함)를 닫고 바다를 누른다. 사람도 메뉴를 닫고 바다를 본다.
+    menu(page, False)
     tap_sea(page)
     expect(page.locator('#auto')).to_have_attribute('aria-pressed', 'false')
+    menu(page)
+    page.locator('#t-sail').click()
+    expect(page.locator('#p-sail')).to_be_visible()
     if label == 'pc':
         until(page, "document.querySelector('#auto').getAttribute('aria-pressed')==='true'", timeout=45000)
         # 항해 메뉴에서 직접 끈 것은 그대로 둔다.
@@ -526,6 +534,73 @@ def sizes(browser):
         context.close()
     print('ok entry fits 375x667, menu leaves the view at 844x390')
 
+def board(browser):
+    """11/20 합치기 2단계: 메뉴를 열면 맨 위에 '내 배' 판. 지도(땅 모양·내 배·선착장), 레벨·대황, 오늘 할 일(실제 저장값만)."""
+    for w, h in [(390, 844), (375, 667), (844, 390)]:
+        context = browser.new_context(viewport={'width': w, 'height': h})
+        use_three(context)
+        weather(context, 0)
+        page = context.new_page()
+        errors = []
+        page.on('pageerror', lambda e: errors.append(str(e)))
+        page.goto(f'{base}/camp/')
+        # 오늘(한국 시각) 값이 든 기록을 넣고 다시 연다: 낚시 3번, 놀이 40, 줍기 15, 바라보기·쉬기 4, 대황 123
+        page.evaluate("""(()=>{const d=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date());
+          localStorage.setItem('dokdo-heal',JSON.stringify({c:123,t:123,gift:1,xD:d,fN:3,xG:40,xC:15,hx:55,rD:d,rN:4}))})()""")
+        page.reload()
+        page.locator('#e-go').click()
+        expect(page.locator('#board')).to_be_hidden()
+        menu(page)
+        expect(page.locator('#board')).to_be_visible()
+        assert page.evaluate("document.querySelector('#m-top').firstElementChild.id") == 'board', 'the card comes first in the menu'
+        assert page.locator('#board #goal').count() == 1, 'the existing gauge lives in the card (not a copy)'
+        assert page.locator('#goal').count() == 1
+        expect(page.locator('#board h2')).to_have_text('내 배')
+        texts = page.evaluate("Object.fromEntries([...document.querySelectorAll('#board li')].map(e=>[e.dataset.k,e.textContent]))")
+        assert texts == {'fish': '낚시 7번 남음', 'game': '놀이 경험치 40/100', 'clean': '바다 쓰레기 줍기 15/50', 'look': '바라보기·쉬기 대황 4/10'}, texts
+        assert page.locator('#board li').count() == 4, 'no invented items (흔들기·통발 come later)'
+        lv = page.evaluate("DokdoHeal.level().L")
+        expect(page.locator('#board .b-lv')).to_have_text(f'Lv {lv} · 대황 123')
+        assert page.evaluate("document.querySelector('#g-text').textContent").startswith(f'Lv{lv} ·')
+        # 지도: 지형 칸으로 그린 땅이 있고, 선착장 표시가 지도 안에 있다.
+        drawn = page.evaluate("""(()=>{const c=document.querySelector('#board canvas'),x=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let n=0;for(let i=3;i<x.length;i+=4)if(x[i])n++;return {n,all:c.width*c.height}})()""")
+        assert 0.03 * drawn['all'] < drawn['n'] < 0.6 * drawn['all'], drawn
+        inside = page.evaluate("""(()=>{const m=document.querySelector('#board .b-map').getBoundingClientRect();return ['.b-dock','.b-dot'].map(s=>{const b=document.querySelector('#board '+s).getBoundingClientRect(),x=b.left+b.width/2,y=b.top+b.height/2;return x>=m.left&&x<=m.right&&y>=m.top&&y<=m.bottom})})()""")
+        assert inside == [True, True], inside
+        # 선착장에 앉아 있으면 내 배 점은 선착장 표시 가까이에 있다.
+        near = page.evaluate("""(()=>{const a=document.querySelector('#board .b-dot').getBoundingClientRect(),b=document.querySelector('#board .b-dock').getBoundingClientRect();return Math.hypot(a.left+a.width/2-b.left-b.width/2,a.top+a.height/2-b.top-b.height/2)})()""")
+        assert near < 12, near
+        # 바다로 나가면 점이 배를 따라 움직이고, 지도 좌표는 배의 실제 자리와 맞는다.
+        menu(page, False)
+        page.wait_for_timeout(900)  # 라임 단추 글자가 바뀐 뒤 0.8초 동안의 누름은 무시된다(두 번 눌림 방지)
+        page.locator('#act').click()
+        expect(page.locator('#act')).to_have_text('낚시하기')
+        menu(page)
+        # 배 타고 바다로는 먼 바다에서 출발한다. 지도 밖이면 점은 가장자리에 속이 빈 채로 붙어 있다가, 지도 안으로 들어오면 채워진다.
+        until(page, "!document.querySelector('#board .b-dot').classList.contains('far')", timeout=45000)
+        at0 = page.evaluate("document.querySelector('#board .b-dot').dataset.at")
+        first = page.evaluate("document.querySelector('#board .b-dot').style.left+','+document.querySelector('#board .b-dot').style.top")
+        page.wait_for_timeout(3500)
+        later = page.evaluate("document.querySelector('#board .b-dot').style.left+','+document.querySelector('#board .b-dot').style.top")
+        assert first != later, (first, later)
+        assert page.evaluate("document.querySelector('#board .b-dot').dataset.at") != at0, 'the boat position is live'
+        page.wait_for_timeout(300)
+        match = page.evaluate("""(()=>{const d=document.querySelector('#board .b-dot'),[x,z]=d.dataset.at.split(',').map(Number),p=DokdoBoard.toMap(x,z),m=document.querySelector('#board .b-map').getBoundingClientRect(),cx=Math.min(m.width-6,Math.max(6,p[0])),cy=Math.min(m.height-6,Math.max(6,p[1]));return Math.hypot(parseFloat(d.style.left)-cx,parseFloat(d.style.top)-cy)})()""")
+        assert match < 1.5, match
+        # 브랜드: 판 안 글자 14px 이상, 라임은 점과 강조에만, 차콜 판.
+        look = page.evaluate("""(()=>{const all=[...document.querySelectorAll('#board *')].filter(e=>e.offsetParent&&e.childNodes.length&&[...e.childNodes].some(n=>n.nodeType===3&&n.textContent.trim()));
+          return {min:Math.min(...all.map(e=>parseFloat(getComputedStyle(e).fontSize))),bg:getComputedStyle(document.querySelector('#board')).backgroundColor,dot:getComputedStyle(document.querySelector('#board .b-dot')).backgroundColor,wide:document.querySelector('#board').scrollWidth<=document.querySelector('#board').clientWidth}})()""")
+        assert look['min'] >= 14 and look['bg'] == 'rgb(35, 37, 40)' and look['wide'] and look['dot'] in ('rgb(182, 216, 12)', 'rgb(35, 37, 40)'), look
+        assert page.evaluate("document.documentElement.scrollWidth<=innerWidth"), 'no sideways scroll'
+        if h < 500:
+            fits = page.evaluate("(()=>{const d=document.querySelector('#dock').getBoundingClientRect(),q=document.querySelector('#quick').getBoundingClientRect(),m=document.querySelector('#m-top');return {h:d.height<=innerHeight*.62+1,q:q.bottom<=innerHeight,scroll:getComputedStyle(m).overflowY}})()")
+            assert fits == {'h': True, 'q': True, 'scroll': 'auto'}, fits
+        else:
+            assert page.evaluate("document.querySelector('#dock').getBoundingClientRect().top") >= 0
+        assert not errors, errors
+        context.close()
+    print('ok 내 배 card: map, dot follows the boat, numbers match the save')
+
 def blocked(browser):
     context = browser.new_context()
     context.route(CDN, lambda r: r.abort())
@@ -565,6 +640,7 @@ try:
         picture(browser, {k: v for k, v in pw.devices['iPhone 13'].items() if k != 'default_browser_type'})
         rain(browser)
         sizes(browser)
+        board(browser)
         member(browser)
         blocked(browser)
         browser.close()

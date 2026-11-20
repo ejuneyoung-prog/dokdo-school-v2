@@ -1,0 +1,32 @@
+/* 메뉴 = 내 배 판(board.js, 11/20 합치기 2단계). 차콜 판 위, 라임은 내 배 점과 숫자 강조에만. 글자는 14px 이상. */
+#board{display:grid;gap:8px;background:#232528;border-radius:12px;padding:10px 12px;text-align:left}
+#board .b-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+#board h2{margin:0;font-size:16px;font-weight:500;color:#FFFFFF}
+#board .b-lv{margin:0;color:#A7ABB0;font-size:14px;white-space:nowrap}
+#board .b-lv b{font:400 19px var(--num);color:#B6D80C;letter-spacing:.03em}
+#board .b-grid{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start}
+#board .b-mapcol{display:grid;gap:4px}
+#board .b-map{position:relative;width:132px;height:96px;border-radius:9px;background:#2E3135;overflow:hidden}
+#board .b-map canvas{display:block;width:100%;height:100%}
+#board .b-dot,#board .b-dock{position:absolute;display:block;transform:translate(-50%,-50%);pointer-events:none}
+#board .b-dot{width:11px;height:11px;border-radius:50%;background:#B6D80C;box-shadow:0 0 0 2px #232528;transition:left .25s linear,top .25s linear}
+#board .b-dot.far{background:#232528;box-shadow:inset 0 0 0 2px #B6D80C}
+#board .b-dock{width:8px;height:8px;background:#FFFFFF;box-shadow:0 0 0 2px #232528}
+#board .b-key{margin:0;display:flex;gap:10px;color:#A7ABB0;font-size:14px;white-space:nowrap}
+#board .b-key span::before{content:"";display:inline-block;width:9px;height:9px;margin-right:4px;vertical-align:1px}
+#board .k-me::before{border-radius:50%;background:#B6D80C}
+#board .k-dock::before{background:#FFFFFF}
+#board .b-todo{display:grid;gap:2px;min-width:0}
+#board .b-sub{margin:0;color:#A7ABB0;font-size:14px}
+#board ul{margin:0;padding:0;list-style:none;display:grid;gap:2px}
+#board li{font-size:14px;line-height:1.4;color:#FFFFFF}
+#board li::before{content:"·";display:inline-block;width:12px;color:#A7ABB0}
+#board li.done{color:#A7ABB0}
+#board li.done::before{content:"✓";color:#B6D80C}
+#board #goal{width:100%;background:#2E3135}
+#m-top .vlab{flex:none;color:#A7ABB0;font-size:14px;padding-left:4px}
+/* 가로로 낮은 화면: 지도를 조금 줄인다(메뉴 판 62% 한도는 index.html 쪽 규칙 그대로, 넘치면 안에서 넘김). */
+@media (max-height:500px){#board{padding:8px 10px;gap:6px}#board .b-map{width:120px;height:80px}}
+/* 가로로 넓고 낮은 화면: 게이지를 오른쪽 칸으로 올려 판 높이를 줄인다. */
+@media (max-height:500px) and (min-width:640px){#board{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);align-items:start}#board .b-head{grid-column:1/-1}#board #goal{grid-column:2;grid-row:2}}
+@media (prefers-reduced-motion:reduce){#board .b-dot{transition:none}}

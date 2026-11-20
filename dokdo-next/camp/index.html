@@ -178,6 +178,7 @@ body:has(#deck:not([hidden])) #toast{top:auto;bottom:calc(16px + env(safe-area-i
 /* 가로로 낮은 화면: 메뉴가 화면을 덮지 않게 높이를 62%로 묶는다. 라임 단추 줄은 늘 맨 아래, 넘치면 정보 줄 안에서 넘긴다. */
 @media (max-height:500px){#dock{display:flex;flex-direction:column;gap:6px;max-height:62dvh}#dock>*{flex:none}#m-top{flex:0 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y}#dock:has(#p-rest:not([hidden]),#p-sail:not([hidden]),#p-talk:not([hidden])) #m-top{display:none}}/* 판을 열면 정보 줄은 접는다 */
 </style>
+<link rel="stylesheet" href="./board.css">
 </head><body>
 <canvas id="stage" aria-label="독도에서 힐링하기 3D 장면"></canvas>
 <div id="tags"></div>
@@ -233,4 +234,5 @@ body:has(#deck:not([hidden])) #toast{top:auto;bottom:calc(16px + env(safe-area-i
 <script src="./sail.js"></script>
 <script src="./healing.js"></script>
 <script src="./guide.js"></script>
+<script src="./board.js"></script>
 </body></html>
