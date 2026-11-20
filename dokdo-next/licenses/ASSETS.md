@@ -42,7 +42,8 @@
 - `camp/voice/shout-f1.mp3`, `shout-f2.mp3`, `shout-m1.mp3`, `shout-m2.mp3`: '독도는 한국 땅!' 한 마디. 2026-11-20 프로젝트 책임자의 ElevenLabs 계정에서 음성 합성(TTS)으로 만들었고, ElevenLabs 라이브러리 음성(여성 둘, 남성 둘)을 썼습니다. 원본 이름 `2026-11-20_독도는한국땅_여1·여2·남1·남2.mp3`, 파일은 바꾸지 않고 이름만 영문으로 바꿨습니다.
 - 이용 조건(알려진 것): ElevenLabs 공식 도움말: 유료 요금제 생성물은 상업 이용 가능, 무료 요금제는 불가, 베타 서비스 생성물은 상업·운영 사용 불가. 이 파일은 전문 복제 음성을 쓰는 유료 계정에서 생성(eleven_v4).
   - 출처: https://elevenlabs.io/docs/help-center/legal/can-i-publish-the-content-i-generate-on-the-platform , https://elevenlabs.io/terms-of-use
-  - 남은 확인: eleven_v4가 베타 서비스인지, 음성 라이브러리 부록(Voice Library Addendum) 조건 [확인필요].
+  - eleven_v4: ElevenLabs가 2026-09-28 정식 출시(문서 변경 기록 https://elevenlabs.io/docs/changelog/2026/9/28 , 모델 문서 https://elevenlabs.io/docs/overview/capabilities/text-to-speech/eleven-v4 에 미리보기·베타 표시 없음, 2026-11-20 확인).
+  - 남은 확인: 음성 라이브러리 부록(Voice Library Addendum) 조건 [확인필요].
 - 사용자가 태극기 흔들기 단추를 누를 때만 재생하고, 페이지를 열 때 받지 않습니다.
 - `camp/waves.mp3`, `camp/rain.mp3`: 프로젝트 책임자가 제공한 녹음을 반복 재생에 맞게 편집한 파일입니다(camp/README.md).
 
