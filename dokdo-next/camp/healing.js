@@ -223,6 +223,14 @@ function tryGo(m){if(opened(m)){heal(m);return true}const p=PASS[m];toast(jo(p[2
 function grew(before){const L=LV().L;if(L<=before)return;const p=EC.PLACES.find(q=>q[1]>before&&q[1]<=L);setTimeout(()=>toast(p?'Lv'+L+' 달성 · '+jo(p[2],'이','가')+' 열렸습니다':'Lv'+L+' 달성'),2800)}
 function keep(){if(creator){ui();return}save(WK,JSON.stringify(st));ui();if(!wallet)return;if(busy){again=true;return}busy=true;wallet.set({...st}).catch(()=>{wallet=null}).finally(()=>{busy=false;if(again){again=false;keep()}})}
 function gain(k,why){st.c+=k;st.t+=k;keep();toast(why+' · 대황 +'+k);chime()}
+// 통발(11/20 교수님: 힐링존에도 통발): 기다림·잡히는 것·대황 값은 trap.js(내 배 띄우기 놀이와 같은 값을 옮겨 적음).
+// 바다(배)에서 던지고, 다 차면 어디서든 건진다. 한 번에 하나, 건진 것은 바로 대황으로(독도새우 2·문어 3·도화새우 9). 처음 한 번만 짧게 기다린다.
+const TC=window.DokdoHealTrap||null,TRAP_COIN=TC?TC.COIN:{};['tpAt','tpX','tpZ','tpN'].forEach(k=>{if(!Number.isFinite(st[k]))st[k]=0});
+const buoy=new T.Group();{const f=new T.Mesh(new T.SphereGeometry(1.7,12,10),new T.MeshStandardMaterial({color:0xff7a1a}));f.position.y=.8;buoy.add(f);const po=new T.Mesh(new T.CylinderGeometry(.12,.12,4.4,6),new T.MeshStandardMaterial({color:0xeeeeee}));po.position.y=2.8;buoy.add(po);const fl=new T.Mesh(new T.BoxGeometry(1.8,1.1,.08),new T.MeshStandardMaterial({color:0xb6d80c}));fl.position.set(.9,4.4,0);buoy.add(fl)}buoy.visible=false;s.add(buoy);
+const trapWait=()=>TC?((st.tpN|0)?TC.TRAP_MINUTES:TC.FIRST_TRAP_MINUTES)*60000:0,trapLeft=()=>st.tpAt?Math.max(0,st.tpAt+trapWait()-Date.now()):-1;
+const mmss=ms=>{const t=Math.ceil(ms/1000);return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};
+function trapPaint(){buoy.visible=!!st.tpAt;if(st.tpAt)buoy.position.set(st.tpX,0,st.tpZ)}trapPaint();
+let trapSaid=0;setInterval(()=>{const lf=trapLeft();if(lf===0&&!trapSaid){trapSaid=1;toast('통발이 찼어요 · 메뉴 › 대황 › 낚시·교환소에서 건지세요')}const b=document.getElementById('trap-btn');if(b&&lf>0)b.textContent='통발 기다리는 중 '+mmss(lf);else if(b&&lf===0&&b.disabled)dview()},1000);
 ui();
 let gifted=false;const giveGift=()=>{if(gifted)return;gifted=true;if(creator)return;const g=EC.welcome(st);if(g){keep();welcomeLater(g)}};if(!(window.claude&&claude.use))giveGift();
 const deck=$('#deck'),dBody=$('#d-body'),body=document.body;let dTab='q';
@@ -241,6 +249,10 @@ function df(){const L=LV(),d=today();EC.roll(st,d);const head=el('div','lvl'),ba
   if(fishS===2){clearTimeout(fishT);fishS=0;const before=L.L,f=EC.pick(FISH,Math.random()),r=EC.land(st,f,today());if(r){if(r.coin){st.c+=r.coin;st.t+=r.coin}keep();chime();toast((f.kind==='weed'?jo(f.name,'을','를')+' 땄습니다':f.name+' ★'+f.star)+(r.coin?' · 대황 +'+r.coin:'')+' · '+(r.xp?'경험치 +'+r.xp:'오늘 놀이 경험치는 다 채웠습니다'));grew(before)}dview();return}
   startAudio();fishS=1;dview();const redraw=()=>{if(!deck.hidden&&dTab==='f')dview()};fishT=setTimeout(()=>{fishS=2;redraw();fishT=setTimeout(()=>{fishS=0;toast('놓쳤습니다 · 다시 던져 보세요');redraw()},1100)},1200+Math.random()*2300)};
  dBody.append(el('p','mute',seat?'낚시는 배에서 합니다. 쉼터 메뉴의 \'바다에서 보기\'로 돌아가세요.':left?'낚시 · 오늘 '+left+'마리 더 낚을 수 있습니다. 찌에 !가 뜨면 누르세요.':'오늘 낚시는 다 했습니다. 내일 다시 낚을 수 있습니다.'),cast);
+ if(TC){const lf=trapLeft(),tb=el('button','cast',lf<0?'통발 던지기':lf>0?'통발 기다리는 중 '+mmss(lf):'통발 건지기');tb.id='trap-btn';if(lf>0||(lf<0&&seat))tb.disabled=true;
+  tb.onclick=()=>{const now=trapLeft();if(now<0){if(isSeat(mode)){toast('통발은 배에서 던집니다');return}st.tpAt=Date.now();st.tpX=me.x;st.tpZ=me.z;trapSaid=0;keep();trapPaint();toast('통발을 던졌습니다 · '+Math.round(trapWait()/60000)+'분 뒤에 건질 수 있어요');dview();return}
+   if(now===0){let r=Math.random(),c=TC.CATCH[TC.CATCH.length-1];for(const x of TC.CATCH){r-=x.p;if(r<0){c=x;break}}const k=TRAP_COIN[c.id]||2;st.c+=k;st.t+=k;st.tpN=(st.tpN|0)+1;st.tpAt=0;keep();trapPaint();chime();toast('통발에서 '+(c.rare?'★ ':'')+c.name+' · 대황 +'+k);dview()}};
+  dBody.append(el('p','mute',lf<0?(seat?'통발 · 배에서 던지고 ':'통발 · 지금 이 바다에 던지고 ')+Math.round(trapWait()/60000)+'분 뒤에 건집니다. 독도새우·문어가 들어요.':lf>0?'통발 · 기다리는 동안 낚시나 항해를 즐기세요. 다 차면 알려 드려요.':'통발 · 다 찼습니다. 건져 보세요.'),tb,el('p','mute','출처: 독도새우 — 서울신문 2017(대부분 통발로 잡음), 문어 — 매일신문 2009(독도 근해 통발 전언, 근거 약함).'))}
  const have=FISH.filter(f=>st.fish[f.id]>0),here=EC.COOK_AT.includes(mode),fire=st.own&64?1:0,dishes=EC.menu(fire),full=st.xG>=EC.CAP.game;
  dBody.append(el('p','mute',have.length?'교환소 · 물고기를 대황으로 바꿉니다'+(here?'. 이 자리에서는 요리해 먹을 수 있습니다.':'. 요리는 동도 선착장이나 동도 정상 캠핑 자리에서 합니다.'):'교환소 · 낚은 물고기를 대황으로 바꾸거나, 동도 선착장·캠핑 자리에서 요리해 먹을 수 있습니다.'));
  have.forEach(f=>{const r=el('div','item'),sp=el('span'),n=st.fish[f.id];sp.append(el('b','',f.name+(f.kind==='weed'?'':' ★'+f.star)),el('small','',n+EC.unit(f)));const box=el('span','acts'),sell=el('button','','대황 '+(EC.SELL[f.star]||1));sell.onclick=()=>{const k=EC.sell(st,f);if(k)gain(k,f.name+' 교환');dview()};box.append(sell);
@@ -277,13 +289,18 @@ document.querySelectorAll('.q').forEach(b=>b.onclick=()=>speak(b.textContent));
 const pts=new Map();let moved=0,pinch=0;const down={x:0,y:0};const hint=$('#hint');
 cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,e);moved=0;down.x=e.clientX;down.y=e.clientY;hint.style.opacity=0});
 cv.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;const o=pts.get(e.pointerId);pts.set(e.pointerId,e);
- if(pts.size===2){const[a,b]=[...pts.values()],d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);if(pinch)dist=Math.min(420,Math.max(zmin(),dist*pinch/d));pinch=d;moved=99;return}
- const dx=e.clientX-o.clientX,dy=e.clientY-o.clientY;moved+=Math.abs(dx)+Math.abs(dy);dragT=performance.now();yaw-=dx*.009;pitch=Math.min(1.25,Math.max(bowView?-.3:.04,pitch+dy*.004))});
+ if(pts.size===2){const[a,b]=[...pts.values()],d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);if(pinch)dist=Math.min(900,Math.max(zmin(),dist*pinch/d));pinch=d;moved=99;return}
+ const dx=e.clientX-o.clientX,dy=e.clientY-o.clientY;moved+=Math.abs(dx)+Math.abs(dy);dragT=performance.now();yaw-=dx*.009;pitch=Math.min(1.25,Math.max(bowView?-.3:-.5,pitch+dy*.004))});
 const zmin=()=>isSeat(mode)?10:26;const ray=new T.Raycaster(),pl=new T.Plane(new T.Vector3(0,1,0),0),nd=new T.Vector2(),pp=new T.Vector3();
 const up=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=0;if(moved<7&&e.type==='pointerup'){nd.set(e.clientX/innerWidth*2-1,-e.clientY/innerHeight*2+1);ray.setFromCamera(nd,cam);if(!mode||mode==='sea'){if(ray.ray.intersectPlane(pl,pp)&&!hit(pp.x,pp.z)){if(auto){setAuto(false);resumeT=1;if(!resumeSaid){resumeSaid=1;toast('잠시 뒤 다시 저절로 돌아요')}}if(mode)leave();go(pp.x,pp.z);dispatchEvent(new CustomEvent('dokdo-heal-tap'))}}else if(mode==='dock'&&walk.on&&DK){const pd=new T.Plane(new T.Vector3(0,1,0),-DK.top);if(ray.ray.intersectPlane(pd,pp)&&(onDock(pp.x,pp.z)||atStairs(pp.x,pp.z))){walk.tx=pp.x;walk.tz=pp.z}}}};
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
-cv.addEventListener('wheel',e=>{e.preventDefault();dist=Math.min(420,Math.max(zmin(),dist*(1+e.deltaY*.001)))},{passive:false});
-const keys={};addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;keys[e.key.toLowerCase()]=1});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=0});
+cv.addEventListener('wheel',e=>{e.preventDefault();dist=Math.min(900,Math.max(zmin(),dist*(1+e.deltaY*.001)))},{passive:false});
+const keys={};addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;keys[e.key.toLowerCase()]=1});
+// 11/20 교수님: +/−로 거리를 바꿔 새 눈(버드뷰)으로 보거나, 하늘 단추로 고개를 들어 하늘을 본다. 멀어질수록 위에서 내려다본다.
+const zoomBy=k=>{look=0;dragT=performance.now();if(bowView)bowBtn.click();dist=Math.min(900,Math.max(zmin(),dist*k));if(k>1&&dist>200)pitch=Math.max(pitch,Math.min(1.15,.35+(dist-200)/700));if(k<1&&pitch<0)pitch=.16};
+let skyBack=null;const skyLook=()=>{look=0;dragT=performance.now();if(bowView)bowBtn.click();if(skyBack==null){skyBack=pitch;pitch=-.45}else{pitch=skyBack;skyBack=null}$('#z-sky').setAttribute('aria-pressed',skyBack!=null)};
+$('#z-in').onclick=()=>zoomBy(1/1.35);$('#z-out').onclick=()=>zoomBy(1.35);$('#z-sky').onclick=skyLook;
+addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;if(e.key==='+'||e.key==='=')zoomBy(1/1.35);else if(e.key==='-'||e.key==='_')zoomBy(1.35)});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=0});
 // 실제 시간과 날씨
 const WX={cond:'',temp:null,at:''};
 const WXT={clear:['맑음',0,0],sunny:['맑음',0,0],partly_cloudy:['구름 조금',.3,0],cloudy:['흐림',.72,0],overcast:['흐림',.85,0],fog:['안개',.9,0],rain:['비',.95,1],showers:['소나기',.9,1],storm:['폭풍우',1,1],snow:['눈',.9,0]};
@@ -346,9 +363,9 @@ more.onclick=()=>setMore(menuRow.hidden);
 new MutationObserver(actUI).observe($('#dock'),{subtree:true,attributes:true,attributeFilter:['aria-pressed']});actUI();
 // 입구가 열려 있는 동안은 아래 판을 숨기고, 환영 인사도 들어간 뒤에 보여 준다(입구 단추를 가리지 않게).
 // '다른 곳에서 시작'은 접어 두었다가 누르면 바다·서도·동도 정상이 열린다.
-dock.hidden=!$('#enter').hidden;
+dock.hidden=!$('#enter').hidden;$('#zoom').hidden=!$('#enter').hidden;
 function welcomeLater(g){const say=()=>setTimeout(()=>toast('처음 오신 것을 환영합니다 · 대황 +'+g),900);if($('#enter').hidden)say();else welcomeLater.q=say}
-new MutationObserver(()=>{if(!$('#enter').hidden)return;if(dock.hidden){dock.hidden=false;pad()}if(welcomeLater.q){welcomeLater.q();welcomeLater.q=null}}).observe($('#enter'),{attributes:true,attributeFilter:['hidden']});
+new MutationObserver(()=>{if(!$('#enter').hidden)return;$('#zoom').hidden=false;if(dock.hidden){dock.hidden=false;pad()}if(welcomeLater.q){welcomeLater.q();welcomeLater.q=null}}).observe($('#enter'),{attributes:true,attributeFilter:['hidden']});
 const eMore=$('#e-more');eMore.onclick=()=>{const v=eMore.getAttribute('aria-expanded')!=='true';eMore.setAttribute('aria-expanded',v);$('#e-alt').hidden=!v};
 // 바다를 눌러 자동 항해가 꺼졌으면, 배가 닿고 15초 동안 아무것도 안 하면 다시 저절로 돈다. 항해 메뉴에서 직접 끈 것은 그대로 둔다.
 let resumeT=0,resumeSaid=0,lastIn=Date.now();
@@ -412,7 +429,7 @@ function tick(n){if(body.classList.contains('v2d')){last=n;requestAnimationFrame
   const l=Math.hypot(fx,fz);let moving=false;if(l){fx/=l;fz/=l;const sp=10*dt,nx=walk.x+fx*sp,nz=walk.z+fz*sp;
    if(atStairs(nx,nz)){walk.tx=null;if(opened('camp'))tryGo('camp');else if(n-walk.said>4000){walk.said=n;toast('동도 정상 계단은 Lv'+EC.placeLv('camp')+'부터 오를 수 있습니다 · 지금 Lv'+LV().L)}}
    else{for(const t of [0,.45,-.45,.9,-.9,1.3,-1.3]){const c=Math.cos(t),n3=Math.sin(t),gx=fx*c-fz*n3,gz=fx*n3+fz*c,mx=walk.x+gx*sp,mz=walk.z+gz*sp;if(onDock(mx,mz)||atStairs(mx,mz)){walk.x=mx;walk.z=mz;fx=gx;fz=gz;moving=true;break}}if(!moving)walk.tx=null}
-   if(moving){walk.r=Math.atan2(-fx,-fz);dirty=true}}
+   if(moving){walk.r=Math.atan2(fx,fz);dirty=true}}
   if(mode==='dock')me.b.position.set(walk.x,DK.top-2.85+(moving?Math.abs(Math.sin(n*.014))*.45:0),walk.z),me.b.rotation.set(0,walk.r,0)}
  else if(seated){const t=SEAT[mode],q=seatOf(mode,1);me.b.position.set(q.x,q.y-2.85,q.z);me.b.rotation.set(0,Math.atan2(q.x-t.lx,q.z-t.lz),0)}else bob(me.b,me.x,me.z,me.r,n);
  swim(me.b,n);if(rest)resting(n);
@@ -426,10 +443,11 @@ function tick(n){if(body.classList.contains('v2d')){last=n;requestAnimationFrame
  let near=null,nd2=340;rocks.forEach(p=>{const d=Math.hypot(p.pos[0]-me.x,p.pos[2]-me.z),ty=p.pos[1]+p.lift;let seen=d<760;if(seen)for(let i=1;i<12;i++){const u=i/12,qx=cam.position.x+(p.pos[0]-cam.position.x)*u,qz=cam.position.z+(p.pos[2]-cam.position.z)*u;if(hAt(qx,qz)>cam.position.y+(ty-cam.position.y)*u+4){seen=false;break}}
   put(p.e,p.pos[0],ty,p.pos[2],seen&&!look?1:0);if(d<nd2){nd2=d;near=p}});
  if(near!==nearNow){nearNow=near;info.hidden=!near;clearTimeout(infoTm);if(near)infoTm=setTimeout(()=>{info.hidden=true},8000);if(near){infoN.textContent=near.nm;infoT.textContent=near.info;if(!st.seen.includes(near.nm)){st.seen.push(near.nm);gain(1,near.nm+' 발견')}}}
+ if(buoy.visible)buoy.position.y=Math.sin(n*.0022)*.45;
  junk.forEach((j,i)=>{if(!j.g.visible){if(n>j.back)placeJunk(j);return}j.g.position.y=.5+Math.sin(n*.002+i)*.35;if(!seated&&Math.hypot(j.x-me.x,j.z-me.z)<40){j.g.visible=false;j.back=n+45000;const before=LV().L,g=EC.pickup(st,today());keep();toast(g?'바다 쓰레기를 주웠습니다 · 경험치 +'+g:'바다 쓰레기를 주웠습니다 · 오늘 줍기 경험치는 다 채웠습니다');grew(before)}});
  places.forEach(p=>{const d=Math.hypot(p.pos[0]-me.x,p.pos[2]-me.z);put(p.e,p.pos[0],p.pos[1]+14,p.pos[2],d<1900?1:.0)});
  if(bowView){cam.position.set(me.x+Math.sin(me.r)*6,8.2,me.z+Math.cos(me.r)*6);const yy=me.r+yaw;aim.set(me.x-Math.sin(yy)*100,8.5+Math.sin(-pitch+.2)*60,me.z-Math.cos(yy)*100)}
- else{const yy=yaw,base=seated?me.b.position.y:0,tx=seated?me.b.position.x:me.x,tz=seated?me.b.position.z:me.z,h=Math.sin(pitch)*dist+6+base,rd=Math.cos(pitch)*dist;cam.position.set(tx+Math.sin(yy)*rd,h,tz+Math.cos(yy)*rd);aim.set(tx,base+10,tz)}
+ else{const yy=yaw,base=seated?me.b.position.y:0,tx=seated?me.b.position.x:me.x,tz=seated?me.b.position.z:me.z,h=Math.max(base+2.2,Math.sin(pitch)*dist+6+base),rd=Math.cos(pitch)*dist;cam.position.set(tx+Math.sin(yy)*rd,h,tz+Math.cos(yy)*rd);aim.set(tx,base+10+Math.max(0,.04-pitch)*dist*2.4,tz)}// 11/20 교수님: 하늘도 볼 수 있게(고개를 들면 겨냥점이 올라간다)
  if(look){let w,a;if(lookOut){const q=(n-lookOut)/1600;w=lookOutW*(1-ss(0,1,q));a=lookOutA;if(q>=1){look=lookOut=0;dragT=n}}else{const q=lookAt(n);w=q.w;a=q.a;if(q.k>=1){look=0;dragT=n}}
   if(w>0){const R=Math.max(ISLE.ext*1.35+110,ISLE.ext*.75/(Math.tan(23*Math.PI/180)*cam.aspect)),H=R*.27+20;cam.position.lerp(v.set(ISLE.x+Math.sin(a)*R,H,ISLE.z+Math.cos(a)*R),w);aim.lerp(v.set(ISLE.x,45,ISLE.z),w)}}
  cam.lookAt(aim);
