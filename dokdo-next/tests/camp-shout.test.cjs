@@ -63,12 +63,50 @@ test('shout board name: nickname only when mayShare() is true, otherwise 독도 
   a.equal(C.speaker({ mayShare: () => true }, '  '), '독도 친구');
 });
 
-test('shout board keeps at most 30 lines in memory', () => {
+test('shout board keeps at most 30 lines in memory; the same words in a row become ×n', () => {
   const list = [];
-  for (let i = 0; i < 45; i++) C.push(list, { t: String(i) });
+  for (let i = 0; i < 45; i++) a.equal(C.push(list, { who: '바다', text: String(i) }), 'add');
   a.equal(list.length, 30);
-  a.equal(list[0].t, '15');
-  a.equal(list[29].t, '44');
+  a.equal(list[0].text, '15');
+  a.equal(list[29].text, '44');
+  a.equal(C.push(list, { who: '바다', text: '44', at: '10:01' }), 'merge');
+  a.equal(C.push(list, { who: '바다', text: '44', at: '10:02' }), 'merge');
+  a.equal(list.length, 30); a.equal(list[29].n, 3); a.equal(list[29].at, '10:02');
+  a.equal(C.push(list, { who: '바다', text: '같이 쉬어요' }), 'add', 'different words start a new line');
+  a.equal(C.push(list, { who: '독도 친구', text: '같이 쉬어요' }), 'add', 'a different person starts a new line');
+});
+
+test('a stored raise day ahead of a turned-back clock shows as raised; the count never drops', () => {
+  const st = { kD: '2026-11-25', kN: 4 };
+  a.ok(C.raisedOn(st, '2026-11-20'));
+  a.deepEqual(C.raise(st, '2026-11-20'), { raised: false, n: 4 });
+  a.ok(!C.raisedOn({ kD: '' }, '2026-11-20'));
+  a.ok(!C.raisedOn({ kD: '2026-11-19' }, '2026-11-20'));
+});
+
+test('country flag is read from the school save like the school does; no guess when missing', () => {
+  a.equal(C.flagEmoji('KR'), '🇰🇷'); a.equal(C.flagEmoji('jp'), '🇯🇵');
+  a.equal(C.flagEmoji(''), ''); a.equal(C.flagEmoji('KOR'), ''); a.equal(C.flagEmoji(undefined), '');
+  a.equal(C.schoolFlag(JSON.stringify({ xp: 3, flag: 'US' })), '🇺🇸');
+  a.equal(C.schoolFlag(JSON.stringify({ state: { flag: 'KR' } })), '🇰🇷');
+  a.equal(C.schoolFlag(JSON.stringify({ xp: 3 })), '');
+  a.equal(C.schoolFlag('not json'), '');
+  a.equal(C.schoolFlag(null), '');
+  const app = read('assets/app.js'), src = /function flagEmoji\(code\)\{[^]*?\n\}/.exec(app)[0];
+  a.match(src, /0x1f1e6\+c\.charCodeAt\(0\)-65/, 'same regional-indicator rule as the school');
+});
+
+test('captain faces are random per seed but stable for the same seed', () => {
+  const P = require('../camp/captain.js');
+  a.deepEqual(P.face(0.4321), P.face(0.4321));
+  const keys = new Set();
+  for (let i = 0; i < 60; i++) { const f = P.face(i / 60 + 0.003); keys.add(JSON.stringify(f));
+    a.ok(P.EYES.includes(f.eyes) && P.NOSE.includes(f.nose) && P.MOUTH.includes(f.mouth) && P.SKIN.includes(f.skin) && P.HAIR.includes(f.hair)); }
+  a.ok(keys.size > 30, 'seeds give many different faces');
+  for (const k of ['eyes', 'nose', 'mouth']) a.equal(new Set([...Array(200)].map((_, i) => P.face(i / 200)[k])).size, 3, k + ': every variant shows up');
+  const src = read('camp/captain.js');
+  a.doesNotMatch(src, /fillText|TextGeometry/, 'no text on faces');
+  a.match(read('camp/healing.js'), /if\(window\.DokdoCaptain\)DokdoCaptain\.dress\(who,hue,T\);/, 'one small hook in healing.js');
 });
 
 test('camp flag.js is the national-rule geometry copied from together/flag.js, and camp does not load together/', () => {
@@ -93,6 +131,6 @@ test('voice files: four, ascii names, played only on press (no preload in the pa
   a.match(w, /function load\(A\)\{if\(asked\)return;asked=true;VOICE\.forEach\(v=>\{buf\[v\]=fetch\(/);
   a.equal((w.match(/\bload\(S\.AC\)/g) || []).length, 1, 'load() only from speak()');
   a.equal((w.match(/\bspeak\(\)/g) || []).length, 2, 'speak() defined once and called once');
-  a.match(w, /btn\.onclick=\(\)=>\{[^]*?if\(r\.counted\)speak\(\)/, 'called from the wave button press, only when counted');
+  a.match(w, /btn\.onclick=\(\)=>\{[^]*?speak\(\)/, 'called from the wave button press (also after 20: only the count stops)');
   a.doesNotMatch(w, /new Audio\(|preload/);
 });
