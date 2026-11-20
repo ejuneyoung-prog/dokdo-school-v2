@@ -335,6 +335,14 @@ Object.assign(window.DokdoHeal,{
  level:()=>LV(),
  today:()=>{const d=today(),left=EC.catchesLeft(st,d);return{coins:st.c,left,xG:st.xG,capG:EC.CAP.game,xC:st.xC,capC:EC.CAP.clean,look:st.rD===d?st.rN:0,capL:10}}});
 // ── 합치기 2단계 끝 ──
+// ── 11/20 합치기 3단계: 태극기 게양·흔들기·외침판(wave.js)이 쓰는 창구. 새 기록 칸은 shout-core.js가 고쳐 읽고, 저장은 원래 keep()으로 한다. ──
+Object.assign(window.DokdoHeal,{
+ three:()=>({T,scene:s,boat:me.b,quay}),mode:()=>mode,
+ state:()=>st,keep,// st는 크리에이터 모드를 켜고 끌 때 바뀌므로 늘 지금 것을 돌려준다
+ cheer:x=>{const n=performance.now();me.say=String(x).slice(0,30);me.sayT=n;me.wave=n;dirty=true},// 말풍선과 몸짓(소리 없이)
+ sound:()=>{startAudio();return{AC,mix,on}},// 소리 켜고 끄기와 크기는 mix가 따른다
+ nick:()=>clean(nick.value.trim())||'친구'});
+// ── 합치기 3단계 끝 ──
 addEventListener('pointerdown',()=>{if(AC&&AC.state!=='running')AC.resume()});document.addEventListener('visibilitychange',()=>{if(!document.hidden&&AC)AC.resume();if(!document.hidden&&silent)silent.play().catch(()=>{})});
 if(window.claude&&claude.use)Promise.all([claude.use('db'),claude.use('user')]).then(async([db,u])=>{if(!db||!u)return;const id=await u.id();if(!id)return;const ref=db.doc('data/users/'+id+'/wallet'),sn=await ref.get();wallet=ref;const v=sn.exists&&sn.data();let baseT=st.t;if(creator){try{baseT=JSON.parse(stBack).t}catch(e){}}if(v&&typeof v.t==='number'&&v.t>=baseT){if(creator){try{const b=JSON.parse(stBack);Object.assign(b,v);stBack=JSON.stringify(b)}catch(e){}return}Object.assign(st,v);EC.tidy(st);deco(me.b,st.on);dirty=true;save(WK,JSON.stringify(st));ui()}else if(st.t)keep()}).catch(()=>{}).finally(giveGift);
 // 함께 있는 사람들

@@ -1,0 +1,27 @@
+/* 태극기 흔들기 단추와 외침판(wave.js, 11/20 합치기 3단계). 차콜 판, 라임은 강조 한 군데씩, 글자 14px 이상. 그림자는 차콜. */
+#flagwave{flex:none;min-width:54px;min-height:50px;padding:0 10px;display:grid;place-items:center;background:#232528;touch-action:manipulation}
+#flagwave .fw-flag{display:block;width:30px;height:20px;box-shadow:0 0 0 1px #A7ABB0}
+#flagwave:active{transform:scale(.96)}
+/* 외침판: 오른쪽 가장자리. 위 단추(⌂ 홈·소리) 아래, 아래 판 위 사이에서만. */
+#shout{position:fixed;z-index:3;right:max(10px,env(safe-area-inset-right,0px));bottom:calc(var(--dk,64px) + 20px + env(safe-area-inset-bottom,0px));width:min(240px,58vw);display:flex;flex-direction:column;align-items:flex-end;gap:6px;pointer-events:none}
+#shout>*{pointer-events:auto}
+#sh-pane{box-sizing:border-box;width:100%;max-height:min(34dvh,calc(100dvh - var(--dk,64px) - 20px - 74px - 50px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)));overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;background:rgba(46,49,53,.92);border-radius:12px;padding:8px 10px;box-shadow:0 4px 14px rgba(35,37,40,.45)}
+#sh-list{margin:0;padding:0;list-style:none;display:grid;gap:4px}
+#sh-list li{font-size:14px;line-height:1.4;color:#FFFFFF;word-break:keep-all;overflow-wrap:anywhere}
+#sh-list li b{font-weight:500;color:#B6D80C}
+#sh-list li.sys{color:#A7ABB0}
+#sh-list time{color:#A7ABB0;font:400 16px var(--num);letter-spacing:.03em;white-space:nowrap}
+#sh-tab{min-height:44px;padding:6px 12px;background:rgba(35,37,40,.9);color:#FFFFFF;font-size:14px;border-radius:999px;box-shadow:0 2px 8px rgba(35,37,40,.45)}
+#sh-tab b{font:400 18px var(--num);color:#B6D80C;letter-spacing:.03em;margin-left:2px}
+#shout.rise #sh-pane{animation:shrise .35s ease-out}
+@keyframes shrise{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){#shout.rise #sh-pane{animation:none}}
+/* 메뉴를 열면 판은 접고 탭만(가로 화면에서 자리가 모자람) */
+body:has(#m-top:not([hidden])) #sh-pane{display:none!important}
+body.scenery #shout,body.resting #shout,body.v2d #shout{display:none!important}
+/* 처음 온 사람의 사용 설명서가 떠 있는 동안은 외침판을 숨긴다(설명서 말풍선과 겹치지 않게). 줄은 그대로 남아 있다. */
+body.guiding #shout{display:none!important}
+/* 내 배 판 제목 줄의 '지킨 날 N일째' */
+#board .b-head h2{flex:none}
+#board .b-days{margin-right:auto;color:#A7ABB0;font-size:14px;white-space:nowrap}
+#board .b-days b{font:400 19px var(--num);color:#B6D80C;letter-spacing:.03em;margin:0 1px}
